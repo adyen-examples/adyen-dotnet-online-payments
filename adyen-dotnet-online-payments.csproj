@@ -5,4 +5,9 @@
     <RootNamespace>adyen_dotnet_online_payments</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Adyen" Version="5.6.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.7" />
+  </ItemGroup>
+
 </Project>

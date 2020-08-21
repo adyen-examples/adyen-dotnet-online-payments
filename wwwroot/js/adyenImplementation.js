@@ -1,7 +1,7 @@
 const clientKey = document.getElementById("clientKey").innerHTML;
 const type = document.getElementById("type").innerHTML;
 
-callServer("/api/getPaymentMethods", {})
+callServer("/api/getPaymentMethods", { merchantAccount:  "" })
   .then((paymentMethodsResponse) => {
     const configuration = {
       paymentMethodsResponse,

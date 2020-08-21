@@ -1,21 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using adyen_dotnet_online_payments.Models;
 
 namespace adyen_dotnet_online_payments.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly string _client_key;
 
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
+            _client_key = Environment.GetEnvironmentVariable("ADYEN_CLIENT_KEY");
         }
 
         public IActionResult Index()
@@ -23,15 +20,23 @@ namespace adyen_dotnet_online_payments.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Preview(string id)
         {
+            ViewBag.PaymentMethod = id;
+            return View();
+        }
+
+        public IActionResult Checkout(string id)
+        {
+            ViewBag.PaymentMethod = id;
+            ViewBag.ClientKey = _client_key;
             return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View();
         }
     }
 }
