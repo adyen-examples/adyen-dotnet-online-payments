@@ -57,16 +57,16 @@ function handleServerResponse(res, component) {
   } else {
     switch (res.resultCode) {
       case "Authorised":
-        window.location.href = "/result/success";
+        window.location.href = "/Home/Result/success";
         break;
       case "Pending":
-        window.location.href = "/result/pending";
+        window.location.href = "/Home/Result/pending";
         break;
       case "Refused":
-        window.location.href = "/result/failed";
+        window.location.href = "/Home/Result/failed";
         break;
       default:
-        window.location.href = `/result/error?reason=${res.resultCode}`;
+        window.location.href = `/Home/Result/error?reason=${res.resultCode}`;
         break;
     }
   }
