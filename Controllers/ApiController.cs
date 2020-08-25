@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Net.Http;
 using Adyen;
 using Adyen.Model.Checkout;
 using Adyen.Service;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -18,12 +17,14 @@ namespace adyen_dotnet_online_payments.Controllers
         private readonly Checkout _checkout;
         private readonly string _merchant_account;
         private readonly ILogger<ApiController> _logger;
-        public ApiController(ILogger<ApiController> logger)
+        private IMemoryCache _cache;
+        public ApiController(ILogger<ApiController> logger, IMemoryCache memoryCache)
         {
             _logger = logger;
             var client = new Client(Environment.GetEnvironmentVariable("ADYEN_API_KEY"), Adyen.Model.Enum.Environment.Test); // Test Environment;
             _checkout = new Checkout(client);
             _merchant_account = Environment.GetEnvironmentVariable("ADYEN_MERCHANT");
+            _cache = memoryCache;
         }
 
         [HttpPost("api/getPaymentMethods")]
@@ -40,7 +41,7 @@ namespace adyen_dotnet_online_payments.Controllers
             }
             catch (Adyen.HttpClient.HttpClientException e)
             {
-                _logger.LogError($"Request for PaymentMethods failed::\n{e}\n");
+                _logger.LogError($"Request for PaymentMethods failed::\n{e.ResponseBody}\n");
                 throw e;
             }
         }
@@ -110,11 +111,11 @@ namespace adyen_dotnet_online_payments.Controllers
             try
             {
                 var res = _checkout.Payments(pmreq);
-
+                _logger.LogInformation($"Response for Payment API::\n{res.ResultCode}\n");
                 if (res.Action != null && res.Action.PaymentData != "")
                 {
                     _logger.LogInformation($"Setting payment data cache for {orderRef}\n");
-                    HttpContext.Session.SetString(orderRef.ToString(), res.Action.PaymentData);
+                    _cache.Set(orderRef.ToString(), res.Action.PaymentData);
                     return res.ToJson();
                 }
                 else
@@ -130,7 +131,7 @@ namespace adyen_dotnet_online_payments.Controllers
             }
             catch (Adyen.HttpClient.HttpClientException e)
             {
-                _logger.LogError($"Request for Payments failed::\n{e.Code} {e.JsonResponse} {e.ResponseBody}\n");
+                _logger.LogError($"Request for Payments failed::\n{e.ResponseBody}\n");
                 throw e;
             }
         }
@@ -161,33 +162,39 @@ namespace adyen_dotnet_online_payments.Controllers
             }
             catch (Adyen.HttpClient.HttpClientException e)
             {
-                _logger.LogError($"Request for PaymentDetails failed::\n{e}\n");
+                _logger.LogError($"Request for PaymentDetails failed::\n{e.ResponseBody}\n");
                 throw e;
             }
         }
 
         [HttpGet("api/handleShopperRedirect")]
-        public void RedirectGetAction([FromQuery(Name = "orderRef")] string orderRef, [FromQuery(Name = "payload")] string payload)
+        public void RedirectGetAction([FromQuery(Name = "orderRef")] string orderRef, [FromQuery(Name = "payload")] string payload, [FromQuery(Name = "redirectResult")] string redirectResult)
         {
-            var details = new Dictionary<string, string>() {
-                { "payload", payload }
-            };
+            var details = new Dictionary<string, string>();
+            if (payload != null)
+            {
+                details["payload"] = payload;
+            }
+            if (redirectResult != null)
+            {
+                details["redirectResult"] = redirectResult;
+            }
 
             RedirectAction(orderRef, details);
         }
 
         [HttpPost("api/handleShopperRedirect")]
-        public void RedirectPostAction([FromQuery(Name = "orderRef")] string orderRef, [FromBody] RedirectReq redirect)
+        public void RedirectPostAction([FromForm(Name = "MD")] string MD, [FromForm(Name = "PaRes")] string PaRes, [FromForm(Name = "payload")] string Payload, [FromQuery(Name = "orderRef")] string orderRef)
         {
             var details = new Dictionary<string, string>();
-            if (redirect.Payload != "")
+            if (Payload != null)
             {
-                details["payload"] = redirect.Payload;
+                details["payload"] = Payload;
             }
             else
             {
-                details["MD"] = redirect.MD;
-                details["PaRes"] = redirect.PaRes;
+                details["MD"] = MD;
+                details["PaRes"] = PaRes;
             }
 
             RedirectAction(orderRef, details);
@@ -196,43 +203,50 @@ namespace adyen_dotnet_online_payments.Controllers
         private void RedirectAction(string orderRef, Dictionary<string, string> details)
         {
             _logger.LogInformation($"Redirect request received\nRef: {orderRef}");
-            var paymentData = HttpContext.Session.GetString(orderRef);
+            var paymentData = _cache.Get<string>(orderRef);
 
             var req = new PaymentsDetailsRequest(Details: details, PaymentData: paymentData);
             _logger.LogInformation($"Request for PaymentDetails API::\n{req}\n");
-            var res = _checkout.PaymentDetails(req);
-            _logger.LogInformation($"Response for PaymentDetails API::\n{res}\n");
-
-            if (res.PspReference != "")
+            try
             {
-                string redirectURL;
-                // Conditionally handle different result codes for the shopper
-                switch (res.ResultCode)
+                var res = _checkout.PaymentDetails(req);
+                _logger.LogInformation($"Response for PaymentDetails API::\n{res}\n");
+                if (res.PspReference != "")
                 {
-                    case PaymentsResponse.ResultCodeEnum.Authorised:
-                        redirectURL = "/Home/Result/success";
-                        break;
-                    case PaymentsResponse.ResultCodeEnum.Pending:
-                    case PaymentsResponse.ResultCodeEnum.Received:
-                        redirectURL = "/Home/Result/pending";
-                        break;
-                    case PaymentsResponse.ResultCodeEnum.Refused:
-                        redirectURL = "/Home/Result/failed";
-                        break;
-                    default:
-                        {
-                            var reason = res.RefusalReason;
-                            if (reason == "")
-                            {
-                                reason = res.ResultCode.ToString();
-
-                            }
-                            redirectURL = $"/Home/Result/error?reason={WebUtility.UrlEncode(reason)}";
+                    string redirectURL;
+                    // Conditionally handle different result codes for the shopper
+                    switch (res.ResultCode)
+                    {
+                        case PaymentsResponse.ResultCodeEnum.Authorised:
+                            redirectURL = "/Home/Result/success";
                             break;
-                        }
+                        case PaymentsResponse.ResultCodeEnum.Pending:
+                        case PaymentsResponse.ResultCodeEnum.Received:
+                            redirectURL = "/Home/Result/pending";
+                            break;
+                        case PaymentsResponse.ResultCodeEnum.Refused:
+                            redirectURL = "/Home/Result/failed";
+                            break;
+                        default:
+                            {
+                                var reason = res.RefusalReason;
+                                if (reason == "")
+                                {
+                                    reason = res.ResultCode.ToString();
+
+                                }
+                                redirectURL = $"/Home/Result/error?reason={WebUtility.UrlEncode(reason)}";
+                                break;
+                            }
+                    }
+                    // now redirect
+                    Response.Redirect(redirectURL);
                 }
-                // now redirect
-                Response.Redirect(redirectURL);
+            }
+            catch (Adyen.HttpClient.HttpClientException e)
+            {
+                _logger.LogError($"Request for PaymentDetails failed::\n{e.ResponseBody}\n");
+                Response.Redirect($"/Home/Result/error?reason={WebUtility.UrlEncode(e.ResponseBody)}");
             }
         }
 
@@ -273,13 +287,5 @@ namespace adyen_dotnet_online_payments.Controllers
                     return "EUR";
             }
         }
-
-        public class RedirectReq
-        {
-            public string MD;
-            public string PaRes;
-            public string Payload;
-        }
-
     }
 }
