@@ -1,10 +1,27 @@
 const clientKey = document.getElementById("clientKey").innerHTML;
 const type = document.getElementById("type").innerHTML;
 
-callServer("/api/getPaymentMethods", { merchantAccount:  "" })
+function filterUnimplemented(pm) {
+  pm.paymentMethods = pm.paymentMethods.filter((it) =>
+    [
+      "ach",
+      "scheme",
+      "dotpay",
+      "giropay",
+      "ideal",
+      "directEbanking",
+      "klarna_paynow",
+      "klarna",
+      "klarna_account",
+    ].includes(it.type)
+  );
+  return pm;
+}
+
+callServer("/api/getPaymentMethods", { merchantAccount: "" })
   .then((paymentMethodsResponse) => {
     const configuration = {
-      paymentMethodsResponse,
+      paymentMethodsResponse: filterUnimplemented(paymentMethodsResponse),
       clientKey,
       locale: "en_US",
       environment: "test",
