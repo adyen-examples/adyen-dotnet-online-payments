@@ -20,7 +20,10 @@
                 "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
             },
             "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ADYEN_MERCHANT": "",
+                "ADYEN_API_KEY": "",
+                "ADYEN_CLIENT_KEY": "",
             },
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"

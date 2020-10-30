@@ -1,29 +1,19 @@
 ﻿@{
     ViewData["Title"] = "Adyen Checkout Cart";
 }
-@*  Hidden divs with data passed from the server  *@
+@* Hidden divs with data passed from the server *@
 <div id="clientKey" class="hidden">@ViewBag.ClientKey</div>
 <div id="type" class="hidden">@ViewBag.PaymentMethod</div>
 
 <div id="payment-page">
-  <div class="container">
-    <partial name="_Customerform.cshtml" />
-
-    @* The Checkout integration type will be conditionally rendered below. *@
-    @if (ViewBag.PaymentMethod == "dropin")
-    {
+    <div class="container">
+        @* The Checkout integration type will be conditionally rendered below. *@
         @* Drop-in includes styling out-of-the-box, so no additional CSS classes are needed. *@
-        <div id="dropin"></div>
-    }
-    else
-    {
         <div class="payment-container">
             <div id="@ViewBag.PaymentMethod" class="payment"></div>
         </div>
-    }
-  </div>
+    </div>
 </div>
 
-@* Adyen Component client code  *@
+@* Adyen Component client code *@
 <script src="~/js/adyenImplementation.js" asp-append-version="true"></script>
-
