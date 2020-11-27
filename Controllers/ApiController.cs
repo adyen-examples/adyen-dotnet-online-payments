@@ -54,23 +54,31 @@ namespace adyen_dotnet_online_payments.Controllers
             var paymentMethodToken = (Newtonsoft.Json.Linq.JObject)raw["paymentMethod"];
             var pmType = paymentMethodToken.GetValue("type").ToString();
             var pm = parsePaymentMethodDetails(JsonConvert.SerializeObject(paymentMethodToken), pmType);
-            var amount = new Amount(findCurrency(pmType), 1000);
+
             var pmreq = new PaymentRequest();
             pmreq.PaymentMethod = pm;
+            pmreq.MerchantAccount = _merchant_account; // required
+            pmreq.Channel = PaymentRequest.ChannelEnum.Web; // required
+
+            var amount = new Amount(findCurrency(pmType), 1000); // value is 10€ in minor units
+            pmreq.Amount = amount;
+            var orderRef = System.Guid.NewGuid();
+            pmreq.Reference = orderRef.ToString(); // required
+
+            // required for 3ds2 native flow
+            pmreq.AdditionalData = new Dictionary<string, string>() { { "allow3DS2", "true" } };
+            // required for 3ds2 native flow
+            pmreq.Origin = "https://localhost:5001";
+            // required for 3ds2 
             if (raw.ContainsKey("browserInfo"))
             {
                 pmreq.BrowserInfo = JsonConvert.DeserializeObject<BrowserInfo>(JsonConvert.SerializeObject(raw["browserInfo"]));
             }
-            if (raw.ContainsKey("origin"))
-            {
-                pmreq.Origin = JsonConvert.DeserializeObject<string>(JsonConvert.SerializeObject(raw["origin"]));
-            }
-            pmreq.MerchantAccount = _merchant_account;
-            pmreq.Amount = amount;
-            var orderRef = System.Guid.NewGuid();
-            pmreq.Reference = orderRef.ToString();
-            pmreq.Channel = PaymentRequest.ChannelEnum.Web;
-            pmreq.AdditionalData = new Dictionary<string, string>() { { "allow3DS2", "true" } };
+
+            pmreq.ShopperIP = HttpContext.Connection.RemoteIpAddress.ToString(); // required by some issuers for 3ds2
+
+            // we pass the orderRef in return URL to get paymentData during redirects
+            // required for 3ds2 redirect flow
             pmreq.ReturnUrl = $"https://localhost:5001/api/handleShopperRedirect?orderRef={orderRef}";
             // Required for Klarna:
             if (pmType.Contains("klarna"))
