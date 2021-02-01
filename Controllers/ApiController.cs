@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using static Adyen.Model.Checkout.PaymentResponse;
 
 namespace adyen_dotnet_online_payments.Controllers
 {
@@ -47,19 +48,14 @@ namespace adyen_dotnet_online_payments.Controllers
         }
 
         [HttpPost("api/initiatePayment")]
-        public ActionResult<string> InitiatePayment([FromBody] Dictionary<string, object> raw)
+        public ActionResult<string> InitiatePayment([FromBody] PaymentRequest pmreq)
         {
-            _logger.LogInformation($"Request for Payments API::\n{raw}\n");
+            _logger.LogInformation($"Request for Payments API::\n{pmreq}\n");
 
-            var paymentMethodToken = (Newtonsoft.Json.Linq.JObject)raw["paymentMethod"];
-            var pmType = paymentMethodToken.GetValue("type").ToString();
-            var pm = parsePaymentMethodDetails(JsonConvert.SerializeObject(paymentMethodToken), pmType);
-
-            var pmreq = new PaymentRequest();
-            pmreq.PaymentMethod = pm;
             pmreq.MerchantAccount = _merchant_account; // required
             pmreq.Channel = PaymentRequest.ChannelEnum.Web; // required
 
+            var pmType = pmreq.PaymentMethod.Type;
             var amount = new Amount(findCurrency(pmType), 1000); // value is 10€ in minor units
             pmreq.Amount = amount;
             var orderRef = System.Guid.NewGuid();
@@ -69,11 +65,6 @@ namespace adyen_dotnet_online_payments.Controllers
             pmreq.AdditionalData = new Dictionary<string, string>() { { "allow3DS2", "true" } };
             // required for 3ds2 native flow
             pmreq.Origin = "https://localhost:5001";
-            // required for 3ds2 
-            if (raw.ContainsKey("browserInfo"))
-            {
-                pmreq.BrowserInfo = JsonConvert.DeserializeObject<BrowserInfo>(JsonConvert.SerializeObject(raw["browserInfo"]));
-            }
 
             pmreq.ShopperIP = HttpContext.Connection.RemoteIpAddress.ToString(); // required by some issuers for 3ds2
 
@@ -90,28 +81,28 @@ namespace adyen_dotnet_online_payments.Controllers
                 pmreq.LineItems = new List<LineItem>()
                 {
                     new LineItem(
-                        AmountExcludingTax: 331,
-                        AmountIncludingTax: 400,
-                        Description: "Sunglasses",
-                        Id: "Item 1",
-                        Quantity: 1,
-                        TaxAmount: 69,
-                        TaxCategory: LineItem.TaxCategoryEnum.None,
-                        TaxPercentage: 2100,
-                        ProductUrl: "",
-                        ImageUrl: ""
+                        amountExcludingTax: 331,
+                        amountIncludingTax: 400,
+                        description: "Sunglasses",
+                        id: "Item 1",
+                        imageUrl: "",
+                        productUrl: "",
+                        quantity: 1,
+                        taxAmount: 69,
+                        taxCategory: LineItem.TaxCategoryEnum.None,
+                        taxPercentage: 2100
                     ),
                     new LineItem(
-                        AmountExcludingTax: 248,
-                        AmountIncludingTax: 300,
-                        Description: "Headphones",
-                        Id: "Item 2",
-                        Quantity: 1,
-                        TaxAmount: 52,
-                        TaxCategory: LineItem.TaxCategoryEnum.None,
-                        TaxPercentage: 2100,
-                        ProductUrl: "",
-                        ImageUrl: ""
+                        amountExcludingTax: 248,
+                        amountIncludingTax: 300,
+                        description: "Headphones",
+                        id: "Item 2",
+                        imageUrl: "",
+                        productUrl: "",
+                        quantity: 1,
+                        taxAmount: 52,
+                        taxCategory: LineItem.TaxCategoryEnum.None,
+                        taxPercentage: 2100
                     )
                 };
             }
@@ -119,11 +110,11 @@ namespace adyen_dotnet_online_payments.Controllers
             try
             {
                 var res = _checkout.Payments(pmreq);
-                _logger.LogInformation($"Response for Payment API::\n{res.ResultCode}\n");
-                if (res.Action != null && res.Action.PaymentData != "")
+                _logger.LogInformation($"Response for Payment API::\n{res}\n");
+                if (res.PaymentData != "")
                 {
                     _logger.LogInformation($"Setting payment data cache for {orderRef}\n");
-                    _cache.Set(orderRef.ToString(), res.Action.PaymentData);
+                    _cache.Set(orderRef.ToString(), res.PaymentData);
                     return res.ToJson();
                 }
                 else
@@ -178,14 +169,14 @@ namespace adyen_dotnet_online_payments.Controllers
         [HttpGet("api/handleShopperRedirect")]
         public void RedirectGetAction([FromQuery(Name = "orderRef")] string orderRef, [FromQuery(Name = "payload")] string payload, [FromQuery(Name = "redirectResult")] string redirectResult)
         {
-            var details = new Dictionary<string, string>();
+            var details = new PaymentCompletionDetails();
             if (payload != null)
             {
-                details["payload"] = payload;
+                details.Payload = payload;
             }
             if (redirectResult != null)
             {
-                details["redirectResult"] = redirectResult;
+                details.RedirectResult = redirectResult;
             }
 
             RedirectAction(orderRef, details);
@@ -194,26 +185,26 @@ namespace adyen_dotnet_online_payments.Controllers
         [HttpPost("api/handleShopperRedirect")]
         public void RedirectPostAction([FromForm(Name = "MD")] string MD, [FromForm(Name = "PaRes")] string PaRes, [FromForm(Name = "payload")] string Payload, [FromQuery(Name = "orderRef")] string orderRef)
         {
-            var details = new Dictionary<string, string>();
+            var details = new PaymentCompletionDetails();
             if (Payload != null)
             {
-                details["payload"] = Payload;
+                details.Payload = Payload;
             }
             else
             {
-                details["MD"] = MD;
-                details["PaRes"] = PaRes;
+                details.MD = MD;
+                details.PaRes = PaRes;
             }
 
             RedirectAction(orderRef, details);
         }
 
-        private void RedirectAction(string orderRef, Dictionary<string, string> details)
+        private void RedirectAction(string orderRef, PaymentCompletionDetails details)
         {
             _logger.LogInformation($"Redirect request received\nRef: {orderRef}");
             var paymentData = _cache.Get<string>(orderRef);
 
-            var req = new PaymentsDetailsRequest(Details: details, PaymentData: paymentData);
+            var req = new PaymentsDetailsRequest(details: details, paymentData: paymentData);
             _logger.LogInformation($"Request for PaymentDetails API::\n{req}\n");
             try
             {
@@ -225,14 +216,14 @@ namespace adyen_dotnet_online_payments.Controllers
                     // Conditionally handle different result codes for the shopper
                     switch (res.ResultCode)
                     {
-                        case PaymentsResponse.ResultCodeEnum.Authorised:
+                        case ResultCodeEnum.Authorised:
                             redirectURL = "/Home/Result/success";
                             break;
-                        case PaymentsResponse.ResultCodeEnum.Pending:
-                        case PaymentsResponse.ResultCodeEnum.Received:
+                        case ResultCodeEnum.Pending:
+                        case ResultCodeEnum.Received:
                             redirectURL = "/Home/Result/pending";
                             break;
-                        case PaymentsResponse.ResultCodeEnum.Refused:
+                        case ResultCodeEnum.Refused:
                             redirectURL = "/Home/Result/failed";
                             break;
                         default:
@@ -257,25 +248,6 @@ namespace adyen_dotnet_online_payments.Controllers
                 Response.Redirect($"/Home/Result/error?reason={WebUtility.UrlEncode(e.ResponseBody)}");
             }
         }
-
-
-        private IPaymentMethodDetails parsePaymentMethodDetails(string pm, string type)
-        {
-            switch (type)
-            {
-                case "ideal":
-                    return JsonConvert.DeserializeObject<IdealDetails>(pm);
-                case "dotpay":
-                    return JsonConvert.DeserializeObject<DotpayDetails>(pm);
-                case "giropay":
-                    return JsonConvert.DeserializeObject<GiropayDetails>(pm);
-                case "ach":
-                    return JsonConvert.DeserializeObject<AchDetails>(pm);
-                default:
-                    return JsonConvert.DeserializeObject<DefaultPaymentMethodDetails>(pm);
-            }
-        }
-
 
         private string findCurrency(string typ)
         {
