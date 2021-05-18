@@ -5,10 +5,8 @@ using Adyen;
 using Adyen.Model.Checkout;
 using Adyen.Service;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using static Adyen.Model.Checkout.PaymentResponse;
+using static Adyen.Model.Checkout.PaymentDetailsResponse;
 
 namespace adyen_dotnet_online_payments.Controllers
 {
@@ -18,14 +16,12 @@ namespace adyen_dotnet_online_payments.Controllers
         private readonly Checkout _checkout;
         private readonly string _merchant_account;
         private readonly ILogger<ApiController> _logger;
-        private IMemoryCache _cache;
-        public ApiController(ILogger<ApiController> logger, IMemoryCache memoryCache)
+        public ApiController(ILogger<ApiController> logger)
         {
             _logger = logger;
             var client = new Client(Environment.GetEnvironmentVariable("ADYEN_API_KEY"), Adyen.Model.Enum.Environment.Test); // Test Environment;
             _checkout = new Checkout(client);
             _merchant_account = Environment.GetEnvironmentVariable("ADYEN_MERCHANT");
-            _cache = memoryCache;
         }
 
         [HttpPost("api/getPaymentMethods")]
@@ -68,7 +64,6 @@ namespace adyen_dotnet_online_payments.Controllers
 
             pmreq.ShopperIP = HttpContext.Connection.RemoteIpAddress.ToString(); // required by some issuers for 3ds2
 
-            // we pass the orderRef in return URL to get paymentData during redirects
             // required for 3ds2 redirect flow
             pmreq.ReturnUrl = $"https://localhost:5001/api/handleShopperRedirect?orderRef={orderRef}";
             // Required for Klarna:
@@ -111,22 +106,7 @@ namespace adyen_dotnet_online_payments.Controllers
             {
                 var res = _checkout.Payments(pmreq);
                 _logger.LogInformation($"Response for Payment API::\n{res}\n");
-                if (res.PaymentData != "")
-                {
-                    _logger.LogInformation($"Setting payment data cache for {orderRef}\n");
-                    _cache.Set(orderRef.ToString(), res.PaymentData);
-                    return res.ToJson();
-                }
-                else
-                {
-                    var dict = new Dictionary<string, string>()
-                    {
-                        { "pspReference", res.PspReference },
-                        { "resultCode", res.ResultCode.ToString() },
-                        { "refusalReason", res.RefusalReason }
-                    };
-                    return JsonConvert.SerializeObject(dict);
-                }
+                return res.ToJson();
             }
             catch (Adyen.HttpClient.HttpClientException e)
             {
@@ -144,20 +124,7 @@ namespace adyen_dotnet_online_payments.Controllers
             {
                 var res = _checkout.PaymentDetails(req);
 
-                if (res.Action != null)
-                {
-                    return res.ToJson();
-                }
-                else
-                {
-                    var dict = new Dictionary<string, string>()
-                    {
-                        { "pspReference", res.PspReference },
-                        { "resultCode", res.ResultCode.ToString() },
-                        { "refusalReason", res.RefusalReason }
-                    };
-                    return JsonConvert.SerializeObject(dict);
-                }
+                return res.ToJson();
             }
             catch (Adyen.HttpClient.HttpClientException e)
             {
@@ -170,30 +137,13 @@ namespace adyen_dotnet_online_payments.Controllers
         public void RedirectGetAction([FromQuery(Name = "orderRef")] string orderRef, [FromQuery(Name = "payload")] string payload, [FromQuery(Name = "redirectResult")] string redirectResult)
         {
             var details = new PaymentCompletionDetails();
-            if (payload != null)
-            {
-                details.Payload = payload;
-            }
             if (redirectResult != null)
             {
                 details.RedirectResult = redirectResult;
             }
-
-            RedirectAction(orderRef, details);
-        }
-
-        [HttpPost("api/handleShopperRedirect")]
-        public void RedirectPostAction([FromForm(Name = "MD")] string MD, [FromForm(Name = "PaRes")] string PaRes, [FromForm(Name = "payload")] string Payload, [FromQuery(Name = "orderRef")] string orderRef)
-        {
-            var details = new PaymentCompletionDetails();
-            if (Payload != null)
+            else if (payload != null)
             {
-                details.Payload = Payload;
-            }
-            else
-            {
-                details.MD = MD;
-                details.PaRes = PaRes;
+                details.Payload = payload;
             }
 
             RedirectAction(orderRef, details);
@@ -202,9 +152,8 @@ namespace adyen_dotnet_online_payments.Controllers
         private void RedirectAction(string orderRef, PaymentCompletionDetails details)
         {
             _logger.LogInformation($"Redirect request received\nRef: {orderRef}");
-            var paymentData = _cache.Get<string>(orderRef);
 
-            var req = new PaymentsDetailsRequest(details: details, paymentData: paymentData);
+            var req = new PaymentsDetailsRequest(details: details);
             _logger.LogInformation($"Request for PaymentDetails API::\n{req}\n");
             try
             {
