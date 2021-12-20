@@ -43,68 +43,24 @@ namespace adyen_dotnet_online_payments.Controllers
             }
         }
 
-        [HttpPost("api/initiatePayment")]
-        public ActionResult<string> InitiatePayment([FromBody] PaymentRequest pmreq)
+        [HttpPost("api/sessions")]
+        public ActionResult<string> Sessions()
         {
-            _logger.LogInformation($"Request for Payments API::\n{pmreq}\n");
+            var sessionsRequest = new CreateCheckoutSessionRequest();
+            sessionsRequest.merchantAccount = _merchant_account; // required
+            sessionsRequest.channel = (CreateCheckoutSessionRequest.ChannelEnum?) PaymentRequest.ChannelEnum.Web; // required
 
-            pmreq.MerchantAccount = _merchant_account; // required
-            pmreq.Channel = PaymentRequest.ChannelEnum.Web; // required
-
-            var pmType = pmreq.PaymentMethod.Type;
-            var amount = new Amount(findCurrency(pmType), 1000); // value is 10€ in minor units
-            pmreq.Amount = amount;
+            var amount = new Amount("EUR", 1000); // value is 10€ in minor units
+            sessionsRequest.amount = amount;
             var orderRef = System.Guid.NewGuid();
-            pmreq.Reference = orderRef.ToString(); // required
-
-            // required for 3ds2 native flow
-            pmreq.AdditionalData = new Dictionary<string, string>() { { "allow3DS2", "true" } };
-            // required for 3ds2 native flow
-            pmreq.Origin = "https://localhost:5001";
-
-            pmreq.ShopperIP = HttpContext.Connection.RemoteIpAddress.ToString(); // required by some issuers for 3ds2
-
+            sessionsRequest.reference = orderRef.ToString(); // required
+            
             // required for 3ds2 redirect flow
-            pmreq.ReturnUrl = $"https://localhost:5001/api/handleShopperRedirect?orderRef={orderRef}";
-            // Required for Klarna:
-            if (pmType.Contains("klarna"))
-            {
-                pmreq.CountryCode = "DE";
-                pmreq.ShopperReference = "12345";
-                pmreq.ShopperEmail = "youremail@email.com";
-                pmreq.ShopperLocale = "en_US";
-                pmreq.LineItems = new List<LineItem>()
-                {
-                    new LineItem(
-                        amountExcludingTax: 331,
-                        amountIncludingTax: 400,
-                        description: "Sunglasses",
-                        id: "Item 1",
-                        imageUrl: "",
-                        productUrl: "",
-                        quantity: 1,
-                        taxAmount: 69,
-                        taxCategory: LineItem.TaxCategoryEnum.None,
-                        taxPercentage: 2100
-                    ),
-                    new LineItem(
-                        amountExcludingTax: 248,
-                        amountIncludingTax: 300,
-                        description: "Headphones",
-                        id: "Item 2",
-                        imageUrl: "",
-                        productUrl: "",
-                        quantity: 1,
-                        taxAmount: 52,
-                        taxCategory: LineItem.TaxCategoryEnum.None,
-                        taxPercentage: 2100
-                    )
-                };
-            }
+            sessionsRequest.returnUrl = $"https://localhost:5001/Home/Redirect?orderRef={orderRef}";
 
             try
             {
-                var res = _checkout.Payments(pmreq);
+                var res = _checkout.Sessions(sessionsRequest);
                 _logger.LogInformation($"Response for Payment API::\n{res}\n");
                 return res.ToJson();
             }
@@ -114,107 +70,6 @@ namespace adyen_dotnet_online_payments.Controllers
                 throw e;
             }
         }
-
-        [HttpPost("api/submitAdditionalDetails")]
-        public ActionResult<string> SubmitAdditionalDetails([FromBody] PaymentsDetailsRequest req)
-        {
-            _logger.LogInformation($"Request for PaymentDetails API::\n{req}\n");
-
-            try
-            {
-                var res = _checkout.PaymentDetails(req);
-
-                return res.ToJson();
-            }
-            catch (Adyen.HttpClient.HttpClientException e)
-            {
-                _logger.LogError($"Request for PaymentDetails failed::\n{e.ResponseBody}\n");
-                throw e;
-            }
-        }
-
-        [HttpGet("api/handleShopperRedirect")]
-        public void RedirectGetAction([FromQuery(Name = "orderRef")] string orderRef, [FromQuery(Name = "payload")] string payload, [FromQuery(Name = "redirectResult")] string redirectResult)
-        {
-            var details = new PaymentCompletionDetails();
-            if (redirectResult != null)
-            {
-                details.RedirectResult = redirectResult;
-            }
-            else if (payload != null)
-            {
-                details.Payload = payload;
-            }
-
-            RedirectAction(orderRef, details);
-        }
-
-        private void RedirectAction(string orderRef, PaymentCompletionDetails details)
-        {
-            _logger.LogInformation($"Redirect request received\nRef: {orderRef}");
-
-            var req = new PaymentsDetailsRequest(details: details);
-            _logger.LogInformation($"Request for PaymentDetails API::\n{req}\n");
-            try
-            {
-                var res = _checkout.PaymentDetails(req);
-                _logger.LogInformation($"Response for PaymentDetails API::\n{res}\n");
-                if (res.PspReference != "")
-                {
-                    string redirectURL;
-                    // Conditionally handle different result codes for the shopper
-                    switch (res.ResultCode)
-                    {
-                        case ResultCodeEnum.Authorised:
-                            redirectURL = "/Home/Result/success";
-                            break;
-                        case ResultCodeEnum.Pending:
-                        case ResultCodeEnum.Received:
-                            redirectURL = "/Home/Result/pending";
-                            break;
-                        case ResultCodeEnum.Refused:
-                            redirectURL = "/Home/Result/failed";
-                            break;
-                        default:
-                            {
-                                var reason = res.RefusalReason;
-                                if (reason == "")
-                                {
-                                    reason = res.ResultCode.ToString();
-
-                                }
-                                redirectURL = $"/Home/Result/error?reason={WebUtility.UrlEncode(reason)}";
-                                break;
-                            }
-                    }
-                    // now redirect
-                    Response.Redirect(redirectURL);
-                }
-            }
-            catch (Adyen.HttpClient.HttpClientException e)
-            {
-                _logger.LogError($"Request for PaymentDetails failed::\n{e.ResponseBody}\n");
-                Response.Redirect($"/Home/Result/error?reason={WebUtility.UrlEncode(e.ResponseBody)}");
-            }
-        }
-
-        private string findCurrency(string typ)
-        {
-            switch (typ)
-            {
-                case "ach":
-                    return "USD";
-                case "wechatpayqr":
-                case "alipay":
-                    return "CNY";
-                case "dotpay":
-                    return "PLN";
-                case "boletobancario":
-                case "boletobancario_santander":
-                    return "BRL";
-                default:
-                    return "EUR";
-            }
-        }
+        
     }
 }
