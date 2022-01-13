@@ -22,7 +22,7 @@ Each demo leverages Adyen's API Library for .NET ([GitHub](https://github.com/Ad
 
 ## Requirements
 
-.NET Core SDK 3.1
+.NET Core SDK 6.x
 
 ## Installation
 
