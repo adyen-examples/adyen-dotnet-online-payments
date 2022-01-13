@@ -22,7 +22,7 @@ Each demo leverages Adyen's API Library for .NET ([GitHub](https://github.com/Ad
 
 ## Requirements
 
-.NET Core SDK 3.1
+.NET Core SDK 6.x
 
 ## Installation
 
@@ -63,6 +63,8 @@ To try out integrations with test card numbers and payment method details, see [
 ## Contributing
 
 We commit all our new features directly into our GitHub repository. Feel free to request or suggest new features or code changes yourself as well!
+
+Find out more in our [Contributing](https://github.com/adyen-examples/.github/blob/main/CONTRIBUTING.md) guidelines.
 
 ## License
 
