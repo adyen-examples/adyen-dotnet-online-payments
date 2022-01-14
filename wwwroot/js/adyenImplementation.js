@@ -59,7 +59,7 @@ async function createAdyenCheckout(session){
             currency: "USD",
           },
           environment: "test", // Change this to "live" when you're ready to accept live PayPal payments
-          countryCode: "US", // Only needed for test. This will be automatically retrieved when you are in production.
+          countryCode: "SE", // Only needed for test. This will be automatically retrieved when you are in production.
         }
       },
       onPaymentCompleted: (result, component) => {
