@@ -32,6 +32,12 @@ namespace adyen_dotnet_online_payments.Controllers
             ViewBag.ClientKey = _client_key;
             return View();
         }
+        
+        public IActionResult Redirect()
+        {
+            ViewBag.ClientKey = _client_key;
+            return View();
+        }
 
         [HttpGet("Home/Result/{status}")]
         public IActionResult Result(string status, [FromQuery(Name = "reason")] string refusalReason)
