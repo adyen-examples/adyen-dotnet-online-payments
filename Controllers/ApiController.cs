@@ -26,7 +26,7 @@ namespace adyen_dotnet_online_payments.Controllers
         {
             var sessionsRequest = new CreateCheckoutSessionRequest();
             sessionsRequest.merchantAccount = _merchant_account; // required
-            sessionsRequest.channel = (CreateCheckoutSessionRequest.ChannelEnum?) PaymentRequest.ChannelEnum.Web; // required
+            sessionsRequest.channel = (CreateCheckoutSessionRequest.ChannelEnum?) PaymentRequest.ChannelEnum.Web;
 
             var amount = new Amount("EUR", 1000); // value is 10€ in minor units
             sessionsRequest.amount = amount;

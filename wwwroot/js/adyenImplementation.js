@@ -11,7 +11,7 @@ async function startCheckout() {
   const type = document.getElementById("type").innerHTML;
 
   try {
-    const checkoutSessionResponse = await callServer("/api/sessions?type=" + type);
+    const checkoutSessionResponse = await callServer("/api/sessions");
     const checkout = await createAdyenCheckout(checkoutSessionResponse);
     checkout.create(type).mount(document.getElementById("payment"));
 
