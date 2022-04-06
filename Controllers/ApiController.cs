@@ -16,6 +16,7 @@ namespace adyen_dotnet_online_payments.Controllers
         public ApiController(ILogger<ApiController> logger)
         {
             _logger = logger;
+            _logger.LogInformation($"API::\n{Environment.GetEnvironmentVariable("ADYEN_API_KEY")}\n");
             var client = new Client(Environment.GetEnvironmentVariable("ADYEN_API_KEY"), Adyen.Model.Enum.Environment.Test); // Test Environment;
             _checkout = new Checkout(client);
             _merchant_account = Environment.GetEnvironmentVariable("ADYEN_MERCHANT");

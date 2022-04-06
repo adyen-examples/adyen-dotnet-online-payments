@@ -47,6 +47,7 @@ async function createAdyenCheckout(session){
         card: {
           hasHolderName: true,
           holderNameRequired: true,
+          billingAddressRequired: true,
           name: "Credit or debit card",
           amount: {
             value: 1000,
