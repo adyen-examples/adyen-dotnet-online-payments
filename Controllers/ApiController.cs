@@ -2,6 +2,7 @@ using System;
 using Adyen;
 using Adyen.Model.Checkout;
 using Adyen.Service;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -13,9 +14,12 @@ namespace adyen_dotnet_online_payments.Controllers
         private readonly Checkout _checkout;
         private readonly string _merchant_account;
         private readonly ILogger<ApiController> _logger;
-        public ApiController(ILogger<ApiController> logger)
+        private readonly HttpContext _httpContext;
+
+        public ApiController(ILogger<ApiController> logger, IHttpContextAccessor httpContextAccessor)
         {
             _logger = logger;
+            _httpContext = httpContextAccessor.HttpContext;
             var client = new Client(Environment.GetEnvironmentVariable("ADYEN_API_KEY"), Adyen.Model.Enum.Environment.Test); // Test Environment;
             _checkout = new Checkout(client);
             _merchant_account = Environment.GetEnvironmentVariable("ADYEN_MERCHANT");
@@ -32,9 +36,10 @@ namespace adyen_dotnet_online_payments.Controllers
             sessionsRequest.amount = amount;
             var orderRef = System.Guid.NewGuid();
             sessionsRequest.reference = orderRef.ToString(); // required
-            
+
             // required for 3ds2 redirect flow
-            sessionsRequest.returnUrl = $"https://localhost:5001/Home/Redirect?orderRef={orderRef}";
+            var request = _httpContext.Request;
+            sessionsRequest.returnUrl = $"{request.Scheme}://{request.Host}/redirect?orderRef={orderRef}";
 
             try
             {
