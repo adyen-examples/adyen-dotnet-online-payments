@@ -6,7 +6,7 @@ This repository includes examples of PCI-compliant UI integrations for online pa
 
 ## Supported Integrations
 
-**ASP.Net** demos of the following client-side integrations are currently available in this repository:
+**ASP.NET** demos of the following client-side integrations are currently available in this repository:
 
 - [Drop-in](https://docs.adyen.com/checkout/drop-in-web)
 - [Component](https://docs.adyen.com/checkout/components-web)
@@ -18,7 +18,7 @@ This repository includes examples of PCI-compliant UI integrations for online pa
   - Klarna (Pay now, Pay later, Slice it)
   - SOFORT
 
-Each demo leverages Adyen's API Library for .NET ([GitHub](https://github.com/Adyen/adyen-dotnet-api-library) | [Docs](https://docs.adyen.com/development-resources/libraries#csharp)).
+Each demo leverages Adyen's API Library for .NET ([GitHub](https://github.com/Adyen/adyen-dotnet-api-library) | [Docs](https://docs.adyen.com/development-resources/libraries#csharp)). Please make sure to [add the above payment methods to your Adyen account](https://docs.adyen.com/payment-methods#add-payment-methods-to-your-account) before testing!
 
 ## Requirements
 
@@ -32,14 +32,13 @@ Each demo leverages Adyen's API Library for .NET ([GitHub](https://github.com/Ad
 git clone https://github.com/adyen-examples/adyen-dotnet-online-payments.git
 ```
 
-## Usage
-
-1. Set the below environment variables in your terminal environment ([API key](https://docs.adyen.com/user-management/how-to-get-the-api-key), [Client Key](https://docs.adyen.com/user-management/client-side-authentication) - Remember to add `https://localhost:5001` as an origin for client key, and merchant account name, all credentials are in string format)
+2. Set the below environment variables in your terminal environment ([API key](https://docs.adyen.com/user-management/how-to-get-the-api-key), [Client Key](https://docs.adyen.com/user-management/client-side-authentication), [Merchant Account](https://docs.adyen.com/account/account-structure), [HMAC Key](https://docs.adyen.com/development-resources/webhooks/verify-hmac-signatures) - Remember to add `https://localhost:5001` as an origin for client key, and merchant account name, all credentials are in string format)
 
 ```shell
 export ADYEN_API_KEY=yourAdyenApiKey
 export ADYEN_MERCHANT_ACCOUNT=yourAdyenMerchantAccount
 export ADYEN_CLIENT_KEY=yourAdyenClientKey
+export ADYEN_HMAC_KEY=yourAdyenHmacKey
 ```
 
 On Windows CMD you can use below commands instead
@@ -48,15 +47,18 @@ On Windows CMD you can use below commands instead
 set ADYEN_API_KEY=yourAdyenApiKey
 set ADYEN_MERCHANT_ACCOUNT=yourAdyenMerchantAccount
 set ADYEN_CLIENT_KEY=yourAdyenClientKey
+set ADYEN_HMAC_KEY=yourAdyenHmacKey
 ```
 
-2. Start the server:
+## Usage
+
+1. Start the server:
 
 ```
 dotnet run
 ```
 
-3. Visit [https://localhost:5001/](https://localhost:5001/) to select an integration type.
+2. Visit [https://localhost:5001/](https://localhost:5001/) to select an integration type.
 
 To try out integrations with test card numbers and payment method details, see [Test card numbers](https://docs.adyen.com/development-resources/test-cards/test-card-numbers).
 
