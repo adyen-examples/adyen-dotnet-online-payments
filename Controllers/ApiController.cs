@@ -34,12 +34,13 @@ namespace adyen_dotnet_online_payments.Controllers
 
             var amount = new Amount("EUR", 1000); // value is 10€ in minor units
             sessionsRequest.amount = amount;
-            var orderRef = System.Guid.NewGuid();
+            var orderRef = Guid.NewGuid();
             sessionsRequest.reference = orderRef.ToString(); // required
 
             // required for 3ds2 redirect flow
             var request = _httpContext.Request;
             sessionsRequest.returnUrl = $"{request.Scheme}://{request.Host}/redirect?orderRef={orderRef}";
+
             try
             {
                 var res = _checkout.Sessions(sessionsRequest);

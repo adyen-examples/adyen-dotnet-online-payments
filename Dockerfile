@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
 
-ENV ASPNETCORE_URLS=http://+;https://+
+ENV ASPNETCORE_URLS=http://+8080;https://+44303
 ENV ASPNETCORE_HTTP_PORT=8080
 ENV ASPNETCORE_HTTPS_PORT=44303
 EXPOSE 8080
