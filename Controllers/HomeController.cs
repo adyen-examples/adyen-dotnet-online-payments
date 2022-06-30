@@ -15,31 +15,35 @@ namespace adyen_dotnet_online_payments.Controllers
             _client_key = Environment.GetEnvironmentVariable("ADYEN_CLIENT_KEY");
         }
 
+        [Route("/")]
         public IActionResult Index()
         {
             return View();
         }
 
+        [Route("preview/{id}")]
         public IActionResult Preview(string id)
         {
             ViewBag.PaymentMethod = id;
             return View();
         }
 
+        [Route("checkout/{id}")]
         public IActionResult Checkout(string id)
         {
             ViewBag.PaymentMethod = id;
             ViewBag.ClientKey = _client_key;
             return View();
         }
-        
+
+        [Route("redirect")]
         public IActionResult Redirect()
         {
             ViewBag.ClientKey = _client_key;
             return View();
         }
 
-        [HttpGet("Home/Result/{status}")]
+        [HttpGet("Home/result/{status}")]
         public IActionResult Result(string status, [FromQuery(Name = "reason")] string refusalReason)
         {
             string msg;
@@ -71,6 +75,7 @@ namespace adyen_dotnet_online_payments.Controllers
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        [Route("error")]
         public IActionResult Error()
         {
             return View();
