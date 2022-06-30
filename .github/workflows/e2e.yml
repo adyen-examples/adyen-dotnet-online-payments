@@ -2,8 +2,9 @@ name: E2E (Playwright)
 
 on:
   workflow_dispatch:
-  push:
     branches: [ add-e2e ]
+  push:
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 

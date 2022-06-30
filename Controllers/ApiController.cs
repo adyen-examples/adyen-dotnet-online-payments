@@ -22,7 +22,7 @@ namespace adyen_dotnet_online_payments.Controllers
             _httpContext = httpContextAccessor.HttpContext;
             var client = new Client(Environment.GetEnvironmentVariable("ADYEN_API_KEY"), Adyen.Model.Enum.Environment.Test); // Test Environment;
             _checkout = new Checkout(client);
-            _merchant_account = Environment.GetEnvironmentVariable("ADYEN_MERCHANT");
+            _merchant_account = Environment.GetEnvironmentVariable("ADYEN_MERCHANT_ACCOUNT");
         }
 
         [HttpPost("api/sessions")]
@@ -40,7 +40,6 @@ namespace adyen_dotnet_online_payments.Controllers
             // required for 3ds2 redirect flow
             var request = _httpContext.Request;
             sessionsRequest.returnUrl = $"{request.Scheme}://{request.Host}/redirect?orderRef={orderRef}";
-
             try
             {
                 var res = _checkout.Sessions(sessionsRequest);

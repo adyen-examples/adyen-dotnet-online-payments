@@ -26,11 +26,7 @@
     "Docker": {
       "commandName": "Docker",
       "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
-      "publishAllPorts": false,
-      "useSSL": true,
-      "httpPort": 5000,
-      "sslPort": 8080
+      "launchUrl": "http://localhost:8080;https://localhost:44303"
     }
   }
 }

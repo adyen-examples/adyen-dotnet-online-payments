@@ -38,7 +38,7 @@ git clone https://github.com/adyen-examples/adyen-dotnet-online-payments.git
 
 ```shell
 export ADYEN_API_KEY=yourAdyenApiKey
-export ADYEN_MERCHANT=yourAdyenMerchantAccount
+export ADYEN_MERCHANT_ACCOUNT=yourAdyenMerchantAccount
 export ADYEN_CLIENT_KEY=yourAdyenClientKey
 ```
 
@@ -46,7 +46,7 @@ On Windows CMD you can use below commands instead
 
 ```shell
 set ADYEN_API_KEY=yourAdyenApiKey
-set ADYEN_MERCHANT=yourAdyenMerchantAccount
+set ADYEN_MERCHANT_ACCOUNT=yourAdyenMerchantAccount
 set ADYEN_CLIENT_KEY=yourAdyenClientKey
 ```
 
