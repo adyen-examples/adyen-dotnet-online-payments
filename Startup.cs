@@ -23,7 +23,7 @@ namespace adyen_dotnet_online_payments
             services.AddControllers()
                 .AddNewtonsoftJson();
 
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddHttpContextAccessor();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
