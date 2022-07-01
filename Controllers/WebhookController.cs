@@ -1,8 +1,8 @@
-using System;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Adyen.Model.Notification;
 using Adyen.Util;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
 
 namespace adyen_dotnet_online_payments.Controllers
 {
