@@ -43,7 +43,7 @@ namespace adyen_dotnet_online_payments.Controllers
             return View();
         }
 
-        [HttpGet("Home/result/{status}")]
+        [HttpGet("result/{status}")]
         public IActionResult Result(string status, [FromQuery(Name = "reason")] string refusalReason)
         {
             string msg;

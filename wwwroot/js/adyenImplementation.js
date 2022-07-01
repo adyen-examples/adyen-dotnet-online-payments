@@ -47,7 +47,6 @@ async function createAdyenCheckout(session){
         card: {
           hasHolderName: true,
           holderNameRequired: true,
-          billingAddressRequired: true,
           name: "Credit or debit card",
           amount: {
             value: 1000,
@@ -93,17 +92,17 @@ async function callServer(url, data) {
 function handleServerResponse(res, _component) {
     switch (res.resultCode) {
       case "Authorised":
-        window.location.href = "/Home/result/success";
+        window.location.href = "/result/success";
         break;
       case "Pending":
       case "Received":
-        window.location.href = "/Home/result/pending";
+        window.location.href = "/result/pending";
         break;
       case "Refused":
-        window.location.href = "/Home/result/failed";
+        window.location.href = "/result/failed";
         break;
       default:
-        window.location.href = "/Home/result/error";
+        window.location.href = "/result/error";
         break;
     }
 }
