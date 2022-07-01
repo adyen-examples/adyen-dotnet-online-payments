@@ -1,10 +1,10 @@
-using System;
 using Adyen;
 using Adyen.Model.Checkout;
 using Adyen.Service;
-using Microsoft.AspNetCore.Http;
+using adyen_dotnet_online_payments.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace adyen_dotnet_online_payments.Controllers
 {
@@ -14,12 +14,12 @@ namespace adyen_dotnet_online_payments.Controllers
         private readonly Checkout _checkout;
         private readonly string _merchant_account;
         private readonly ILogger<ApiController> _logger;
-        private readonly HttpContext _httpContext;
+        private readonly IUrlService _urlService;
 
-        public ApiController(ILogger<ApiController> logger, IHttpContextAccessor httpContextAccessor)
+        public ApiController(ILogger<ApiController> logger, IUrlService urlService)
         {
             _logger = logger;
-            _httpContext = httpContextAccessor.HttpContext;
+            _urlService = urlService;
             var client = new Client(Environment.GetEnvironmentVariable("ADYEN_API_KEY"), Adyen.Model.Enum.Environment.Test); // Test Environment;
             _checkout = new Checkout(client);
             _merchant_account = Environment.GetEnvironmentVariable("ADYEN_MERCHANT_ACCOUNT");
@@ -38,8 +38,7 @@ namespace adyen_dotnet_online_payments.Controllers
             sessionsRequest.Reference = orderRef.ToString(); // required
 
             // required for 3ds2 redirect flow
-            var request = _httpContext.Request;
-            sessionsRequest.ReturnUrl = $"{request.Scheme}://{request.Host}/redirect?orderRef={orderRef}";
+            sessionsRequest.ReturnUrl = $"{_urlService.GetHostUrl()}/redirect?orderRef={orderRef}";
 
             try
             {
