@@ -29,16 +29,16 @@ namespace adyen_dotnet_online_payments.Controllers
         public ActionResult<string> Sessions()
         {
             var sessionsRequest = new CreateCheckoutSessionRequest();
-            sessionsRequest.merchantAccount = _merchant_account; // required
-            sessionsRequest.channel = (CreateCheckoutSessionRequest.ChannelEnum?) PaymentRequest.ChannelEnum.Web;
+            sessionsRequest.MerchantAccount = _merchant_account; // required
+            sessionsRequest.Channel = (CreateCheckoutSessionRequest.ChannelEnum?) PaymentRequest.ChannelEnum.Web;
 
             var amount = new Amount("EUR", 1000); // value is 10€ in minor units
-            sessionsRequest.amount = amount;
+            sessionsRequest.Amount = amount;
             var orderRef = Guid.NewGuid();
-            sessionsRequest.reference = orderRef.ToString(); // required
+            sessionsRequest.Reference = orderRef.ToString(); // required
 
             // required for 3ds2 redirect flow
-            sessionsRequest.returnUrl = $"{_urlService.GetHostUrl()}/redirect?orderRef={orderRef}";
+            sessionsRequest.ReturnUrl = $"{_urlService.GetHostUrl()}/redirect?orderRef={orderRef}";
 
             try
             {
