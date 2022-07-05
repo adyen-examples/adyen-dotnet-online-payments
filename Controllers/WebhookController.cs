@@ -1,7 +1,9 @@
 using Adyen.Model.Notification;
 using Adyen.Util;
+using adyen_dotnet_online_payments.Options;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 
 namespace adyen_dotnet_online_payments.Controllers
@@ -9,12 +11,13 @@ namespace adyen_dotnet_online_payments.Controllers
     [ApiController]
     public class WebhookController : ControllerBase
     {
-        private readonly string _hmac_key;
         private readonly ILogger<WebhookController> _logger;
-        public WebhookController(ILogger<WebhookController> logger)
+        private readonly string _hmacKey;
+        
+        public WebhookController(ILogger<WebhookController> logger, IOptions<AdyenOptions> options)
         {
             _logger = logger;
-            _hmac_key = Environment.GetEnvironmentVariable("ADYEN_HMAC_KEY");
+            _hmacKey = options.Value.ADYEN_HMAC_KEY;
         }
 
         [HttpPost("api/webhooks/notifications")]
@@ -29,7 +32,7 @@ namespace adyen_dotnet_online_payments.Controllers
                 // We recommend to activate HMAC validation in the webhooks for security reasons
                 try
                 {
-                    if (hmacValidator.IsValidHmac(container.NotificationItem, _hmac_key))
+                    if (hmacValidator.IsValidHmac(container.NotificationItem, _hmacKey))
                     {
                         _logger.LogInformation($"Received webhook with event::\n" +
                             $"Merchant Reference ::{container.NotificationItem.MerchantReference} \n" +
@@ -51,6 +54,5 @@ namespace adyen_dotnet_online_payments.Controllers
 
             return Ok("[accepted]");
         }
-        
     }
 }
