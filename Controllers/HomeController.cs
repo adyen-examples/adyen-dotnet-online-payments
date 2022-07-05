@@ -1,18 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
+using adyen_dotnet_online_payments.Options;
+using Microsoft.Extensions.Options;
 
 namespace adyen_dotnet_online_payments.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly string _client_key;
+        private readonly string _clientKey;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IOptions<AdyenOptions> options)
         {
-            _logger = logger;
-            _client_key = Environment.GetEnvironmentVariable("ADYEN_CLIENT_KEY");
+            _clientKey = options.Value.ADYEN_CLIENT_KEY;
         }
 
         [Route("/")]
@@ -32,14 +30,14 @@ namespace adyen_dotnet_online_payments.Controllers
         public IActionResult Checkout(string id)
         {
             ViewBag.PaymentMethod = id;
-            ViewBag.ClientKey = _client_key;
+            ViewBag.ClientKey = _clientKey;
             return View();
         }
 
         [Route("redirect")]
         public IActionResult Redirect()
         {
-            ViewBag.ClientKey = _client_key;
+            ViewBag.ClientKey = _clientKey;
             return View();
         }
 
