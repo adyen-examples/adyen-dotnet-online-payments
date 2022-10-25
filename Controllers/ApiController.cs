@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
 
 namespace adyen_dotnet_online_payments.Controllers
 {
@@ -34,14 +35,23 @@ namespace adyen_dotnet_online_payments.Controllers
             sessionsRequest.MerchantAccount = _merchantAccount; // required
             sessionsRequest.Channel = (CreateCheckoutSessionRequest.ChannelEnum?) PaymentRequest.ChannelEnum.Web;
 
-            var amount = new Amount("EUR", 1000); // value is 10€ in minor units
+            var amount = new Amount("EUR", 10000); // value is 100€ in minor units
             sessionsRequest.Amount = amount;
             var orderRef = Guid.NewGuid();
             sessionsRequest.Reference = orderRef.ToString(); // required
 
             // required for 3ds2 redirect flow
             sessionsRequest.ReturnUrl = $"{_urlService.GetHostUrl()}/redirect?orderRef={orderRef}";
-
+            
+            // used for klarna, klarna is not supported everywhere, hence why we've defaulted to countryCode "NL" as it supports the following payment methods below:
+            // "Pay now", "Pay later" and "Pay over time", see docs for more info: https://docs.adyen.com/payment-methods/klarna#supported-countries
+            sessionsRequest.CountryCode = "NL";
+            sessionsRequest.LineItems = new List<LineItem>()
+            {
+                new LineItem(quantity: 1, amountIncludingTax: 5000 , description: "Sunglasses"),
+                new LineItem(quantity: 1, amountIncludingTax: 5000, description: "Headphones")
+            };
+            
             try
             {
                 var res = _checkout.Sessions(sessionsRequest);
