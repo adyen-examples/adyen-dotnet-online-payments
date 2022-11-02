@@ -26,6 +26,20 @@ namespace adyen_dotnet_online_payments.Controllers
             return View();
         }
 
+        [Route("subscriptionpreview/{id}")]
+        public IActionResult SubscriptionPreview(string id)
+        {
+            ViewBag.PaymentMethod = id;
+            return View();
+        }
+
+        [Route("subscription")]
+        public IActionResult Subscription()
+        {
+            ViewBag.ClientKey = _clientKey;
+            return View();
+        }
+
         [Route("checkout/{id}")]
         public IActionResult Checkout(string id)
         {

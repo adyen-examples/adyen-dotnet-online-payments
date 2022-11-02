@@ -210,6 +210,13 @@ a:hover {
 
 /* end Index page */
 
+/* Subscription preview page*/
+.subscription {
+    text-align: center;
+    margin-top: 80px;
+}
+
+
 /* Cart preview page */
 
 .shopping-cart {
