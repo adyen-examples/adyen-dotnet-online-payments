@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>adyen_dotnet_online_payments</RootNamespace>
+    <RootNamespace>adyen_dotnet_subscription_example</RootNamespace>
     <UserSecretsId>c0bbdfe6-14b6-4a05-9f1f-013570465ba5</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>.</DockerfileContext>

@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace adyen_dotnet_checkout_example.Controllers
 {
@@ -29,11 +30,11 @@ namespace adyen_dotnet_checkout_example.Controllers
         }
 
         [HttpPost("api/sessions")]
-        public ActionResult<string> Sessions()
+        public async Task<ActionResult<string>> Sessions()
         {
             var sessionsRequest = new CreateCheckoutSessionRequest();
             sessionsRequest.MerchantAccount = _merchantAccount; // required
-            sessionsRequest.Channel = (CreateCheckoutSessionRequest.ChannelEnum?) PaymentRequest.ChannelEnum.Web;
+            sessionsRequest.Channel = CreateCheckoutSessionRequest.ChannelEnum.Web;
             var amount = new Amount("EUR", 10000); // value is 100€ in minor units
             sessionsRequest.Amount = amount;
             var orderRef = Guid.NewGuid();
@@ -53,7 +54,7 @@ namespace adyen_dotnet_checkout_example.Controllers
             
             try
             {
-                var res = _checkout.Sessions(sessionsRequest);
+                var res = await _checkout.SessionsAsync(sessionsRequest);
                 _logger.LogInformation($"Response for Payment API::\n{res}\n");
                 return res.ToJson();
             }

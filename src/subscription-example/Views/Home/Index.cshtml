@@ -1,10 +1,16 @@
 ﻿@{
-    ViewData["Title"] = "Adyen Checkout Home";
+    ViewData["Title"] = "Adyen Subscription Home";
 }
+
+<nav class="navMenu">
+  <a href="#">Home</a>
+  <a href="#">Manage Tokens</a>
+</nav>
+
 <div class='main-container'>
   <div class="info">
     <h1>Select a demo</h1>
-    <p>Click to view an interactive example of a PCI-compliant UI integration for subscriptions.</p>
+    <p>Click to explore the subscriptions demo. This demo shows how tokenization works and you can make a payment using the token.</p>
     <p>
       Make sure the payment method you want to use are enabled for your account.
       Refer <a href="https://docs.adyen.com/payment-methods#add-payment-methods-to-your-account">the documentation</a> to add missing
@@ -39,48 +45,6 @@
       <a asp-area="" asp-controller="Home" asp-action="Preview" asp-route-id="dotpay" class="integration-list-item-link">
         <div class="title-container">
           <p class="integration-list-item-title">Dotpay</p>
-        </div>
-      </a>
-    </li>
-    <li class="integration-list-item">
-      <a asp-area="" asp-controller="Home" asp-action="Preview" asp-route-id="giropay" class="integration-list-item-link">
-        <div class="title-container">
-          <p class="integration-list-item-title">giropay</p>
-        </div>
-      </a>
-    </li>
-    <li class="integration-list-item">
-      <a asp-area="" asp-controller="Home" asp-action="Preview" asp-route-id="directEbanking" class="integration-list-item-link">
-        <div class="title-container">
-          <p class="integration-list-item-title">SOFORT</p>
-        </div>
-      </a>
-    </li>
-    <li class="integration-list-item">
-      <a asp-area="" asp-controller="Home" asp-action="Preview" asp-route-id="ach" class="integration-list-item-link">
-        <div class="title-container">
-          <p class="integration-list-item-title">ACH</p>
-        </div>
-      </a>
-    </li>
-    <li class="integration-list-item">
-      <a asp-area="" asp-controller="Home" asp-action="Preview" asp-route-id="klarna_paynow" class="integration-list-item-link">
-        <div class="title-container">
-          <p class="integration-list-item-title">Klarna - Pay now</p>
-        </div>
-      </a>
-    </li>
-    <li class="integration-list-item">
-      <a asp-area="" asp-controller="Home" asp-action="Preview" asp-route-id="klarna_paylater" class="integration-list-item-link">
-        <div class="title-container">
-          <p class="integration-list-item-title">Klarna - Pay later</p>
-        </div>
-      </a>
-    </li>
-    <li class="integration-list-item">
-      <a asp-area="" asp-controller="Home" asp-action="Preview" asp-route-id="klarna_sliceit" class="integration-list-item-link">
-        <div class="title-container">
-          <p class="integration-list-item-title">Klarna - Slice it</p>
         </div>
       </a>
     </li>

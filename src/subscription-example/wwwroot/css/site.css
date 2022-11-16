@@ -13,7 +13,11 @@ body {
   box-sizing: border-box;
 }
 
-a,
+a {
+  text-decoration: none;
+  color: #0abf53;
+}
+
 u {
   text-decoration: none;
 }
@@ -426,3 +430,31 @@ a:hover {
 }
 
 /* end Status page */
+
+/* start Navigation bar menu */
+
+.navMenu {
+  position: relative;
+  top: 0;
+  bottom: 0;
+}
+
+.navMenu a {
+  text-align: center;
+  padding: 68px 32px;
+  color: #0abf53;
+  text-decoration: none;
+  font-size: 1.2em;
+  text-transform: uppercase;
+  font-weight: bold;
+  display: inline-block;
+  width: 240px;
+  -webkit-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+
+.navMenu a:hover {
+  color: #00112c;
+}
+
+/* end Navigation bar menu */
