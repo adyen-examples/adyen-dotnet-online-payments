@@ -1,4 +1,4 @@
-﻿using adyen_dotnet_subscription_example.Services;
+﻿using adyen_dotnet_subscription_example.Clients;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
@@ -10,7 +10,6 @@ namespace adyen_dotnet_subscription_example.Controllers
     {
         private readonly ILogger<RecurringController> _logger;
         private readonly IRecurringClient _subscriptionService;
-        private readonly string _shopperReference = "YOUR_UNIQUE_SHOPPER_ID_IOfW3k9G2PvXFu2X"; // It's a unique reference that the merchant uses to uniquely identify the shopper.
 
         public RecurringController(ILogger<RecurringController> logger, IRecurringClient subscriptionService)
         {
@@ -21,14 +20,14 @@ namespace adyen_dotnet_subscription_example.Controllers
         [HttpGet("recurring/listRecurringDetails")]
         public async Task<ActionResult<string>> ListRecurringDetailsAsync()
         {
-            var result = await _subscriptionService.ListRecurringDetailAsync(_shopperReference);
+            var result = await _subscriptionService.ListRecurringDetailAsync(ShopperReference.Value);
             return result.ToJson();
         }
 
         [Route("recurring/disable/{recurringDetailReference}")]
         public async Task<ActionResult<string>> DisableStoredPaymentMethodAsync(string recurringDetailReference)
         {
-            var result = await _subscriptionService.DisableRecurringDetailAsync(_shopperReference, recurringDetailReference);
+            var result = await _subscriptionService.DisableRecurringDetailAsync(ShopperReference.Value, recurringDetailReference);
             return result.Response;
         }
     }

@@ -3,8 +3,8 @@
 }
 
 <nav class="navMenu">
-  <a href="#">Home</a>
-  <a href="#">Manage Tokens</a>
+  <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+  <a asp-area="" asp-controller="ManageTokens" asp-action="Index">Manage Tokens</a>
 </nav>
 
 <div class='main-container'>
@@ -16,7 +16,7 @@
       Refer <a href="https://docs.adyen.com/payment-methods#add-payment-methods-to-your-account">the documentation</a> to add missing
       payment methods.
     </p>
-    <p>To learn more, check out <a href="https://docs.adyen.com/online-payments/tokenization"> tokenization.</a></p>
+    <p>To learn more, check out the documentation about <a href="https://docs.adyen.com/online-payments/tokenization"> tokenization.</a></p>
   </div>
 
   <ul class="integration-list">
@@ -38,13 +38,6 @@
       <a asp-area="" asp-controller="Home" asp-action="Preview" asp-route-id="ideal" class="integration-list-item-link">
         <div class="title-container">
           <p class="integration-list-item-title">iDEAL</p>
-        </div>
-      </a>
-    </li>
-    <li class="integration-list-item">
-      <a asp-area="" asp-controller="Home" asp-action="Preview" asp-route-id="dotpay" class="integration-list-item-link">
-        <div class="title-container">
-          <p class="integration-list-item-title">Dotpay</p>
         </div>
       </a>
     </li>

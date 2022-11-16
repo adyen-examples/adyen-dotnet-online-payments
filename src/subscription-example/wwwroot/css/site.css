@@ -441,14 +441,14 @@ a:hover {
 
 .navMenu a {
   text-align: center;
-  padding: 68px 32px;
+  padding: 64px 64px;
+  border-block: double;
   color: #0abf53;
   text-decoration: none;
   font-size: 1.2em;
   text-transform: uppercase;
   font-weight: bold;
   display: inline-block;
-  width: 240px;
   -webkit-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
 }

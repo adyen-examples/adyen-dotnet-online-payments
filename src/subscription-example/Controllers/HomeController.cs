@@ -1,5 +1,4 @@
 ﻿using adyen_dotnet_subscription_example.Options;
-using adyen_dotnet_subscription_example.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -8,12 +7,10 @@ namespace adyen_dotnet_subscription_example.Controllers
     public class HomeController : Controller
     {
         private readonly string _clientKey;
-        private readonly IRecurringClient _subscriptionService;
 
-        public HomeController(IOptions<AdyenOptions> options, IRecurringClient subscriptionService)
+        public HomeController(IOptions<AdyenOptions> options)
         {
             _clientKey = options.Value.ADYEN_CLIENT_KEY;
-            _subscriptionService = subscriptionService;
         }
 
         [Route("/")]
@@ -34,14 +31,6 @@ namespace adyen_dotnet_subscription_example.Controllers
         {
             ViewBag.PaymentMethod = id;
             ViewBag.ClientKey = _clientKey;
-            return View();
-        }
-
-
-        [Route("managetokens")]
-        public IActionResult ManageTokens()
-        {
-            // TODO;
             return View();
         }
 

@@ -1,6 +1,7 @@
 using Adyen;
 using Adyen.Model.Enum;
 using Adyen.Service;
+using adyen_dotnet_subscription_example.Clients;
 using adyen_dotnet_subscription_example.Options;
 using adyen_dotnet_subscription_example.Services;
 using Microsoft.AspNetCore.Builder;

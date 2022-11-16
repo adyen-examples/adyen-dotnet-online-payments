@@ -1,4 +1,4 @@
-﻿using adyen_dotnet_subscription_example.Services;
+﻿using adyen_dotnet_subscription_example.Clients;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;

@@ -13,7 +13,7 @@ namespace adyen_dotnet_subscription_example.Clients
         /// <summary>
         /// Disables the <paramref name="recurringDetailReference"/> (token) for the given <paramref name="shopperReference"/>.
         /// </summary>
-        /// <param name="shopperReference">The unique shopper reference (usually a GUID to uniquely identify your shopper).</param>
+        /// <param name="shopperReference">The unique shopper reference (usually a GUID to identify your shopper).</param>
         /// <param name="recurringDetailReference">The <paramref name="recurringDetailReference"/> token that is retrieved from <see cref="Controllers.WebhookController.Webhooks"/>.</param>
         /// <param name="cancellationToken"><see cref="CancellationToken"/></param>
         /// <returns></returns>
@@ -22,7 +22,7 @@ namespace adyen_dotnet_subscription_example.Clients
         /// <summary>
         /// Lists all recurring details given a <paramref name="shopperReference"/>.
         /// </summary>
-        /// <param name="shopperReference">The unique shopper reference (usually a GUID to uniquely identify your shopper).</param>
+        /// <param name="shopperReference">The unique shopper reference (usually a GUID to identify your shopper).</param>
         /// <param name="cancellationToken"><see cref="CancellationToken"/></param>
         /// <returns><see cref="RecurringDetailsResult"/></returns>
         Task<RecurringDetailsResult> ListRecurringDetailAsync(string shopperReference, CancellationToken cancellationToken = default);
