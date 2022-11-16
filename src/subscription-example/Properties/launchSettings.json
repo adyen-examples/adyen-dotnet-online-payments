@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "adyen_dotnet_online_payments": {
+    "adyen_dotnet_subscription_example": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
