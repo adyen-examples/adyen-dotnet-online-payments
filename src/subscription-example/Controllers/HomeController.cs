@@ -49,11 +49,11 @@ namespace adyen_dotnet_subscription_example.Controllers
             switch (status)
             {
                 case "pending":
-                    msg = "Your order has been received! Payment completion pending.";
+                    msg = "Your subscription has been received! Payment completion pending.";
                     img = "success";
                     break;
                 case "failed":
-                    msg = "The payment was refused. Please try a different payment method or card.";
+                    msg = "The subscription was refused. Please try a different payment method or card.";
                     img = "failed";
                     break;
                 case "error":
@@ -61,7 +61,7 @@ namespace adyen_dotnet_subscription_example.Controllers
                     img = "failed";
                     break;
                 default:
-                    msg = "Your order has been successfully placed.";
+                    msg = "Your subscription has been successfully confirmed.";
                     img = "success";
                     break;
             }

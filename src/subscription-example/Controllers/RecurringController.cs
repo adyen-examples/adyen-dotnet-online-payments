@@ -1,6 +1,5 @@
 ﻿using adyen_dotnet_subscription_example.Clients;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace adyen_dotnet_subscription_example.Controllers
@@ -8,12 +7,10 @@ namespace adyen_dotnet_subscription_example.Controllers
     [ApiController]
     public class RecurringController : ControllerBase
     {
-        private readonly ILogger<RecurringController> _logger;
         private readonly IRecurringClient _subscriptionService;
 
-        public RecurringController(ILogger<RecurringController> logger, IRecurringClient subscriptionService)
+        public RecurringController(IRecurringClient subscriptionService)
         {
-            _logger = logger;
             _subscriptionService = subscriptionService;
         }
 

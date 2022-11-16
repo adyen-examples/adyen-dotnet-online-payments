@@ -88,7 +88,7 @@ async function callServer(url, data) {
 }
 
 function handleServerResponse(res, _component) {
-    /*switch (res.resultCode) {
+    switch (res.resultCode) {
         case "Authorised":
             window.location.href = "/result/success";
             break;
@@ -102,8 +102,7 @@ function handleServerResponse(res, _component) {
         default:
             window.location.href = "/result/error";
             break;
-    }*/
-    console.warn(res);
+    }
 }
 
 if (!sessionId) { startTokenization() } else { finalizeTokenization(); }
