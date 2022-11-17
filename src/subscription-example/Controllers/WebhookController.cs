@@ -1,6 +1,7 @@
 using Adyen.Model.Notification;
 using Adyen.Util;
 using adyen_dotnet_subscription_example.Options;
+using adyen_dotnet_subscription_example.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -12,11 +13,13 @@ namespace adyen_dotnet_subscription_example.Controllers
     public class WebhookController : ControllerBase
     {
         private readonly ILogger<WebhookController> _logger;
+        private readonly ISubscriptionRepository _repository;
         private readonly string _hmacKey;
         
-        public WebhookController(ILogger<WebhookController> logger, IOptions<AdyenOptions> options)
+        public WebhookController(ILogger<WebhookController> logger, IOptions<AdyenOptions> options, ISubscriptionRepository repository)
         {
             _logger = logger;
+            _repository = repository;
             _hmacKey = options.Value.ADYEN_HMAC_KEY;
         }
 
@@ -39,15 +42,15 @@ namespace adyen_dotnet_subscription_example.Controllers
                         return BadRequest("[not accepted invalid hmac key]");
                     }
 
-
-                    if (container.NotificationItem.AdditionalData.TryGetValue("recurring.recurringDetailReference", out string token))
+                    /// Get the recurringDetailReference and shopperReference from the additionalData property in the webhook.
+                    /// We store it, so that we can make payment requests (at set intervals) on behalf of the shopper in the future.
+                    if (container.NotificationItem.AdditionalData.TryGetValue("recurring.recurringDetailReference", out string recurringDetailReference))
                     {
-
-                    }
-
-                    if (container.NotificationItem.AdditionalData.TryGetValue("recurring.shopperReference", out string shopperReference))
-                    {
-
+                        if (container.NotificationItem.AdditionalData.TryGetValue("recurring.shopperReference", out string shopperReference))
+                        {
+                            _logger.LogInformation($"Received recurringDetailReference:: {recurringDetailReference} for {shopperReference}");
+                            _repository.Upsert(shopperReference, recurringDetailReference);
+                        }
                     }
 
                     _logger.LogInformation($"Received webhook with event::\n" +

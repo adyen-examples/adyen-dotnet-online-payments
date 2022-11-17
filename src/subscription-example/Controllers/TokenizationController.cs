@@ -16,17 +16,6 @@ namespace adyen_dotnet_subscription_example.Controllers
         }
 
         /// <summary>
-        /// This method makes a Merchant Initiated Transaction (MIT) using the stored <paramref name="recurringDetailReference"/>.
-        /// </summary>
-        /// <param name="recurringDetailReference">The token.</param>
-        [Route("tokenization/payment")]
-        public async Task<ActionResult<string>> MakePaymentAsync(string recurringDetailReference)
-        {
-            var result = await _checkoutService.MakePaymentAsync(_shopperReference, recurringDetailReference);
-            return result.ToJson();
-        }
-
-        /// <summary>
         /// This method creates a token using the /sessions endpoint.
         /// </summary>
         [HttpPost("tokenization/sessions")]

@@ -3,6 +3,7 @@ using Adyen.Model.Enum;
 using Adyen.Service;
 using adyen_dotnet_subscription_example.Clients;
 using adyen_dotnet_subscription_example.Options;
+using adyen_dotnet_subscription_example.Repositories;
 using adyen_dotnet_subscription_example.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -45,6 +46,7 @@ namespace adyen_dotnet_subscription_example
             services.AddSingleton<Recurring>();
             services.AddSingleton<IRecurringClient, RecurringClient>();
             services.AddSingleton<ICheckoutClient, CheckoutClient>();
+            services.AddSingleton<ISubscriptionRepository, SubscriptionRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

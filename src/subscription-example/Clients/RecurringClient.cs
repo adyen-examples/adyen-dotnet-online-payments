@@ -1,5 +1,6 @@
 ﻿using Adyen.Model.Recurring;
 using adyen_dotnet_subscription_example.Options;
+using adyen_dotnet_subscription_example.Repositories;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Threading;
@@ -33,11 +34,13 @@ namespace adyen_dotnet_subscription_example.Clients
         private readonly ILogger<RecurringClient> _logger;
         private readonly string _merchantAccount;
         private readonly Recurring _recurring;
+        private readonly ISubscriptionRepository _repository;
 
-        public RecurringClient(ILogger<RecurringClient> logger, Recurring recurring, IOptions<AdyenOptions> options)
+        public RecurringClient(ILogger<RecurringClient> logger, Recurring recurring, ISubscriptionRepository repository, IOptions<AdyenOptions> options)
         {
             _logger = logger;
             _recurring = recurring;
+            _repository = repository;
             _merchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT;
         }
 
@@ -76,6 +79,8 @@ namespace adyen_dotnet_subscription_example.Clients
             try
             {
                 var disableResult = await _recurring.DisableAsync(request);
+                _repository.Remove(shopperReference, recurringDetailReference);
+
                 _logger.LogInformation($"Response for Recurring API::\n{disableResult}\n");
                 return disableResult;
             }

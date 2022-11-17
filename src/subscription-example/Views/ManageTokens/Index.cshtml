@@ -1,7 +1,7 @@
 ﻿@using Adyen.Model.Recurring;
 @{
     ViewData["Title"] = "Adyen Subscription Manage Tokens";
-    RecurringDetailsResult recurringDetails = ViewBag.Details;
+    List<RecurringDetailsResult> recurringDetails = ViewBag.Details;
 }
 
 <nav class="navMenu">
@@ -9,39 +9,50 @@
   <a asp-area="" asp-controller="ManageTokens" asp-action="Index">Manage Tokens</a>
 </nav>
 
+
 <div class='main-container'>
   <div class="info">
     <h1>Select a token</h1>
     <p>Select a token and initiate a payment for that shopper or disable the token. To learn more, check out the documentation about <a href="https://docs.adyen.com/online-payments/tokenization"> tokenization.</a></p>
-  </div>
+    <div>
+        <p class="status-message">@ViewBag.Message</p>
+    </div>
+</div>
 
 @{
-    if (recurringDetails?.Details == null)
+    if (!recurringDetails.Any())
     {
         <p><b>No RecurringDetail references (tokens) are stored.</b></p>
     }
     else
     {
-        <ul class="integration-list">
-            @foreach(var detail in recurringDetails?.Details)
+        foreach(var detail in recurringDetails)
+        {
+            <ul class="integration-list">
+            @if (detail.Details != null)
             {
-                <li class="integration-list-item">@detail.RecurringDetail.ToJson()</li>
-                <li class="integration-list-item">
-                    <a asp-area="" asp-controller="ManageTokens" asp-action="MakePayment" asp-route-id="@detail.RecurringDetail.RecurringDetailReference" class="integration-list-item-link">
-                        <div class="title-container">
-                            <p class="integration-list-item-title">Make Payment</p>
-                        </div>
-                    </a>     
-                </li>
-                <li class="integration-list-item">
-                    <a asp-area="" asp-controller="ManageTokens" asp-action="Disable" asp-route-id="@detail.RecurringDetail.RecurringDetailReference" class="integration-list-item-link">
-                        <div class="title-container">
-                            <p class="integration-list-item-title">Disable</p>
-                        </div>
-                    </a>     
-                </li>
+                foreach(var info in detail.Details)
+                {
+                    <li>@info.RecurringDetail.ToJson()</li>
+                    <li>@info.RecurringDetail.PaymentMethodVariant @info.RecurringDetail.RecurringDetailReference</li>
+                    <li class="integration-list-item">
+                                <a asp-area="" asp-controller="ManageTokens" asp-action="MakePayment" asp-route-id="@info.RecurringDetail.RecurringDetailReference" class="integration-list-item-link">
+                            <div class="title-container">
+                                <p class="integration-list-item-title">Make Payment</p>
+                            </div>
+                        </a>     
+                    </li>
+                    <li class="integration-list-item">
+                        <a asp-area="" asp-controller="ManageTokens" asp-action="Disable" asp-route-id="@info.RecurringDetail.RecurringDetailReference" class="integration-list-item-link">
+                            <div class="title-container">
+                                <p class="integration-list-item-title">Disable</p>
+                            </div>
+                        </a>     
+                    </li>
+                }
             }
-        </ul>
+            </ul>
+        }
     }
 }
 </div>
