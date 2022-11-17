@@ -28,6 +28,8 @@ namespace adyen_dotnet_subscription_example.Controllers
         public async Task<IActionResult> Index()
         {
             var details = new List<RecurringDetailsResult>();
+
+            // We fetch all shopperReferences that we have stored in our (local) repository and show it.
             foreach (var shopperReference in _repository.ShopperReferences)
             {
                 details.Add(await _recurringClient.ListRecurringDetailAsync(shopperReference.Key));
