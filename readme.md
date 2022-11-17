@@ -4,13 +4,13 @@
 
 This repository includes a collection of examples:
 
-* Checkout examples - Use different payment methods to make a payment request.
-* Subscription example - Tokenize and initiate a payment request using the token.
+- Checkout examples - Use different payment methods to make a payment request.
+- Subscription example - Tokenize and initiate a payment request using the token.
 
 ## Requirements
 
-.NET Core SDK 6.x
-A set of [API keys](https://docs.adyen.com/user-management/how-to-get-the-api-key).
+- .NET Core SDK 6.x
+- A set of [API keys](https://docs.adyen.com/user-management/how-to-get-the-api-key).
 
 ## Contributing
 
