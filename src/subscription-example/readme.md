@@ -13,7 +13,7 @@ _NOTE: To allow the Adyen Drop-In and Components to load, you have to add `https
 
 ## Details
 
-This repository includes an example of a billing service. Within this demo app, you will learn about tokenization and making recurring payments with the generated token (recurringDetailReference). The backend will handle the tokenization and webhooks respectively. 
+This repository includes an subscription example. Within this demo app, you'll find a simplified version of a website that offers a subscription service. You'll learn about tokenization and making recurring payments using this token (recurringDetailReference). 
 
 ## Supported Integrations
 
