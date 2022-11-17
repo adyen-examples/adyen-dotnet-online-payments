@@ -5,6 +5,7 @@ using adyen_dotnet_subscription_example.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -65,7 +66,7 @@ namespace adyen_dotnet_subscription_example.Clients
             sessionsRequest.ShopperReference = shopperReference;
 
             // required for 3ds2 redirect flow
-            sessionsRequest.ReturnUrl = $"{_urlService.GetHostUrl()}/redirect?orderRef={orderRef}";
+            sessionsRequest.ReturnUrl = $"{_urlService.GetHostUrl()}/managetokens/redirect?orderRef={orderRef}";
 
             try
             {
@@ -83,7 +84,7 @@ namespace adyen_dotnet_subscription_example.Clients
         /// <inheritdoc/>
         public async Task<PaymentResponse> MakePaymentAsync(string shopperReference, string recurringDetailReference, CancellationToken cancellationToken)
         {
-            var amount = new Amount("USD", 10000);
+            var amount = new Amount("EUR", 10000);
             var details = new DefaultPaymentMethodDetails
             {
                 StoredPaymentMethodId = recurringDetailReference

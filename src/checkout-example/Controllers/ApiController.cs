@@ -61,7 +61,7 @@ namespace adyen_dotnet_checkout_example.Controllers
             catch (Adyen.HttpClient.HttpClientException e)
             {
                 _logger.LogError($"Request for Payments failed::\n{e.ResponseBody}\n");
-                throw e;
+                throw;
             }
         }
     }

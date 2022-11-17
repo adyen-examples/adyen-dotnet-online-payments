@@ -1,7 +1,8 @@
 ﻿@using Adyen.Model.Recurring;
+@using adyen_dotnet_subscription_example.Models;
 @{
     ViewData["Title"] = "Adyen Subscription Manage Tokens";
-    List<RecurringDetailsResult> recurringDetails = ViewBag.Details;
+    List<SubscribedCustomer> recurringDetails = ViewBag.Details;
 }
 
 <nav class="navMenu">
@@ -29,21 +30,20 @@
         foreach(var detail in recurringDetails)
         {
             <ul class="integration-list">
-            @if (detail.Details != null)
+            @if (detail.SubscribedCustomerDetails != null)
             {
-                foreach(var info in detail.Details)
+                foreach(var info in detail.SubscribedCustomerDetails)
                 {
-                    <li>@info.RecurringDetail.ToJson()</li>
-                    <li>@info.RecurringDetail.PaymentMethodVariant @info.RecurringDetail.RecurringDetailReference</li>
+                    <li><div class="title-container"><b>PspReference:</b> @info.PspReference     <b>RecurringDetailReference:</b> @info.RecurringDetailReference</div></li>
                     <li class="integration-list-item">
-                                <a asp-area="" asp-controller="ManageTokens" asp-action="MakePayment" asp-route-id="@info.RecurringDetail.RecurringDetailReference" class="integration-list-item-link">
+                        <a asp-area="" asp-controller="ManageTokens" asp-action="MakePayment" asp-route-id="@info.RecurringDetailReference" class="integration-list-item-link">
                             <div class="title-container">
                                 <p class="integration-list-item-title">Make Payment</p>
                             </div>
                         </a>     
                     </li>
                     <li class="integration-list-item">
-                        <a asp-area="" asp-controller="ManageTokens" asp-action="Disable" asp-route-id="@info.RecurringDetail.RecurringDetailReference" class="integration-list-item-link">
+                        <a asp-area="" asp-controller="ManageTokens" asp-action="Disable" asp-route-id="@info.RecurringDetailReference" class="integration-list-item-link">
                             <div class="title-container">
                                 <p class="integration-list-item-title">Disable</p>
                             </div>

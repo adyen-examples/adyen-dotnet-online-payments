@@ -26,7 +26,22 @@ namespace adyen_dotnet_subscription_example.Services
         /// <inheritdoc/>
         public string GetHostUrl()
         {
-            return _httpContextAccessor.HttpContext.Request.Headers["Origin"].FirstOrDefault();
+            return GetForwardedHostUrl() ?? _httpContextAccessor.HttpContext.Request.Headers["Origin"].FirstOrDefault();
+        }
+
+        /// <summary>
+        /// If the request was forwarded (due to f.e. port tunneling), build the url and return the forwarded host url instead.
+        /// </summary>
+        /// <returns>The forwarded host url.</returns>
+        private string GetForwardedHostUrl()
+        {
+            string forwardedHost = _httpContextAccessor.HttpContext.Request.Headers["x-forwarded-host"].FirstOrDefault();
+
+            if (forwardedHost == null)
+                return null;
+
+            string forwardedScheme = _httpContextAccessor.HttpContext.Request.Headers["x-forwarded-scheme"].FirstOrDefault();
+            return $"{forwardedScheme.Replace('{', ' ').Replace('}', ' ')}://{forwardedHost}";
         }
     }
 }

@@ -16,6 +16,18 @@
       },
       "applicationUrl": "https://localhost:5001;http://localhost:8080"
     },
+    "adyen_dotnet_checkout_example_port_tunneling": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:5001;http://localhost:8080",
+      // The following two properties enable dev port tunneling in visual studio 17.3+ or higher (used to test your webhooks).
+      // See: https://devblogs.microsoft.com/visualstudio/introducing-private-preview-port-tunneling-visual-studio-for-asp-net-core-projects/
+      "devTunnelEnabled": true,
+      "devTunnelAccess": "public"
+    },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,

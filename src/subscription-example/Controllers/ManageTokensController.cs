@@ -1,5 +1,6 @@
 ﻿using Adyen.Model.Recurring;
 using adyen_dotnet_subscription_example.Clients;
+using adyen_dotnet_subscription_example.Models;
 using adyen_dotnet_subscription_example.Options;
 using adyen_dotnet_subscription_example.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -25,16 +26,23 @@ namespace adyen_dotnet_subscription_example.Controllers
         }
 
         [Route("managetokens")]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var details = new List<RecurringDetailsResult>();
+            var details = new List<SubscribedCustomer>();
 
             // We fetch all shopperReferences that we have stored in our (local) repository and show it.
-            foreach (var shopperReference in _repository.ShopperReferences)
+            foreach (var kvp in _repository.SubscribedCustomers)
             {
-                details.Add(await _recurringClient.ListRecurringDetailAsync(shopperReference.Key));
+                details.Add(kvp.Value);
             }
             ViewBag.Details = details;
+            return View();
+        }
+
+        [Route("managetokens/redirect")]
+        public IActionResult Redirect()
+        {
+            ViewBag.ClientKey = _clientKey;
             return View();
         }
 
@@ -43,7 +51,7 @@ namespace adyen_dotnet_subscription_example.Controllers
         {
             var details = await _checkoutClient.MakePaymentAsync(ShopperReference.Value, recurringDetailReference);
             ViewBag.Message = $"Made a payment using {recurringDetailReference}";
-            return Redirect("/managetokens");
+            return View("Index");
         }
 
         [Route("managetokens/disable/{recurringDetailReference}")]
@@ -51,7 +59,8 @@ namespace adyen_dotnet_subscription_example.Controllers
         {
             var details = await _recurringClient.DisableRecurringDetailAsync(ShopperReference.Value, recurringDetailReference);
             ViewBag.Message = $"Removed {recurringDetailReference}";
-            return Redirect("/managetokens");
+            return View("Index");
         }
+
     }
 }

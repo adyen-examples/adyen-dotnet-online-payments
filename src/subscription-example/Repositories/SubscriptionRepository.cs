@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using adyen_dotnet_subscription_example.Models;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace adyen_dotnet_subscription_example.Repositories
@@ -8,58 +9,91 @@ namespace adyen_dotnet_subscription_example.Repositories
     /// These can be used to make future payment requests.
     /// </summary>
     public interface ISubscriptionRepository
-    {
-        Dictionary<string, List<string>> ShopperReferences { get; }
+    {        
+        /// <summary>
+        /// List of all customers that have bought a subscription using one or more payment methods.
+        /// This repository is populated when we confirm a valid webhook containing the <see cref="recurringDetailReference"/> payload, see <see cref="Controllers.WebhookController"/>.
+        /// </summary>
+        Dictionary<string, SubscribedCustomer> SubscribedCustomers { get; }
 
         bool Remove(string shopperReference, string recurringDetailReference);
 
-        bool Upsert(string shopperReference, string recurringDetailReference);
+        bool Upsert(string pspReference, string shopperReference, string recurringDetailReference);
     }
 
     public class SubscriptionRepository : ISubscriptionRepository
     {
-        public Dictionary<string, List<string>> ShopperReferences { get; }
+        /// <inheritdoc/>
+        public Dictionary<string, SubscribedCustomer> SubscribedCustomers { get; }
 
         public SubscriptionRepository()
         {
-            ShopperReferences = new Dictionary<string, List<string>>();
+            SubscribedCustomers = new Dictionary<string, SubscribedCustomer>();
         }
 
+        /// <inheritdoc/>
         public bool Remove(string shopperReference, string recurringDetailReference)
         {
-            if (!ShopperReferences.TryGetValue(shopperReference, out List<string> list))
+            if (!SubscribedCustomers.TryGetValue(shopperReference, out SubscribedCustomer customer))
             {
-                return false; // No ShopperReference found.
+                return false; // No Shopper found.
             }
 
-            bool isSuccess = list.Remove(recurringDetailReference);
+            SubscribedCustomerDetails existingCustomerDetails = customer.SubscribedCustomerDetails.FirstOrDefault(x => x.RecurringDetailReference == recurringDetailReference);
+
+            if (existingCustomerDetails == null)
+            {
+                return false;
+            }
+
+            bool isSuccess = customer.SubscribedCustomerDetails.Remove(existingCustomerDetails);
 
             // If a shopperReference has no recurringDetailReferences left, remove the shopperReference.
-            if (!list.Any())
+            if (!customer.SubscribedCustomerDetails.Any())
             {
-                ShopperReferences.Remove(shopperReference);
+                SubscribedCustomers.Remove(shopperReference);
             }
             return isSuccess;
         }
 
-        public bool Upsert(string shopperReference, string recurringDetailReference)
+        /// <inheritdoc/>
+        public bool Upsert(string pspReference, string shopperReference, string recurringDetailReference)
         {
-            if (!ShopperReferences.ContainsKey(shopperReference))
+            // New customer: add the shopper reference and the recurringDetailReference.
+            if (!SubscribedCustomers.ContainsKey(shopperReference))
             {
-                // New shopper reference, add the shopper reference and the recurringDetailReference.
-                ShopperReferences.Add(shopperReference, new List<string> { recurringDetailReference });
+                SubscribedCustomers.Add(shopperReference,
+                    new SubscribedCustomer()
+                    {
+                        ShopperReference = shopperReference,
+                        SubscribedCustomerDetails = new List<SubscribedCustomerDetails>()
+                        {
+                            new SubscribedCustomerDetails()
+                            {
+                                RecurringDetailReference = recurringDetailReference,
+                                PspReference = pspReference
+                            }
+                        }
+                    });
                 return true;
             }
 
-            string existingToken = ShopperReferences[recurringDetailReference].FirstOrDefault(token => token == recurringDetailReference);
-            if (existingToken == null)
+            // Existing customer:
+            SubscribedCustomerDetails existingCustomerDetails = SubscribedCustomers[shopperReference].SubscribedCustomerDetails.FirstOrDefault(x => x.RecurringDetailReference == recurringDetailReference);
+
+            // Add token (recurringDetailReference) to their list of payment methods.
+            if (existingCustomerDetails != null)
             {
-                // Shopper added a new payment method and tokenized it. Append the recurringDetailReference to the existing list of keys.
-                ShopperReferences[recurringDetailReference].Add(recurringDetailReference);
+                SubscribedCustomers[shopperReference].SubscribedCustomerDetails.Add(
+                    new SubscribedCustomerDetails()
+                    {
+                        RecurringDetailReference = recurringDetailReference,
+                        PspReference = pspReference
+                    });
                 return true;
             }
 
-            // Token was already added don't do anything.
+            // Token was already added before, update existing details
             return false;
         }
     }
