@@ -54,7 +54,7 @@ namespace adyen_dotnet_subscription_example.Clients
             var sessionsRequest = new CreateCheckoutSessionRequest();
             sessionsRequest.MerchantAccount = _merchantAccount;
 
-            var amount = new Amount("EUR", 10000); 
+            var amount = new Amount("EUR", 0); 
             sessionsRequest.Amount = amount;
             sessionsRequest.Reference = orderRef.ToString();
 
