@@ -21,7 +21,7 @@ namespace adyen_dotnet_subscription_example.Controllers
         {
             _logger = logger;
             _repository = repository;
-            _hmacKey = options.Value.ADYEN_HMAC_KEY2;
+            _hmacKey = options.Value.ADYEN_HMAC_KEY;
         }
 
         [HttpPost("api/webhooks/notifications")]

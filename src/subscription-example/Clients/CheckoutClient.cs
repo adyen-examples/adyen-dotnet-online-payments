@@ -43,7 +43,7 @@ namespace adyen_dotnet_subscription_example.Clients
             _logger = logger;
             _checkout = checkout;
             _urlService = urlService;
-            _merchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT2;
+            _merchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT;
         }
 
         /// <inheritdoc/>

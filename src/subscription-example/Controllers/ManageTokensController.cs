@@ -20,7 +20,7 @@ namespace adyen_dotnet_subscription_example.Controllers
 
         public ManageTokensController(IOptions<AdyenOptions> options, IRecurringClient recurringClient, ICheckoutClient checkoutClient, ISubscriptionRepository repository)
         {
-            _clientKey = options.Value.ADYEN_CLIENT_KEY2;
+            _clientKey = options.Value.ADYEN_CLIENT_KEY;
             _recurringClient = recurringClient;
             _checkoutClient = checkoutClient;
             _repository = repository;

@@ -10,7 +10,7 @@ namespace adyen_dotnet_subscription_example.Controllers
 
         public HomeController(IOptions<AdyenOptions> options)
         {
-            _clientKey = options.Value.ADYEN_CLIENT_KEY2;
+            _clientKey = options.Value.ADYEN_CLIENT_KEY;
         }
 
         [Route("/")]

@@ -41,7 +41,7 @@ namespace adyen_dotnet_subscription_example.Clients
             _logger = logger;
             _recurring = recurring;
             _repository = repository;
-            _merchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT2;
+            _merchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT;
         }
 
         /// <inheritdoc/>
