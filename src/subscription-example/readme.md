@@ -7,7 +7,7 @@
 * Set the `ADYEN_API_KEY`, `ADYEN_CLIENT_KEY`, `ADYEN_HMAC_KEY` and `ADYEN_MERCHANT_ACCOUNT variables`.
 * Click the button below!
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/src/subscription-example)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/)
 
 _NOTE: To allow the Adyen Drop-In and Components to load, you have to add `https://*.gitpod.io` as allowed origin for your chosen set of [API Credentials](https://ca-test.adyen.com/ca/ca/config/api_credentials_new.shtml)_
 
@@ -84,7 +84,7 @@ One possibility is to use a service like [ngrok](ngrok) (which can be used for f
 $ ngrok http https://localhost:5001 -host-header="localhost:5001"
 ```
 
-Once you have  set up ngrok, make sure to add the provided ngrok URL to the list of Allowed Origins in the “API Credentials" part of your Customer Area.
+Once you have  set up ngrok, make sure to add the provided ngrok URL to the list of Allowed Origins in the ï¿½API Credentials" part of your Customer Area.
 
 ### Setting up a webhook
 
