@@ -2,10 +2,7 @@
     ViewData["Title"] = "Adyen Subscription Home";
 }
 
-<nav class="navMenu">
-  <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-  <a asp-area="" asp-controller="ManageTokens" asp-action="Index">Manage Tokens</a>
-</nav>
+@await Html.PartialAsync("_NavigationMenu")
 
 <div class='main-container'>
   <div class="info">

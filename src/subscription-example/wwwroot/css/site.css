@@ -442,7 +442,6 @@ a:hover {
 .navMenu a {
   text-align: center;
   padding: 64px 64px;
-  border-block: double;
   color: #0abf53;
   text-decoration: none;
   font-size: 1.2em;
@@ -458,3 +457,8 @@ a:hover {
 }
 
 /* end Navigation bar menu */
+
+.managetokens {
+    list-style-type: decimal;
+    border: 2px solid black;
+}

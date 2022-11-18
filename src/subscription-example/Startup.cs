@@ -28,10 +28,10 @@ namespace adyen_dotnet_subscription_example
             services.Configure<AdyenOptions>(
                 options =>
                 {
-                    options.ADYEN_API_KEY = Configuration[nameof(AdyenOptions.ADYEN_API_KEY)];
-                    options.ADYEN_MERCHANT_ACCOUNT = Configuration[nameof(AdyenOptions.ADYEN_MERCHANT_ACCOUNT)];
-                    options.ADYEN_CLIENT_KEY = Configuration[nameof(AdyenOptions.ADYEN_CLIENT_KEY)];
-                    options.ADYEN_HMAC_KEY = Configuration[nameof(AdyenOptions.ADYEN_HMAC_KEY)];
+                    options.ADYEN_API_KEY2 = Configuration[nameof(AdyenOptions.ADYEN_API_KEY2)];
+                    options.ADYEN_MERCHANT_ACCOUNT2 = Configuration[nameof(AdyenOptions.ADYEN_MERCHANT_ACCOUNT2)];
+                    options.ADYEN_CLIENT_KEY2 = Configuration[nameof(AdyenOptions.ADYEN_CLIENT_KEY2)];
+                    options.ADYEN_HMAC_KEY2 = Configuration[nameof(AdyenOptions.ADYEN_HMAC_KEY2)];
                 }
             );
             
@@ -41,7 +41,7 @@ namespace adyen_dotnet_subscription_example
             services.AddHttpContextAccessor();
             services.AddTransient<IUrlService, UrlService>();
 
-            services.AddSingleton<Client>(new Client(Configuration[nameof(AdyenOptions.ADYEN_API_KEY)], Environment.Test));
+            services.AddSingleton<Client>(new Client(Configuration[nameof(AdyenOptions.ADYEN_API_KEY2)], Environment.Test));
             services.AddSingleton<Checkout>();
             services.AddSingleton<Recurring>();
             services.AddSingleton<IRecurringClient, RecurringClient>();

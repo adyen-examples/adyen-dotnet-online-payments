@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.Threading.Tasks;
 
 namespace adyen_dotnet_subscription_example.Controllers
 {
@@ -20,11 +21,11 @@ namespace adyen_dotnet_subscription_example.Controllers
         {
             _logger = logger;
             _repository = repository;
-            _hmacKey = options.Value.ADYEN_HMAC_KEY;
+            _hmacKey = options.Value.ADYEN_HMAC_KEY2;
         }
 
         [HttpPost("api/webhooks/notifications")]
-        public ActionResult<string> Webhooks(NotificationRequest notificationRequest)
+        public async Task<ActionResult<string>> ReceiveWebhooksAsync(NotificationRequest notificationRequest)
         {
             var hmacValidator = new HmacValidator();
 
@@ -33,7 +34,7 @@ namespace adyen_dotnet_subscription_example.Controllers
             foreach(NotificationRequestItemContainer container in notificationRequest.NotificationItemContainers)
             {
                 // We always recommend to activate HMAC validation in the webhooks for security reasons.
-                // Read more here: https://docs.adyen.com/development-resources/webhooks/verify-hmac-signatures.
+                // Read more here: https://docs.adyen.com/development-resources/webhooks/verify-hmac-signatures & https://docs.adyen.com/development-resources/webhooks#accept-notifications
                 try
                 {
                     if (!hmacValidator.IsValidHmac(container.NotificationItem, _hmacKey))
@@ -41,6 +42,8 @@ namespace adyen_dotnet_subscription_example.Controllers
                         _logger.LogError($"Error while validating HMAC Key");
                         return BadRequest("[not accepted invalid hmac key]");
                     }
+
+                    // We should store the full notification in a database.
 
                     /// Get the recurringDetailReference and shopperReference from the additionalData property in the webhook.
                     /// We store it, so that we can make payment requests (at set intervals) on behalf of the shopper in the future.

@@ -1,4 +1,5 @@
-﻿using Adyen.Model.Recurring;
+﻿using Adyen.Model.Checkout;
+using Adyen.Model.Recurring;
 using adyen_dotnet_subscription_example.Clients;
 using adyen_dotnet_subscription_example.Models;
 using adyen_dotnet_subscription_example.Options;
@@ -19,7 +20,7 @@ namespace adyen_dotnet_subscription_example.Controllers
 
         public ManageTokensController(IOptions<AdyenOptions> options, IRecurringClient recurringClient, ICheckoutClient checkoutClient, ISubscriptionRepository repository)
         {
-            _clientKey = options.Value.ADYEN_CLIENT_KEY;
+            _clientKey = options.Value.ADYEN_CLIENT_KEY2;
             _recurringClient = recurringClient;
             _checkoutClient = checkoutClient;
             _repository = repository;
@@ -28,10 +29,10 @@ namespace adyen_dotnet_subscription_example.Controllers
         [Route("managetokens")]
         public IActionResult Index()
         {
-            var details = new List<SubscribedCustomer>();
+            List<SubscribedCustomer> details = new List<SubscribedCustomer>();
 
             // We fetch all shopperReferences that we have stored in our (local) repository and show it.
-            foreach (var kvp in _repository.SubscribedCustomers)
+            foreach (KeyValuePair<string, SubscribedCustomer> kvp in _repository.SubscribedCustomers)
             {
                 details.Add(kvp.Value);
             }
@@ -49,18 +50,33 @@ namespace adyen_dotnet_subscription_example.Controllers
         [Route("managetokens/makepayment/{recurringDetailReference}")]
         public async Task<IActionResult> MakePayment(string recurringDetailReference)
         {
-            var details = await _checkoutClient.MakePaymentAsync(ShopperReference.Value, recurringDetailReference);
-            ViewBag.Message = $"Made a payment using {recurringDetailReference}";
-            return View("Index");
+            PaymentResponse result = await _checkoutClient.MakePaymentAsync(ShopperReference.Value, recurringDetailReference);
+            switch (result.ResultCode)
+            {
+                case PaymentResponse.ResultCodeEnum.Success:
+                    ViewBag.Message = $"Payment successful: {result.Amount.Value} {result.Amount.Currency}";
+                    break;
+                default:
+                    ViewBag.Message = $"{result.ToJson()}";
+                    break;
+            }
+            return View();
         }
 
         [Route("managetokens/disable/{recurringDetailReference}")]
         public async Task<IActionResult> Disable(string recurringDetailReference)
         {
-            var details = await _recurringClient.DisableRecurringDetailAsync(ShopperReference.Value, recurringDetailReference);
-            ViewBag.Message = $"Removed {recurringDetailReference}";
-            return View("Index");
+            DisableResult result = await _recurringClient.DisableRecurringDetailAsync(ShopperReference.Value, recurringDetailReference);
+            ViewBag.Message = $"{result.Response}";
+            return View();
         }
 
+
+        [Route("managetokens/listRecurringDetails/")]
+        public async Task<ActionResult<string>> ListRecurringDetails()
+        {
+            RecurringDetailsResult result = await _recurringClient.ListRecurringDetailAsync(ShopperReference.Value);
+            return result.ToJson();
+        }
     }
 }

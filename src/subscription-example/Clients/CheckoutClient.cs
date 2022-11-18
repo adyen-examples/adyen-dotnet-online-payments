@@ -5,7 +5,6 @@ using adyen_dotnet_subscription_example.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,7 +13,8 @@ namespace adyen_dotnet_subscription_example.Clients
     public interface ICheckoutClient
     {
         /// <summary>
-        /// Initiates a session which creates a token (recurringDetailReference) for the given <paramref name="shopperReference"/>.
+        /// Initiates a session which creates the subscription for the given <paramref name="shopperReference"/>.
+        /// Once completed, your endpoint <see cref="Controllers.WebhookController.Webhooks"/> will receive a notification with the recurringDetailReference.
         /// </summary>
         /// <param name="shopperReference">The unique shopper reference (usually a GUID to identify your shopper).</param>
         /// <param name="cancellationToken"><see cref="CancellationToken"/></param>
@@ -43,7 +43,7 @@ namespace adyen_dotnet_subscription_example.Clients
             _logger = logger;
             _checkout = checkout;
             _urlService = urlService;
-            _merchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT;
+            _merchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT2;
         }
 
         /// <inheritdoc/>
@@ -54,7 +54,7 @@ namespace adyen_dotnet_subscription_example.Clients
             var sessionsRequest = new CreateCheckoutSessionRequest();
             sessionsRequest.MerchantAccount = _merchantAccount;
 
-            var amount = new Amount("EUR", 0); 
+            var amount = new Amount("EUR", 10000); 
             sessionsRequest.Amount = amount;
             sessionsRequest.Reference = orderRef.ToString();
 

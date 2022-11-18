@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.Threading.Tasks;
 
 namespace adyen_dotnet_checkout_example.Controllers
 {
@@ -21,7 +22,7 @@ namespace adyen_dotnet_checkout_example.Controllers
         }
 
         [HttpPost("api/webhooks/notifications")]
-        public ActionResult<string> Webhooks(NotificationRequest notificationRequest)
+        public async Task<ActionResult<string>> Webhooks(NotificationRequest notificationRequest)
         {
             var hmacValidator = new HmacValidator();
 

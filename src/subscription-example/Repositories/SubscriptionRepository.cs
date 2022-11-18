@@ -1,4 +1,5 @@
 ﻿using adyen_dotnet_subscription_example.Models;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,12 +10,12 @@ namespace adyen_dotnet_subscription_example.Repositories
     /// These can be used to make future payment requests.
     /// </summary>
     public interface ISubscriptionRepository
-    {        
+    {
         /// <summary>
         /// List of all customers that have bought a subscription using one or more payment methods.
         /// This repository is populated when we confirm a valid webhook containing the <see cref="recurringDetailReference"/> payload, see <see cref="Controllers.WebhookController"/>.
         /// </summary>
-        Dictionary<string, SubscribedCustomer> SubscribedCustomers { get; }
+        ConcurrentDictionary<string, SubscribedCustomer> SubscribedCustomers { get; }
 
         bool Remove(string shopperReference, string recurringDetailReference);
 
@@ -24,11 +25,11 @@ namespace adyen_dotnet_subscription_example.Repositories
     public class SubscriptionRepository : ISubscriptionRepository
     {
         /// <inheritdoc/>
-        public Dictionary<string, SubscribedCustomer> SubscribedCustomers { get; }
+        public ConcurrentDictionary<string, SubscribedCustomer> SubscribedCustomers { get; }
 
         public SubscriptionRepository()
         {
-            SubscribedCustomers = new Dictionary<string, SubscribedCustomer>();
+            SubscribedCustomers = new ConcurrentDictionary<string, SubscribedCustomer>();
         }
 
         /// <inheritdoc/>
@@ -51,7 +52,7 @@ namespace adyen_dotnet_subscription_example.Repositories
             // If a shopperReference has no recurringDetailReferences left, remove the shopperReference.
             if (!customer.SubscribedCustomerDetails.Any())
             {
-                SubscribedCustomers.Remove(shopperReference);
+                return SubscribedCustomers.TryRemove(shopperReference, out var _);
             }
             return isSuccess;
         }
@@ -62,7 +63,7 @@ namespace adyen_dotnet_subscription_example.Repositories
             // New customer: add the shopper reference and the recurringDetailReference.
             if (!SubscribedCustomers.ContainsKey(shopperReference))
             {
-                SubscribedCustomers.Add(shopperReference,
+                return SubscribedCustomers.TryAdd(shopperReference,
                     new SubscribedCustomer()
                     {
                         ShopperReference = shopperReference,
@@ -75,25 +76,29 @@ namespace adyen_dotnet_subscription_example.Repositories
                             }
                         }
                     });
-                return true;
             }
 
             // Existing customer:
             SubscribedCustomerDetails existingCustomerDetails = SubscribedCustomers[shopperReference].SubscribedCustomerDetails.FirstOrDefault(x => x.RecurringDetailReference == recurringDetailReference);
 
-            // Add token (recurringDetailReference) to their list of payment methods.
-            if (existingCustomerDetails != null)
+            // Add token (recurringDetailReference) if it doesn't already exist.
+            if (existingCustomerDetails == null)
             {
-                SubscribedCustomers[shopperReference].SubscribedCustomerDetails.Add(
-                    new SubscribedCustomerDetails()
-                    {
-                        RecurringDetailReference = recurringDetailReference,
-                        PspReference = pspReference
-                    });
-                return true;
+                var details = SubscribedCustomers[shopperReference].SubscribedCustomerDetails;
+
+                if (details.FirstOrDefault(x => x.RecurringDetailReference == recurringDetailReference) == null)
+                {
+                    details.Add(
+                        new SubscribedCustomerDetails()
+                        {
+                            RecurringDetailReference = recurringDetailReference,
+                            PspReference = pspReference
+                        });
+                    return true;
+                }
             }
 
-            // Token was already added before, update existing details
+            // Token was already added before.
             return false;
         }
     }
