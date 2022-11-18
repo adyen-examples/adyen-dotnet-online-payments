@@ -26,21 +26,44 @@ namespace adyen_dotnet_subscription_example.Services
         /// <inheritdoc/>
         public string GetHostUrl()
         {
-            return GetForwardedHostUrl() ?? _httpContextAccessor.HttpContext.Request.Headers["Origin"].FirstOrDefault();
+            if (_httpContextAccessor.HttpContext?.Request?.Headers == null)
+                return null;
+
+            return GetForwardedHostUrl() ?? GetOriginUrl();
         }
 
         /// <summary>
-        /// If the request was forwarded (due to f.e. port tunneling), build the url and return the forwarded host url instead.
+        /// Gets the origin url from the header request.
+        /// </summary>
+        /// <returns>The origin host url.</returns>
+        private string GetOriginUrl()
+        {
+            if (!_httpContextAccessor.HttpContext.Request.Headers.TryGetValue("Origin", out var result))
+                return null;
+
+            return result.FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Gets the url from a forwarded host.
+        /// If the request was forwarded (due to port tunneling f.e.), we build the url and return the forwarded host url instead.
         /// </summary>
         /// <returns>The forwarded host url.</returns>
         private string GetForwardedHostUrl()
         {
-            string forwardedHost = _httpContextAccessor.HttpContext.Request.Headers["x-forwarded-host"].FirstOrDefault();
+            if (!_httpContextAccessor.HttpContext.Request.Headers.TryGetValue("x-forwarded-host", out var forwardedHosts))
+                return null;
+
+            string forwardedHost = forwardedHosts.FirstOrDefault();
 
             if (forwardedHost == null)
                 return null;
 
-            string forwardedScheme = _httpContextAccessor.HttpContext.Request.Headers["x-forwarded-scheme"].FirstOrDefault();
+
+            if (!_httpContextAccessor.HttpContext.Request.Headers.TryGetValue("x-forwarded-host", out var forwardedSchemes))
+                return null;
+
+            string forwardedScheme = forwardedSchemes.FirstOrDefault();
             return $"{forwardedScheme.Replace('{', ' ').Replace('}', ' ')}://{forwardedHost}";
         }
     }
