@@ -17,8 +17,22 @@ namespace adyen_dotnet_subscription_example.Repositories
         /// </summary>
         ConcurrentDictionary<string, SubscribedCustomer> SubscribedCustomers { get; }
 
+        /// <summary>
+        /// Removes token (<paramref name="recurringDetailReference"/>).
+        /// If the shopperReference doesn't contain any <paramref name="recurringDetailReference"/>s, we remove <paramref name="shopperReference"/>.
+        /// </summary>
+        /// <param name="shopperReference">The unique shopper reference (usually a GUID to identify your shopper).</param>
+        /// <param name="recurringDetailReference">The <paramref name="recurringDetailReference"/> token that is retrieved from <see cref="Controllers.WebhookController.Webhooks"/>.</param>
+        /// <returns></returns>
         bool Remove(string shopperReference, string recurringDetailReference);
 
+        /// <summary>
+        /// Inserts token (<paramref name="recurringDetailReference"/>) and <paramref name="shopperReference"/>, overwrite if it already exists.
+        /// </summary>
+        /// <param name="pspReference">The psp reference from the transaction.</param>
+        /// <param name="shopperReference">The unique shopper reference (usually a GUID to identify your shopper).</param>
+        /// <param name="recurringDetailReference">The <paramref name="recurringDetailReference"/> token that is retrieved from <see cref="Controllers.WebhookController.Webhooks"/>.</param>
+        /// <returns></returns>
         bool Upsert(string pspReference, string shopperReference, string recurringDetailReference);
     }
 
@@ -37,16 +51,18 @@ namespace adyen_dotnet_subscription_example.Repositories
         {
             if (!SubscribedCustomers.TryGetValue(shopperReference, out SubscribedCustomer customer))
             {
-                return false; // No Shopper found.
+                return false; // No ShopperReference found.
             }
 
+            // Check if token (recurringDetailReference) already exists for the given customer.
             SubscribedCustomerDetails existingCustomerDetails = customer.SubscribedCustomerDetails.FirstOrDefault(x => x.RecurringDetailReference == recurringDetailReference);
 
             if (existingCustomerDetails == null)
             {
-                return false;
+                return false; // No token found for shopper.
             }
 
+            // Removes the token (recurringDetailReference).
             bool isSuccess = customer.SubscribedCustomerDetails.Remove(existingCustomerDetails);
 
             // If a shopperReference has no recurringDetailReferences left, remove the shopperReference.
@@ -60,7 +76,7 @@ namespace adyen_dotnet_subscription_example.Repositories
         /// <inheritdoc/>
         public bool Upsert(string pspReference, string shopperReference, string recurringDetailReference)
         {
-            // New customer: add the shopper reference and the recurringDetailReference.
+            // New customer: add the shopper reference and the token (recurringDetailReference).
             if (!SubscribedCustomers.ContainsKey(shopperReference))
             {
                 return SubscribedCustomers.TryAdd(shopperReference,
@@ -98,7 +114,7 @@ namespace adyen_dotnet_subscription_example.Repositories
                 }
             }
 
-            // Token was already added before.
+            // Token (recurringDetailReference) was already added before.
             return false;
         }
     }
