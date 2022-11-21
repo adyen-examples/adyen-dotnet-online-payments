@@ -6,6 +6,27 @@ This repository includes examples of PCI-compliant UI integrations for online pa
 
 ![Card checkout demo](wwwroot/images/cardcheckout.gif)
 
+## Requirements
+
+- .NET Core SDK 6.x
+- A set of [API keys](https://docs.adyen.com/user-management/how-to-get-the-api-key).
+
+
+## Run this integration in seconds using [Gitpod](https://gitpod.io/)
+
+* Open your [Adyen Test Account](https://ca-test.adyen.com/ca/ca/overview/default.shtml) and create a set of [API keys](https://docs.adyen.com/user-management/how-to-get-the-api-key).
+* Go to [gitpod account variables](https://gitpod.io/variables).
+* Set the `ADYEN_API_KEY`, `ADYEN_CLIENT_KEY`, `ADYEN_HMAC_KEY` and `ADYEN_MERCHANT_ACCOUNT variables`.
+* Click the button below!
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/)
+
+* Once the environment is ready, navigate to the Terminal and navigate to the respective folder `cd checkout-example`
+* To run the application, use the command: `dotnet run`
+
+_NOTE: To allow the Adyen Drop-In and Components to load, you have to add `https://*.gitpod.io` as allowed origin for your chosen set of [API Credentials](https://ca-test.adyen.com/ca/ca/config/api_credentials_new.shtml)_
+
+
 ## Supported Integrations
 
 **ASP.NET** demos of the following client-side integrations are currently available in this repository:
@@ -22,9 +43,6 @@ This repository includes examples of PCI-compliant UI integrations for online pa
 
 Each demo leverages Adyen's API Library for .NET ([GitHub](https://github.com/Adyen/adyen-dotnet-api-library) | [Docs](https://docs.adyen.com/development-resources/libraries#csharp)). Please make sure to [add the above payment methods to your Adyen account](https://docs.adyen.com/payment-methods#add-payment-methods-to-your-account) before testing!
 
-## Requirements
-
-.NET Core SDK 6.x
 
 ## Installation
 
@@ -91,14 +109,3 @@ Once you have  set up ngrok, make sure to add the provided ngrok URL to the list
 That's it! Every time you test a new payment method, your server will receive a notification from Adyen's server.
 
 You can find more information about webhooks in [this detailed blog post](https://www.adyen.com/blog/Integrating-webhooks-notifications-with-Adyen-Checkout).
-
-
-## Contributing
-
-We commit all our new features directly into our GitHub repository. Feel free to request or suggest new features or code changes yourself as well!
-
-Find out more in our [Contributing](https://github.com/adyen-examples/.github/blob/main/CONTRIBUTING.md) guidelines.
-
-## License
-
-MIT license. For more information, see the **LICENSE** file in the root directory.

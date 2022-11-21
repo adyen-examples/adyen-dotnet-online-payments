@@ -9,9 +9,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "checkout-example", "checkou
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "subscription-example", "subscription-example", "{F5BCB6E3-8846-461B-BD95-384B14BC7791}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "adyen-dotnet-checkout-example", "src\checkout-example\adyen-dotnet-checkout-example.csproj", "{E0B23B2B-C820-4264-9F64-87E077D1762A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "adyen-dotnet-checkout-example", "checkout-example\adyen-dotnet-checkout-example.csproj", "{E0B23B2B-C820-4264-9F64-87E077D1762A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "adyen-dotnet-subscription-example", "src\subscription-example\adyen-dotnet-subscription-example.csproj", "{15143C43-B718-40D9-A8E5-DA7E247BBEE7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "adyen-dotnet-subscription-example", "subscription-example\adyen-dotnet-subscription-example.csproj", "{15143C43-B718-40D9-A8E5-DA7E247BBEE7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
