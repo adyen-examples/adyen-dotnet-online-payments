@@ -53,9 +53,7 @@ namespace adyen_dotnet_subscription_example.Controllers
             PaymentResponse result = await _checkoutClient.MakePaymentAsync(ShopperReference.Value, recurringDetailReference);
             switch (result.ResultCode)
             {
-                case PaymentResponse.ResultCodeEnum.Success:
-                    ViewBag.Message = $"Payment successful: {result.Amount.Value} {result.Amount.Currency}";
-                    break;
+                /// Handle your cases here.
                 default:
                     ViewBag.Message = $"{result.ToJson()}";
                     break;

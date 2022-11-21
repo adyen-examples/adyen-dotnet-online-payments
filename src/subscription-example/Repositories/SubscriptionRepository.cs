@@ -29,11 +29,11 @@ namespace adyen_dotnet_subscription_example.Repositories
         /// <summary>
         /// Inserts token (<paramref name="recurringDetailReference"/>) and <paramref name="shopperReference"/>, overwrite if it already exists.
         /// </summary>
-        /// <param name="pspReference">The psp reference from the transaction.</param>
+        /// <param name="paymentMethod">The payment method from the transaction.</param>
         /// <param name="shopperReference">The unique shopper reference (usually a GUID to identify your shopper).</param>
         /// <param name="recurringDetailReference">The <paramref name="recurringDetailReference"/> token that is retrieved from <see cref="Controllers.WebhookController.Webhooks"/>.</param>
         /// <returns></returns>
-        bool Upsert(string pspReference, string shopperReference, string recurringDetailReference);
+        bool Upsert(string paymentMethod, string shopperReference, string recurringDetailReference);
     }
 
     public class SubscriptionRepository : ISubscriptionRepository
@@ -74,7 +74,7 @@ namespace adyen_dotnet_subscription_example.Repositories
         }
 
         /// <inheritdoc/>
-        public bool Upsert(string pspReference, string shopperReference, string recurringDetailReference)
+        public bool Upsert(string paymentMethod, string shopperReference, string recurringDetailReference)
         {
             // New customer: add the shopper reference and the token (recurringDetailReference).
             if (!SubscribedCustomers.ContainsKey(shopperReference))
@@ -88,7 +88,7 @@ namespace adyen_dotnet_subscription_example.Repositories
                             new SubscribedCustomerDetails()
                             {
                                 RecurringDetailReference = recurringDetailReference,
-                                PspReference = pspReference
+                                PaymentMethod = paymentMethod
                             }
                         }
                     });
@@ -108,7 +108,7 @@ namespace adyen_dotnet_subscription_example.Repositories
                         new SubscribedCustomerDetails()
                         {
                             RecurringDetailReference = recurringDetailReference,
-                            PspReference = pspReference
+                            PaymentMethod = paymentMethod
                         });
                     return true;
                 }

@@ -25,12 +25,12 @@
             <ul class="managetokens">
             @if (detail.SubscribedCustomerDetails != null)
             {
-                <b>ShopperReference:<b/> @detail.ShopperReference</b><br/>
+                <b>ShopperReference:<b/> @detail.ShopperReference</b><br/><br/>
                 foreach(var info in detail.SubscribedCustomerDetails)
                 {
                     <li>
-                        <b>PspReference:</b> @info.PspReference<br/>
-                        <b>RecurringDetailReference:</b> @info.RecurringDetailReference <br/>
+                        PaymentMethod: @info.PaymentMethod<br/>
+                        RecurringDetailReference: @info.RecurringDetailReference<br/>
                         <a asp-area="" asp-controller="ManageTokens" asp-action="MakePayment" asp-route-id="@info.RecurringDetailReference">Make Payment</a> | 
                         <a asp-area="" asp-controller="ManageTokens" asp-action="Disable" asp-route-id="@info.RecurringDetailReference">Disable</a>     
                     </li><br/>
