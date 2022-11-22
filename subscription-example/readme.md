@@ -71,7 +71,7 @@ To try out subscriptions with test card numbers and payment method details, see 
 
 5. These references are shown under 'Manage Tokens' which you can use to make a payment request (or choose to disable them).
 
-_Note: We current store these values in a local memory cache, if you restart the application these values are lost!_
+_Note: We currently store these values in a local memory cache, if you restart/stop the application these values are lost. However, the tokens will still persist on the Adyen Platform. You can view the stored payment details by going to a recent payment of the shopper: `Transactions` → `Payments` → `Shopper Details` → `Recurring: View stored payment details` in the ca-environment._
 
 
 ## Testing webhooks
