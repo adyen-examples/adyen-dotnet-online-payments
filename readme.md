@@ -4,8 +4,8 @@
 
 This repository includes a collection of examples:
 
-- Checkout examples - Use different payment methods to make a payment request.
-- Subscription example - Tokenize and initiate a payment request using the token.
+- Checkout examples - Use different payment methods to make a payment.
+- Subscription example - Execute recurring payments using tokenization.
 
 
 ## Contributing
