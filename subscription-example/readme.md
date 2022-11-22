@@ -19,8 +19,7 @@ This repository includes an subscription example. Within this demo app, you'll f
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/)
 
-* Once the environment is ready, navigate to the Terminal and navigate to the respective folder `cd subscription-example`
-* To run the application, use the command: `dotnet run`
+* To run the application, use the command: `dotnet run --project subscription-example`
 
 _NOTE: To allow the Adyen Drop-In and Components to load, you have to add `https://*.gitpod.io` as allowed origin for your chosen set of [API Credentials](https://ca-test.adyen.com/ca/ca/config/api_credentials_new.shtml)_
 
