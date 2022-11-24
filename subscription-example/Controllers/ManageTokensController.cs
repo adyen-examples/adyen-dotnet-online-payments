@@ -68,13 +68,5 @@ namespace adyen_dotnet_subscription_example.Controllers
             ViewBag.Message = $"{result.Response}";
             return View();
         }
-
-
-        [Route("managetokens/listRecurringDetails/")]
-        public async Task<ActionResult<string>> ListRecurringDetails()
-        {
-            RecurringDetailsResult result = await _recurringClient.ListRecurringDetailAsync(ShopperReference.Value);
-            return result.ToJson();
-        }
     }
 }
