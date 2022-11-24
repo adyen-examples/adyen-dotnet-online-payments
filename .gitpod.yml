@@ -1,4 +1,25 @@
 tasks:
+- name: "Change workspace root dynamically and cache the path"
+  before: |
+    (
+      input="$GITPOD_WORKSPACE_CONTEXT_URL";
+      if [[ "$input" =~ /(tree|blob)/(.*) ]]; then {
+          slug="${BASH_REMATCH[2]}";
+          _branch="${slug%%/*}";
+          path="${slug#*/}";
+          if test -e "$path"; then {
+              if test ! -d "$path"; then {
+                  path="${path%/*}" # Remove filename
+              } fi
+              # https://github.com/<owner>/<repo>/(tree|blob)/<branch> %/file.ext% 
+              # != https://github.com/<owner>/<repo>/(tree|blob)/<branch>
+              if test "${input%/path}" != "${input%/*}"; then {
+                  echo "$path" > /tmp/.dpath;
+                  until code -r "$path"; do sleep 1; done
+              } fi
+          } fi
+      } fi
+    ) & disown && exit;
 - init: |
     echo "dotnet"
     wget "https://dot.net/v1/dotnet-install.sh"
@@ -10,7 +31,19 @@ tasks:
         if [ -z ${ADYEN_HMAC_KEY+x} ] || [[ -z ${ADYEN_API_KEY+x} ]] || [[ -z ${ADYEN_CLIENT_KEY+x} ]] || [[ -z ${ADYEN_MERCHANT_ACCOUNT+x} ]]; then
             echo "Expected environment variables not found. Please set the ADYEN_HMAC_KEY, ADYEN_API_KEY, ADYEN_CLIENT_KEY, ADYEN_MERCHANT_ACCOUNT environment variables and rerun session https://gitpod.io/variables."
         else
-            dotnet run --project checkout-example
+            case "$path" in
+              "checkout-example")
+                echo "Starting the checkout-example ..."
+                dotnet run --project checkout-example
+              ;;
+              "subscription-example")
+                echo "Starting the subscription-example ..."
+                dotnet run --project subscription-example
+              ;;
+              *) # Default case
+                echo "Starting the checkout-example ..."
+                dotnet run --project checkout-example
+            esac
         fi
 
 # exposed ports

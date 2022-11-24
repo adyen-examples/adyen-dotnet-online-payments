@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33006.217
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{404C92C7-25BC-4271-9996-52BC3FA745FC}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "checkout-example", "checkout-example", "{F4D45A25-83A9-442B-9822-6B112EEBA4D9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "subscription-example", "subscription-example", "{F5BCB6E3-8846-461B-BD95-384B14BC7791}"
@@ -32,8 +30,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{F4D45A25-83A9-442B-9822-6B112EEBA4D9} = {404C92C7-25BC-4271-9996-52BC3FA745FC}
-		{F5BCB6E3-8846-461B-BD95-384B14BC7791} = {404C92C7-25BC-4271-9996-52BC3FA745FC}
 		{E0B23B2B-C820-4264-9F64-87E077D1762A} = {F4D45A25-83A9-442B-9822-6B112EEBA4D9}
 		{15143C43-B718-40D9-A8E5-DA7E247BBEE7} = {F5BCB6E3-8846-461B-BD95-384B14BC7791}
 	EndGlobalSection
