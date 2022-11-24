@@ -21,8 +21,8 @@ This repository includes examples of PCI-compliant UI integrations for online pa
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/)
 
-* To exit the application, go to the Terminal and press `Ctrl + C`.
-* To run the application, use the command: `dotnet run --project checkout-example`.
+* To exit the current application, go to the Terminal and press `Ctrl + C`.
+* To run this application, use the command: `dotnet run --project checkout-example`.
 
 _NOTE: To allow the Adyen Drop-In and Components to load, you have to add `https://*.gitpod.io` as allowed origin for your chosen set of [API Credentials](https://ca-test.adyen.com/ca/ca/config/api_credentials_new.shtml)_
 
