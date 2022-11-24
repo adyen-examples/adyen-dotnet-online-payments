@@ -21,7 +21,8 @@ This repository includes examples of PCI-compliant UI integrations for online pa
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/)
 
-* To run the application, use the command: `dotnet run --project checkout-example`
+* To exit the application, go to the Terminal and press `Ctrl + C`.
+* To run the application, use the command: `dotnet run --project checkout-example`.
 
 _NOTE: To allow the Adyen Drop-In and Components to load, you have to add `https://*.gitpod.io` as allowed origin for your chosen set of [API Credentials](https://ca-test.adyen.com/ca/ca/config/api_credentials_new.shtml)_
 
@@ -98,7 +99,7 @@ Your endpoint that will consume the incoming webhook must be publicly accessible
 There are typically 3 options:
 * deploy on your own cloud provider
 * deploy on Gitpod
-* expose your localhost with tunneling software (i.e. ngrok)
+* expose your localhost with tunneling software (i.e. ngrok or visual-studio port tunneling)
 
 #### Option 1: cloud deployment
 If you deploy on your cloud provider (or your own public server) the webhook URL will be the URL of the server 
@@ -127,8 +128,17 @@ If you use a tunneling service like [ngrok](ngrok) the webhook URL will be the g
   Forwarding                    https://c991-80-113-16-28.ngrok.io -> http://localhost:8080           
 ```
 
-**Note:** when restarting ngrok a new URL is generated, make sure to **update the Webhook URL** in the Customer Area
+Do not forget to add the host url (`https://*.ngrok.io`) to the [allowed origins](https://ca-test.adyen.com/ca/ca/config/api_credentials_new.shtml) in the Customer Area.
 
+**Note:** when restarting ngrok a new URL is generated, make sure to **update the Webhook URL** in the Customer Area.
+
+If you use [dev tunnels](https://devblogs.microsoft.com/visualstudio/public-preview-of-dev-tunnels-in-visual-studio-for-asp-net-core-projects/) in Visual Studio 17.4 or higher, the webhook URL will be the generated URL (ie `https://xd1r2txt-5001.euw.devtunnels.ms`)
+
+When you're logged-in Visual Studio, set the launchSetting profile to `adyen_dotnet_checkout_example_port_tunneling` and the tunnel should be automatically generated. 
+
+Do not forget to add the host url (`https://*.devtunnels.ms`) to the [allowed origins](https://ca-test.adyen.com/ca/ca/config/api_credentials_new.shtml) in the Customer Area.
+
+**Note:** when closing or restarting visual studio a new URL will be generated, make sure to **update the Webhook URL** in the Customer Area.
 
 ### Setting up a webhook
 
