@@ -7,10 +7,4 @@ namespace adyen_dotnet_subscription_example.Models
         public string ShopperReference { get; set; }
         public List<SubscribedCustomerDetails> SubscribedCustomerDetails { get; set; }
     }
-
-    public class SubscribedCustomerDetails
-    {
-        public string PaymentMethod { get; set; }
-        public string RecurringDetailReference { get; set; }
-    }
 }

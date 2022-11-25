@@ -43,16 +43,14 @@ namespace adyen_dotnet_subscription_example.Controllers
                         return BadRequest("[not accepted invalid hmac key]");
                     }
 
-                    // We should store the full notification in a database.
-
-                    /// Get the recurringDetailReference and shopperReference from the additionalData property in the webhook.
-                    /// We store it, so that we can make payment requests (at set intervals) on behalf of the shopper in the future.
+                    // Get the recurringDetailReference and shopperReference from the additionalData property in the webhook.
+                    // We store it, so that we can make payment requests on behalf of the shopper in the future.
                     if (container.NotificationItem.AdditionalData.TryGetValue("recurring.recurringDetailReference", out string recurringDetailReference))
                     {
                         if (container.NotificationItem.AdditionalData.TryGetValue("recurring.shopperReference", out string shopperReference))
                         {
                             _logger.LogInformation($"Received recurringDetailReference:: {recurringDetailReference} for {shopperReference}");
-                            _repository.Upsert(container.NotificationItem.PspReference, shopperReference, recurringDetailReference);
+                            _repository.Upsert(container.NotificationItem.PaymentMethod, shopperReference, recurringDetailReference);
                         }
                     }
 

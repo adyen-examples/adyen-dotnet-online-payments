@@ -84,7 +84,7 @@ namespace adyen_dotnet_subscription_example.Clients
         /// <inheritdoc/>
         public async Task<PaymentResponse> MakePaymentAsync(string shopperReference, string recurringDetailReference, CancellationToken cancellationToken)
         {
-            var amount = new Amount("EUR", 10000);
+            var amount = new Amount("EUR", 1199);
             var details = new DefaultPaymentMethodDetails
             {
                 StoredPaymentMethodId = recurringDetailReference
