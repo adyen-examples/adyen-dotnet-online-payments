@@ -18,6 +18,12 @@ a {
   color: #0abf53;
 }
 
+h1 {
+  font-weight: bold;
+  text-align: center;
+  margin-top: 32px;
+}
+
 u {
   text-decoration: none;
 }
@@ -31,7 +37,6 @@ a:hover {
 }
 
 #header {
-  background: #fff;
   border-bottom: 1px solid #e6e9eb;
   height: 44px;
   left: 0;
@@ -89,7 +94,7 @@ a:hover {
 .main-container {
   margin: auto;
   max-width: 1048px;
-  padding: 0 16px;
+  padding: 16px 16px;
   display: flex;
   flex-direction: column;
 }
@@ -97,7 +102,7 @@ a:hover {
 .integration-list {
   display: flex;
   margin-top: 6%;
-  max-width: 1048px;
+  max-width: 2048px;
   flex-wrap: wrap;
   justify-content: space-between;
   list-style: none;
@@ -214,7 +219,7 @@ a:hover {
 
 /* end Index page */
 
-/* Cart preview page */
+/* Subscription preview page */
 
 .shopping-cart {
   float: right;
@@ -273,7 +278,7 @@ a:hover {
 }
 .cart {
   text-align: center;
-  margin-top: 80px;
+  margin-top: 154px;
 }
 .cart-footer {
   font-weight: 700;
@@ -435,21 +440,22 @@ a:hover {
 
 .navMenu {
   position: relative;
-  top: 0;
-  bottom: 0;
+  overflow: hidden;
 }
 
 .navMenu a {
-  text-align: center;
-  padding: 64px 64px;
+  padding-right: 16px;
+  margin-left: 32px;
+  margin-right: 32px;
+  text-align: left;
   color: #0abf53;
   text-decoration: none;
-  font-size: 1.2em;
+  font-size: 1.1em;
   text-transform: uppercase;
   font-weight: bold;
   display: inline-block;
-  -webkit-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out;
+  -webkit-transition: all 0.15s ease-in-out;
+  transition: all 0.15s ease-in-out;
 }
 
 .navMenu a:hover {
@@ -458,12 +464,31 @@ a:hover {
 
 /* end Navigation bar menu */
 
+/* start Shopper View */
 
-/* start Admin list view */
-
-.adminList {
-    list-style-type: decimal;
-    border: 2px solid black;
+.shopper-view-container {
+  background-color: #f1f1f1;
+  padding: 16px;
 }
 
-/* end Admin list view */
+/* end Shopper View */
+
+/* start Admin panel view */
+
+.admin-panel-container {
+  background-color: #fff3f3;
+  padding: 16px;
+}
+
+.admin-panel-token-container {
+  background-color: #fafff3;
+  padding: 16px;
+}
+
+
+.adminList {
+  list-style-type: decimal;
+  border: 2px solid black;
+}
+
+/* end Admin panel view */

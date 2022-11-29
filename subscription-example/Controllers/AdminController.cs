@@ -48,7 +48,7 @@ namespace adyen_dotnet_subscription_example.Controllers
             {
                 /// Handle your cases here.
                 default:
-                    ViewBag.Message = $"{result.ToJson()}";
+                    ViewBag.Message = $"{Newtonsoft.Json.JsonConvert.SerializeObject(result, Newtonsoft.Json.Formatting.Indented)};";
                     break;
             }
             return View();
