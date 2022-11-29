@@ -8,7 +8,6 @@ namespace adyen_dotnet_subscription_example.Controllers
     public class TokenizationController : ControllerBase
     {
         private readonly ICheckoutClient _checkoutService;
-        private readonly string _shopperReference = "YOUR_UNIQUE_SHOPPER_ID_IOfW3k9G2PvXFu2X"; // It's a unique reference that the merchant uses to uniquely identify the shopper.
 
         public TokenizationController(ICheckoutClient checkoutService)
         {
@@ -21,7 +20,7 @@ namespace adyen_dotnet_subscription_example.Controllers
         [HttpPost("tokenization/sessions")]
         public async Task<ActionResult<string>> SessionsAsync()
         {
-            var result = await _checkoutService.CheckoutSessionsAsync(_shopperReference);
+            var result = await _checkoutService.CheckoutSessionsAsync(ShopperReference.Value);
             return result.ToJson();
         }
     }

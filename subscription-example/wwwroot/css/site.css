@@ -458,7 +458,12 @@ a:hover {
 
 /* end Navigation bar menu */
 
-.managetokens {
+
+/* start Admin list view */
+
+.adminList {
     list-style-type: decimal;
     border: 2px solid black;
 }
+
+/* end Admin list view */

@@ -66,7 +66,7 @@ namespace adyen_dotnet_subscription_example.Clients
             sessionsRequest.ShopperReference = shopperReference;
 
             // required for 3ds2 redirect flow
-            sessionsRequest.ReturnUrl = $"{_urlService.GetHostUrl()}/managetokens/redirect?orderRef={orderRef}";
+            sessionsRequest.ReturnUrl = $"{_urlService.GetHostUrl()}/redirect?orderRef={orderRef}";
 
             try
             {

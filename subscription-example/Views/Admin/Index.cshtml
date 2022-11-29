@@ -1,7 +1,7 @@
 ﻿@using Adyen.Model.Recurring;
 @using adyen_dotnet_subscription_example.Models;
 @{
-    ViewData["Title"] = "Adyen Subscription Manage Tokens";
+    ViewData["Title"] = "Adyen Subscription Admin View";
     List<SubscribedCustomer> recurringDetails = ViewBag.Details;
 }
 
@@ -10,7 +10,7 @@
 <div class='main-container'>
   <div class="info">
     <h1>Select a token</h1>
-    <p>We show the tokens that we have received through the webhook notifications here. Select a token and initiate a payment for that shopper or disable the token. To learn more, check out the documentation about <a href="https://docs.adyen.com/online-payments/tokenization"> tokenization.</a></p>
+    <p>This is the admin panel. We show the tokens that we have received through the webhook notifications here. Select a token and initiate a payment for that shopper or disable the token. To learn more, check out the documentation about <a href="https://docs.adyen.com/online-payments/tokenization"> tokenization.</a></p>
 </div>
 
 @{
@@ -22,7 +22,7 @@
     {
         foreach(var detail in recurringDetails)
         {
-            <ul class="managetokens">
+            <ul class="adminList">
             @if (detail.SubscribedCustomerDetails != null)
             {
                 <b>ShopperReference:<b/> @detail.ShopperReference</b><br/><br/>
@@ -31,8 +31,8 @@
                     <li>
                         PaymentMethod: @info.PaymentMethod<br/>
                         RecurringDetailReference: @info.RecurringDetailReference<br/>
-                        <a asp-area="" asp-controller="ManageTokens" asp-action="MakePayment" asp-route-id="@info.RecurringDetailReference">Make Payment</a> | 
-                        <a asp-area="" asp-controller="ManageTokens" asp-action="Disable" asp-route-id="@info.RecurringDetailReference">Disable</a>     
+                        <a asp-area="" asp-controller="Admin" asp-action="MakePayment" asp-route-id="@info.RecurringDetailReference">Make Payment</a> | 
+                        <a asp-area="" asp-controller="Admin" asp-action="Disable" asp-route-id="@info.RecurringDetailReference">Disable</a>     
                     </li><br/>
                 }
             }

@@ -11,14 +11,14 @@ using System.Threading.Tasks;
 
 namespace adyen_dotnet_subscription_example.Controllers
 {
-    public class ManageTokensController : Controller
+    public class AdminController : Controller
     {
         private readonly string _clientKey;
         private readonly IRecurringClient _recurringClient;
         private readonly ICheckoutClient _checkoutClient;
         private readonly ISubscriptionRepository _repository;
 
-        public ManageTokensController(IOptions<AdyenOptions> options, IRecurringClient recurringClient, ICheckoutClient checkoutClient, ISubscriptionRepository repository)
+        public AdminController(IOptions<AdyenOptions> options, IRecurringClient recurringClient, ICheckoutClient checkoutClient, ISubscriptionRepository repository)
         {
             _clientKey = options.Value.ADYEN_CLIENT_KEY;
             _recurringClient = recurringClient;
@@ -26,7 +26,7 @@ namespace adyen_dotnet_subscription_example.Controllers
             _repository = repository;
         }
 
-        [Route("managetokens")]
+        [Route("admin")]
         public IActionResult Index()
         {
             List<SubscribedCustomer> details = new List<SubscribedCustomer>();
@@ -40,14 +40,7 @@ namespace adyen_dotnet_subscription_example.Controllers
             return View();
         }
 
-        [Route("managetokens/redirect")]
-        public IActionResult Redirect()
-        {
-            ViewBag.ClientKey = _clientKey;
-            return View();
-        }
-
-        [Route("managetokens/makepayment/{recurringDetailReference}")]
+        [Route("admin/makepayment/{recurringDetailReference}")]
         public async Task<IActionResult> MakePayment(string recurringDetailReference)
         {
             PaymentResponse result = await _checkoutClient.MakePaymentAsync(ShopperReference.Value, recurringDetailReference);
@@ -61,7 +54,7 @@ namespace adyen_dotnet_subscription_example.Controllers
             return View();
         }
 
-        [Route("managetokens/disable/{recurringDetailReference}")]
+        [Route("admin/disable/{recurringDetailReference}")]
         public async Task<IActionResult> Disable(string recurringDetailReference)
         {
             DisableResult result = await _recurringClient.DisableRecurringDetailAsync(ShopperReference.Value, recurringDetailReference);
