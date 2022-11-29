@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Linq;
 
-namespace adyen_dotnet_subscription_example.Services
+namespace adyen_dotnet_checkout_example.Services
 {
     public interface IUrlService
     {
