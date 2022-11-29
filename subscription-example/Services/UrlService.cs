@@ -59,7 +59,7 @@ namespace adyen_dotnet_subscription_example.Services
             if (forwardedHost == null)
                 return null;
 
-            if (!_httpContextAccessor.HttpContext.Request.Headers.TryGetValue("x-forwarded-host", out var forwardedSchemes))
+            if (!_httpContextAccessor.HttpContext.Request.Headers.TryGetValue("x-forwarded-scheme", out var forwardedSchemes))
                 return null;
 
             string forwardedScheme = forwardedSchemes.FirstOrDefault();
