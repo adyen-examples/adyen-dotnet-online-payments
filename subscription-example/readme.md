@@ -24,11 +24,11 @@ This repository includes an subscription example. Within this demo app, you'll f
 * Enter the URL of your application/endpoint (e.g. `https://myorg-myrepo-y8ad7pso0w5.ws-eu75.gitpod.io/api/webhooks/notifications/`).
 * Define username and password (Basic Authentication) to protect your endpoint.
 * Generate the HMAC Key.
-* In Additional Settings, add the data you want to receive. `Recurring Details` for subscriptions.
+* In Additional Settings, add the data you want to receive. Checkmark `Recurring Details` for subscriptions.
 * Make sure the webhook is **Enabled** (therefore it can receive the notifications).
 
 
-## Run integration on localhost (+ proxy)
+## Run integration on localhost with a proxy
 
 1. Clone this repo:
 
@@ -82,7 +82,7 @@ If you use a tunneling service like [ngrok](ngrok), the webhook URL will be the 
 * Enter the URL of your application/endpoint (e.g. `https://c991-80-113-16-28.ngrok.io/api/webhooks/notifications/` or `https://xd1r2txt-5001.euw.devtunnels.ms`).
 * Define username and password (Basic Authentication) to protect your endpoint.
 * Generate the HMAC Key.
-* In Additional Settings, add the data you want to receive. `Recurring Details` for subscriptions.
+* In Additional Settings, add the data you want to receive: Checkmark `Recurring Details` for subscriptions.
 * Make sure the webhook is **Enabled** (therefore it can receive the notifications).
 
 **Note:** when restarting ngrok a new URL is generated, make sure to **update the Webhook URL** in the Customer Area, see: [5.-To-Receive-notifications-asynchronously]
