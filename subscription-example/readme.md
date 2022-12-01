@@ -12,16 +12,14 @@ This repository includes an subscription example. Within this demo app, you'll f
 
 ## Run integration on [Gitpod](https://gitpod.io/)
 1. Open your [Adyen Test Account](https://ca-test.adyen.com/ca/ca/overview/default.shtml) and create a set of [API keys](https://docs.adyen.com/user-management/how-to-get-the-api-key).
-2. Go to [gitpod account variables](https://gitpod.io/variables).
-3. Set the `ADYEN_API_KEY`, `ADYEN_CLIENT_KEY`, `ADYEN_HMAC_KEY` and `ADYEN_MERCHANT_ACCOUNT variables`.
-4. Click the button below!
+2. Go to [gitpod account variables](https://gitpod.io/variables) and set the `ADYEN_API_KEY`, `ADYEN_CLIENT_KEY`, `ADYEN_HMAC_KEY` and `ADYEN_MERCHANT_ACCOUNT variables`.
+3. Click the button below!
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/subscription-example)
 
-5. To allow the Adyen Drop-In and Components to load, add `https://*.gitpod.io` as allowed origin by going to your MerchantAccount in the ca-environment: `Developers` → `API credentials` → Find your `ws_user` → `Client settings` → `Add Allowed origins`.
+4. To allow the Adyen Drop-In and Components to load, add `https://*.gitpod.io` as allowed origin by going to your MerchantAccount in the ca-environment: `Developers` → `API credentials` → Find your `ws_user` → `Client settings` → `Add Allowed origins`.
 
-
-6. To receive notifications asynchronously, add a webhook: 
+5. To receive notifications asynchronously, add a webhook: 
 * In the Customer Area go to Developers → Webhooks and create a new 'Standard notification' webhook.
 * Enter the URL of your application/endpoint (e.g. `https://myorg-myrepo-y8ad7pso0w5.ws-eu75.gitpod.io/api/webhooks/notifications/`).
 * Define username and password (Basic Authentication) to protect your endpoint.
@@ -99,7 +97,7 @@ You can find more information about webhooks in [this detailed blog post](https:
 dotnet run --project subscription-example
 ```
 
-2. Visit `https://localhost:5001/` to buy a subscription.
+2. Visit `https://localhost:5001/` to purchase a subscription.
 
 To try out subscriptions with test card numbers and payment method details, see [Test card numbers](https://docs.adyen.com/development-resources/test-cards/test-card-numbers).
 
