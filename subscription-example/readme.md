@@ -9,26 +9,26 @@ This repository includes a tokenization example for subscriptions. Within this d
 
 - .NET Core SDK 6.x
 - A set of API Keys: 
-  - [API key](https://docs.adyen.com/user-management/how-to-get-the-api-key) `ADYEN_API_KEY`
-  - [Client Key](https://docs.adyen.com/user-management/client-side-authentication) `ADYEN_CLIENT_KEY`
-  - [Merchant Account](https://docs.adyen.com/account/account-structure) `ADYEN_MERCHANT_ACCOUNT`
-  - [HMAC Key](https://docs.adyen.com/development-resources/webhooks/verify-hmac-signatures) `ADYEN_HMAC_KEY`
+    - [API key](https://docs.adyen.com/user-management/how-to-get-the-api-key) `ADYEN_API_KEY`
+    - [Client Key](https://docs.adyen.com/user-management/client-side-authentication) `ADYEN_CLIENT_KEY`
+    - [Merchant Account](https://docs.adyen.com/account/account-structure) `ADYEN_MERCHANT_ACCOUNT`
+    - [HMAC Key](https://docs.adyen.com/development-resources/webhooks/verify-hmac-signatures) `ADYEN_HMAC_KEY`
 - A way to make your localhost publicly available (we have highlighted two options below)
 
 
 ## Run integration on [Gitpod](https://gitpod.io/)
 1. Open your [Adyen Test Account](https://ca-test.adyen.com/ca/ca/overview/default.shtml) and create a set of [API keys](https://docs.adyen.com/user-management/how-to-get-the-api-key)
-2. Go to [gitpod account variables](https://gitpod.io/variables) and set the following variables: `ADYEN_API_KEY`, `ADYEN_CLIENT_KEY` and `ADYEN_MERCHANT_ACCOUNT`
+2. Go to [Gitpod Environmental Variables](https://gitpod.io/variables) and set the following variables: `ADYEN_API_KEY`, `ADYEN_CLIENT_KEY` and `ADYEN_MERCHANT_ACCOUNT`
 
 3. To allow the Adyen Drop-In and Components to load, add `https://*.gitpod.io` as allowed origin by going to your MerchantAccount in the Customer Area: `Developers` → `API credentials` → Find your `ws_user` → `Client settings` → `Add Allowed origins`
 
 4. To receive notifications asynchronously, add a webhook: 
- - In the Customer Area go to `Developers` → `Webhooks` and add a new `Standard notification webhook`
- - Define username and password (Basic Authentication) to protect your endpoint
- - Generate the HMAC Key and add the `ADYEN_HMAC_KEY` in your [Gitpod Environment Variables](https://gitpod.io/variables)
- - We need to point this webhook URL in the next step once we have launched Gitpod
- - In Additional Settings, add the data you want to receive. Checkmark `Recurring Details` for subscriptions
- - Make sure the webhook is **Enabled** to send notifications
+    - In the Customer Area go to `Developers` → `Webhooks` and add a new `Standard notification webhook`
+    - Define username and password (Basic Authentication) to protect your endpoint
+    - Generate the HMAC Key and add the `ADYEN_HMAC_KEY` in your [Gitpod Environment Variables](https://gitpod.io/variables)
+    - We need to point this webhook URL in the next step once we have launched Gitpod
+    - In Additional Settings, add the data you want to receive. Checkmark `Recurring Details` for subscriptions
+    - Make sure the webhook is **Enabled** to send notifications
 
 5. Click the button below to launch the application in Gitpod.
 
@@ -40,7 +40,7 @@ This repository includes a tokenization example for subscriptions. Within this d
  - Hit `Apply` → `Save changes` and Gitpod should be able to receive notifications.
 
 
-## Run integration on localhost with a proxy
+## Run integration on localhost using a proxy
 
 1. Clone this repository.
 
@@ -50,13 +50,16 @@ git clone https://github.com/adyen-examples/adyen-dotnet-online-payments.git
 
 2. To allow the Adyen Drop-In and Components to load, add `https://*.localhost:5001` as allowed origin by going to your MerchantAccount in the Customer Area: `Developers` → `API credentials` → Find your `ws_user` → `Client settings` → `Add Allowed origins`.
 
-Your endpoint that will consume the incoming webhook must be publicly accessible. We will setup the webhooks next by exposing your local endpoint, followed by configuring the webhook in your ca-environment. 
+Your endpoint that will consume the incoming webhook must be publicly accessible. We will setup the webhooks next by exposing your local endpoint, followed by configuring the webhook in your ca-environment. To expose your endpoint locally, we have highlighted two options in step 3 or 4.
 
-3. To expose your endpoint locally, we have highlighted two options here.  
- - Expose your localhost with Visual Studio using dev tunnels - Add `https://*.devtunnels.ms` to your allowed origins.
+3. Expose your localhost with Visual Studio using dev tunnels
+     - Add `https://*.devtunnels.ms` to your allowed origins.
+
 If you use Visual Studio 17.4 or higher [dev tunnels](dev-tunnels), the webhook URL will be the generated URL (i.e. `https://xd1r2txt-5001.euw.devtunnels.ms`) when you start the application. We have created a launchSetting profile `adyen_dotnet_checkout_example_port_tunneling` that should do this for you automatically on startup.
 
- - Expose your localhost with tunneling software (i.e. ngrok) - Add `https://*.ngrok.io` to your allowed origins.
+4. Expose your localhost with tunneling software (i.e. ngrok)
+    - Add `https://*.ngrok.io` to your allowed origins.
+
 If you use a tunneling service like ngrok, the webhook URL will be the generated URL (i.e. `https://c991-80-113-16-28.ngrok.io/api/webhooks/notifications/`).
 
 ```bash
@@ -71,11 +74,14 @@ If you use a tunneling service like ngrok, the webhook URL will be the generated
 ```
 
 4. To receive notifications asynchronously, add a webhook: 
- - In the Customer Area go to `Developers` → `Webhooks` and add a new `Standard notification webhook`
- - Define username and password (Basic Authentication) to protect your endpoint
- - Generate the HMAC Key and add the `ADYEN_HMAC_KEY` in your variables (note that some IDEs will have to be restarted for environmental variables to be injected properly). We have a script that allows you to easily set your environmental variables.
+    - In the Customer Area go to `Developers` → `Webhooks` and add a new `Standard notification webhook`
+    - Define username and password (Basic Authentication) to protect your endpoint
+    - Generate the HMAC Key and add the `ADYEN_HMAC_KEY` in your variables
+    - See script below that allows you to easily set your environmental variables. Note that some IDEs will have to be restarted for environmental variables to be injected properly.
+    - In Additional Settings, add the data you want to receive. Checkmark `Recurring Details` for subscriptions
+    - Make sure the webhook is **Enabled** to send notifications
 
-Set the below environment variables in your terminal environment: `ADYEN_API_KEY`, `ADYEN_CLIENT_KEY` and `ADYEN_MERCHANT_ACCOUNT`
+Set the following environment variables in your terminal environment: `ADYEN_API_KEY`, `ADYEN_CLIENT_KEY`, `ADYEN_MERCHANT_ACCOUNT` and `ADYEN_HMAC_KEY`.
 
 ```shell
 export ADYEN_API_KEY=yourAdyenApiKey
@@ -93,15 +99,12 @@ set ADYEN_CLIENT_KEY=yourAdyenClientKey
 set ADYEN_HMAC_KEY=yourAdyenHmacKey
 ```
 
-* In Additional Settings, add the data you want to receive. Checkmark `Recurring Details` for subscriptions
-* Make sure the webhook is **Enabled** to send notifications
-
 5. Start the application.
 
 6. Update your webhook in your Customer Area with the public url that is generated.
- - In the Customer Area go to `Developers` → `Webhooks` → Select your `Webhook` that is created in step 4 -> `Server Configuration`
- - Update the URL of your application/endpoint (e.g. `https://c991-80-113-16-28.ngrok.io/api/webhooks/notifications/` or `https://xd1r2txt-5001.euw.devtunnels.ms`)
- - Hit `Apply` → `Save changes` and Gitpod should be able to receive notifications
+    - In the Customer Area go to `Developers` → `Webhooks` → Select your `Webhook` that is created in step 4 -> `Server Configuration`
+    - Update the URL of your application/endpoint (e.g. `https://c991-80-113-16-28.ngrok.io/api/webhooks/notifications/` or `https://xd1r2txt-5001.euw.devtunnels.ms`)
+    - Hit `Apply` → `Save changes` and Gitpod should be able to receive notifications
 
 
 **Note:** when exiting ngrok or Visual Studio a new URL is generated, make sure to **update the Webhook URL** in the Customer Area as described in the final step. You can find more information about webhooks in [this detailed blog post](https://www.adyen.com/blog/Integrating-webhooks-notifications-with-Adyen-Checkout)
