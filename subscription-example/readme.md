@@ -100,7 +100,7 @@ export ADYEN_CLIENT_KEY=yourAdyenClientKey
 export ADYEN_HMAC_KEY=yourAdyenHmacKey
 ```
 
-On Windows CMD you can use this commands instead.
+On Windows CMD you can use this command instead.
 
 ```shell
 set ADYEN_API_KEY=yourAdyenApiKey
