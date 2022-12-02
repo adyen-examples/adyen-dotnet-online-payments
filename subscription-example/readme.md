@@ -30,7 +30,7 @@ This repository includes a tokenization example for subscriptions. Within this d
 4. To receive notifications asynchronously, add a webhook: 
     - In the Customer Area go to `Developers` → `Webhooks` and add a new `Standard notification webhook`
     - Define username and password (Basic Authentication) to protect your endpoint
-    - Generate the HMAC Key and add the `ADYEN_HMAC_KEY` in your [Gitpod Environment Variables](https://gitpod.io/variables)
+    - Generate the HMAC Key and set the `ADYEN_HMAC_KEY` in your [Gitpod Environment Variables](https://gitpod.io/variables)
     - We will need to update this webhook URL in step 7
     - Make sure the webhook is **Enabled** to send notifications
 
