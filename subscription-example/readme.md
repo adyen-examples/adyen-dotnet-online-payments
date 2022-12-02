@@ -62,9 +62,7 @@ Your endpoint that will consume the incoming webhook must be publicly accessible
 3. Expose your localhost with Visual Studio using dev tunnels.
      - Add `https://*.devtunnels.ms` to your allowed origins.
 
-If you use Visual Studio 17.4 or higher, the webhook URL will be the generated URL (i.e. `https://xd1r2txt-5001.euw.devtunnels.ms`). 
-
-This should be done automatically when you start the application using the launchSetting-profile `adyen_dotnet_checkout_example_port_tunneling`.
+If you use Visual Studio 17.4 or higher, the webhook URL will be the generated URL (i.e. `https://xd1r2txt-5001.euw.devtunnels.ms`). This should be done automatically when you start the application using the launchSetting-profile `adyen_dotnet_checkout_example_port_tunneling`.
 
 4. Expose your localhost with tunneling software (i.e. ngrok).
     - Add `https://*.ngrok.io` to your allowed origins.
