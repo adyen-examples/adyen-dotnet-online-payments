@@ -45,13 +45,13 @@ namespace adyen_dotnet_subscription_example.Controllers
             
             switch (result.ResultCode)
             {
-                // Handle the payment response cases.
+                // Handle other payment response cases here.
                 case PaymentResponse.ResultCodeEnum.Authorised:
-                    ViewBag.Message = $"Successfully authorised a payment with RecurringDetailReference {recurringDetailReference} on behalf of ShopperReference {ShopperReference.Value}. PspReference: {result.PspReference}";
+                    ViewBag.Message = $"Successfully authorised a payment with RecurringDetailReference: {recurringDetailReference}.";
                     ViewBag.Img = "success";
                     break;
                 default:
-                    ViewBag.Message = $"Payment failed for RecurringDetailReference {recurringDetailReference} on behalf of ShopperReference {ShopperReference.Value}. See logs for more information about the response.";
+                    ViewBag.Message = $"Payment failed for RecurringDetailReference {recurringDetailReference}. See logs for more information about the response.";
                     ViewBag.Img = "failed";
                     break;
             }
@@ -65,11 +65,11 @@ namespace adyen_dotnet_subscription_example.Controllers
             switch (result.Response)
             {
                 case "[detail-successfully-disabled]":
-                    ViewBag.Message = $"Disabled RecurringDetailReference {recurringDetailReference} for ShopperReference {ShopperReference.Value}.";
+                    ViewBag.Message = $"Disabled RecurringDetailReference {recurringDetailReference}.";
                     ViewBag.Img = "success";
                     break;
                 default:
-                    ViewBag.Message = $"Could not disable RecurringDetailReference {recurringDetailReference} for ShopperReference {ShopperReference.Value}. See logs for more information about the response.";
+                    ViewBag.Message = $"Could not disable RecurringDetailReference {recurringDetailReference}. See logs for more information about the response.";
                     ViewBag.Img = "failed";
                     break;
             }
