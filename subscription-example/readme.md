@@ -111,7 +111,11 @@ set ADYEN_HMAC_KEY=yourAdyenHmacKey
 
 7. In Additional Settings, add the data you want to receive. Checkmark `Recurring Details` for subscriptions.
 
-8. Start the application.
+8. Start the application and visit localhost.
+
+```
+dotnet run --project subscription-example 
+```
 
 9. Update your webhook in your Customer Area with the public url that is generated.
     - In the Customer Area go to `Developers` → `Webhooks` → Select your `Webhook` that is created in step 4 -> `Server Configuration`
@@ -124,19 +128,11 @@ set ADYEN_HMAC_KEY=yourAdyenHmacKey
 
 ## Usage
 
-1. Start the application with the following command:
-
-```
-dotnet run --project subscription-example
-```
-
-2. Visit `https://localhost:5001/` to purchase a subscription.
+1. Visit the main page 'Shopper View' to test the application, enter one or multiple card details. Once the payment is authorized, you will receive a webhook notification with the recurringDetailReference! Enter multiple cards to receive multiple different recurringDetailReferences.
 
 To try out subscriptions with test card numbers and payment method details, see [Test card numbers](https://docs.adyen.com/development-resources/test-cards/test-card-numbers). We recommend saving multiple test cards in your browser so you can test your integration faster in the future.
 
-3. Visit 'Shopper View' to test the application, enter one or multiple card details. Once the payment is authorized, you will receive a webhook notification with the recurringDetailReference! Enter multiple cards to receive multiple different recurringDetailReferences.
-
-4. Visit 'Admin Panel' to find the saved recurringDetailReferences and choose to make a payment request or disable the recurringDetailReference.
+2. Visit 'Admin Panel' to find the saved recurringDetailReferences and choose to make a payment request or disable the recurringDetailReference.
 
 **Note:** We currently store these values in a local memory cache, if you restart/stop the application these values are lost. However, the tokens will still persist on the Adyen Platform. You can view the stored payment details by going to a recent payment of the shopper: `Transactions` → `Payments` → `Shopper Details` → `Recurring: View stored payment details` in the ca-environment.
 
