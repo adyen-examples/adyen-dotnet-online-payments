@@ -32,8 +32,7 @@ This repository includes examples of PCI-compliant UI integrations for online pa
   - Klarna (Pay now, Pay later, Slice it)
   - SOFORT
 
-Each demo leverages Adyen's API Library for .NET ([GitHub](https://github.com/Adyen/adyen-dotnet-api-library) | [Docs](https://docs.adyen.com/development-resources/libraries#csharp)). Please make sure to [add the above payment methods to your Adyen account](https://docs.adyen.com/payment-methods#add-payment-methods-to-your-account) before testing!
-
+This demo leverages Adyen's API Library for .NET ([GitHub](https://github.com/Adyen/adyen-dotnet-api-library) | [Docs](https://docs.adyen.com/development-resources/libraries#csharp)). 
 
 ## Run integration on [Gitpod](https://gitpod.io/)
 1. Open your [Adyen Test Account](https://ca-test.adyen.com/ca/ca/overview/default.shtml) and create a set of [API keys](https://docs.adyen.com/user-management/how-to-get-the-api-key).
@@ -144,9 +143,10 @@ dotnet run --project checkout-example
 
 
 ## Usage
+To try out this application with test card numbers, visit [Test card numbers](https://docs.adyen.com/development-resources/test-cards/test-card-numbers). We recommend saving some test cards in your browser so you can test your integration faster in the future.
+Also, please make sure to [add the payment methods to your Adyen account](https://docs.adyen.com/payment-methods#add-payment-methods-to-your-account) before testing.
 
 1. Visit the main page, pick a payment method, follow the instructions to make authorize a payment.
 
-To try out this application with test card numbers and payment method details, visit [Test card numbers](https://docs.adyen.com/development-resources/test-cards/test-card-numbers). We recommend saving multiple test cards in your browser so you can test your integration faster in the future.
+2. Visit the Customer Area `Developers` → `API logs` to view your logs. 
 
-2. Visit the Customer Area `Developers` →  `API logs` to view your logs.
