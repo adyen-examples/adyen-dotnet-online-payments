@@ -1,11 +1,9 @@
 # Adyen [Tokenization](https://docs.adyen.com/online-payments-tokenization) Integration Demo
 
 
-
 ## Details
 
 This repository includes a tokenization example for subscriptions. Within this demo app, you'll find a simplified version of a website that offers a music subscription service. The shopper can purchase a subscription and administrators can manage the saved (tokenized) payment methods on a separate admin panel. The panel allows admins to make payments on behalf of the shopper using this token. We refer to this token as `recurringDetailReference` in this application.
-
 
 
 ## Requirements
@@ -17,7 +15,6 @@ This repository includes a tokenization example for subscriptions. Within this d
     - [Merchant Account](https://docs.adyen.com/account/account-structure) `ADYEN_MERCHANT_ACCOUNT`
     - [HMAC Key](https://docs.adyen.com/development-resources/webhooks/verify-hmac-signatures) `ADYEN_HMAC_KEY`
 - A way to make your endpoints publicly available (we have highlighted two options below).
-
 
 
 ## Run integration on [Gitpod](https://gitpod.io/)
@@ -59,7 +56,7 @@ git clone https://github.com/adyen-examples/adyen-dotnet-online-payments.git
 
 3. To allow the Adyen Drop-In and Components to load, add `https://localhost:5001` as allowed origin by going to your MerchantAccount in the Customer Area: `Developers` → `API credentials` → Find your `ws_user` → `Client settings` → `Add Allowed origins`.
 
-Your endpoint that will consume the incoming webhook must be publicly accessible. To expose your endpoint locally, we have highlighted two options in step 3 or 4. Choose one or consider alternative tunneling software.
+Your endpoint that will consume the incoming webhook must be publicly accessible. To expose your endpoint locally, we have highlighted two options in step 4 or 5. Choose one or consider alternative tunneling software.
 
 4. Expose your localhost with Visual Studio using dev tunnels.
      - Add `https://*.devtunnels.ms` to your allowed origins.
@@ -90,7 +87,7 @@ If you use a tunneling service like ngrok, the webhook URL will be the generated
     - Define username and password (Basic Authentication) to protect your endpoint
     - Generate the HMAC Key
     - See script below that allows you to easily set your environmental variables. Note that some IDEs will have to be restarted for environmental variables to be injected properly
-    - We will need to update this webhook URL in step 9
+    - We will need to update this webhook URL in step 10
     - Make sure the webhook is **Enabled** to send notifications
     
 7. Set the following environment variables in your terminal environment: `ADYEN_API_KEY`, `ADYEN_CLIENT_KEY`, `ADYEN_MERCHANT_ACCOUNT` and `ADYEN_HMAC_KEY`.
@@ -132,9 +129,11 @@ dotnet run --project subscription-example
 
 1.  Visit the main page 'Shopper View' to test the application, enter one or multiple card details. Once the payment is authorized, you will receive a webhook notification with the recurringDetailReference! Enter multiple cards to receive multiple different recurringDetailReferences.
 
-To try out subscriptions with test card numbers and payment method details, see [Test card numbers](https://docs.adyen.com/development-resources/test-cards/test-card-numbers). We recommend saving multiple test cards in your browser so you can test your integration faster in the future.
+To try out this application with test card numbers and payment method details, visit [Test card numbers](https://docs.adyen.com/development-resources/test-cards/test-card-numbers). We recommend saving multiple test cards in your browser so you can test your integration faster in the future.
 
 2. Visit 'Admin Panel' to find the saved recurringDetailReferences and choose to make a payment request or disable the recurringDetailReference.
+
+3. Visit the Customer Area `Developers` →  `API logs` to view your logs.
 
 **Note:** We currently store these values in a local memory cache, if you restart/stop the application these values are lost. However, the tokens will still persist on the Adyen Platform.
 You can view the stored payment details by going to a recent payment of the shopper in the Customer Area: `Transactions` → `Payments` → `Shopper Details` → `Recurring: View stored payment details`.

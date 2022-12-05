@@ -2,10 +2,10 @@
 
 ## Details
 
-This repository includes a collection of examples:
+This repository includes a collection of examples that show how to integrate with Adyen using different payment methods.
 
-- Checkout examples - Use different payment methods to make a payment.
-- Subscription example - Execute recurring payments using tokenization.
+- [Checkout example](https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/checkout-example) - Use different payment methods to make payment requests.
+- [Subscription example](https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/subscription-example) - Initiate recurring payment requests using tokenization.
 
 
 ## Contributing
