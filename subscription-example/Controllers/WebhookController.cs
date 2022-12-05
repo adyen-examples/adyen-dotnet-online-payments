@@ -25,7 +25,7 @@ namespace adyen_dotnet_subscription_example.Controllers
         }
 
         [HttpPost("api/webhooks/notifications")]
-        public async Task<ActionResult<string>> ReceiveWebhooksAsync(NotificationRequest notificationRequest)
+        public ActionResult<string> ReceiveWebhooksAsync(NotificationRequest notificationRequest)
         {
             var hmacValidator = new HmacValidator();
 
@@ -50,7 +50,7 @@ namespace adyen_dotnet_subscription_example.Controllers
                         if (container.NotificationItem.AdditionalData.TryGetValue("recurring.shopperReference", out string shopperReference))
                         {
                             _logger.LogInformation($"Received recurringDetailReference:: {recurringDetailReference} for {shopperReference}");
-                            _repository.Upsert(container.NotificationItem.PaymentMethod, shopperReference, recurringDetailReference);
+                            _repository.Upsert(container.NotificationItem.PaymentMethod, shopperReference, recurringDetailReference); container.NotificationItem.AdditionalData.
                         }
                     }
 

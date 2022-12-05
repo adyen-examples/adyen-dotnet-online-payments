@@ -4,8 +4,11 @@
 
 <div class="status-container">
   <div class="status">
-    <p><b>If you see </b>[detail-successfully-disabled]<b>, you've successfully disabled the token for your shopper. The token should no longer be visible in your admin panel.</b></p>
-    <p class="status-message">JSON Response: @ViewBag.Message</p>
+    @{ 
+          var svgImg = ViewBag.Img + ".svg";
+    }
+    <img src="~/images/@svgImg" class="status-image" alt="@ViewBag.Img" />
+    <p class="status-message">@ViewBag.Message</p>
     <a class="button" href="/admin">Return</a>
   </div>
 </div>

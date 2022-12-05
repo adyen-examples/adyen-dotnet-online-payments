@@ -22,7 +22,7 @@ namespace adyen_dotnet_checkout_example.Controllers
         }
 
         [HttpPost("api/webhooks/notifications")]
-        public async Task<ActionResult<string>> Webhooks(NotificationRequest notificationRequest)
+        public ActionResult<string> Webhooks(NotificationRequest notificationRequest)
         {
             var hmacValidator = new HmacValidator();
 

@@ -13,14 +13,12 @@ namespace adyen_dotnet_subscription_example.Controllers
 {
     public class AdminController : Controller
     {
-        private readonly string _clientKey;
         private readonly IRecurringClient _recurringClient;
         private readonly ICheckoutClient _checkoutClient;
         private readonly ISubscriptionRepository _repository;
 
         public AdminController(IOptions<AdyenOptions> options, IRecurringClient recurringClient, ICheckoutClient checkoutClient, ISubscriptionRepository repository)
         {
-            _clientKey = options.Value.ADYEN_CLIENT_KEY;
             _recurringClient = recurringClient;
             _checkoutClient = checkoutClient;
             _repository = repository;
@@ -44,11 +42,17 @@ namespace adyen_dotnet_subscription_example.Controllers
         public async Task<IActionResult> MakePayment(string recurringDetailReference)
         {
             PaymentResponse result = await _checkoutClient.MakePaymentAsync(ShopperReference.Value, recurringDetailReference);
+            
             switch (result.ResultCode)
             {
-                /// Handle your cases here.
+                // Handle the payment response cases.
+                case PaymentResponse.ResultCodeEnum.Authorised:
+                    ViewBag.Message = $"Successfully authorised a payment with RecurringDetailReference {recurringDetailReference} on behalf of ShopperReference {ShopperReference.Value}. PspReference: {result.PspReference}";
+                    ViewBag.Img = "success";
+                    break;
                 default:
-                    ViewBag.Message = $"{Newtonsoft.Json.JsonConvert.SerializeObject(result, Newtonsoft.Json.Formatting.Indented)};";
+                    ViewBag.Message = $"Payment failed for RecurringDetailReference {recurringDetailReference} on behalf of ShopperReference {ShopperReference.Value}. See logs for more information about the response.";
+                    ViewBag.Img = "failed";
                     break;
             }
             return View();
@@ -58,7 +62,17 @@ namespace adyen_dotnet_subscription_example.Controllers
         public async Task<IActionResult> Disable(string recurringDetailReference)
         {
             DisableResult result = await _recurringClient.DisableRecurringDetailAsync(ShopperReference.Value, recurringDetailReference);
-            ViewBag.Message = $"{result.Response}";
+            switch (result.Response)
+            {
+                case "[detail-successfully-disabled]":
+                    ViewBag.Message = $"Disabled RecurringDetailReference {recurringDetailReference} for ShopperReference {ShopperReference.Value}.";
+                    ViewBag.Img = "success";
+                    break;
+                default:
+                    ViewBag.Message = $"Could not disable RecurringDetailReference {recurringDetailReference} for ShopperReference {ShopperReference.Value}. See logs for more information about the response.";
+                    ViewBag.Img = "failed";
+                    break;
+            }
             return View();
         }
     }
