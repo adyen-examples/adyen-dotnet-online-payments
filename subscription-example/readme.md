@@ -29,8 +29,8 @@ This demo leverages Adyen's API Library for .NET ([GitHub](https://github.com/Ad
 4. To receive notifications asynchronously, add a webhook: 
     - In the Customer Area go to `Developers` → `Webhooks` and add a new `Standard notification webhook`
     - Define username and password (Basic Authentication) to protect your endpoint
-    - Generate the HMAC Key and set the `ADYEN_HMAC_KEY` in your [Gitpod Environment Variables](https://gitpod.io/variables)
-    - We will need to update this webhook URL in step 7
+    - Generate the HMAC Key and set the `ADYEN_HMAC_KEY` in your [Gitpod Environment Variables](https://gitpod.io/variables) with a scope of `*/*`
+    - For the URL, enter `https://gitpod.io` for now, we will need to update this webhook URL in step 7
     - Make sure the webhook is **Enabled** to send notifications
 
 5. In the Customer Area, go to `Developers` → `Additional Settings` → Under `Payment` enable `Recurring Details` for subscriptions.
@@ -89,7 +89,7 @@ If you use a tunneling service like ngrok, the webhook URL will be the generated
     - Define username and password (Basic Authentication) to protect your endpoint
     - Generate the HMAC Key
     - See script below that allows you to easily set your environmental variables. Note that some IDEs will have to be restarted for environmental variables to be injected properly
-    - We will need to update this webhook URL in step 10
+    - For the URL, enter `https://ngrok.io` for now - We will need to update this webhook URL in step 10
     - Make sure the webhook is **Enabled** to send notifications
     
 7. Set the following environment variables in your terminal environment: `ADYEN_API_KEY`, `ADYEN_CLIENT_KEY`, `ADYEN_MERCHANT_ACCOUNT` and `ADYEN_HMAC_KEY`.
