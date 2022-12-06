@@ -64,7 +64,7 @@ This demo provides a simple webhook integration at `/api/webhooks/notifications`
 - Hit `Apply` → `Save changes` and Gitpod should be able to receive notifications.
 
 > **Note:** when exiting Gitpod a new URL is generated, make sure to **update the Webhook URL** in the Customer Area as described in the final step. 
-> You can find more information about webhooks in [this detailed blog post](https://www.adyen.com/blog/Integrating-webhooks-notifications-with-Adyen-Checkout)
+> You can find more information about webhooks in [this detailed blog post](https://www.adyen.com/blog/Integrating-webhooks-notifications-with-Adyen-Checkout).
 
 
 ## Run integration on localhost using a proxy
@@ -111,11 +111,11 @@ If you use a tunneling service like ngrok, the webhook URL will be the generated
   - In the Customer Area go to `Developers` → `Webhooks` and add a new `Standard notification webhook`
   - Define username and password (Basic Authentication) to [protect your endpoint](https://docs.adyen.com/development-resources/webhooks/best-practices#security) - Basic authentication only guarantees that the notification was sent by Adyen, not that it wasn't modified during transmission
   - Generate the HMAC Key - By verifying the HMAC signature included in a notification, you'll confirm that the notification was sent by Adyen, and was not modified during transmission
-  - See script below that allows you to easily set your environmental variables. Note that some IDEs will have to be restarted for environmental variables to be injected properly
+  - See script below that allows you to easily set your environmental variables
   - For the URL, enter `https://ngrok.io` for now - We will need to update this webhook URL in step 10
   - Make sure the webhook is **Enabled** to send notifications
 
-7. Set the following environment variables in your terminal environment: `ADYEN_API_KEY`, `ADYEN_CLIENT_KEY`, `ADYEN_MERCHANT_ACCOUNT` and `ADYEN_HMAC_KEY`.
+7. Set the following environment variables in your terminal environment: `ADYEN_API_KEY`, `ADYEN_CLIENT_KEY`, `ADYEN_MERCHANT_ACCOUNT` and `ADYEN_HMAC_KEY`. Note that some IDEs will have to be restarted for environmental variables to be injected properly.
 
 ```shell
 export ADYEN_API_KEY=yourAdyenApiKey
@@ -147,7 +147,7 @@ dotnet run --project checkout-example
   - Hit `Apply` → `Save changes` and Gitpod should be able to receive notifications
 
 > **Note:** when exiting ngrok or Visual Studio a new URL is generated, make sure to **update the Webhook URL** in the Customer Area as described in the final step. 
-> You can find more information about webhooks in [this detailed blog post](https://www.adyen.com/blog/Integrating-webhooks-notifications-with-Adyen-Checkout)
+> You can find more information about webhooks in [this detailed blog post](https://www.adyen.com/blog/Integrating-webhooks-notifications-with-Adyen-Checkout).
 
 
 ## Usage
