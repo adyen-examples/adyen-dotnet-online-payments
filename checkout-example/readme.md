@@ -47,8 +47,8 @@ This demo provides a simple webhook integration at `/api/webhooks/notifications`
 
 4. To receive notifications asynchronously, add a webhook:
   - In the Customer Area go to `Developers` → `Webhooks` and add a new `Standard notification webhook`
-- Define username and password (Basic Authentication) to [protect your endpoint](https://docs.adyen.com/development-resources/webhooks/best-practices#security)
-  - Generate the HMAC Key and set the `ADYEN_HMAC_KEY` in your [Gitpod Environment Variables](https://gitpod.io/variables)
+  - Define username and password (Basic Authentication) to [protect your endpoint](https://docs.adyen.com/development-resources/webhooks/best-practices#security) - Basic authentication only guarantees that the notification was sent by Adyen, not that it wasn't modified during transmission
+  - Generate the HMAC Key and set the `ADYEN_HMAC_KEY` in your [Gitpod Environment Variables](https://gitpod.io/variables) - By verifying the HMAC signature included in a notification, you'll confirm that the notification was sent by Adyen, and was not modified during transmission
   - For the URL, enter `https://gitpod.io` for now - We will need to update this webhook URL in step 7
   - Make sure the webhook is **Enabled** to send notifications
 
@@ -109,8 +109,8 @@ If you use a tunneling service like ngrok, the webhook URL will be the generated
 
 6. To receive notifications asynchronously, add a webhook:
   - In the Customer Area go to `Developers` → `Webhooks` and add a new `Standard notification webhook`
-  - Define username and password (Basic Authentication) to [protect your endpoint](https://docs.adyen.com/development-resources/webhooks/best-practices#security)
-  - Generate the HMAC Key
+  - Define username and password (Basic Authentication) to [protect your endpoint](https://docs.adyen.com/development-resources/webhooks/best-practices#security) - Basic authentication only guarantees that the notification was sent by Adyen, not that it wasn't modified during transmission
+  - Generate the HMAC Key - By verifying the HMAC signature included in a notification, you'll confirm that the notification was sent by Adyen, and was not modified during transmission
   - See script below that allows you to easily set your environmental variables. Note that some IDEs will have to be restarted for environmental variables to be injected properly
   - For the URL, enter `https://ngrok.io` for now - We will need to update this webhook URL in step 10
   - Make sure the webhook is **Enabled** to send notifications
