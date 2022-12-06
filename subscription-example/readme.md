@@ -47,7 +47,8 @@ This demo provides a simple webhook integration at `/api/webhooks/notifications`
  - Update the URL of your application/endpoint (e.g. `https://8080-myorg-myrepo-y8ad7pso0w5.ws-eu75.gitpod.io/api/webhooks/notifications/`).
  - Hit `Apply` → `Save changes` and Gitpod should be able to receive notifications.
 
-**Note:** when exiting Gitpod a new URL is generated, make sure to **update the Webhook URL** in the Customer Area as described in the final step. You can find more information about webhooks in [this detailed blog post](https://www.adyen.com/blog/Integrating-webhooks-notifications-with-Adyen-Checkout)
+> **Note:** when exiting Gitpod a new URL is generated, make sure to **update the Webhook URL** in the Customer Area as described in the final step. 
+> You can find more information about webhooks in [this detailed blog post](https://www.adyen.com/blog/Integrating-webhooks-notifications-with-Adyen-Checkout)
 
 ## Run integration on localhost using a proxy
 
