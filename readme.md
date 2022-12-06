@@ -2,10 +2,12 @@
 
 ## Details
 
-This repository includes a collection of examples that show how to integrate with Adyen using different payment methods.
+This repository includes a collection of PCI-compliant UI integrations that show how to integrate with Adyen using different payment methods.
 
-- [Checkout example](https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/checkout-example) - Use different payment methods to make payment requests.
-- [Subscription example](https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/subscription-example) - Initiate recurring payment requests using tokenization.
+* [Checkout example](checkout-example) - Use different payment methods to make payment requests.
+![Card checkout demo](checkout-example/wwwroot/images/cardcheckout.gif)
+* [Subscription example](subscription-example) - Initiate recurring payment requests using tokenization.
+
 
 
 ## Contributing

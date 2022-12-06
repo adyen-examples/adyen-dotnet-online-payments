@@ -25,10 +25,14 @@ This demo leverages Adyen's API Library for .NET ([GitHub](https://github.com/Ad
 2. Go to [Gitpod Environmental Variables](https://gitpod.io/variables) and set the following variables: `ADYEN_API_KEY`, `ADYEN_CLIENT_KEY` and `ADYEN_MERCHANT_ACCOUNT` with a scope of `*/*`.
 
 3. To allow the Adyen Drop-In and Components to load, add `https://*.gitpod.io` as allowed origin by going to your MerchantAccount in the Customer Area: `Developers` → `API credentials` → Find your `ws_user` → `Client settings` → `Add Allowed origins`.
+> **Warning** You should only allow wild card (*) domains in the **test** environment. In a **live** environment, you should specify the exact URL of the application.
+
+This demo provides a simple webhook integration at `/api/webhooks/notifications`. For it to work, you need to provide a way for Adyen's servers to reach your running application and add a standard webhook in the Customer Area.
+To expose this endpoint locally, we have highlighted two options in step 4 or 5. Choose one or consider alternative tunneling software.
 
 4. To receive notifications asynchronously, add a webhook: 
     - In the Customer Area go to `Developers` → `Webhooks` and add a new `Standard notification webhook`
-    - Define username and password (Basic Authentication) to protect your endpoint
+    - Define username and password (Basic Authentication) to [protect your endpoint](https://docs.adyen.com/development-resources/webhooks/best-practices#security)
     - Generate the HMAC Key and set the `ADYEN_HMAC_KEY` in your [Gitpod Environment Variables](https://gitpod.io/variables) with a scope of `*/*`
     - For the URL, enter `https://gitpod.io` for now, we will need to update this webhook URL in step 7
     - Make sure the webhook is **Enabled** to send notifications
@@ -57,8 +61,10 @@ git clone https://github.com/adyen-examples/adyen-dotnet-online-payments.git
 2. Open your [Adyen Test Account](https://ca-test.adyen.com/ca/ca/overview/default.shtml) and create a set of [API keys](https://docs.adyen.com/user-management/how-to-get-the-api-key).
 
 3. To allow the Adyen Drop-In and Components to load, add `https://localhost:5001` as allowed origin by going to your MerchantAccount in the Customer Area: `Developers` → `API credentials` → Find your `ws_user` → `Client settings` → `Add Allowed origins`.
+> **Warning:** You should only allow wild card (*) domains in the **test** environment. In a **live** environment, you should specify the exact URL of the application.
 
-Your endpoint that will consume the incoming webhook must be publicly accessible. To expose your endpoint locally, we have highlighted two options in step 4 or 5. Choose one or consider alternative tunneling software.
+This demo provides a simple webhook integration at `/api/webhooks/notifications`. For it to work, you need to provide a way for Adyen's servers to reach your running application and add a standard webhook in the Customer Area. 
+To expose this endpoint locally, we have highlighted two options in step 4 or 5. Choose one or consider alternative tunneling software.
 
 4. Expose your localhost with Visual Studio using dev tunnels.
      - Add `https://*.devtunnels.ms` to your allowed origins.
@@ -86,7 +92,7 @@ If you use a tunneling service like ngrok, the webhook URL will be the generated
 
 6. To receive notifications asynchronously, add a webhook: 
     - In the Customer Area go to `Developers` → `Webhooks` and add a new `Standard notification webhook`
-    - Define username and password (Basic Authentication) to protect your endpoint
+    - Define username and password (Basic Authentication) to [protect your endpoint](https://docs.adyen.com/development-resources/webhooks/best-practices#security)
     - Generate the HMAC Key
     - See script below that allows you to easily set your environmental variables. Note that some IDEs will have to be restarted for environmental variables to be injected properly
     - For the URL, enter `https://ngrok.io` for now - We will need to update this webhook URL in step 10
@@ -119,11 +125,12 @@ dotnet run --project subscription-example
 ```
 
 10. Update your webhook in your Customer Area with the public url that is generated.
-    - In the Customer Area go to `Developers` → `Webhooks` → Select your `Webhook` that is created in step 4 → `Server Configuration`
+    - In the Customer Area go to `Developers` → `Webhooks` → Select your `Webhook` that is created in step 6 → `Server Configuration`
     - Update the URL of your application/endpoint (e.g. `https://c991-80-113-16-28.ngrok.io/api/webhooks/notifications/` or `https://xd1r2txt-5001.euw.devtunnels.ms`)
     - Hit `Apply` → `Save changes` and Gitpod should be able to receive notifications
 
-**Note:** when exiting ngrok or Visual Studio a new URL is generated, make sure to **update the Webhook URL** in the Customer Area as described in the final step. You can find more information about webhooks in [this detailed blog post](https://www.adyen.com/blog/Integrating-webhooks-notifications-with-Adyen-Checkout)
+> **Note:** when exiting ngrok or Visual Studio a new URL is generated, make sure to **update the Webhook URL** in the Customer Area as described in the final step. 
+> You can find more information about webhooks in [this detailed blog post](https://www.adyen.com/blog/Integrating-webhooks-notifications-with-Adyen-Checkout)
 
 
 
@@ -136,7 +143,7 @@ To try out this application with test card numbers, visit [Test card numbers](ht
 
 3. Visit the Customer Area `Developers` → `API logs` to view your logs.
 
-**Note:** We currently store these values in a local memory cache, if you restart/stop the application these values are lost. However, the tokens will still be persisted on the Adyen Platform.
-You can view the stored payment details by going to a recent payment of the shopper in the Customer Area: `Transactions` → `Payments` → `Shopper Details` → `Recurring: View stored payment details`.
+> **Note:** We currently store these values in a local memory cache, if you restart/stop the application these values are lost. However, the tokens will still be persisted on the Adyen Platform.
+> You can view the stored payment details by going to a recent payment of the shopper in the Customer Area: `Transactions` → `Payments` → `Shopper Details` → `Recurring: View stored payment details`.
 
 
