@@ -1,0 +1,14 @@
+@{
+    ViewData["Title"] = "Result page: when a token is disabled.";
+}
+
+<div class="status-container">
+  <div class="status">
+    @{ 
+          var svgImg = ViewBag.Img + ".svg";
+    }
+    <img src="~/images/@svgImg" class="status-image" alt="@ViewBag.Img" />
+    <p class="status-message">@ViewBag.Message</p>
+    <a class="button" href="/admin">Return</a>
+  </div>
+</div>

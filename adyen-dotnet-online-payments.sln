@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.2.32519.379
+VisualStudioVersion = 17.4.33006.217
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "adyen-dotnet-online-payments", "adyen-dotnet-online-payments.csproj", "{D10A761D-1BE6-4CEA-91CA-EC355C55341A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "checkout-example", "checkout-example", "{F4D45A25-83A9-442B-9822-6B112EEBA4D9}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E29B0EF6-C330-4765-9A63-08EF0B731BA7}"
-	ProjectSection(SolutionItems) = preProject
-		.github\workflows\build.yml = .github\workflows\build.yml
-		.github\workflows\e2e.yml = .github\workflows\e2e.yml
-	EndProjectSection
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "subscription-example", "subscription-example", "{F5BCB6E3-8846-461B-BD95-384B14BC7791}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "adyen-dotnet-checkout-example", "checkout-example\adyen-dotnet-checkout-example.csproj", "{E0B23B2B-C820-4264-9F64-87E077D1762A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "adyen-dotnet-subscription-example", "subscription-example\adyen-dotnet-subscription-example.csproj", "{15143C43-B718-40D9-A8E5-DA7E247BBEE7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,15 +17,23 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D10A761D-1BE6-4CEA-91CA-EC355C55341A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D10A761D-1BE6-4CEA-91CA-EC355C55341A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D10A761D-1BE6-4CEA-91CA-EC355C55341A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D10A761D-1BE6-4CEA-91CA-EC355C55341A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0B23B2B-C820-4264-9F64-87E077D1762A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0B23B2B-C820-4264-9F64-87E077D1762A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0B23B2B-C820-4264-9F64-87E077D1762A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0B23B2B-C820-4264-9F64-87E077D1762A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15143C43-B718-40D9-A8E5-DA7E247BBEE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15143C43-B718-40D9-A8E5-DA7E247BBEE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15143C43-B718-40D9-A8E5-DA7E247BBEE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15143C43-B718-40D9-A8E5-DA7E247BBEE7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E0B23B2B-C820-4264-9F64-87E077D1762A} = {F4D45A25-83A9-442B-9822-6B112EEBA4D9}
+		{15143C43-B718-40D9-A8E5-DA7E247BBEE7} = {F5BCB6E3-8846-461B-BD95-384B14BC7791}
+	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {CD48B9E0-EC95-4599-8536-F949ACDA5164}
+		SolutionGuid = {777409BD-281D-419E-9F9B-BE609D4B6971}
 	EndGlobalSection
 EndGlobal
