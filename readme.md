@@ -3,7 +3,6 @@
 This repository includes a collection of PCI-compliant UI integrations that show how to integrate with Adyen using different payment methods. 
 The demos below leverages Adyen's API Library for .NET ([GitHub](https://github.com/Adyen/adyen-dotnet-api-library) | [Documentation](https://docs.adyen.com/development-resources/libraries#csharp)).
 
----
 
 ## [Checkout Example](checkout-example)
 The [checkout example](checkout-example) repository includes examples of PCI-compliant UI integrations for online payments with Adyen.
@@ -19,7 +18,6 @@ The panel allows admins to make payments on behalf of the shopper using this tok
 
 ![Subscription Demo](subscription-example/wwwroot/images/cardsubscription.gif)
 
----
 
 ## Contributing
 
@@ -27,7 +25,6 @@ We commit all our new features directly into our GitHub repository. Feel free to
 
 Find out more in our [contributing](https://github.com/adyen-examples/.github/blob/main/CONTRIBUTING.md) guidelines.
 
----
 
 ## License
 
