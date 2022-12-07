@@ -44,7 +44,7 @@ This demo provides a simple webhook integration at `/api/webhooks/notifications`
     - Update the URL of your application/endpoint (e.g. `https://8080-myorg-myrepo-y8ad7pso0w5.ws-eu75.gitpod.io/api/webhooks/notifications/`)
     - Hit `Apply` → `Save changes` and Gitpod should be able to receive notifications
 
-> **Note:** when exiting Gitpod a new URL is generated, make sure to **update the Webhook URL** in the Customer Area as described in the final step. 
+> **Note** when exiting Gitpod a new URL is generated, make sure to **update the Webhook URL** in the Customer Area as described in the final step. 
 > You can find more information about webhooks in [this detailed blog post](https://www.adyen.com/blog/Integrating-webhooks-notifications-with-Adyen-Checkout).
 
 
@@ -65,7 +65,7 @@ git clone https://github.com/adyen-examples/adyen-dotnet-online-payments.git
     
 
 3. To allow the Adyen Drop-In and Components to load, add `https://localhost:5001` as allowed origin by going to your `ADYEN_MERCHANT_ACCOUNT` in the Customer Area: `Developers` → `API credentials` → Find your `ws_user` → `Client settings` → `Add Allowed origins`.
-> **Warning:** You should only allow wild card (*) domains in the **test** environment. In a **live** environment, you should specify the exact URL of the application.
+> **Warning** You should only allow wild card (*) domains in the **test** environment. In a **live** environment, you should specify the exact URL of the application.
 
 This demo provides a simple webhook integration at `/api/webhooks/notifications`. For it to work, you need to provide a way for Adyen's servers to reach your running application and add a standard webhook in the Customer Area.
 To expose this endpoint locally, we have highlighted two options in step 4 or 5. Choose one or consider alternative tunneling software.
@@ -140,7 +140,7 @@ dotnet run --project checkout-example
   - Update the URL of your application/endpoint (e.g. `https://c991-80-113-16-28.ngrok.io/api/webhooks/notifications/` or `https://xd1r2txt-5001.euw.devtunnels.ms`)
   - Hit `Apply` → `Save changes` and Gitpod should be able to receive notifications
 
-> **Note:** when exiting ngrok or Visual Studio a new URL is generated, make sure to **update the Webhook URL** in the Customer Area as described in the final step. 
+> **Note** When exiting ngrok or Visual Studio a new URL is generated, make sure to **update the Webhook URL** in the Customer Area as described in the final step. 
 > You can find more information about webhooks in [this detailed blog post](https://www.adyen.com/blog/Integrating-webhooks-notifications-with-Adyen-Checkout).
 
 
