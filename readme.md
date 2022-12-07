@@ -5,9 +5,9 @@
 This repository includes a collection of PCI-compliant UI integrations that show how to integrate with Adyen using different payment methods.
 
 * [Checkout example](checkout-example) - Use different payment methods to make payment requests.
-![Card checkout demo](checkout-example/wwwroot/images/cardcheckout.gif)
+![Card Checkout Demo](checkout-example/wwwroot/images/cardcheckout.gif)
 * [Subscription example](subscription-example) - Initiate recurring payment requests using tokenization.
-
+![Subscription Demo](subscription-example/wwwroot/images/cardsubscription.gif)
 
 
 ## Contributing
