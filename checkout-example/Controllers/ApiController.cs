@@ -20,12 +20,11 @@ namespace adyen_dotnet_checkout_example.Controllers
         private readonly Checkout _checkout;
         private readonly string _merchantAccount;
         
-        public ApiController(ILogger<ApiController> logger, IUrlService urlService, IOptions<AdyenOptions> options)
+        public ApiController(Checkout checkout, ILogger<ApiController> logger, IUrlService urlService, IOptions<AdyenOptions> options)
         {
             _logger = logger;
             _urlService = urlService;
-            var client = new Client(options.Value.ADYEN_API_KEY, Adyen.Model.Enum.Environment.Test); // Test Environment;
-            _checkout = new Checkout(client);
+            _checkout = checkout;
             _merchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT;
         }
 

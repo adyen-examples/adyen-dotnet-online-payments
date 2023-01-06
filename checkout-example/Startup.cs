@@ -1,5 +1,8 @@
+using Adyen;
 using adyen_dotnet_checkout_example.Options;
 using adyen_dotnet_checkout_example.Services;
+using Adyen.Model.Enum;
+using Adyen.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -31,9 +34,11 @@ namespace adyen_dotnet_checkout_example
             );
             
             services.AddControllersWithViews();
-            services.AddControllers()
-                .AddNewtonsoftJson();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddHttpContextAccessor();
+            
+            services.AddSingleton<Client>(new Client(Configuration[nameof(AdyenOptions.ADYEN_API_KEY)], Environment.Test));
+            services.AddSingleton<Checkout>();
             services.AddTransient<IUrlService, UrlService>();
         }
 

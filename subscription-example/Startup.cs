@@ -36,8 +36,7 @@ namespace adyen_dotnet_subscription_example
             );
             
             services.AddControllersWithViews();
-            services.AddControllers()
-                .AddNewtonsoftJson();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddHttpContextAccessor();
             services.AddTransient<IUrlService, UrlService>();
 
