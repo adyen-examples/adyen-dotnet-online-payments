@@ -17,8 +17,8 @@ jobs:
         run: docker build -t checkout-example-image:latest checkout-example
       - name: Start checkout-example container
         run: docker run --rm -d --name checkout-example-image -p 8080:80 -e ADYEN_API_KEY="${{ secrets.ADYEN_API_KEY }}" -e ADYEN_MERCHANT_ACCOUNT=${{ secrets.ADYEN_MERCHANT_ACCOUNT }} -e ADYEN_CLIENT_KEY=${{ secrets.ADYEN_CLIENT_KEY }} -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} checkout-example-image:latest
-      - name: Run testing suite for checkout-example
-        run: docker run --rm --name adyen-testing-suite --network host ghcr.io/adyen-examples/adyen-testing-suite:main -e PLAYWRIGHT_FOLDERNAME=checkout
+      - name: Run testing suite against checkout-example-image
+        run: docker run --rm --name adyen-testing-suite -e PLAYWRIGHT_FOLDERNAME=checkout --network host ghcr.io/adyen-examples/adyen-testing-suite:main
 
   subscription:
     runs-on: ubuntu-latest
@@ -29,5 +29,5 @@ jobs:
         run: docker build -t subscription-example-image:latest subscription-example
       - name: Start subscription-example container
         run: docker run --rm -d --name subscription-example-image -p 8080:80 -e ADYEN_API_KEY="${{ secrets.ADYEN_API_KEY }}" -e ADYEN_MERCHANT_ACCOUNT=${{ secrets.ADYEN_MERCHANT_ACCOUNT }} -e ADYEN_CLIENT_KEY=${{ secrets.ADYEN_CLIENT_KEY }} -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} subscription-example-image:latest
-      - name: Run testing suite for subscription-example
-        run: docker run --rm --name adyen-testing-suite --network host ghcr.io/adyen-examples/adyen-testing-suite:main -e PLAYWRIGHT_FOLDERNAME=subscription
+      - name: Run testing suite against subscription-example-image
+        run: docker run --rm --name adyen-testing-suite -e PLAYWRIGHT_FOLDERNAME=subscription --network host ghcr.io/adyen-examples/adyen-testing-suite:main
