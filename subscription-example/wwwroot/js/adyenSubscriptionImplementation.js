@@ -39,9 +39,6 @@ async function createAdyenCheckout(session){
       showPayButton: true,
       storePaymentMethod: true,
       paymentMethodsConfiguration: {
-        ideal: {
-          showImage: true,
-        },
         card: {
           hasHolderName: true,
           holderNameRequired: true,
@@ -50,15 +47,7 @@ async function createAdyenCheckout(session){
             value: 0,
             currency: "EUR",
           },
-        },
-        paypal: {
-          amount: {
-            value: 0,
-            currency: "USD",
-          },
-          environment: "test", // Change this to "live" when you're ready to accept live PayPal payments
-          countryCode: "US", // Only needed for test. This will be automatically retrieved when you are in production.
-        },
+        }
       },
       onPaymentCompleted: (result, component) => {
         console.info("onPaymentCompleted");
