@@ -2,7 +2,9 @@
 
 This repository includes a tokenization example for subscriptions. Within this demo app, you'll find a simplified version of a website that offers a music subscription service. 
 The shopper can purchase a subscription and administrators can manage the saved (tokenized) payment methods on a separate admin panel. 
-The panel allows admins to make payments on behalf of the shopper using this token. We refer to this token as `recurringDetailReference` in this application.
+The panel allows admins to make payments on behalf of the shopper using this token. We refer to this token as `recurringDetailReference` in this application. 
+
+> **Note:** We've included a nice [blog post](https://www.adyen.com/blog/use-adyen-tokenization-to-implement-recurring-in-dotnet) that explains every step of the process.
 
 ![Subscription Demo](wwwroot/images/cardsubscription.gif)
 
