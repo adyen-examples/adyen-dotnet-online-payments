@@ -1,53 +1,50 @@
 tasks:
-- init: |
-    echo "Caching the path ..."
-    input="$GITPOD_WORKSPACE_CONTEXT_URL";
-    if [[ "$input" =~ /(tree|blob)/(.*) ]]; then {
-        slug="${BASH_REMATCH[2]}";
-        _branch="${slug%%/*}";
-        path="${slug#*/}";
-        if test -e "$path"; then {
-            if test ! -d "$path"; then {
-                path="${path%/*}" # Remove filename
-            } fi
-            # https://github.com/<owner>/<repo>/(tree|blob)/<branch> %/file.ext% 
-            # != https://github.com/<owner>/<repo>/(tree|blob)/<branch>
-            if test "${input%/path}" != "${input%/*}"; then {
-                echo "$path" > /tmp/.dpath;
-                until code -r "$path"; do sleep 1; done
-            } fi
-        } fi
-    } fi
-    echo "Installing dotnet ..."
-    wget "https://dot.net/v1/dotnet-install.sh"
-    chmod +x dotnet-install.sh
-    ./dotnet-install.sh --install-dir /workspace/dotnet
-    rm dotnet-install.sh
-    sudo ln -s /workspace/dotnet/dotnet /usr/bin/dotnet
-  command: |
-        if [ -z ${ADYEN_HMAC_KEY+x} ] || [[ -z ${ADYEN_API_KEY+x} ]] || [[ -z ${ADYEN_CLIENT_KEY+x} ]] || [[ -z ${ADYEN_MERCHANT_ACCOUNT+x} ]]; then
-            echo "Expected environment variables not found. Please set the ADYEN_HMAC_KEY, ADYEN_API_KEY, ADYEN_CLIENT_KEY, ADYEN_MERCHANT_ACCOUNT environment variables and rerun session https://gitpod.io/variables."
-        else
-            case "$path" in
-              "checkout-example")
-                echo "Starting checkout-example application..."
-                dotnet run --project checkout-example
-              ;;
-              "subscription-example")
-                echo "Starting subscription-example application..."
-                dotnet run --project subscription-example
-              ;;
-              *) # Default case
-                echo "Starting checkout-example application ..."
-                dotnet run --project checkout-example
-            esac
-        fi
+  - name: Gitpod Task
+    before: |
+      # Stores last segment of the Workspace Context URL in $path and trims spaces.
+      # `gp info` prints information about the current Gitpod workspace.
+      # `awk -F'/' '/Workspace Context URL/{print $NF}'` looks for the line containing 'Workspace Context URL' and prints the last field separated by "/".
+      # `tr -d '[:space:]'` removes any leading or trailing whitespace from the path.
+      echo "Retrieving the last part of the Workspace Context URL ..."
+      path=$(gp info | awk -F'/' '/Workspace Context URL/{print $NF}' | tr -d '[:space:]')
+      echo "Path '$path' is set."
+      
+      # Install dotnet.
+      echo "Installing dotnet ..."
+      wget "https://dot.net/v1/dotnet-install.sh"
+      chmod +x dotnet-install.sh
+      ./dotnet-install.sh --install-dir /workspace/dotnet
+      rm dotnet-install.sh
+      sudo ln -s /workspace/dotnet/dotnet /usr/bin/dotnet
+      echo "Installing dotnet done."
 
-# exposed ports
+    command: |
+      # Check if environment variables are set in https://gitpod.io/variables.
+      echo "Checking if environment variables are set ..."
+      if [ -z ${ADYEN_HMAC_KEY+x} ] || [[ -z ${ADYEN_API_KEY+x} ]] || [[ -z ${ADYEN_CLIENT_KEY+x} ]] || [[ -z ${ADYEN_MERCHANT_ACCOUNT+x} ]]; then
+        echo "Expected environment variables not found. Please set the ADYEN_HMAC_KEY, ADYEN_API_KEY, ADYEN_CLIENT_KEY, ADYEN_MERCHANT_ACCOUNT environment variables and rerun session https://gitpod.io/variables."
+        exit 1
+      fi
+
+      # Run the application based on specified $path.
+      echo "Starting application for '$path' ..."
+      case "$path" in
+        "checkout-example")
+          dotnet run --project checkout-example
+        ;;
+        "subscription-example")
+          dotnet run --project subscription-example
+        ;;
+        *)
+          echo "Starting the default checkout-example application instead because '$path' is not defined ..."
+          dotnet run --project checkout-example
+        ;;
+      esac
+
 ports:
-- port: 8080
-  onOpen: open-preview
-  visibility: public
+  - port: 8080
+    onOpen: open-preview
+    visibility: public
 
 vscode:
   extensions:
