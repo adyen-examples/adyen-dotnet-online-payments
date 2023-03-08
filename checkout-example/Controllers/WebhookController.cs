@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace adyen_dotnet_checkout_example.Controllers
 {
@@ -24,7 +25,7 @@ namespace adyen_dotnet_checkout_example.Controllers
         }
 
         [HttpPost("api/webhooks/notifications")]
-        public ActionResult<string> Webhooks(NotificationRequest notificationRequest)
+        public async Task<ActionResult<string>> Webhooks(NotificationRequest notificationRequest)
         {
             _logger.LogInformation($"Webhook received::\n{notificationRequest}\n");
 
@@ -47,6 +48,7 @@ namespace adyen_dotnet_checkout_example.Controllers
                     return BadRequest("[not accepted invalid hmac key]");
                 }
 
+                // Perform your business logic or asynchronous operations (awaits) here. In this case, we log it.
                 _logger.LogInformation($"Received webhook with event::\n" +
                     $"Merchant Reference ::{container.NotificationItem.MerchantReference} \n" +
                     $"PSP Reference ::{container.NotificationItem.PspReference} \n"

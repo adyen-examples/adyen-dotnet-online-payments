@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace adyen_dotnet_subscription_example.Controllers
 {
@@ -27,7 +28,7 @@ namespace adyen_dotnet_subscription_example.Controllers
         }
 
         [HttpPost("api/webhooks/notifications")]
-        public ActionResult<string> ReceiveWebhooksAsync(NotificationRequest notificationRequest)
+        public async Task<ActionResult<string>> ReceiveWebhooksAsync(NotificationRequest notificationRequest)
         {
             _logger.LogInformation($"Webhook received::\n{notificationRequest}\n");
 
@@ -57,6 +58,8 @@ namespace adyen_dotnet_subscription_example.Controllers
                     if (container.NotificationItem.AdditionalData.TryGetValue("recurring.shopperReference", out string shopperReference))
                     {
                         _logger.LogInformation($"Received recurringDetailReference:: {recurringDetailReference} for {shopperReference}");
+
+                        // Perform asynchronous operations (awaits) here. In this case, we save the paymentMethod, shopperReference and recurringDetailReference in our in-memory cache.
                         _repository.Upsert(container.NotificationItem.PaymentMethod, shopperReference, recurringDetailReference);
                     }
                 }
