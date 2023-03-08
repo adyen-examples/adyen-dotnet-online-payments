@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Adyen.Util;
 
 namespace adyen_dotnet_checkout_example
 {
@@ -39,6 +40,7 @@ namespace adyen_dotnet_checkout_example
             
             services.AddSingleton<Client>(new Client(Configuration[nameof(AdyenOptions.ADYEN_API_KEY)], Environment.Test));
             services.AddSingleton<Checkout>();
+            services.AddSingleton<HmacValidator>();
             services.AddTransient<IUrlService, UrlService>();
         }
 
