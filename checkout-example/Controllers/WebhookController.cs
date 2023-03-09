@@ -48,11 +48,8 @@ namespace adyen_dotnet_checkout_example.Controllers
                     return BadRequest("[not accepted invalid hmac key]");
                 }
 
-                // Perform your business logic or asynchronous operations (awaits) here. In this case, we log it.
-                _logger.LogInformation($"Received webhook with event::\n" +
-                    $"Merchant Reference ::{container.NotificationItem.MerchantReference} \n" +
-                    $"PSP Reference ::{container.NotificationItem.PspReference} \n"
-                );
+                // Process notification asynchronously.
+                await ProcessNotificationAsync(container.NotificationItem);
             }
             catch (Exception e)
             {
@@ -61,6 +58,16 @@ namespace adyen_dotnet_checkout_example.Controllers
             }
 
             return Ok("[accepted]");
+        }
+
+        private Task ProcessNotificationAsync(NotificationRequestItem notification)
+        {        
+            // Perform your business logic or asynchronous operations (awaits) here.
+            // In this case, we just log it.
+            _logger.LogInformation($"Received webhook with event::\n" +
+                                   $"Merchant Reference ::{notification.MerchantReference} \n" +
+                                   $"PSP Reference ::{notification.PspReference} \n");
+            return Task.CompletedTask;
         }
     }
 }
