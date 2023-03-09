@@ -1,6 +1,7 @@
 using Adyen;
 using Adyen.Model.Enum;
 using Adyen.Service;
+using Adyen.Util;
 using adyen_dotnet_subscription_example.Clients;
 using adyen_dotnet_subscription_example.Options;
 using adyen_dotnet_subscription_example.Repositories;
@@ -43,6 +44,7 @@ namespace adyen_dotnet_subscription_example
             services.AddSingleton<Client>(new Client(Configuration[nameof(AdyenOptions.ADYEN_API_KEY)], Environment.Test));
             services.AddSingleton<Checkout>();
             services.AddSingleton<Recurring>();
+            services.AddSingleton<HmacValidator>();
             services.AddSingleton<IRecurringClient, RecurringClient>();
             services.AddSingleton<ICheckoutClient, CheckoutClient>();
             services.AddSingleton<ISubscriptionRepository, SubscriptionRepository>();
