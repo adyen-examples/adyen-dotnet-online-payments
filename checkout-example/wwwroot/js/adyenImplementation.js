@@ -32,47 +32,71 @@ async function finalizeCheckout() {
 }
 
 async function createAdyenCheckout(session){
-    return new AdyenCheckout(
-    {
-      clientKey,
-      locale: "en_US",
-      environment: "test",
-      session: session,
-      showPayButton: true,
-      paymentMethodsConfiguration: {
-        ideal: {
-          showImage: true,
-        },
-        card: {
-          hasHolderName: true,
-          holderNameRequired: true,
-          name: "Credit or debit card",
-          amount: {
-            value: 10000,
-            currency: "EUR",
-          },
-        },
-        paypal: {
-          amount: {
-            value: 10000,
-            currency: "USD",
-          },
-          environment: "test", // Change this to "live" when you're ready to accept live PayPal payments
-          countryCode: "US", // Only needed for test. This will be automatically retrieved when you are in production.
-        }
-      },
-      onPaymentCompleted: (result, component) => {
-        console.info("onPaymentCompleted");
-        console.info(result, component);
-        handleServerResponse(result, component);
-      },
-      onError: (error, component) => {
-        console.error("onError");
-        console.error(error.name, error.message, error.stack, component);
-        handleServerResponse(error, component);
-      },
+  const giftcardConfiguration = {
+  onOrderCreated: function (orderStatus) {
+    // Get the remaining amount to be paid from orderStatus.
+    console.log(orderStatus.remainingAmount);
+    // Use your existing instance of AdyenCheckout to create payment methods components
+    // The shopper can use these payment methods to pay the remaining amount
+    const idealComponent = checkout.create('ideal').mount('#ideal-container');
+    const cardComponent = checkout.create('card').mount('#card-container');
+    // Mount the gift card component to the specified DOM element
+    const giftcardComponent = checkout.create('giftcard').mount('#giftcard-container');
+    // Add other payment method components that you want to show to the shopper
     }
-  );
+  };
+  return new AdyenCheckout(
+  {
+    clientKey,
+    locale: "en_US",
+    environment: "test",
+    session: session,
+    showPayButton: true,
+    paymentMethodsConfiguration: {
+      giftcard: {
+        amount: {
+          value: 10000,
+          currency: "EUR",
+          giftcardConfiguration: giftcardConfiguration,
+          brandsConfiguration: {
+            plastix: {
+              icon: 'https://mymerchant.com/icons/customIcon.svg'
+            }
+          }
+        },
+      },
+      ideal: {
+        showImage: true,
+      },
+      card: {
+        hasHolderName: true,
+        holderNameRequired: true,
+        name: "Credit or debit card",
+        amount: {
+          value: 10000,
+          currency: "EUR",
+        },
+      },
+      paypal: {
+        amount: {
+          value: 10000,
+          currency: "USD",
+        },
+        environment: "test", // Change this to "live" when you're ready to accept live PayPal payments
+        countryCode: "US", // Only needed for test. This will be automatically retrieved when you are in production.
+      }
+    },
+    onPaymentCompleted: (result, component) => {
+      console.info("onPaymentCompleted");
+      console.info(result, component);
+      handleServerResponse(result, component);
+    },
+    onError: (error, component) => {
+      console.error("onError");
+      console.error(error.name, error.message, error.stack, component);
+      handleServerResponse(error, component);
+    },
+  });
 }
 
 // Calls your server endpoints
