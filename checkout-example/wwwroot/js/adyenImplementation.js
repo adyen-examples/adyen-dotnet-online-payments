@@ -32,17 +32,21 @@ async function finalizeCheckout() {
 }
 
 async function createAdyenCheckout(session){
-  const giftcardConfiguration = {
-  onOrderCreated: function (orderStatus) {
-    // Get the remaining amount to be paid from orderStatus.
-    console.log(orderStatus.remainingAmount);
-    // Use your existing instance of AdyenCheckout to create payment methods components
-    // The shopper can use these payment methods to pay the remaining amount
-    const idealComponent = checkout.create('ideal').mount('#ideal-container');
-    const cardComponent = checkout.create('card').mount('#card-container');
-    // Mount the gift card component to the specified DOM element
-    const giftcardComponent = checkout.create('giftcard').mount('#giftcard-container');
-    // Add other payment method components that you want to show to the shopper
+const giftcardConfiguration = {
+    onBalanceCheck: function (resolve, reject, data) {
+        console.log(data);
+        resolve(BalanceResponse);
+    },
+    onOrderRequest: function (resolve, reject, data) {
+        // Make a POST /orders request
+        // Create an order for the total transaction amount
+        console.log(data);
+        resolve(OrderResponse);
+    },
+    onOrderCancel: function(Order) {
+        // Make a POST /orders/cancel request
+        // Call the update function and pass the payment methods response to update the instance of checkout
+        checkout.update(paymentMethodsResponse, amount);
     }
   };
   return new AdyenCheckout(
@@ -54,16 +58,7 @@ async function createAdyenCheckout(session){
     showPayButton: true,
     paymentMethodsConfiguration: {
       giftcard: {
-        amount: {
-          value: 10000,
-          currency: "EUR",
-          giftcardConfiguration: giftcardConfiguration,
-          brandsConfiguration: {
-            plastix: {
-              icon: 'https://mymerchant.com/icons/customIcon.svg'
-            }
-          }
-        },
+        giftcardConfiguration: giftcardConfiguration,
       },
       ideal: {
         showImage: true,
@@ -85,6 +80,13 @@ async function createAdyenCheckout(session){
         environment: "test", // Change this to "live" when you're ready to accept live PayPal payments
         countryCode: "US", // Only needed for test. This will be automatically retrieved when you are in production.
       }
+    },
+    onSubmit: (state, dropin) => {
+      // Handle the gift card form submission
+      // You can use the `state.data.paymentMethod` object to get the gift card details
+      // and the `state.data.additionalData.partialPaymentAmount` property to get the partial payment amount
+      console.log(state.data.paymentMethod);
+      console.log(state.data.additionalData.partialPaymentAmount);
     },
     onPaymentCompleted: (result, component) => {
       console.info("onPaymentCompleted");

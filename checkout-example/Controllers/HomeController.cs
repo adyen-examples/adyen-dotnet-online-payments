@@ -34,6 +34,14 @@ namespace adyen_dotnet_checkout_example.Controllers
             return View();
         }
 
+        [Route("giftcardcheckout/{id}")]
+        public IActionResult GiftcardCheckout(string id)
+        {
+            ViewBag.PaymentMethod = id;
+            ViewBag.ClientKey = _clientKey;
+            return View();
+        }
+
         [Route("redirect")]
         public IActionResult Redirect()
         {

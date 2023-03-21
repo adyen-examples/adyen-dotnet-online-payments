@@ -48,6 +48,14 @@ namespace adyen_dotnet_checkout_example.Controllers
                     return BadRequest("[not accepted invalid hmac key]");
                 }
 
+                // Return if webhook is not successful.
+                if (!container.NotificationItem.Success)
+                {
+                    _logger.LogError($"Webhook unsuccessful: {container.NotificationItem.Reason} \n" +
+                        $"EventCode: {container.NotificationItem.EventCode}");
+                    return BadRequest($"Webhook unsuccessful: {container.NotificationItem.Reason}");
+                }
+
                 // Process notification asynchronously.
                 await ProcessNotificationAsync(container.NotificationItem);
             }
