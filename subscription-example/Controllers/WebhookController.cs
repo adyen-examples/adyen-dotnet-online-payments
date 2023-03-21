@@ -30,7 +30,7 @@ namespace adyen_dotnet_subscription_example.Controllers
         [HttpPost("api/webhooks/notifications")]
         public async Task<ActionResult<string>> ReceiveWebhooksAsync(NotificationRequest notificationRequest)
         {
-            _logger.LogInformation($"Webhook received::\n{notificationRequest}\n");
+            _logger.LogInformation($"Webhook received: \n{notificationRequest}\n");
 
             try
             {
@@ -40,7 +40,7 @@ namespace adyen_dotnet_subscription_example.Controllers
 
                 if (container == null)
                 {
-                    return BadRequest("Container has no notification items.");
+                    return BadRequest("Container has no notification items");
                 }
 
                 // We always recommend to activate HMAC validation in the webhooks for security reasons.
@@ -56,7 +56,7 @@ namespace adyen_dotnet_subscription_example.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error while calculating HMAC signature::\n{e}\n");
+                _logger.LogError($"Error while calculating HMAC signature: \n{e}\n");
                 throw;
             }
 
@@ -65,6 +65,13 @@ namespace adyen_dotnet_subscription_example.Controllers
 
         private Task ProcessNotificationAsync(NotificationRequestItem notificationRequestItem)
         {
+            // Return if not success.
+            if (!notificationRequestItem.Success)
+            {
+                _logger.LogError($"Webhook unsuccessful: {notificationRequestItem.Reason}");
+                return Task.CompletedTask;
+            }
+
             // Get the `recurringDetailReference` from the `AdditionalData` property in the webhook.
             if (!notificationRequestItem.AdditionalData.TryGetValue("recurring.recurringDetailReference", out string recurringDetailReference))
             {
@@ -76,15 +83,19 @@ namespace adyen_dotnet_subscription_example.Controllers
             {
                 return Task.CompletedTask;
             }
-            
-            _logger.LogInformation($"Received recurringDetailReference:: {recurringDetailReference} for {shopperReference}.");
+
+            // Get and log the recurringProcessingModel below
+            notificationRequestItem.AdditionalData.TryGetValue("recurringProcessingModel", out string recurringProcessingModel);
+
+            _logger.LogInformation($"Received recurringDetailReference: {recurringDetailReference} for {shopperReference}" +
+                $"RecurringProcessingModel: {recurringProcessingModel}");
 
             // Save the paymentMethod, shopperReference and recurringDetailReference in our in-memory cache.
             _repository.Upsert(notificationRequestItem.PaymentMethod, shopperReference, recurringDetailReference);
             
-            _logger.LogInformation($"Received webhook with event::\n" +
-                                   $"Merchant Reference ::{notificationRequestItem.MerchantReference} \n" +
-                                   $"PSP Reference ::{notificationRequestItem.PspReference} \n");
+            _logger.LogInformation($"Received webhook with event: \n" +
+                                   $"Merchant Reference: {notificationRequestItem.MerchantReference} \n" +
+                                   $"PSP Reference: {notificationRequestItem.PspReference} \n");
             return Task.CompletedTask;
         }
     }
