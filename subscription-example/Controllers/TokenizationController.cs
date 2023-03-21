@@ -18,7 +18,7 @@ namespace adyen_dotnet_subscription_example.Controllers
         /// This method creates a token using the /sessions endpoint.
         /// </summary>
         [HttpPost("api/tokenization/sessions")]
-        public async Task<ActionResult<string>> SessionsAsync()
+        public async Task<ActionResult<string>> Sessions()
         {
             var result = await _checkoutService.CheckoutSessionsAsync(ShopperReference.Value);
             return result.ToJson();

@@ -28,7 +28,7 @@ namespace adyen_dotnet_subscription_example.Controllers
         }
 
         [HttpPost("api/webhooks/notifications")]
-        public async Task<ActionResult<string>> ReceiveWebhooksAsync(NotificationRequest notificationRequest)
+        public async Task<ActionResult<string>> Webhooks(NotificationRequest notificationRequest)
         {
             _logger.LogInformation($"Webhook received: \n{notificationRequest}\n");
 

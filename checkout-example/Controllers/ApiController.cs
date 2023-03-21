@@ -28,6 +28,31 @@ namespace adyen_dotnet_checkout_example.Controllers
             _merchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT;
         }
 
+        [HttpPost("api/balance")]
+        public async Task<ActionResult<string>> Balance()
+        {
+            var balanceCheckRequest = new CheckoutBalanceCheckRequest();
+            balanceCheckRequest.PaymentMethod = new Dictionary<string, string>()
+            {
+                { "type", "givex" },
+                { "number", "6036280000000000000" },
+                { "cvc", "123" }
+            };
+            balanceCheckRequest.MerchantAccount = _merchantAccount;
+
+            try
+            {
+                var res = await _checkout.PaymentMethodsBalanceAsync(balanceCheckRequest);
+                _logger.LogInformation($"Response from API::\n{res}\n");
+                return res.ToJson();
+            }
+            catch (Adyen.HttpClient.HttpClientException e)
+            {
+                _logger.LogError($"Request for Payments failed::\n{e.ResponseBody}\n");
+                throw;
+            }
+        }
+
         [HttpPost("api/sessions")]
         public async Task<ActionResult<string>> Sessions()
         {
@@ -54,12 +79,12 @@ namespace adyen_dotnet_checkout_example.Controllers
             try
             {
                 var res = await _checkout.SessionsAsync(sessionsRequest);
-                _logger.LogInformation($"Response for Payment API::\n{res}\n");
+                _logger.LogInformation($"Response: \n{res}\n");
                 return res.ToJson();
             }
             catch (Adyen.HttpClient.HttpClientException e)
             {
-                _logger.LogError($"Request for Payments failed::\n{e.ResponseBody}\n");
+                _logger.LogError($"Request: \n{e.ResponseBody}\n");
                 throw;
             }
         }

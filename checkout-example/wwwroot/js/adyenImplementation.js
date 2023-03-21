@@ -32,73 +32,68 @@ async function finalizeCheckout() {
 }
 
 async function createAdyenCheckout(session){
-const giftcardConfiguration = {
-    onBalanceCheck: function (resolve, reject, data) {
-        console.log(data);
+    const giftcardConfiguration = {
+      onBalanceCheck: function (resolve, reject, data) {
+        // Make a POST /paymentMethods/balance request
+        const balanceResponse = callServer("/api/balance");
+        console.log(balanceResponse);
         resolve(BalanceResponse);
-    },
-    onOrderRequest: function (resolve, reject, data) {
+      },
+      onOrderRequest: function (resolve, reject, data) {
         // Make a POST /orders request
         // Create an order for the total transaction amount
-        console.log(data);
         resolve(OrderResponse);
-    },
-    onOrderCancel: function(Order) {
+      },
+      onOrderCancel: function(Order) {
         // Make a POST /orders/cancel request
         // Call the update function and pass the payment methods response to update the instance of checkout
         checkout.update(paymentMethodsResponse, amount);
-    }
-  };
-  return new AdyenCheckout(
-  {
-    clientKey,
-    locale: "en_US",
-    environment: "test",
-    session: session,
-    showPayButton: true,
-    paymentMethodsConfiguration: {
-      giftcard: {
-        giftcardConfiguration: giftcardConfiguration,
-      },
-      ideal: {
-        showImage: true,
-      },
-      card: {
-        hasHolderName: true,
-        holderNameRequired: true,
-        name: "Credit or debit card",
-        amount: {
-          value: 10000,
-          currency: "EUR",
-        },
-      },
-      paypal: {
-        amount: {
-          value: 10000,
-          currency: "USD",
-        },
-        environment: "test", // Change this to "live" when you're ready to accept live PayPal payments
-        countryCode: "US", // Only needed for test. This will be automatically retrieved when you are in production.
       }
-    },
-    onSubmit: (state, dropin) => {
-      // Handle the gift card form submission
-      // You can use the `state.data.paymentMethod` object to get the gift card details
-      // and the `state.data.additionalData.partialPaymentAmount` property to get the partial payment amount
-      console.log(state.data.paymentMethod);
-      console.log(state.data.additionalData.partialPaymentAmount);
-    },
-    onPaymentCompleted: (result, component) => {
-      console.info("onPaymentCompleted");
-      console.info(result, component);
-      handleServerResponse(result, component);
-    },
-    onError: (error, component) => {
-      console.error("onError");
-      console.error(error.name, error.message, error.stack, component);
-      handleServerResponse(error, component);
-    },
-  });
+    };
+    return new AdyenCheckout(
+    {
+      clientKey,
+      locale: "en_US",
+      environment: "test",
+      session: session,
+      showPayButton: true,
+      paymentMethodsConfiguration: {
+        giftcard: { 
+            giftcardConfiguration: giftcardConfiguration,
+        },
+        ideal: {
+          showImage: true,
+        },
+        card: {
+          hasHolderName: true,
+          holderNameRequired: true,
+          name: "Credit or debit card",
+          amount: {
+            value: 10000,
+            currency: "EUR",
+          },
+        },
+        paypal: {
+          amount: {
+            value: 10000,
+            currency: "USD",
+          },
+          environment: "test", // Change this to "live" when you're ready to accept live PayPal payments
+          countryCode: "US", // Only needed for test. This will be automatically retrieved when you are in production.
+        }
+      },
+      onPaymentCompleted: (result, component) => {
+        console.info("onPaymentCompleted");
+        console.info(result, component);
+        handleServerResponse(result, component);
+      },
+      onError: (error, component) => {
+        console.error("onError");
+        console.error(error.name, error.message, error.stack, component);
+        handleServerResponse(error, component);
+      },
+    }
+  );
 }
 
 // Calls your server endpoints
