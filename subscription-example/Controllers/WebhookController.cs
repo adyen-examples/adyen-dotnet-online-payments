@@ -51,6 +51,13 @@ namespace adyen_dotnet_subscription_example.Controllers
                     return BadRequest("[not accepted invalid hmac key]");
                 }
 
+                // Return if not success.
+                if (!container.NotificationItem.Success)
+                {
+                    _logger.LogError($"Webhook unsuccessful: {container.NotificationItem.Reason}");
+                    return BadRequest($"{container.NotificationItem.Reason}");
+                }
+
                 // Process notification asynchronously.
                 await ProcessNotificationAsync(container.NotificationItem);
             }
@@ -65,10 +72,8 @@ namespace adyen_dotnet_subscription_example.Controllers
 
         private Task ProcessNotificationAsync(NotificationRequestItem notificationRequestItem)
         {
-            // Return if not success.
-            if (!notificationRequestItem.Success)
+            if (notificationRequestItem.EventCode != "RECURRING_CONTRACT")
             {
-                _logger.LogError($"Webhook unsuccessful: {notificationRequestItem.Reason}");
                 return Task.CompletedTask;
             }
 
