@@ -35,7 +35,7 @@ async function createAdyenCheckout(session){
     const giftcardConfiguration = {
       onBalanceCheck: function (resolve, reject, data) {
         // Make a POST /paymentMethods/balance request
-        const balanceResponse = callServer("/api/balance");
+        const balanceResponse = callServer("/api/balancecheck");
         console.log(balanceResponse);
         resolve(BalanceResponse);
       },

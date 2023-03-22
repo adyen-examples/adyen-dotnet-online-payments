@@ -1,4 +1,3 @@
-using Adyen;
 using Adyen.Model.Checkout;
 using Adyen.Service;
 using adyen_dotnet_checkout_example.Options;
@@ -28,27 +27,75 @@ namespace adyen_dotnet_checkout_example.Controllers
             _merchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT;
         }
 
-        [HttpPost("api/balance")]
-        public async Task<ActionResult<string>> Balance()
+        [HttpPost("api/createorder")]
+        public async Task<ActionResult<string>> CreateOrder()
         {
-            var balanceCheckRequest = new CheckoutBalanceCheckRequest();
-            balanceCheckRequest.PaymentMethod = new Dictionary<string, string>()
-            {
-                { "type", "givex" },
-                { "number", "6036280000000000000" },
-                { "cvc", "123" }
-            };
-            balanceCheckRequest.MerchantAccount = _merchantAccount;
+            var createOrderRequest = new CheckoutCreateOrderRequest(
+                amount: new Amount("EUR", 10000), // value is 100€ in minor units
+                merchantAccount: _merchantAccount,
+                expiresAt: "2024-04-09T14:16:46Z", 
+                reference: Guid.NewGuid().ToString()
+            );
 
             try
             {
-                var res = await _checkout.PaymentMethodsBalanceAsync(balanceCheckRequest);
-                _logger.LogInformation($"Response from API::\n{res}\n");
+                var res = await _checkout.OrdersAsync(createOrderRequest);
+                _logger.LogInformation($"Response from Orders API: {res}");
                 return res.ToJson();
             }
             catch (Adyen.HttpClient.HttpClientException e)
             {
-                _logger.LogError($"Request for Payments failed::\n{e.ResponseBody}\n");
+                _logger.LogError($"Request for CreateOrder failed: {e.ResponseBody}");
+                throw;
+            }
+        }
+
+        [HttpPost("api/cancelorder")]
+        public async Task<ActionResult<string>> CancelOrder(string orderData, string pspReference)
+        {
+            var createOrderRequest = new CheckoutCancelOrderRequest( 
+                order: new CheckoutOrder(orderData, pspReference),
+                merchantAccount: _merchantAccount
+            );
+
+            try
+            {
+                var res = await _checkout.OrdersCancelAsync(createOrderRequest);
+                _logger.LogInformation($"Response from Orders API: {res}");
+                return res.ToJson();
+            }
+            catch (Adyen.HttpClient.HttpClientException e)
+            {
+                _logger.LogError($"Request for CancelOrder failed: {e.ResponseBody}");
+                throw;
+            }
+        }
+
+        [HttpPost("api/balancecheck")]
+        public async Task<ActionResult<string>> BalanceCheck()
+        {
+            var balanceCheckRequest = new CheckoutBalanceCheckRequest(
+                amount: new Amount("EUR", 10000), // value is 100€ in minor units
+                merchantAccount: _merchantAccount,
+                //string type, string number, string cvc, string holderName for plastic
+                paymentMethod: new Dictionary<string, string>()
+                {
+                    { "type", "givex" },
+                    { "number", "6036280000000000000" },
+                    { "cvc", "123" }
+                },
+                reference: Guid.NewGuid().ToString()
+            );
+
+            try
+            {
+                var res = await _checkout.PaymentMethodsBalanceAsync(balanceCheckRequest);
+                _logger.LogInformation($"Response from Orders API: {res}");
+                return res.ToJson();
+            }
+            catch (Adyen.HttpClient.HttpClientException e)
+            {
+                _logger.LogError($"Request for BalanceCheck failed: {e.ResponseBody}");
                 throw;
             }
         }
@@ -59,8 +106,8 @@ namespace adyen_dotnet_checkout_example.Controllers
             var sessionsRequest = new CreateCheckoutSessionRequest();
             sessionsRequest.MerchantAccount = _merchantAccount; // required
             sessionsRequest.Channel = CreateCheckoutSessionRequest.ChannelEnum.Web;
-            var amount = new Amount("EUR", 10000); // value is 100€ in minor units
-            sessionsRequest.Amount = amount;
+            sessionsRequest.Amount = new Amount("EUR", 10000); // value is 100€ in minor units
+
             var orderRef = Guid.NewGuid();
             sessionsRequest.Reference = orderRef.ToString(); // required
 
@@ -84,7 +131,7 @@ namespace adyen_dotnet_checkout_example.Controllers
             }
             catch (Adyen.HttpClient.HttpClientException e)
             {
-                _logger.LogError($"Request: \n{e.ResponseBody}\n");
+                _logger.LogError($"Request: {e.ResponseBody}\n");
                 throw;
             }
         }

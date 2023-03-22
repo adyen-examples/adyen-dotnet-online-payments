@@ -53,9 +53,7 @@ namespace adyen_dotnet_subscription_example.Clients
 
             var sessionsRequest = new CreateCheckoutSessionRequest();
             sessionsRequest.MerchantAccount = _merchantAccount;
-
-            var amount = new Amount("EUR", 0); 
-            sessionsRequest.Amount = amount;
+            sessionsRequest.Amount = new Amount("EUR", 0);
             sessionsRequest.Reference = orderRef.ToString();
 
             sessionsRequest.Channel = CreateCheckoutSessionRequest.ChannelEnum.Web;
@@ -84,7 +82,6 @@ namespace adyen_dotnet_subscription_example.Clients
         /// <inheritdoc/>
         public async Task<PaymentResponse> MakePaymentAsync(string shopperReference, string recurringDetailReference, CancellationToken cancellationToken)
         {
-            var amount = new Amount("EUR", 1199);
             var details = new DefaultPaymentMethodDetails
             {
                 StoredPaymentMethodId = recurringDetailReference
@@ -93,7 +90,7 @@ namespace adyen_dotnet_subscription_example.Clients
             var paymentsRequest = new PaymentRequest
             {
                 Reference = Guid.NewGuid().ToString(),
-                Amount = amount,
+                Amount = new Amount("EUR", 1199),
                 MerchantAccount = _merchantAccount,
                 ShopperInteraction = PaymentRequest.ShopperInteractionEnum.ContAuth,
                 RecurringProcessingModel = PaymentRequest.RecurringProcessingModelEnum.Subscription,
