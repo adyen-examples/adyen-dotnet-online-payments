@@ -34,7 +34,7 @@ namespace adyen_dotnet_checkout_example.Controllers
                 amount: new Amount("EUR", 10000), // value is 100€ in minor units
                 merchantAccount: _merchantAccount,
                 expiresAt: "2024-04-09T14:16:46Z", 
-                reference: Guid.NewGuid().ToString()
+                reference: Guid.NewGuid().ToString() // This needs to match with cancelorder cancelorderRequest.orderData
             );
 
             try
@@ -106,7 +106,7 @@ namespace adyen_dotnet_checkout_example.Controllers
             var sessionsRequest = new CreateCheckoutSessionRequest();
             sessionsRequest.MerchantAccount = _merchantAccount; // required
             sessionsRequest.Channel = CreateCheckoutSessionRequest.ChannelEnum.Web;
-            sessionsRequest.Amount = new Amount("EUR", 10000); // value is 100€ in minor units
+            sessionsRequest.Amount = new Amount("EUR", 11000); // value is 100€ in minor units
 
             var orderRef = Guid.NewGuid();
             sessionsRequest.Reference = orderRef.ToString(); // required
@@ -122,7 +122,7 @@ namespace adyen_dotnet_checkout_example.Controllers
                 new LineItem(quantity: 1, amountIncludingTax: 5000 , description: "Sunglasses"),
                 new LineItem(quantity: 1, amountIncludingTax: 5000, description: "Headphones")
             };
-            
+
             try
             {
                 var res = await _checkout.SessionsAsync(sessionsRequest);
