@@ -54,7 +54,7 @@ namespace adyen_dotnet_subscription_example.Controllers
                         ViewBag.Img = "success";
                         break;
                     default:
-                        ViewBag.Message = $"Payment failed for RecurringDetailReference {recurringDetailReference}. {result.ResultCode}: {result.RefusalReason}.";
+                        ViewBag.Message = $"Payment failed for RecurringDetailReference {recurringDetailReference}. See error logs for the message.";
                         ViewBag.Img = "failed";
                         break;
                 }
@@ -81,14 +81,14 @@ namespace adyen_dotnet_subscription_example.Controllers
                         ViewBag.Img = "success";
                         break;
                     default:
-                        ViewBag.Message = result.Response;
+                        ViewBag.Message = $"Disable failed for RecurringDetailReference {recurringDetailReference}. See logs for the response message."; ;
                         ViewBag.Img = "failed";
                         break;
                 }
             }
             catch (HttpClientException e)
             {
-                ViewBag.Message = $"Payment failed for RecurringDetailReference {recurringDetailReference}. See error logs for the exception.";
+                ViewBag.Message = $"Disable failed for RecurringDetailReference {recurringDetailReference}. See error logs for the exception.";
                 ViewBag.Img = "failed";
             }
             return View();
