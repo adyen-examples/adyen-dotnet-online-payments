@@ -1,4 +1,5 @@
-﻿using Adyen.Model.Checkout;
+﻿using Adyen.HttpClient;
+using Adyen.Model.Checkout;
 using Adyen.Model.Recurring;
 using adyen_dotnet_subscription_example.Clients;
 using adyen_dotnet_subscription_example.Models;
@@ -41,19 +42,27 @@ namespace adyen_dotnet_subscription_example.Controllers
         [Route("admin/makepayment/{recurringDetailReference}")]
         public async Task<IActionResult> MakePayment(string recurringDetailReference)
         {
-            PaymentResponse result = await _checkoutClient.MakePaymentAsync(ShopperReference.Value, recurringDetailReference);
-            
-            switch (result.ResultCode)
+            try
             {
-                // Handle other payment response cases here.
-                case PaymentResponse.ResultCodeEnum.Authorised:
-                    ViewBag.Message = $"Successfully authorised a payment with RecurringDetailReference: {recurringDetailReference}.";
-                    ViewBag.Img = "success";
-                    break;
-                default:
-                    ViewBag.Message = $"Payment failed for RecurringDetailReference {recurringDetailReference}. See logs for more information about the response.";
-                    ViewBag.Img = "failed";
-                    break;
+                PaymentResponse result = await _checkoutClient.MakePaymentAsync(ShopperReference.Value, recurringDetailReference);
+                
+                switch (result.ResultCode)
+                {
+                    // Handle other payment response cases here.
+                    case PaymentResponse.ResultCodeEnum.Authorised:
+                        ViewBag.Message = $"Successfully authorised a payment with RecurringDetailReference: {recurringDetailReference}.";
+                        ViewBag.Img = "success";
+                        break;
+                    default:
+                        ViewBag.Message = $"Payment failed for RecurringDetailReference {recurringDetailReference}. See error logs for the message.";
+                        ViewBag.Img = "failed";
+                        break;
+                }
+            }   
+            catch (HttpClientException)
+            {
+                ViewBag.Message = $"Payment failed for RecurringDetailReference {recurringDetailReference}. See error logs for the exception.";
+                ViewBag.Img = "failed";
             }
             return View();
         }
@@ -61,17 +70,26 @@ namespace adyen_dotnet_subscription_example.Controllers
         [Route("admin/disable/{recurringDetailReference}")]
         public async Task<IActionResult> Disable(string recurringDetailReference)
         {
-            DisableResult result = await _recurringClient.DisableRecurringDetailAsync(ShopperReference.Value, recurringDetailReference);
-            switch (result.Response)
+            try
             {
-                case "[detail-successfully-disabled]":
-                    ViewBag.Message = $"Disabled RecurringDetailReference {recurringDetailReference}.";
-                    ViewBag.Img = "success";
-                    break;
-                default:
-                    ViewBag.Message = $"Could not disable RecurringDetailReference {recurringDetailReference}. See logs for more information about the response.";
-                    ViewBag.Img = "failed";
-                    break;
+                DisableResult result = await _recurringClient.DisableRecurringDetailAsync(ShopperReference.Value, recurringDetailReference);
+                
+                switch (result.Response)
+                {
+                    case "[detail-successfully-disabled]":
+                        ViewBag.Message = $"Disabled RecurringDetailReference {recurringDetailReference}.";
+                        ViewBag.Img = "success";
+                        break;
+                    default:
+                        ViewBag.Message = $"Disable failed for RecurringDetailReference {recurringDetailReference}. See logs for the response message."; ;
+                        ViewBag.Img = "failed";
+                        break;
+                }
+            }
+            catch (HttpClientException)
+            {
+                ViewBag.Message = $"Disable failed for RecurringDetailReference {recurringDetailReference}. See error logs for the exception.";
+                ViewBag.Img = "failed";
             }
             return View();
         }
