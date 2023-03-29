@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Adyen Subscription Cart";
+    ViewData["Title"] = "Adyen Giftcard Checkout Cart";
 }
 @* Hidden divs with data passed from the server *@
 <div id="clientKey" class="hidden">@ViewBag.ClientKey</div>
@@ -10,10 +10,23 @@
         @* The Checkout integration type will be conditionally rendered below. *@
         @* Drop-in includes styling out-of-the-box, so no additional CSS classes are needed. *@
         <div class="payment-container">
-            <div id="payment" class="payment"></div>
+            <div id="giftcard-container" class="payment"></div>
+            <button type="button" id="checkbalance-button" class="hidden">Check Balance</button>
+        </div>       
+    </div>
+    <div class="container">
+        <div class="payment-container">
+            <div id="card-container"></div>
         </div>
     </div>
+    <div class="container">
+        <div class="payment-container">
+            <div id="ideal-container"></div>
+        </div>
+    </div>
+
+    <button type="button" id="pay-button" class="hidden">Pay</button> @*adyen-checkout__button adyen-checkout__button--pay*@
 </div>
 
 @* Adyen Component client code *@
-<script src="~/js/adyenSubscriptionImplementation.js" asp-append-version="true"></script>
+<script src="~/js/adyenGiftcardImplementation.js" asp-append-version="true"></script>

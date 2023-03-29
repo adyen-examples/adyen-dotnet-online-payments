@@ -12,8 +12,8 @@ async function startCheckout() {
 
   try {
     const checkoutSessionResponse = await callServer("/api/sessions");
-    const checkout = await createAdyenCheckout(checkoutSessionResponse, type);
-    checkout.create(type).mount("#payment");
+    const checkout = await createAdyenCheckout(checkoutSessionResponse);
+    checkout.create(type).mount(document.getElementById("payment"));
   } catch (error) {
     console.error(error);
     alert("Error occurred. Look at console for details");
@@ -31,61 +31,48 @@ async function finalizeCheckout() {
   }
 }
 
-async function createAdyenCheckout(session, type){
-  const giftcardConfiguration = {
-    onBalanceCheck: async function (resolve, reject, data) {
-        // Make a POST /paymentMethods/balance request
-        const balanceCheckResponse = await callServer("/api/balancecheck");
-        console.info(balanceCheckResponse);
-        //resolve(BalanceResponse);
-    },
-    onOrderRequest: async function (resolve, reject, data) {
-        const createOrderResponse = await callServer("/api/createorder");
-        console.info(createOrderResponse);
-        //resolve(createOrderResponse);
-    },
-    onOrderCancel: async function(Order) {
-        // Make a POST /orders/cancel request
-        // Call the update function and pass the payment methods response to update the instance of checkout
-        const cancelOrderResponse = await callServer("/api/cancelorder");
-        checkout.update(cancelOrderResponse, cancelOrderResponse.amount);
-    },
-  };
-  return new AdyenCheckout(
-  {
-    clientKey,
-    locale: "en_US",
-    environment: "test",
-    session: session,
-    showPayButton: true,
-    paymentMethodsConfiguration: {
-      giftcardConfiguration: {
-        giftcardConfiguration
-      },
-      ideal: {
-        showImage: true,
-      },
-      card: {
-        hasHolderName: true,
-        holderNameRequired: true,
-        name: "Credit or debit card",
-        amount: {
-          value: 11000,
-          currency: "EUR",
+async function createAdyenCheckout(session){
+    return new AdyenCheckout(
+    {
+      clientKey,
+      locale: "en_US",
+      environment: "test",
+      session: session,
+      showPayButton: true,
+      paymentMethodsConfiguration: {
+        ideal: {
+          showImage: true,
         },
+        card: {
+          hasHolderName: true,
+          holderNameRequired: true,
+          name: "Credit or debit card",
+          amount: {
+            value: 10000,
+            currency: "EUR",
+          },
+        },
+        paypal: {
+          amount: {
+            value: 10000,
+            currency: "USD",
+          },
+          environment: "test", // Change this to "live" when you're ready to accept live PayPal payments
+          countryCode: "US", // Only needed for test. This will be automatically retrieved when you are in production.
+        }
       },
-    },
-    onPaymentCompleted: (result, component) => {
-      console.info("onPaymentCompleted");
-      console.info(result, component);
-      handleServerResponse(result, component);
-    },
-    onError: (error, component) => {
-      console.error("onError");
-      console.error(error.name, error.message, error.stack, component);
-      handleServerResponse(error, component);
-    },
-  });
+      onPaymentCompleted: (result, component) => {
+        console.info("onPaymentCompleted");
+        console.info(result, component);
+        handleServerResponse(result, component);
+      },
+      onError: (error, component) => {
+        console.error("onError");
+        console.error(error.name, error.message, error.stack, component);
+        handleServerResponse(error, component);
+      },
+    }
+  );
 }
 
 // Calls your server endpoints

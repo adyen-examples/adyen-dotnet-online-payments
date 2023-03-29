@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace adyen_dotnet_checkout_example
+namespace adyen_dotnet_giftcard_example
 {
     public class Program
     {

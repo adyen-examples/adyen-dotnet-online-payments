@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using adyen_dotnet_checkout_example.Options;
+using adyen_dotnet_giftcard_example.Options;
 using Microsoft.Extensions.Options;
 
-namespace adyen_dotnet_checkout_example.Controllers
+namespace adyen_dotnet_giftcard_example.Controllers
 {
     public class HomeController : Controller
     {
@@ -26,8 +26,8 @@ namespace adyen_dotnet_checkout_example.Controllers
             return View();
         }
 
-        [Route("checkout/{id}")]
-        public IActionResult Checkout(string id)
+        [Route("GiftcardCheckout/{id}")]
+        public IActionResult GiftcardCheckout(string id)
         {
             ViewBag.PaymentMethod = id;
             ViewBag.ClientKey = _clientKey;

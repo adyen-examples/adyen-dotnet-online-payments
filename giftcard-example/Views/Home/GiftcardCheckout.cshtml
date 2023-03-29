@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Adyen Giftcard Checkout Cart";
+    ViewData["Title"] = "Adyen Giftcard Cart";
 }
 @* Hidden divs with data passed from the server *@
 <div id="clientKey" class="hidden">@ViewBag.ClientKey</div>
@@ -7,7 +7,7 @@
 
 <div id="payment-page">
     <div class="container">
-        @* The Checkout integration type will be conditionally rendered below. *@
+        @* The integration type will be conditionally rendered below. *@
         @* Drop-in includes styling out-of-the-box, so no additional CSS classes are needed. *@
         <div class="payment-container">
             <div id="giftcard-container" class="payment"></div>

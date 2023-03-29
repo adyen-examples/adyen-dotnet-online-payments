@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+
+    <link rel="stylesheet"
+          href="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/5.33.0/adyen.css"
+          integrity="sha384-86hqIixzFjIoRoaNYg9pd4mtpn3HtgJmrpYiyTv+3DaGPF70VnRUbtK7MKLTLRd9"
+          crossorigin="anonymous" />
+
+    <script src="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/5.33.0/adyen.js"
+            integrity="sha384-mPMlkgVUT7jVJZT0sTSfe+M4uN1ArRf1Itg76PcI6Y+zPLDvjCnjmAyyjtak3269"
+            crossorigin="anonymous"></script>
+
+    <title>@ViewData["Title"] - Giftcard Demo</title>
+</head>
+<body>
+    <header id="header">
+      <a href="/">
+        <img src="~/images/mystore-logo.svg" alt="logo" />
+      </a>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+@RenderSection("Scripts", required: false)
+</body>
+</html>
