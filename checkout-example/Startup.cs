@@ -1,14 +1,15 @@
 using Adyen;
-using adyen_dotnet_checkout_example.Options;
-using adyen_dotnet_checkout_example.Services;
 using Adyen.Model.Enum;
 using Adyen.Service;
+using Adyen.Util;
+using adyen_dotnet_checkout_example.Options;
+using adyen_dotnet_checkout_example.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Adyen.Util;
+using Microsoft.Extensions.Options;
 
 namespace adyen_dotnet_checkout_example
 {
@@ -24,6 +25,7 @@ namespace adyen_dotnet_checkout_example
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Configure your keys using the Options pattern.
             services.Configure<AdyenOptions>(
                 options =>
                 {
@@ -33,15 +35,20 @@ namespace adyen_dotnet_checkout_example
                     options.ADYEN_HMAC_KEY = Configuration[nameof(AdyenOptions.ADYEN_HMAC_KEY)];
                 }
             );
-            
+
+            // Register your controllers.
             services.AddControllersWithViews();
-            services.AddControllers().AddNewtonsoftJson();
-            services.AddHttpContextAccessor();
-            
-            services.AddSingleton<Client>(new Client(Configuration[nameof(AdyenOptions.ADYEN_API_KEY)], Environment.Test));
+            services.AddControllers();
+            services.AddHttpContextAccessor()
+                .AddTransient<IUrlService, UrlService>();
+
+            // Register your dependencies.
+            services.AddSingleton<Client>(provider => new Client(
+                provider.GetRequiredService<IOptions<AdyenOptions>>().Value.ADYEN_API_KEY,  // Get your API Key from the AdyenOptions using the Options pattern.
+                Environment.Test) // Test environment
+            );
             services.AddSingleton<Checkout>();
             services.AddSingleton<HmacValidator>();
-            services.AddTransient<IUrlService, UrlService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
