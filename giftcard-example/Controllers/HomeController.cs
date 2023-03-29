@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using adyen_dotnet_giftcard_example.Options;
+﻿using adyen_dotnet_giftcard_example.Options;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
 namespace adyen_dotnet_giftcard_example.Controllers
@@ -26,7 +26,7 @@ namespace adyen_dotnet_giftcard_example.Controllers
             return View();
         }
 
-        [Route("GiftcardCheckout/{id}")]
+        [Route("giftcardcheckout/{id}")]
         public IActionResult GiftcardCheckout(string id)
         {
             ViewBag.PaymentMethod = id;

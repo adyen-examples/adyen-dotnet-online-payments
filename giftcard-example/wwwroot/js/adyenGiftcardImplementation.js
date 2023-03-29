@@ -11,23 +11,20 @@ async function startCheckout() {
   const type = document.getElementById("type").innerHTML;
 
   try {
-    const checkoutSessionResponse = await callServer("/api/sessions");
-    const checkout = await createAdyenCheckout(checkoutSessionResponse);
-    
-    //giftcardComponent.isAvailable()
-    //.then(() => {
-    //    giftcardComponent.mount("#giftcard-container");
-    //})
-    //.catch(e => {
-    //    //gift cards is not available
-    //    log.error(e);
-    //});
-    
+    const sessionResponse = await callServer("/api/sessions");
+    console.info(sessionResponse);
+    const checkout = await createAdyenCheckout(sessionResponse);
     const giftcardComponent = checkout.create("giftcard").mount("#giftcard-container");
     document.getElementById("checkbalance-button")
       .addEventListener('click', async () => 
       {
-        const balanceCheckResponse = await callServer("/api/balancecheck");
+        const balanceCheckResponse = await callServer("/api/balancecheck", 
+          { 
+            Type: "givex", 
+            Number: "6036280000000000000",
+            Cvc: "123",
+            Reference: sessionResponse.Reference,
+          });
         console.info(balanceCheckResponse);
       });
 
@@ -51,7 +48,7 @@ async function finalizeCheckout() {
 }
 
 const giftcardConfiguration = {
-  onOrderCreated: async function (orderStatus) {
+  onOrderCreated: (orderStatus) => {
     // Get the remaining amount to be paid from orderStatus.
     console.info(orderStatus);
     // Use your existing instance of AdyenCheckout to create payment methods components
@@ -85,9 +82,6 @@ async function createAdyenCheckout(session){
           value: 11000,
           currency: "EUR",
         },
-      },
-      giftcardConfiguration: {
-        giftcardConfiguration
       },
     },
     onPaymentCompleted: (result, component) => {

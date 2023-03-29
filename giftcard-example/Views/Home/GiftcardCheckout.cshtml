@@ -5,28 +5,54 @@
 <div id="clientKey" class="hidden">@ViewBag.ClientKey</div>
 <div id="type" class="hidden">@ViewBag.PaymentMethod</div>
 
-<div id="payment-page">
-    <div class="container">
+<main class="preview-page">
+  <section class="cart">
+    <h2>Cart</h2>
+    <div class="order-summary">
+      <ul class="order-summary-list">
+        <li class="order-summary-list-list-item">
+          <img src="~/images/sunglasses.png" class="order-summary-list-list-item-image" alt="">
+          <p class="order-summary-list-list-item-title">Sunglasses</p>
+          <p class="order-summary-list-list-item-price">55.00</p>
+        </li>
+        <li class="order-summary-list-list-item">
+          <img src="~/images/headphones.png" class="order-summary-list-list-item-image" alt="">
+          <p class="order-summary-list-list-item-title">Headphones</p>
+          <p class="order-summary-list-list-item-price">55.00</p>
+        </li>
+      </ul>
+    </div>
+    <div class="cart-footer">
+      <span class="cart-footer-label">Total:</span>
+      <span class="cart-footer-amount">110.00</span>
+    </div>
+    
+    <div id="payment-page">
+      <div class="container">
         @* The integration type will be conditionally rendered below. *@
         @* Drop-in includes styling out-of-the-box, so no additional CSS classes are needed. *@
         <div class="payment-container">
-            <div id="giftcard-container" class="payment"></div>
-            <button type="button" id="checkbalance-button" class="hidden">Check Balance</button>
-        </div>       
-    </div>
-    <div class="container">
-        <div class="payment-container">
-            <div id="card-container"></div>
+          <div id="giftcard-container" class="payment"></div>
         </div>
-    </div>
-    <div class="container">
+        <button type="button" id="checkbalance-button" class="adyen-checkout__button adyen-checkout__button--pay">Check Balance</button>
+      </div>
+      <div class="container">
         <div class="payment-container">
-            <div id="ideal-container"></div>
+          <div id="card-container"></div>
         </div>
-    </div>
+      </div>
+      <div class="container">
+        <div class="payment-container">
+          <div id="ideal-container"></div>
+        </div>
+      </div>
 
-    <button type="button" id="pay-button" class="hidden">Pay</button> @*adyen-checkout__button adyen-checkout__button--pay*@
-</div>
+      <button type="button" id="pay-button" class="adyen-checkout__button adyen-checkout__button--pay">Pay</button>
+
+    </div>
+  </section>
+</main>
+
 
 @* Adyen Component client code *@
 <script src="~/js/adyenGiftcardImplementation.js" asp-append-version="true"></script>

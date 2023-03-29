@@ -1,5 +1,6 @@
 using Adyen.Model.Checkout;
 using Adyen.Service;
+using adyen_dotnet_checkout_example.Dtos.Requests;
 using adyen_dotnet_giftcard_example.Options;
 using adyen_dotnet_giftcard_example.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -72,17 +73,17 @@ namespace adyen_dotnet_giftcard_example.Controllers
         }
 
         [HttpPost("api/balancecheck")]
-        public async Task<ActionResult<string>> BalanceCheck()
+        public async Task<ActionResult<string>> BalanceCheck(BalanceCheckRequest request)
         {
             var balanceCheckRequest = new CheckoutBalanceCheckRequest(
-                amount: new Amount("EUR", 10000), // value is 100€ in minor units
+                amount: new Amount("EUR", 11000), // value is 110€ in minor units
                 merchantAccount: _merchantAccount,
                 //string type, string number, string cvc, string holderName for plastic
                 paymentMethod: new Dictionary<string, string>()
                 {
-                    { "type", "givex" },
-                    { "number", "6036280000000000000" },
-                    { "cvc", "123" }
+                    { "type", request.Type },
+                    { "number", request.Number },
+                    { "cvc", request.Cvc }
                 },
                 reference: Guid.NewGuid().ToString()
             );
