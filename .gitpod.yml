@@ -35,7 +35,7 @@ tasks:
         "subscription-example")
           dotnet run --project subscription-example
         ;;        
-	  "giftcard-example")
+	"giftcard-example")
           dotnet run --project giftcard-example
         ;;
         *)
