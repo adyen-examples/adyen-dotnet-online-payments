@@ -19,23 +19,45 @@ namespace adyen_dotnet_giftcard_example.Controllers
             return View();
         }
 
-        [Route("preview/{id}")]
-        public IActionResult Preview(string id)
+        [Route("previewdropin/{id}")]
+        public IActionResult PreviewDropin(string id)
         {
             ViewBag.PaymentMethod = id;
             return View();
         }
 
-        [Route("giftcardcheckout/{id}")]
-        public IActionResult GiftcardCheckout(string id)
+        [Route("checkoutdropin/{id}")]
+        public IActionResult CheckoutDropin(string id)
         {
             ViewBag.PaymentMethod = id;
             ViewBag.ClientKey = _clientKey;
             return View();
         }
 
-        [Route("redirect")]
-        public IActionResult Redirect()
+        [Route("previewgiftcardcomponent/{id}")]
+        public IActionResult PreviewGiftcardComponent(string id)
+        {
+            ViewBag.PaymentMethod = id;
+            return View();
+        }
+
+        [Route("checkoutgiftcardcomponent/{id}")]
+        public IActionResult CheckoutGiftcardComponent(string id)
+        {
+            ViewBag.PaymentMethod = id;
+            ViewBag.ClientKey = _clientKey;
+            return View();
+        }
+
+        [Route("redirectfromdropin")]
+        public IActionResult RedirectFromDropin()
+        {
+            ViewBag.ClientKey = _clientKey;
+            return View();
+        }
+
+        [Route("redirectfromgiftcardcomponent")]
+        public IActionResult RedirectFromGiftcardComponent()
         {
             ViewBag.ClientKey = _clientKey;
             return View();

@@ -5,29 +5,27 @@ const urlParams = new URLSearchParams(window.location.search);
 const sessionId = urlParams.get('sessionId'); // Unique identifier for the payment session
 const redirectResult = urlParams.get('redirectResult');
 
+let remainingAmountToPay = 11000;
+
 // Typical checkout experience
 async function startCheckout() {
   // Used in the demo to know which type of checkout was chosen
   const type = document.getElementById("type").innerHTML;
 
   try {
-    const sessionResponse = await callServer("/api/sessions");
+    const sessionResponse = await callServer("/api/sessions/giftcardcomponent");
     console.info(sessionResponse);
     const checkout = await createAdyenCheckout(sessionResponse);
-    const giftcardComponent = checkout.create("giftcard").mount("#giftcard-container");
-    document.getElementById("checkbalance-button")
+
+    // Adds giftcard container when clicked
+    const addGiftcardButton = document.getElementById("add-giftcard-button")
       .addEventListener('click', async () => 
       {
-        const balanceCheckResponse = await callServer("/api/balancecheck", 
-          { 
-            Type: "givex", 
-            Number: "6036280000000000000",
-            Cvc: "123",
-            Reference: sessionResponse.Reference,
-          });
-        console.info(balanceCheckResponse);
+        giftcardComponent = checkout.create("giftcard").mount("#giftcard-container");
+        document.getElementById("add-giftcard-button").remove();
       });
-
+    
+    // Create your components
     const cardComponent = checkout.create("card").mount("#card-container");
     const idealComponent = await checkout.create("ideal").mount("#ideal-container");
   } catch (error) {
@@ -47,24 +45,6 @@ async function finalizeCheckout() {
   }
 }
 
-const giftcardConfiguration = {
-  onOrderCreated: (orderStatus) => {
-    // Get the remaining amount to be paid from orderStatus.
-    console.info(orderStatus);
-    // Use your existing instance of AdyenCheckout to create payment methods components
-    // The shopper can use these payment methods to pay the remaining amount
-    //const idealComponent = await checkout.create("ideal").mount("#ideal-container");
-    //const cardComponent = await checkout.create("card").mount("#card-container");
-  },
-  onRequiringConfirmation: () => {
-    document.getElementById("pay-button")
-    .addEventListener('click', () => {
-        console.log("click");
-        window.giftcardComponent.submit();
-    });
-  },
-};
-
 async function createAdyenCheckout(session){
   return new AdyenCheckout(
   {
@@ -73,16 +53,30 @@ async function createAdyenCheckout(session){
     environment: "test",
     session: session,
     showPayButton: true,
-    paymentMethodsConfiguration: {        
+    paymentMethodsConfiguration: {
+      ideal: {
+        showImage: true,
+      },        
       card: {
         hasHolderName: true,
         holderNameRequired: true,
         name: "Credit or debit card",
         amount: {
-          value: 11000,
+          value: remainingAmountToPay,
           currency: "EUR",
         },
       },
+    },
+    onOrderCreated: (orderStatus) => {
+      console.info(orderStatus);
+      const spanElement = document.getElementById('remaining-due-amount');
+      remainingAmountToPay = orderStatus.remainingAmount.value / 100;
+      spanElement.textContent = remainingAmountToPay.toFixed(2);
+    },
+    onRequiringConfirmation: () => {
+      console.info("Confirming the final payment... You're one click away.");
+      //document.getElementById('pay-button')
+      //  .addEventListener('click', () => this.submit());
     },
     onPaymentCompleted: (result, component) => {
       console.info("onPaymentCompleted");

@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Adyen Giftcard Cart";
+    ViewData["Title"] = "Adyen Giftcard Component Cart + Checkout";
 }
 @* Hidden divs with data passed from the server *@
 <div id="clientKey" class="hidden">@ViewBag.ClientKey</div>
@@ -25,6 +25,10 @@
     <div class="cart-footer">
       <span class="cart-footer-label">Total:</span>
       <span class="cart-footer-amount">110.00</span>
+    </div>   
+    <div class="cart-footer">
+      <span class="cart-footer-label">Remaining amount due:</span>
+      <span id="remaining-due-amount" class="cart-footer-amount">110.00</span>
     </div>
     
     <div id="payment-page">
@@ -33,10 +37,11 @@
         @* Drop-in includes styling out-of-the-box, so no additional CSS classes are needed. *@
         <div class="payment-container">
           <div id="giftcard-container" class="payment"></div>
+          <button type="button" id="add-giftcard-button" class="adyen-checkout__button adyen-checkout__button--pay">Add Giftcard</button>
         </div>
-        <button type="button" id="checkbalance-button" class="adyen-checkout__button adyen-checkout__button--pay">Check Balance</button>
       </div>
       <div class="container">
+        Select your payment method:
         <div class="payment-container">
           <div id="card-container"></div>
         </div>
@@ -47,7 +52,7 @@
         </div>
       </div>
 
-      <button type="button" id="pay-button" class="adyen-checkout__button adyen-checkout__button--pay">Pay</button>
+      @*<button type="button" id="pay-button" class="adyen-checkout__button adyen-checkout__button--pay">Pay</button>*@
 
     </div>
   </section>

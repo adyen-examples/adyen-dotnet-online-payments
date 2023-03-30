@@ -11,7 +11,7 @@ async function startCheckout() {
   const type = document.getElementById("type").innerHTML;
 
   try {
-    const checkoutSessionResponse = await callServer("/api/sessions");
+    const checkoutSessionResponse = await callServer("/api/sessions/dropin");
     const checkout = await createAdyenCheckout(checkoutSessionResponse, type);
     checkout.create(type).mount("#payment");
   } catch (error) {
@@ -31,26 +31,7 @@ async function finalizeCheckout() {
   }
 }
 
-async function createAdyenCheckout(session, type){
-  const giftcardConfiguration = {
-    onBalanceCheck: async function (resolve, reject, data) {
-        // Make a POST /paymentMethods/balance request
-        const balanceCheckResponse = await callServer("/api/balancecheck");
-        console.info(balanceCheckResponse);
-        //resolve(BalanceResponse);
-    },
-    onOrderRequest: async function (resolve, reject, data) {
-        const createOrderResponse = await callServer("/api/createorder");
-        console.info(createOrderResponse);
-        //resolve(createOrderResponse);
-    },
-    onOrderCancel: async function(Order) {
-        // Make a POST /orders/cancel request
-        // Call the update function and pass the payment methods response to update the instance of checkout
-        const cancelOrderResponse = await callServer("/api/cancelorder");
-        checkout.update(cancelOrderResponse, cancelOrderResponse.amount);
-    },
-  };
+async function createAdyenCheckout(session){
   return new AdyenCheckout(
   {
     clientKey,
@@ -59,9 +40,6 @@ async function createAdyenCheckout(session, type){
     session: session,
     showPayButton: true,
     paymentMethodsConfiguration: {
-      giftcardConfiguration: {
-        giftcardConfiguration
-      },
       ideal: {
         showImage: true,
       },
@@ -74,6 +52,12 @@ async function createAdyenCheckout(session, type){
           currency: "EUR",
         },
       },
+    },
+    onOrderCreated: (orderStatus) => {
+      console.info(orderStatus);
+    },
+    onRequiringConfirmation: () => {
+      console.info("Confirming the final payment... You're one click away.");
     },
     onPaymentCompleted: (result, component) => {
       console.info("onPaymentCompleted");

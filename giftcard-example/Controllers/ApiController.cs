@@ -101,8 +101,8 @@ namespace adyen_dotnet_giftcard_example.Controllers
             }
         }
 
-        [HttpPost("api/sessions")]
-        public async Task<ActionResult<string>> Sessions()
+        [HttpPost("api/sessions/dropin")]
+        public async Task<ActionResult<string>> SessionsDropin()
         {
             var sessionsRequest = new CreateCheckoutSessionRequest();
             sessionsRequest.MerchantAccount = _merchantAccount; // required
@@ -113,7 +113,34 @@ namespace adyen_dotnet_giftcard_example.Controllers
             sessionsRequest.Reference = orderRef.ToString(); // required
 
             // required for 3ds2 redirect flow
-            sessionsRequest.ReturnUrl = $"{_urlService.GetHostUrl()}/redirect?orderRef={orderRef}";
+            sessionsRequest.ReturnUrl = $"{_urlService.GetHostUrl()}/redirectfromdropin?orderRef={orderRef}";
+
+            try
+            {
+                var res = await _checkout.SessionsAsync(sessionsRequest);
+                _logger.LogInformation($"Response: \n{res}\n");
+                return res.ToJson();
+            }
+            catch (Adyen.HttpClient.HttpClientException e)
+            {
+                _logger.LogError($"Request: {e.ResponseBody}\n");
+                throw;
+            }
+        }
+
+        [HttpPost("api/sessions/giftcardcomponent")]
+        public async Task<ActionResult<string>> SessionsGiftcardComponent()
+        {
+            var sessionsRequest = new CreateCheckoutSessionRequest();
+            sessionsRequest.MerchantAccount = _merchantAccount; // required
+            sessionsRequest.Channel = CreateCheckoutSessionRequest.ChannelEnum.Web;
+            sessionsRequest.Amount = new Amount("EUR", 11000); // value is 110€ in minor units
+
+            var orderRef = Guid.NewGuid();
+            sessionsRequest.Reference = orderRef.ToString(); // required
+
+            // required for 3ds2 redirect flow
+            sessionsRequest.ReturnUrl = $"{_urlService.GetHostUrl()}/redirectfromgiftcardcomponent?orderRef={orderRef}";
 
             try
             {

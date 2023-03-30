@@ -69,9 +69,10 @@ namespace adyen_dotnet_giftcard_example.Controllers
         }
 
         private Task ProcessNotificationAsync(NotificationRequestItem notification)
-        {        
+        {
             // Perform your business logic or asynchronous operations (awaits) here.
             // In this case, we just log it.
+            // TODO: Check your eventcode=order_open / order close here (write logic)
             _logger.LogInformation($"Received webhook with event::\n" +
                                    $"Merchant Reference ::{notification.MerchantReference} \n" +
                                    $"PSP Reference ::{notification.PspReference} \n");
