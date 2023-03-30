@@ -4,6 +4,13 @@ This repository includes a collection of PCI-compliant UI integrations that show
 The demos below leverages Adyen's API Library for .NET ([GitHub](https://github.com/Adyen/adyen-dotnet-api-library) | [Documentation](https://docs.adyen.com/development-resources/libraries#csharp)).
 
 
+| Supported examples | Description | Build |
+| --: | :-- | :-- | 
+| [`Checkout Example`](checkout-example) | E-commerce checkout with different payment methods | [![.NET](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/build.yml/badge.svg)](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/build.yml) [![E2E Testing Suite](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/e2e.yml/badge.svg)](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/e2e.yml) |
+| [`Subscription Example`](subscription-example) | Tokenization flow for subscriptions | [![.NET](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/build.yml/badge.svg)](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/build.yml) [![E2E Testing Suite](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/e2e.yml/badge.svg)](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/e2e.yml) |
+| [`Giftcard Example`](giftcard-example) | Giftcards checkout flow | [![.NET](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/build.yml/badge.svg)](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/build.yml) [![E2E Testing Suite](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/e2e.yml/badge.svg)](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/e2e.yml) |
+
+
 ## [Checkout Example](checkout-example)
 The [checkout example](checkout-example) repository includes examples of PCI-compliant UI integrations for online payments with Adyen.
 Within this demo app, you'll find a simplified version of an e-commerce website, complete with commented code to highlight key features and concepts of Adyen's API.
