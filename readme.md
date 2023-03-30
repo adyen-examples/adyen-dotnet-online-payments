@@ -5,7 +5,8 @@ The demos below leverages Adyen's API Library for .NET ([GitHub](https://github.
 
 Get started by navigating to one of the supported demos below.
 
-[![.NET](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/build.yml/badge.svg)](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/build.yml) [![E2E Testing Suite (Playwright)](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/e2e.yml/badge.svg)](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/e2e.yml) 
+[![.NET](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/build.yml/badge.svg)](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/build.yml)
+[![E2E Testing Suite (Playwright)](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/e2e.yml/badge.svg)](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/e2e.yml) 
 
 | Demos | Description | Details |
 | --: | :-- | :-- |
@@ -13,7 +14,6 @@ Get started by navigating to one of the supported demos below.
 | [`Subscription Example`](subscription-example) | Subscription flow using Adyen tokenization. | [See below](#subscription-example) | 
 | [`Giftcard Example`](giftcard-example) | Giftcards checkout flow using partial orders. | [See below](#giftcard-example) | 
 
-# Integration examples
 
 ## [Checkout Example](checkout-example)
 
@@ -37,13 +37,13 @@ The [`giftcard example`](giftcard-example) repository includes a giftcard flow d
 
 ![Giftcard Demo](subscription-example/wwwroot/images/cardgiftcard.gif)
 
-# Contributing
+## Contributing
 
 We commit all our new features directly into our GitHub repository. Feel free to request or suggest new features or code changes yourself as well!
 
 Find out more in our [contributing](https://github.com/adyen-examples/.github/blob/main/CONTRIBUTING.md) guidelines.
 
 
-# License
+## License
 
 MIT license. For more information, see the **LICENSE** file.
