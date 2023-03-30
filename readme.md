@@ -1,12 +1,11 @@
 # Adyen Online Payment Integration Demos
+[![.NET](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/build.yml/badge.svg)](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/build.yml)
+[![E2E Testing Suite (Playwright)](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/e2e.yml/badge.svg)](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/e2e.yml) 
 
 This repository includes a collection of PCI-compliant UI integrations that show how to integrate with Adyen using different payment methods. 
 The demos below leverages Adyen's API Library for .NET ([GitHub](https://github.com/Adyen/adyen-dotnet-api-library) | [Documentation](https://docs.adyen.com/development-resources/libraries#csharp)). 
 
 Get started by navigating to one of the supported demos below.
-
-[![.NET](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/build.yml/badge.svg)](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/build.yml)
-[![E2E Testing Suite (Playwright)](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/e2e.yml/badge.svg)](https://github.com/adyen-examples/adyen-dotnet-online-payments/actions/workflows/e2e.yml) 
 
 | Demos | Description | Details |
 | --: | :-- | :-- |
