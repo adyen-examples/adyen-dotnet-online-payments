@@ -113,7 +113,7 @@ namespace adyen_dotnet_giftcard_example.Controllers
             sessionsRequest.Reference = orderRef.ToString(); // required
 
             // required for 3ds2 redirect flow
-            sessionsRequest.ReturnUrl = $"{_urlService.GetHostUrl()}/dropinredirect?orderRef={orderRef}";
+            sessionsRequest.ReturnUrl = $"{_urlService.GetHostUrl()}/dropin/redirect?orderRef={orderRef}";
 
             try
             {
@@ -140,7 +140,7 @@ namespace adyen_dotnet_giftcard_example.Controllers
             sessionsRequest.Reference = orderRef.ToString(); // required
 
             // required for 3ds2 redirect flow
-            sessionsRequest.ReturnUrl = $"{_urlService.GetHostUrl()}/giftcardcomponentredirect?orderRef={orderRef}";
+            sessionsRequest.ReturnUrl = $"{_urlService.GetHostUrl()}/giftcardcomponent/redirect?orderRef={orderRef}";
 
             try
             {

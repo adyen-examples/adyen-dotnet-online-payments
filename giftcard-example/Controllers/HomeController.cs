@@ -12,14 +12,12 @@ namespace adyen_dotnet_giftcard_example.Controllers
         {
             _clientKey = options.Value.ADYEN_CLIENT_KEY;
         }
-
-        #region ### Home
+ 
         [Route("/")]
         public IActionResult Index()
         {
             return View();
         }
-
 
         [HttpGet("result/{status}")]
         public IActionResult Result(string status, [FromQuery(Name = "reason")] string refusalReason)
@@ -58,10 +56,6 @@ namespace adyen_dotnet_giftcard_example.Controllers
         {
             return View();
         }
-
-        #endregion
-
-
 
         #region ### Drop-in
 

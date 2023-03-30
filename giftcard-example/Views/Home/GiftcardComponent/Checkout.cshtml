@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Adyen Giftcard Component Cart + Checkout";
 }
 @* Hidden divs with data passed from the server *@
@@ -8,39 +8,67 @@
 <main class="preview-page">
   <section class="cart">
     <h2>Cart</h2>
-    <div class="order-summary">
-      <ul class="order-summary-list">
-        <li class="order-summary-list-list-item">
-          <img src="~/images/sunglasses.png" class="order-summary-list-list-item-image" alt="">
-          <p class="order-summary-list-list-item-title">Sunglasses</p>
-          <p class="order-summary-list-list-item-price">55.00</p>
-        </li>
-        <li class="order-summary-list-list-item">
-          <img src="~/images/headphones.png" class="order-summary-list-list-item-image" alt="">
-          <p class="order-summary-list-list-item-title">Headphones</p>
-          <p class="order-summary-list-list-item-price">55.00</p>
-        </li>
-      </ul>
-    </div>
-    <div class="cart-footer">
-      <span class="cart-footer-label">Total:</span>
-      <span class="cart-footer-amount">110.00</span>
-    </div>   
-    <div class="cart-footer">
-      <span class="cart-footer-label">Remaining amount due:</span>
-      <span id="remaining-due-amount" class="cart-footer-amount">110.00</span>
-    </div>
-    
-    <div id="payment-page">
-      Grab a test card number for your enabled giftcard (f.e. 'givex') from our <a href="https://docs.adyen.com/development-resources/testing/test-card-numbers#gift-cards">documentation</a>.
-      <div class="container">
-        @* The integration type will be conditionally rendered below. *@
-        @* Drop-in includes styling out-of-the-box, so no additional CSS classes are needed. *@
-        <div class="payment-container">
-          <div id="giftcard-container" class="payment"></div>
-          <button type="button" id="add-giftcard-button" class="adyen-checkout__button adyen-checkout__button--pay">Add Giftcard</button>
+    <div class="preview-container">
+      <div class="preview-container-left">
+        <div class="order-summary">
+          <ul class="order-summary-list">
+            <li class="order-summary-list-list-item">
+              <img src="~/images/sunglasses.png" class="order-summary-list-list-item-image" alt="">
+              <p class="order-summary-list-list-item-title">Sunglasses</p>
+              <p class="order-summary-list-list-item-price">55.00</p>
+            </li>
+
+            <li class="order-summary-list-list-item">
+              <img src="~/images/headphones.png" class="order-summary-list-list-item-image" alt="">
+              <p class="order-summary-list-list-item-title">Headphones</p>
+              <p class="order-summary-list-list-item-price">55.00</p>
+            </li>
+          </ul>
         </div>
       </div>
+      
+      <div class="preview-container-right">
+        <div class="order-overview"> 
+          <ul id="order-overview-list" class="order-overview-list">
+            <li class="order-overview-list-item">
+              <p class="order-overview-list-item-title-center">Overview</p>
+            </li>
+
+            <li class="order-overview-item">
+              <p class="order-overview-list-item-total-amount-price">55.00</p>
+            </li>
+
+            <li class="order-overview-item">
+              <p class="order-overview-list-item-total-amount-price">55.00</p>
+            </li>
+
+            <li class="order-overview-item">
+              <p class="order-overview-list-item-total-amount">Total amount</p>
+              <p class="order-overview-list-item-total-amount-price">110.00</p>
+            </li>
+
+            <li class="order-overview-list-item">
+              <p class="order-overview-list-item-remaining">Remaining amount to be paid</p>
+              <p class="order-overview-list-item-remaining-price" id="remaining-due-amount">110.00</p>
+            </li>
+          </ul>
+          <ul class="order-overview-list">
+            <li class="order-overview-list-item">
+                @* The giftcard component will be conditionally rendered below. *@
+                @* Drop-in includes styling out-of-the-box, so no additional CSS classes are needed. *@
+                <div id="giftcard-container" class="payment" hidden="true"></div>
+                <button type="button" id="add-giftcard-button" class="add-giftcard-button">Add Giftcard</button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      Giftcard Test card numbers (f.e. 'givex') can be found <a href="https://docs.adyen.com/development-resources/testing/test-card-numbers#gift-cards">here</a>.
+    </div>
+
+    <div id="payment-page" hidden="true"> 
       <div class="container">
         Select your payment method:
         <div class="payment-container">
@@ -52,9 +80,6 @@
           <div id="ideal-container"></div>
         </div>
       </div>
-
-      @*<button type="button" id="pay-button" class="adyen-checkout__button adyen-checkout__button--pay">Pay</button>*@
-
     </div>
   </section>
 </main>
