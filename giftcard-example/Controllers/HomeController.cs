@@ -13,55 +13,13 @@ namespace adyen_dotnet_giftcard_example.Controllers
             _clientKey = options.Value.ADYEN_CLIENT_KEY;
         }
 
+        #region ### Home
         [Route("/")]
         public IActionResult Index()
         {
             return View();
         }
 
-        [Route("previewdropin/{id}")]
-        public IActionResult PreviewDropin(string id)
-        {
-            ViewBag.PaymentMethod = id;
-            return View();
-        }
-
-        [Route("checkoutdropin/{id}")]
-        public IActionResult CheckoutDropin(string id)
-        {
-            ViewBag.PaymentMethod = id;
-            ViewBag.ClientKey = _clientKey;
-            return View();
-        }
-
-        [Route("previewgiftcardcomponent/{id}")]
-        public IActionResult PreviewGiftcardComponent(string id)
-        {
-            ViewBag.PaymentMethod = id;
-            return View();
-        }
-
-        [Route("checkoutgiftcardcomponent/{id}")]
-        public IActionResult CheckoutGiftcardComponent(string id)
-        {
-            ViewBag.PaymentMethod = id;
-            ViewBag.ClientKey = _clientKey;
-            return View();
-        }
-
-        [Route("redirectfromdropin")]
-        public IActionResult RedirectFromDropin()
-        {
-            ViewBag.ClientKey = _clientKey;
-            return View();
-        }
-
-        [Route("redirectfromgiftcardcomponent")]
-        public IActionResult RedirectFromGiftcardComponent()
-        {
-            ViewBag.ClientKey = _clientKey;
-            return View();
-        }
 
         [HttpGet("result/{status}")]
         public IActionResult Result(string status, [FromQuery(Name = "reason")] string refusalReason)
@@ -100,5 +58,62 @@ namespace adyen_dotnet_giftcard_example.Controllers
         {
             return View();
         }
+
+        #endregion
+
+
+
+        #region ### Drop-in
+
+        [Route("dropin/checkout/{id}")]
+        public IActionResult DropinCheckout(string id)
+        {
+            ViewBag.PaymentMethod = id;
+            ViewBag.ClientKey = _clientKey;
+            return View("~/Views/Home/Dropin/Checkout.cshtml");
+        }
+
+        [Route("dropin/preview/{id}")]
+        public IActionResult DropinPreview(string id)
+        {
+            ViewBag.PaymentMethod = id;
+            return View("~/Views/Home/Dropin/Preview.cshtml");
+        }
+
+        [Route("dropin/redirect")]
+        public IActionResult DropinRedirect()
+        {
+            ViewBag.ClientKey = _clientKey;
+            return View("~/Views/Home/Dropin/Redirect.cshtml");
+        }
+
+        #endregion
+
+
+        #region ### GiftcardComponent
+
+        [Route("giftcardcomponent/checkout/{id}")]
+        public IActionResult GiftcardComponentCheckout(string id)
+        {
+            ViewBag.PaymentMethod = id;
+            ViewBag.ClientKey = _clientKey;
+            return View("~/Views/Home/GiftcardComponent/Checkout.cshtml");
+        }
+
+        [Route("giftcardcomponent/preview/{id}")]
+        public IActionResult GiftcardComponentPreview(string id)
+        {
+            ViewBag.PaymentMethod = id;
+            return View("~/Views/Home/GiftcardComponent/Preview.cshtml");
+        }
+
+        [Route("giftcardcomponent/redirect")]
+        public IActionResult GiftcardComponentRedirect()
+        {
+            ViewBag.ClientKey = _clientKey;
+            return View("~/Views/Home/GiftcardComponent/Redirect.cshtml");
+        }
+
+        #endregion
     }
 }
