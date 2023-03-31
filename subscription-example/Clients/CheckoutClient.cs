@@ -68,12 +68,12 @@ namespace adyen_dotnet_subscription_example.Clients
             try
             {
                 var sessionResponse = await _checkout.SessionsAsync(sessionsRequest);
-                _logger.LogInformation($"Response for Payments API::\n{sessionResponse}\n");
+                _logger.LogInformation($"Response for Payments API:\n{sessionResponse}\n");
                 return sessionResponse;
             }
             catch (Adyen.HttpClient.HttpClientException e)
             {
-                _logger.LogError($"Request for Payments failed::\n{e.ResponseBody}\n");
+                _logger.LogError($"Request for Payments failed:\n{e.ResponseBody}\n");
                 throw;
             }
         }
@@ -99,12 +99,12 @@ namespace adyen_dotnet_subscription_example.Clients
             try
             {
                 var paymentResponse = await _checkout.PaymentsAsync(paymentsRequest);
-                _logger.LogInformation($"Response for Payments API::\n{paymentResponse}\n");
+                _logger.LogInformation($"Response for Payments API:\n{paymentResponse}\n");
                 return paymentResponse;
             }
             catch (Adyen.HttpClient.HttpClientException e)
             {
-                _logger.LogError($"Request for Payments failed::\n{e.ResponseBody}\n");
+                _logger.LogError($"Request for Payments failed:\n{e.ResponseBody}\n");
                 throw;
             }
         }

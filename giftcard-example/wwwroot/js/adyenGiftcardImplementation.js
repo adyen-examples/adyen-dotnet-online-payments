@@ -14,25 +14,41 @@ async function startCheckout() {
   const type = document.getElementById("type").innerHTML;
 
   try {
+    const paymentMethodsResponse = await callServer("/api/paymentMethods");
+    console.info(paymentMethodsResponse);
+
     const sessionResponse = await callServer("/api/sessions/giftcardcomponent");
     console.info(sessionResponse);
-    const checkout = await createAdyenCheckout(sessionResponse);
+
+    const checkout = await createAdyenCheckout(sessionResponse, paymentMethodsResponse);
 
     // Adds giftcard container and the eventlistener.
     document.getElementById("add-giftcard-button")
-        .addEventListener('click', async () =>
-        {
-          // Create the giftcard component
-          giftcardComponent = checkout.create("giftcard").mount("#giftcard-container");
-          // Show giftcard component
-          document.getElementById("giftcard-container").hidden = false;
-          // Hide add-gift-card button
-          document.getElementById("add-giftcard-button").hidden = true;
-        });
+      .addEventListener('click', async () =>
+      {
+        // Create the giftcard component
+        giftcardComponent = checkout.create("giftcard", { 
+          // Component configuration overrides all other onError configuration.
+          onError: () => { console.log("error creating giftcard") } 
+        }).mount("#giftcard-container");
+      
+        // Show giftcard component
+        document.getElementById("giftcard-container").hidden = false;
+        // Hide add-gift-card button
+        document.getElementById("add-giftcard-button").hidden = true;
+      });
 
     // Create your components
-    const cardComponent = checkout.create("card").mount("#card-container");
-    const idealComponent = checkout.create("ideal").mount("#ideal-container");
+    const cardComponent = checkout.create("card", { 
+      // Component configuration overrides all other onError configuration.
+      onError: () => { console.log("error creating giftcard") }
+    }).mount("#card-container");
+
+    const idealComponent = checkout.create("ideal", { 
+      // Component configuration overrides all other onError configuration.
+      onError: () => { console.log("error creating giftcard") }
+    }).mount("#ideal-container");
+
   } catch (error) {
     console.error(error);
     alert("Error occurred. Look at console for details");
@@ -50,14 +66,21 @@ async function finalizeCheckout() {
   }
 }
 
-async function createAdyenCheckout(session){
+async function createAdyenCheckout(session, paymentMethodsResponse){
   return new AdyenCheckout(
       {
+        paymentMethodsResponse: paymentMethodsResponse,
         clientKey: clientKey,
         locale: "en_US",
         environment: "test",
         session: session,
         showPayButton: true,
+        /*onSubmit: () => {
+           // Adyen provides a "Pay button". To use the Pay button for each payment method, set `showPayButton` to true. 
+           // The Pay button triggers the onSubmit event.
+           // If you want to use your own button and then trigger the submit flow on your own, 
+           // Set `showPayButton` to false and call the .submit() method from your own button implementation, for example: component.submit()
+        },*/
         paymentMethodsConfiguration: {
           ideal: {
             showImage: true,
@@ -66,10 +89,6 @@ async function createAdyenCheckout(session){
             hasHolderName: true,
             holderNameRequired: true,
             name: "Credit or debit card",
-            amount: {
-              value: totalAmountToPay,
-              currency: "EUR",
-            },
           },
         },
         onOrderCreated: (orderStatus) => {
@@ -100,6 +119,14 @@ async function createAdyenCheckout(session){
           console.info("onPaymentCompleted");
           console.info(result, component);
           handleServerResponse(result, component);
+        },
+        onChange: (state, component) =>{
+            // state.isValid: True or false. Specifies if all the information that the shopper provided is valid.
+            // state.data: Provides the data that you need to pass in the `/payments` call.
+            //console.info(state);
+            
+            // Provides the active component instance that called this event.
+            //console.info(component); 
         },
         onError: (error, component) => {
           console.error("onError");

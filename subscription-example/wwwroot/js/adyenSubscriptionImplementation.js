@@ -43,10 +43,6 @@ async function createAdyenCheckout(session){
           hasHolderName: true,
           holderNameRequired: true,
           name: "Credit or debit card",
-          amount: {
-            value: 0,
-            currency: "EUR",
-          },
         }
       },
       onPaymentCompleted: (result, component) => {
