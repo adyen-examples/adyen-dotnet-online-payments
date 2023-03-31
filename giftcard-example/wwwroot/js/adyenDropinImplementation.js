@@ -57,7 +57,9 @@ async function createAdyenCheckout(session){
       console.info(orderStatus);
     },
     onRequiringConfirmation: () => {
-      console.info("Confirming the final payment... You're one click away.");
+      // Called when the gift card balance is enough to pay the full payment amount.
+      // The shopper must then confirm that they want to make the payment with the gift card
+      console.info("onRequiringConfirmation");
     },
     onPaymentCompleted: (result, component) => {
       console.info("onPaymentCompleted");

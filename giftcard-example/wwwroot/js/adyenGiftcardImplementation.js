@@ -18,8 +18,8 @@ async function startCheckout() {
     console.info(sessionResponse);
     const checkout = await createAdyenCheckout(sessionResponse);
 
-    // Adds giftcard container when clicked
-    const addGiftcardButton = document.getElementById("add-giftcard-button")
+    // Adds giftcard container and the eventlistener.
+    document.getElementById("add-giftcard-button")
         .addEventListener('click', async () =>
         {
           // Create the giftcard component
@@ -32,7 +32,7 @@ async function startCheckout() {
 
     // Create your components
     const cardComponent = checkout.create("card").mount("#card-container");
-    const idealComponent = await checkout.create("ideal").mount("#ideal-container");
+    const idealComponent = checkout.create("ideal").mount("#ideal-container");
   } catch (error) {
     console.error(error);
     alert("Error occurred. Look at console for details");
@@ -92,17 +92,9 @@ async function createAdyenCheckout(session){
           appendGiftcardInfo(subtractedGiftcardBalance);
         },
         onRequiringConfirmation: () => {
-          console.info("Confirming the final payment...");
-
-          // Show/set what the shopper still has to pay (in this case 0)
-          //const spanElement = document.getElementById('remaining-due-amount');
-          //spanElement.textContent = (remainingAmountToPay / 100).toFixed(2);
-
-          // Hide giftcard component and hide the add-gift-card-button
-          //document.getElementById("giftcard-container").hidden = true;
-          //document.getElementById("add-giftcard-button").hidden = true;
-
-          //appendGiftcardInfo(remainingAmountToPay.toFixed(2));
+          // Called when the gift card balance is enough to pay the full payment amount.
+          // The shopper must then confirm that they want to make the payment with the gift card
+          console.info("onRequiringConfirmation");
         },
         onPaymentCompleted: (result, component) => {
           console.info("onPaymentCompleted");
@@ -116,7 +108,6 @@ async function createAdyenCheckout(session){
         },
       });
 }
-
 
 // Appends a visual cue when a giftcard has been successfully added
 // Pass parameter which states how much of the giftcard amount is spent
