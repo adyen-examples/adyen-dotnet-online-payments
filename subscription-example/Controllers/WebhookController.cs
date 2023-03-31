@@ -72,6 +72,15 @@ namespace adyen_dotnet_subscription_example.Controllers
 
         private Task ProcessNotificationAsync(NotificationRequestItem notificationRequestItem)
         {
+            // (1) For the synchronous flow (enabled by default), check the "Authorisation" eventCode: 
+            // Read more: https://docs.adyen.com/online-payments/tokenization/create-and-use-tokens?tab=subscriptions_2#authorised-result-code-1
+            // (2) For the asynchronous flow, (enabled by contacting our support team), check the "RECURRING_CONTRACT" eventCode:
+            // Read more: https://docs.adyen.com/online-payments/tokenization/create-and-use-tokens?tab=subscriptions_2#pending-and-refusal-result-codes-1
+            if (notificationRequestItem.EventCode != "AUTHORISATION")
+            {
+                return Task.CompletedTask;
+            }
+
             // Get the `recurringDetailReference` from the `AdditionalData` property in the webhook.
             if (!notificationRequestItem.AdditionalData.TryGetValue("recurring.recurringDetailReference", out string recurringDetailReference))
             {
