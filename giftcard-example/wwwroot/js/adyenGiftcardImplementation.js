@@ -27,10 +27,7 @@ async function startCheckout() {
       .addEventListener('click', async () =>
       {
         // Create the giftcard component
-        giftcardComponent = checkout.create("giftcard", { 
-          // Component configuration overrides all other onError configuration.
-          onError: () => { console.log("error creating giftcard") } 
-        }).mount("#giftcard-container");
+        giftcardComponent = checkout.create("giftcard").mount("#giftcard-container");
       
         // Show giftcard component
         document.getElementById("giftcard-container").hidden = false;
@@ -38,16 +35,14 @@ async function startCheckout() {
         document.getElementById("add-giftcard-button").hidden = true;
       });
 
-    // Create your components
-    const cardComponent = checkout.create("card", { 
-      // Component configuration overrides all other onError configuration.
-      onError: () => { console.log("error creating cardComponent") }
-    }).mount("#card-container");
+    // Create your components, if you want to do custom mounting of each separate payment method.
+    //const cardComponent = checkout.create("card").mount("#card-container");
+    //const idealComponent = checkout.create("ideal").mount("#ideal-container");
 
-    const idealComponent = checkout.create("ideal", { 
+    const dropinComponent = checkout.create("dropin", { 
       // Component configuration overrides all other onError configuration.
-      onError: () => { console.log("error creating idealComponent") }
-    }).mount("#ideal-container");
+      onError: () => { console.log("error creating dropin"); }
+    }).mount("#dropin-container");
 
   } catch (error) {
     console.error(error);
@@ -89,6 +84,9 @@ async function createAdyenCheckout(session, paymentMethodsResponse){
             hasHolderName: true,
             holderNameRequired: true,
             name: "Credit or debit card",
+          },
+          giftcard: {
+              // TODO
           },
         },
         onOrderCreated: (orderStatus) => {
