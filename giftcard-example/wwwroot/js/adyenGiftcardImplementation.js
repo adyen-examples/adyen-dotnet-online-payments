@@ -41,12 +41,12 @@ async function startCheckout() {
     // Create your components
     const cardComponent = checkout.create("card", { 
       // Component configuration overrides all other onError configuration.
-      onError: () => { console.log("error creating giftcard") }
+      onError: () => { console.log("error creating cardComponent") }
     }).mount("#card-container");
 
     const idealComponent = checkout.create("ideal", { 
       // Component configuration overrides all other onError configuration.
-      onError: () => { console.log("error creating giftcard") }
+      onError: () => { console.log("error creating idealComponent") }
     }).mount("#ideal-container");
 
   } catch (error) {
