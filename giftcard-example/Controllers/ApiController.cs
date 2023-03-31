@@ -33,7 +33,8 @@ namespace adyen_dotnet_giftcard_example.Controllers
                 merchantAccount: _merchantAccount, 
                 countryCode: "NL", 
                 shopperLocale: "en_US", 
-                channel: PaymentMethodsRequest.ChannelEnum.Web);
+                channel: PaymentMethodsRequest.ChannelEnum.Web
+            );
             
             try
             {
