@@ -72,11 +72,6 @@ namespace adyen_dotnet_subscription_example.Controllers
 
         private Task ProcessNotificationAsync(NotificationRequestItem notificationRequestItem)
         {
-            //if (notificationRequestItem.EventCode != "RECURRING_CONTRACT")
-            //{
-            //    return Task.CompletedTask;
-            //}
-
             // Get the `recurringDetailReference` from the `AdditionalData` property in the webhook.
             if (!notificationRequestItem.AdditionalData.TryGetValue("recurring.recurringDetailReference", out string recurringDetailReference))
             {

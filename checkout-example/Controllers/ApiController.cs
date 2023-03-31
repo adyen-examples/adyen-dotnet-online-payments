@@ -53,12 +53,12 @@ namespace adyen_dotnet_checkout_example.Controllers
             try
             {
                 var res = await _checkout.SessionsAsync(sessionsRequest);
-                _logger.LogInformation($"Response: \n{res}\n");
+                _logger.LogInformation($"Response for Payments API::\n{res}\n");
                 return res.ToJson();
             }
             catch (Adyen.HttpClient.HttpClientException e)
             {
-                _logger.LogError($"Request: {e.ResponseBody}\n");
+                _logger.LogError($"Request for Payments failed::\n{e.ResponseBody}\n");
                 throw;
             }
         }
