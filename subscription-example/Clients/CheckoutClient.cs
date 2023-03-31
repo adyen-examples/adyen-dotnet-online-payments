@@ -46,15 +46,14 @@ namespace adyen_dotnet_subscription_example.Clients
             _merchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT;
         }
 
-        /// <inheritdoc/>
         public async Task<CreateCheckoutSessionResponse> CheckoutSessionsAsync(string shopperReference, CancellationToken cancellationToken)
         {
             var orderRef = Guid.NewGuid();
 
             var sessionsRequest = new CreateCheckoutSessionRequest();
-            sessionsRequest.MerchantAccount = _merchantAccount;
+            sessionsRequest.MerchantAccount = _merchantAccount; // Required.
             sessionsRequest.Amount = new Amount("EUR", 0);
-            sessionsRequest.Reference = orderRef.ToString();
+            sessionsRequest.Reference = orderRef.ToString(); // Required.
 
             sessionsRequest.Channel = CreateCheckoutSessionRequest.ChannelEnum.Web;
             sessionsRequest.ShopperInteraction = CreateCheckoutSessionRequest.ShopperInteractionEnum.Ecommerce;
@@ -63,7 +62,7 @@ namespace adyen_dotnet_subscription_example.Clients
 
             sessionsRequest.ShopperReference = shopperReference;
 
-            // required for 3ds2 redirect flow
+            // Required for 3DS2 redirect flow.
             sessionsRequest.ReturnUrl = $"{_urlService.GetHostUrl()}/redirect?orderRef={orderRef}";
 
             try
@@ -79,22 +78,21 @@ namespace adyen_dotnet_subscription_example.Clients
             }
         }
 
-        /// <inheritdoc/>
         public async Task<PaymentResponse> MakePaymentAsync(string shopperReference, string recurringDetailReference, CancellationToken cancellationToken)
         {
             var details = new DefaultPaymentMethodDetails
             {
-                StoredPaymentMethodId = recurringDetailReference
+                StoredPaymentMethodId = recurringDetailReference // Set the RecurringDetailReference.
             };
 
             var paymentsRequest = new PaymentRequest
             {
-                Reference = Guid.NewGuid().ToString(),
+                Reference = Guid.NewGuid().ToString(), // Required.
                 Amount = new Amount("EUR", 1199),
-                MerchantAccount = _merchantAccount,
-                ShopperInteraction = PaymentRequest.ShopperInteractionEnum.ContAuth,
+                MerchantAccount = _merchantAccount, // Required.
+                ShopperInteraction = PaymentRequest.ShopperInteractionEnum.ContAuth, // Set the shopper InteractionEnum to Cont.Auth.
                 RecurringProcessingModel = PaymentRequest.RecurringProcessingModelEnum.Subscription,
-                ShopperReference = shopperReference,
+                ShopperReference = shopperReference, // Set the ShopperReference.
                 PaymentMethod = details
             };
 

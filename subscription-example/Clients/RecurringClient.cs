@@ -44,7 +44,6 @@ namespace adyen_dotnet_subscription_example.Clients
             _merchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT;
         }
 
-        /// <inheritdoc/>
         public async Task<RecurringDetailsResult> ListRecurringDetailAsync(string shopperReference, CancellationToken cancellationToken)
         {
             var request = new RecurringDetailsRequest()
@@ -66,7 +65,6 @@ namespace adyen_dotnet_subscription_example.Clients
             }
         }
 
-        /// <inheritdoc/>
         public async Task<DisableResult> DisableRecurringDetailAsync(string shopperReference, string recurringDetailReference, CancellationToken cancellationToken = default)
         {
             var request = new DisableRequest()

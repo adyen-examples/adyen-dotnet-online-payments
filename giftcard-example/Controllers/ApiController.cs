@@ -1,15 +1,12 @@
 using Adyen.Model.Checkout;
 using Adyen.Service;
-using adyen_dotnet_checkout_example.Dtos.Requests;
 using adyen_dotnet_giftcard_example.Options;
 using adyen_dotnet_giftcard_example.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Adyen.Service.Resource.Checkout;
 
 namespace adyen_dotnet_giftcard_example.Controllers
 {
@@ -32,12 +29,11 @@ namespace adyen_dotnet_giftcard_example.Controllers
         [Route("api/paymentMethods")]
         public async Task<ActionResult<string>> PaymentMethods()
         {
-            var paymentMethodsRequest = new PaymentMethodsRequest(merchantAccount: _merchantAccount)
-            {
-                CountryCode = "NL",
-                ShopperLocale = "nl-NL",
-                Channel = PaymentMethodsRequest.ChannelEnum.Web,
-            };
+            var paymentMethodsRequest = new PaymentMethodsRequest(
+                merchantAccount: _merchantAccount, 
+                countryCode: "NL", 
+                shopperLocale: "nl-NL", 
+                channel: PaymentMethodsRequest.ChannelEnum.Web);
             
             try
             {
@@ -56,15 +52,15 @@ namespace adyen_dotnet_giftcard_example.Controllers
         public async Task<ActionResult<string>> SessionsDropin()
         {
             var sessionsRequest = new CreateCheckoutSessionRequest();
-            sessionsRequest.MerchantAccount = _merchantAccount; // required
+            sessionsRequest.MerchantAccount = _merchantAccount; // Required.
             sessionsRequest.Channel = CreateCheckoutSessionRequest.ChannelEnum.Web;
-            sessionsRequest.Amount = new Amount("EUR", 11000); // value is 110€ in minor units
+            sessionsRequest.Amount = new Amount("EUR", 11000); // Value is 110€ in minor units
 
             var orderRef = Guid.NewGuid();
-            sessionsRequest.Reference = orderRef.ToString(); // required
+            sessionsRequest.Reference = orderRef.ToString(); // Required.
 
-            // required for 3ds2 redirect flow
-            sessionsRequest.ReturnUrl = $"{_urlService.GetHostUrl()}/dropin/redirect?orderRef={orderRef}";
+            // Eequired for 3DS2 redirect flow.
+            sessionsRequest.ReturnUrl = $"{_urlService.GetHostUrl()}/dropin/redirect?orderRef={orderRef}"; // Redirect from dropin.
 
             try
             {
@@ -83,15 +79,15 @@ namespace adyen_dotnet_giftcard_example.Controllers
         public async Task<ActionResult<string>> SessionsGiftcardComponent()
         {
             var sessionsRequest = new CreateCheckoutSessionRequest();
-            sessionsRequest.MerchantAccount = _merchantAccount; // required
+            sessionsRequest.MerchantAccount = _merchantAccount; // Required.
             sessionsRequest.Channel = CreateCheckoutSessionRequest.ChannelEnum.Web;
-            sessionsRequest.Amount = new Amount("EUR", 11000); // value is 110€ in minor units
+            sessionsRequest.Amount = new Amount("EUR", 11000); // Value is 110€ in minor units.
 
             var orderRef = Guid.NewGuid();
-            sessionsRequest.Reference = orderRef.ToString(); // required
+            sessionsRequest.Reference = orderRef.ToString(); // Required.
 
-            // required for 3ds2 redirect flow
-            sessionsRequest.ReturnUrl = $"{_urlService.GetHostUrl()}/giftcardcomponent/redirect?orderRef={orderRef}";
+            // Required for 3DS2 redirect flow.
+            sessionsRequest.ReturnUrl = $"{_urlService.GetHostUrl()}/giftcardcomponent/redirect?orderRef={orderRef}"; // Redirect from GiftcardComponent.
 
             try
             {
