@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Adyen.Service.Resource.Checkout;
 
 namespace adyen_dotnet_giftcard_example.Controllers
 {
@@ -28,75 +29,25 @@ namespace adyen_dotnet_giftcard_example.Controllers
             _merchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT;
         }
 
-        [HttpPost("api/createorder")]
-        public async Task<ActionResult<string>> CreateOrder()
+        [Route("api/paymentMethods")]
+        public async Task<ActionResult<string>> PaymentMethods()
         {
-            var createOrderRequest = new CheckoutCreateOrderRequest(
-                amount: new Amount("EUR", 10000), // value is 100€ in minor units
-                merchantAccount: _merchantAccount,
-                expiresAt: "2024-04-09T14:16:46Z", 
-                reference: Guid.NewGuid().ToString() // This needs to match with cancelorder cancelorderRequest.orderData
-            );
-
+            var paymentMethodsRequest = new PaymentMethodsRequest(merchantAccount: _merchantAccount)
+            {
+                CountryCode = "NL",
+                ShopperLocale = "nl-NL",
+                Channel = PaymentMethodsRequest.ChannelEnum.Web,
+            };
+            
             try
             {
-                var res = await _checkout.OrdersAsync(createOrderRequest);
-                _logger.LogInformation($"Response from Orders API: {res}");
+                var res = await _checkout.PaymentMethodsAsync(paymentMethodsRequest);
+                _logger.LogInformation($"Response: \n{res}\n");
                 return res.ToJson();
             }
             catch (Adyen.HttpClient.HttpClientException e)
             {
-                _logger.LogError($"Request for CreateOrder failed: {e.ResponseBody}");
-                throw;
-            }
-        }
-
-        [HttpPost("api/cancelorder")]
-        public async Task<ActionResult<string>> CancelOrder(string orderData, string pspReference)
-        {
-            var createOrderRequest = new CheckoutCancelOrderRequest( 
-                order: new CheckoutOrder(orderData, pspReference),
-                merchantAccount: _merchantAccount
-            );
-
-            try
-            {
-                var res = await _checkout.OrdersCancelAsync(createOrderRequest);
-                _logger.LogInformation($"Response from Orders API: {res}");
-                return res.ToJson();
-            }
-            catch (Adyen.HttpClient.HttpClientException e)
-            {
-                _logger.LogError($"Request for CancelOrder failed: {e.ResponseBody}");
-                throw;
-            }
-        }
-
-        [HttpPost("api/balancecheck")]
-        public async Task<ActionResult<string>> BalanceCheck(BalanceCheckRequest request)
-        {
-            var balanceCheckRequest = new CheckoutBalanceCheckRequest(
-                amount: new Amount("EUR", 11000), // value is 110€ in minor units
-                merchantAccount: _merchantAccount,
-                //string type, string number, string cvc, string holderName for plastic
-                paymentMethod: new Dictionary<string, string>()
-                {
-                    { "type", request.Type },
-                    { "number", request.Number },
-                    { "cvc", request.Cvc }
-                },
-                reference: Guid.NewGuid().ToString()
-            );
-
-            try
-            {
-                var res = await _checkout.PaymentMethodsBalanceAsync(balanceCheckRequest);
-                _logger.LogInformation($"Response from Orders API: {res}");
-                return res.ToJson();
-            }
-            catch (Adyen.HttpClient.HttpClientException e)
-            {
-                _logger.LogError($"Request for BalanceCheck failed: {e.ResponseBody}");
+                _logger.LogError($"Request: {e.ResponseBody}\n");
                 throw;
             }
         }
