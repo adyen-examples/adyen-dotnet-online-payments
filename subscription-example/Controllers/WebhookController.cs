@@ -36,7 +36,7 @@ namespace adyen_dotnet_subscription_example.Controllers
             {
                 // JSON and HTTP POST notifications always contain a single `NotificationRequestItem` object.
                 // Read more: https://docs.adyen.com/development-resources/webhooks/understand-notifications#notification-structure.
-                NotificationRequestItemContainer container = notificationRequest.NotificationItemContainers.FirstOrDefault();
+                NotificationRequestItemContainer container = notificationRequest.NotificationItemContainers?.FirstOrDefault();
 
                 if (container == null)
                 {
@@ -93,7 +93,7 @@ namespace adyen_dotnet_subscription_example.Controllers
                 return Task.CompletedTask;
             }
 
-            // Get and log the recurringProcessingModel below
+            // Get and log the recurringProcessingModel below.
             notificationRequestItem.AdditionalData.TryGetValue("recurringProcessingModel", out string recurringProcessingModel);
 
             _logger.LogInformation($"Received recurringDetailReference: {recurringDetailReference} for {shopperReference}" +

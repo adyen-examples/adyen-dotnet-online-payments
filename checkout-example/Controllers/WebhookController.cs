@@ -33,7 +33,7 @@ namespace adyen_dotnet_checkout_example.Controllers
             {
                 // JSON and HTTP POST notifications always contain a single `NotificationRequestItem` object.
                 // Read more: https://docs.adyen.com/development-resources/webhooks/understand-notifications#notification-structure.
-                NotificationRequestItemContainer container = notificationRequest.NotificationItemContainers.FirstOrDefault();
+                NotificationRequestItemContainer container = notificationRequest.NotificationItemContainers?.FirstOrDefault();
 
                 if (container == null)
                 {

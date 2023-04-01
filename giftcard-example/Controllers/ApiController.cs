@@ -30,7 +30,7 @@ namespace adyen_dotnet_giftcard_example.Controllers
         public async Task<ActionResult<string>> PaymentMethods()
         {
             var paymentMethodsRequest = new PaymentMethodsRequest(
-                merchantAccount: _merchantAccount, 
+                merchantAccount: _merchantAccount, // Required.
                 countryCode: "NL", 
                 shopperLocale: "en_US", 
                 channel: PaymentMethodsRequest.ChannelEnum.Web

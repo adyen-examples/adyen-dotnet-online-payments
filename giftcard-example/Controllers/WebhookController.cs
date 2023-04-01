@@ -33,7 +33,7 @@ namespace adyen_dotnet_giftcard_example.Controllers
             {
                 // JSON and HTTP POST notifications always contain a single `NotificationRequestItem` object.
                 // Read more: https://docs.adyen.com/development-resources/webhooks/understand-notifications#notification-structure.
-                NotificationRequestItemContainer container = notificationRequest.NotificationItemContainers.FirstOrDefault();
+                NotificationRequestItemContainer container = notificationRequest.NotificationItemContainers?.FirstOrDefault();
 
                 if (container == null)
                 {
@@ -56,8 +56,12 @@ namespace adyen_dotnet_giftcard_example.Controllers
                     return BadRequest($"Webhook unsuccessful: {container.NotificationItem.Reason}");
                 }
 
-                // Process notification asynchronously.
-                await ProcessNotificationAsync(container.NotificationItem);
+                // Process notifications asynchronously.
+                await ProcessAuthorisationNotificationAsync(container.NotificationItem);
+
+                await ProcessOrderOpenedNotificationAsync(container.NotificationItem);
+
+                await ProcessOrderClosedNotificationAsync(container.NotificationItem);
             }
             catch (Exception e)
             {
@@ -68,14 +72,87 @@ namespace adyen_dotnet_giftcard_example.Controllers
             return Ok("[accepted]");
         }
 
-        private Task ProcessNotificationAsync(NotificationRequestItem notification)
+        private Task ProcessAuthorisationNotificationAsync(NotificationRequestItem notification)
         {
-            // Perform your business logic or asynchronous operations (awaits) here.
-            // In this case, we just log it.
-            // TODO: Check your eventcode=order_open / order close here (write logic)
-            _logger.LogInformation($"Received webhook with event::\n" +
-                                   $"Merchant Reference ::{notification.MerchantReference} \n" +
-                                   $"PSP Reference ::{notification.PspReference} \n");
+            if (notification.EventCode == "AUTHORISATION")
+            {
+                return Task.CompletedTask;
+            }
+
+            // The amount that is authorised on the final payment. E.g. if you paid €110,- with a €50,- giftcard and another €50,- giftcard.
+            // This amount should be `1000` (in units of 100s) which is equivalent to €10,-
+            _logger.LogInformation($"Payment method: {notification.PaymentMethod}\n" +
+                $"Currency: {notification.Amount?.Currency}\n" +
+                $"Value: {notification.Amount?.Value}\n" +
+                $"PspReference: {notification.PspReference}");
+
+            if (notification.AdditionalData.TryGetValue("merchantOrderReference", out string merchantOrderReference))
+            {
+                // This is used as reference for "ORDER_OPENED" / "ORDER_CLOSED".
+                _logger.LogInformation($"merchantOrderReference: {merchantOrderReference}");
+            }
+
+            return Task.CompletedTask;
+        }
+
+        private Task ProcessOrderOpenedNotificationAsync(NotificationRequestItem notification)
+        {
+            if (notification.EventCode != "ORDER_OPENED")
+            {
+                return Task.CompletedTask;
+            }
+
+            _logger.LogInformation($"MerchantOrderReference: {notification.MerchantReference}\n" +
+                $"Currency: {notification.Amount.Currency}\n" +
+                $"Value: {notification.Amount.Value}\n" + // Total order amount `11000` (in units of 100s) which is equivalent to €110,-
+                $"PspReference: {notification.PspReference}");
+
+            return Task.CompletedTask;
+        }
+
+        private Task ProcessOrderClosedNotificationAsync(NotificationRequestItem notification)
+        {
+            if (notification.EventCode != "ORDER_CLOSED")
+            {
+                return Task.CompletedTask;
+            }
+
+
+            bool isReading = true;
+            for (int i = 1; i < 10 && isReading; i++)
+            {
+                
+                if (!notification.AdditionalData.TryGetValue($"order-{i}-paymentMethod", out string orderPaymentMethod))
+                {
+                    isReading = false;
+                    continue;
+                }
+
+                
+                if (!notification.AdditionalData.TryGetValue($"order-{i}-pspReference", out string orderPspReference))
+                {
+                    isReading = false;
+                    continue;
+                }
+
+                
+                if (!notification.AdditionalData.TryGetValue($"order-{i}-paymentAmount", out string orderPaymentAmount))
+                {
+                    isReading = false;
+                    continue;
+                }
+
+                _logger.LogInformation($"orderPaymentMethod: {orderPaymentMethod}\n" + // The payment method that is used to make the purchase (e.g. 'visa').
+                    $"orderPspReference: {orderPspReference}\n" + // Foreach partial payment, you get a new (unique) PspReference.
+                    $"orderPaymentAmount: {orderPaymentAmount}"); // Format: 'EUR 50.00'.
+            }
+
+
+            _logger.LogInformation($"MerchantOrderReference: {notification.MerchantReference}\n" +
+                $"Currency: {notification.Amount.Currency}\n" +
+                $"Value: {notification.Amount.Value}\n" + // Total order amount `11000` (in units of 100s) which is equivalent to €110,-
+                $"PspReference: {notification.PspReference}"); 
+
             return Task.CompletedTask;
         }
     }
