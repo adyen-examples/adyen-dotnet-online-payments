@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using System.Text.Json.Serialization;
 
 namespace adyen_dotnet_checkout_example
 {
@@ -38,7 +39,8 @@ namespace adyen_dotnet_checkout_example
 
             // Register your controllers.
             services.AddControllersWithViews();
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
+
             services.AddHttpContextAccessor()
                 .AddTransient<IUrlService, UrlService>();
 
