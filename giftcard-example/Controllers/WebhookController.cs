@@ -74,14 +74,14 @@ namespace adyen_dotnet_giftcard_example.Controllers
 
         private Task ProcessAuthorisationNotificationAsync(NotificationRequestItem notification)
         {
-            if (notification.EventCode == "AUTHORISATION")
+            if (notification.EventCode != "AUTHORISATION")
             {
                 return Task.CompletedTask;
             }
 
             // The amount that is authorised on the final payment. E.g. if you paid €110,- with a €50,- giftcard and another €50,- giftcard.
             // This amount should be `1000` (in units of 100s) which is equivalent to €10,-
-            _logger.LogInformation($"Payment method: {notification.PaymentMethod}\n" +
+            _logger.LogInformation($"[AUTHORISATION] Payment method: {notification.PaymentMethod}\n" +
                 $"Currency: {notification.Amount?.Currency}\n" +
                 $"Value: {notification.Amount?.Value}\n" +
                 $"PspReference: {notification.PspReference}");
@@ -102,7 +102,7 @@ namespace adyen_dotnet_giftcard_example.Controllers
                 return Task.CompletedTask;
             }
 
-            _logger.LogInformation($"MerchantOrderReference: {notification.MerchantReference}\n" +
+            _logger.LogInformation($"[ORDER_OPENED] merchantOrderReference: {notification.MerchantReference}\n" +
                 $"Currency: {notification.Amount.Currency}\n" +
                 $"Value: {notification.Amount.Value}\n" + // Total order amount `11000` (in units of 100s) which is equivalent to €110,-
                 $"PspReference: {notification.PspReference}");
@@ -117,11 +117,9 @@ namespace adyen_dotnet_giftcard_example.Controllers
                 return Task.CompletedTask;
             }
 
-
             bool isReading = true;
             for (int i = 1; i < 10 && isReading; i++)
             {
-                
                 if (!notification.AdditionalData.TryGetValue($"order-{i}-paymentMethod", out string orderPaymentMethod))
                 {
                     isReading = false;
@@ -142,7 +140,7 @@ namespace adyen_dotnet_giftcard_example.Controllers
                     continue;
                 }
 
-                _logger.LogInformation($"orderPaymentMethod: {orderPaymentMethod}\n" + // The payment method that is used to make the purchase (e.g. 'visa').
+                _logger.LogInformation($"[ORDER_CLOSED] orderPaymentMethod: {orderPaymentMethod}\n" + // The payment method that is used to make the purchase (e.g. 'visa').
                     $"orderPspReference: {orderPspReference}\n" + // Foreach partial payment, you get a new (unique) PspReference.
                     $"orderPaymentAmount: {orderPaymentAmount}"); // Format: 'EUR 50.00'.
             }

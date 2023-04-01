@@ -46,7 +46,7 @@ namespace adyen_dotnet_giftcard_example
 
             // Register your controllers.
             services.AddControllersWithViews();
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddHttpContextAccessor()
                 .AddTransient<IUrlService, UrlService>();
 
