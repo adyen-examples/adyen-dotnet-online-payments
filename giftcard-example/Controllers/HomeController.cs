@@ -86,18 +86,16 @@ namespace adyen_dotnet_giftcard_example.Controllers
 
         #region ### GiftcardComponent
 
-        [Route("giftcardcomponent/checkout/{id}")]
-        public IActionResult GiftcardComponentCheckout(string id)
+        [Route("giftcardcomponent/checkout")]
+        public IActionResult GiftcardComponentCheckout()
         {
-            ViewBag.PaymentMethod = id;
             ViewBag.ClientKey = _clientKey;
             return View("~/Views/Home/GiftcardComponent/Checkout.cshtml");
         }
 
-        [Route("giftcardcomponent/preview/{id}")]
-        public IActionResult GiftcardComponentPreview(string id)
+        [Route("giftcardcomponent/preview")]
+        public IActionResult GiftcardComponentPreview()
         {
-            ViewBag.PaymentMethod = id;
             return View("~/Views/Home/GiftcardComponent/Preview.cshtml");
         }
 

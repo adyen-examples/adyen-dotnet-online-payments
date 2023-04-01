@@ -1,9 +1,8 @@
 @{
-    ViewData["Title"] = "Adyen Giftcard Component Cart + Checkout";
+    ViewData["Title"] = "Adyen Giftcard Component Checkout";
 }
 @* Hidden divs with data passed from the server *@
 <div id="clientKey" class="hidden">@ViewBag.ClientKey</div>
-<div id="type" class="hidden">@ViewBag.PaymentMethod</div>
 
 <main class="preview-page">
   <section class="cart">
@@ -25,6 +24,69 @@
             </li>
           </ul>
         </div>
+
+        <div id="payment-container-selector">
+          <ul class="order-overview-list">
+            <li id="scheme-container-selector" class="scheme-container-selector">
+              <img src="~/images/icons/applepay.svg" alt="scheme">
+              <p>Credit or debit card</p>
+            </li>
+
+            <li id="ideal-container-selector">
+              <img src="~/images/icons/applepay.svg" alt="ideal">
+              <p class="order-summary-list-list-item-title">iDEAL</p>
+            </li>
+
+            <li id="sepadirectdebit-container-selector">
+              <img src="~/images/icons/applepay.svg" alt="sepadirectdebit">
+              <p class="order-summary-list-list-item-title">SEPA Direct Debit</p>
+            </li>
+
+            <li id="alipay-container-selector">
+              <img src="~/images/icons/applepay.svg" alt="alipay">
+              <p class="order-summary-list-list-item-title">Alipay</p>
+            </li>
+
+            <li id="applepay-container-selector">
+              <img src="~/images/icons/applepay.svg" alt="applepay">
+              <p class="order-summary-list-list-item-title">Apple Pay</p>
+            </li>
+
+            <li id="paywithgoogle-container-selector">
+              <img src="~/images/icons/applepay.svg" alt="paywithgoogle">
+              <p class="order-summary-list-list-item-title">Google Pay</p>
+            </li>
+
+            <li id="klarna-container-selector">
+                            <img src="~/images/icons/applepay.svg" alt="klarna">
+              <p class="order-summary-list-list-item-title">Klarna Pay later</p>
+            </li>
+
+            <li id="klarna_account-container-selector">
+              <img src="~/images/icons/applepay.svg" alt="klarna_account">
+              <p class="order-summary-list-list-item-title">Klarna Slice it</p>
+            </li>
+
+            <li id="klarna_paynow-container-selector">
+              <img src="~/images/icons/applepay.svg" alt="klarna_paynow">
+              <p class="order-summary-list-list-item-title">Klarna Pay now</p>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Add your payment components here that you wish to support. -->
+        <!-- We create and mount these individual components in adyenGiftcardImplemention.js > function: `createPaymentMethodsComponent(..)` -->
+        <div id="payment-container-components">
+          <div id="scheme-container" hidden></div>
+          <div id="ideal-container" hidden></div>
+          <div id="sepadirectdebit-container" hidden></div>
+          <div id="alipay-container" hidden></div>
+          <div id="applepay-container" hidden></div>
+          <div id="paywithgoogle-container" hidden></div>
+          <div id="klarna-container" hidden></div>
+          <div id="klarna_account-container" hidden></div>
+          <div id="klarna_paynow-container" hidden></div>
+        </div>
       </div>
       
       <div class="preview-container-right">
@@ -33,33 +95,31 @@
             <li class="order-overview-list-item">
               <p class="order-overview-list-item-title-center">Overview</p>
             </li>
-
             <li class="order-overview-item">
               <p class="order-overview-list-item-total-amount-price">55.00</p>
             </li>
-
             <li class="order-overview-item">
               <p class="order-overview-list-item-total-amount-price">55.00</p>
             </li>
-
             <li class="order-overview-item">
               <p class="order-overview-list-item-total-amount">Total amount</p>
               <p class="order-overview-list-item-total-amount-price">110.00</p>
             </li>
-
             <li class="order-overview-list-item">
               <p class="order-overview-list-item-remaining">Remaining amount to be paid</p>
               <p class="order-overview-list-item-remaining-price" id="remaining-due-amount">110.00</p>
             </li>
+            <!-- See adyenGiftcardImplementation.js > function: `appendGiftcardInformation(..)` -->
+            <!-- We create and insert <div class='order-overview-list-item-giftcard-balance'></div> elements here to show giftcard balance modifications -->
           </ul>
+
           <ul class="order-overview-list">
             <li class="order-overview-list-item">
-                @* The giftcard component will be conditionally rendered below. *@
-                @* Drop-in includes styling out-of-the-box, so no additional CSS classes are needed. *@
                 <div id="giftcard-container" class="payment" hidden></div>
                 <button type="button" id="add-giftcard-button" class="add-giftcard-button">Add Giftcard</button>
             </li>
           </ul>
+
         </div>
       </div>
     </div>
@@ -69,22 +129,15 @@
       Giftcard Test card numbers (f.e. 'givex') can be found <a href="https://docs.adyen.com/development-resources/testing/test-card-numbers#gift-cards">here</a>.
     </div>
 
-    <!-- TODO -->
-    <div class="payment-container">
-       <div id="dropin-container"></div>
-    </div>
-
     <!-- If you want to do custom mounting of each separate payment method.
     <div id="payment-page" hidden> 
       <div class="container">
         Select your payment method:
         <div class="payment-container">
-          <div id="card-container"></div>
         </div>
       </div>
       <div class="container">
         <div class="payment-container">
-          <div id="ideal-container"></div>
         </div>
       </div>
     </div>

@@ -330,6 +330,7 @@ a:hover {
   font-weight: 400;
   text-align: right;
   color: green;
+  border-bottom: 1px solid #eeeeee;
 }
 
 .order-overview-list-item-remaining {
@@ -340,7 +341,7 @@ a:hover {
 }
 
 .order-overview-list-item-remaining-price {
-  font-weight: 400;
+  font-weight: 600;
   text-align: right;
 }
 

@@ -20,43 +20,47 @@ async function startTokenization() {
 
 // Some payment methods use redirects. This is where we finalize the operation
 async function finalizeTokenization() {
-  try {
-    const checkout = await createAdyenCheckout({id: sessionId});
-    checkout.submitDetails({details: {redirectResult}});
-  } catch (error) {
-    console.error(error);
-    alert("Error occurred. Look at console for details.");
-  }
+    try {
+        const checkout = await createAdyenCheckout({
+            id: sessionId
+        });
+        checkout.submitDetails({
+            details: {
+                redirectResult
+            }
+        });
+    } catch (error) {
+        console.error(error);
+        alert("Error occurred. Look at console for details.");
+    }
 }
 
-async function createAdyenCheckout(session){
-    return new AdyenCheckout(
-    {
-      clientKey,
-      locale: "en_US",
-      environment: "test",
-      session: session,
-      showPayButton: true,
-      storePaymentMethod: true,
-      paymentMethodsConfiguration: {
-        card: {
-          hasHolderName: true,
-          holderNameRequired: true,
-          name: "Credit or debit card",
-        }
-      },
-      onPaymentCompleted: (result, component) => {
-        console.info("onPaymentCompleted");
-        console.info(result, component);
-        handleServerResponse(result, component);
-      },
-      onError: (error, component) => {
-        console.error("onError");
-        console.error(error.name, error.message, error.stack, component);
-        handleServerResponse(error, component);
-      },
-    }
-  );
+async function createAdyenCheckout(session) {
+    return new AdyenCheckout({
+        clientKey,
+        locale: "en_US",
+        environment: "test",
+        session: session,
+        showPayButton: true,
+        storePaymentMethod: true,
+        paymentMethodsConfiguration: {
+            card: {
+                hasHolderName: true,
+                holderNameRequired: true,
+                name: "Credit or debit card",
+            }
+        },
+        onPaymentCompleted: (result, component) => {
+            console.info("onPaymentCompleted");
+            console.info(result, component);
+            handleServerResponse(result, component);
+        },
+        onError: (error, component) => {
+            console.error("onError");
+            console.error(error.name, error.message, error.stack, component);
+            handleServerResponse(error, component);
+        },
+    });
 }
 
 // Calls your server endpoints
@@ -90,4 +94,8 @@ function handleServerResponse(res, _component) {
     }
 }
 
-if (!sessionId) { startTokenization() } else { finalizeTokenization(); }
+if (!sessionId) {
+    startTokenization()
+} else {
+    finalizeTokenization();
+}
