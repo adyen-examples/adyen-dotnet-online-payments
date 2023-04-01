@@ -7,8 +7,6 @@ const redirectResult = urlParams.get('redirectResult');
 
 var remainingAmountToPay = 11000;
 
-var paymentMethodContainers = [];
-
 // Start checkout experience
 async function startCheckout() {
     console.info('Start checkout...');
@@ -25,10 +23,8 @@ async function startCheckout() {
         // Create and mount giftcard component
         createGiftcardComponent(checkout);
 
-        // Filter giftcard payment methods
-        const paymentMethods = paymentMethodsResponse.paymentMethods.filter((paymentMethod) => paymentMethod.type != 'giftcard');
         // Create and mount other payment method components (e.g. 'ideal', 'scheme' etc)
-        createPaymentMethodsComponent(checkout, paymentMethods);
+        createPaymentMethodsComponent(checkout, paymentMethodsResponse);
 
     } catch (error) {
         console.error(error);
@@ -54,19 +50,27 @@ function createGiftcardComponent(checkout) {
 
 // Create and mount payment methods that we have retrieved from the paymentMethodsResponse
 // We're using components here, hence why we create and mount the individual <div> elements for every payment method that we want to support
-// Read more in the documentation: https://docs.adyen.com/online-payments/web-components
-function createPaymentMethodsComponent(checkout, paymentMethods) {
-    for (var i = 0; i < paymentMethods.length; i++) {
-        const paymentMethodType = paymentMethods[i].type;
-        try {
-            const containerName =  paymentMethodType + '-container';
-            checkout.create(paymentMethodType).mount('#' + containerName);
-            paymentMethodContainers.push(containerName);
-        } catch (error) {
-            console.warn('Could not find type: "' + paymentMethodType + '". Please add your payment component by adding <div id="{paymentMethodType}-container"></div> in Checkout.cshtml.');
-            console.warn(error);
-        }
-    }
+// Read more about components in the documentation: https://docs.adyen.com/online-payments/web-components
+function createPaymentMethodsComponent(checkout, paymentMethodsResponse) {
+    // You'd want to instantiate the components individually, here's an example of how to instantiate the components from the paymentMethodResponse:
+    
+    // 1. Filter giftcard payment methods, so we only show the payment methods that are not gift cards
+    // const paymentMethods = paymentMethodsResponse.paymentMethods.filter((paymentMethod) => paymentMethod.type != 'giftcard')
+
+    // 2. Loop over the payment method types, create & mount by using checkout.create(paymentMethodType).mount(...)
+    //for (var i = 0; i < paymentMethods.length; i++) {
+    //    const paymentMethodType = paymentMethods[i].type;
+    //    try {
+    //        const containerName =  paymentMethodType + '-container';
+    //        checkout.create(paymentMethodType).mount('#' + containerName);
+    //    } catch (error) {
+    //        console.error('Could not find type: "' + paymentMethodType + '". Please add your payment component by adding <div id="{paymentMethodType}-container"></div> in Checkout.cshtml.');
+    //        console.error(error);
+    //    }
+    //}
+
+    // For this demo, we use an example of 'scheme' (card or debit card).
+    checkout.create('scheme').mount('#scheme-container');
 }
 
 // Appends a visual cue when a giftcard has been successfully added
