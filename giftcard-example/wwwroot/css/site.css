@@ -14,6 +14,7 @@ body {
 
 a,
 u {
+  color: #0abf53;
   text-decoration: none;
 }
 
@@ -64,7 +65,7 @@ a:hover {
 }
 
 .button:active {
-  background: #3a4a5c;
+  background: #eeeeee;
 }
 
 .button:disabled {
@@ -99,10 +100,56 @@ a:hover {
 }
 
 .add-giftcard-button:active {
-  background: #3a4a5c;
+  background: #eeeeee;
+  box-shadow: 0 3px 4px rgba(0, 15, 45, 0.2);
 }
 
 .add-giftcard-button:disabled {
+  background: #e6e9eb;
+  box-shadow: none;
+  cursor: not-allowed;
+  -webkit-user-select: all;
+  -moz-user-select: all;
+  -ms-user-select: all;
+  user-select: all;
+}
+
+.select-payment-method-text {
+  font-weight: 400;
+  text-align: center;
+  margin: 0px 0px 16px 16px;
+}
+
+.payment-method-list {
+  list-style: none;
+}
+
+.payment-method-selector-button {
+  background: #e6e9eb;
+  border: 1px;
+  border-radius: 4px;
+  color: #00112c;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 1em;
+  font-weight: 500;
+  margin: 8px 0px 8px 0px;
+  padding: 8px;
+  text-align: center;
+  transition: background 0.3s ease-out, box-shadow 0.3s ease-out;
+  width: 100%;
+}
+
+.payment-method-selector-button:hover {
+  border: 1px solid #0abf53;
+  box-shadow: 0 3px 4px rgba(0, 15, 45, 0.2);
+}
+
+.payment-method-selector-button:active {
+  background: #3a4a5c;
+}
+
+.payment-method-selector-button:disabled {
   background: #e6e9eb;
   box-shadow: none;
   cursor: not-allowed;
@@ -166,7 +213,7 @@ a:hover {
 .integration-list-item:hover {
   box-shadow: 0 16px 24px 0 #e5eaef;
   text-decoration: none;
-  border: 1px solid #06f;
+  border: 2px solid #0abf53;
 }
 
 @media (min-width: 768px) {

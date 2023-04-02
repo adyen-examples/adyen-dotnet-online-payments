@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace adyen_dotnet_giftcard_example.Controllers
@@ -60,8 +61,17 @@ namespace adyen_dotnet_giftcard_example.Controllers
             var orderRef = Guid.NewGuid();
             sessionsRequest.Reference = orderRef.ToString(); // Required.
 
-            // Eequired for 3DS2 redirect flow.
+            // Required for 3DS2 redirect flow.
             sessionsRequest.ReturnUrl = $"{_urlService.GetHostUrl()}/dropin/redirect?orderRef={orderRef}"; // Redirect from dropin.
+
+            // Used for klarna, klarna is not supported everywhere, hence why we've defaulted to countryCode "NL" as it supports the following payment methods below:
+            // "Pay now", "Pay later" and "Pay over time", see docs for more info: https://docs.adyen.com/payment-methods/klarna#supported-countries
+            sessionsRequest.CountryCode = "NL";
+            sessionsRequest.LineItems = new List<LineItem>()
+            {
+                new LineItem(quantity: 1, amountIncludingTax: 5500 , description: "Sunglasses"),
+                new LineItem(quantity: 1, amountIncludingTax: 5500, description: "Headphones")
+            };
 
             try
             {
@@ -89,6 +99,15 @@ namespace adyen_dotnet_giftcard_example.Controllers
 
             // Required for 3DS2 redirect flow.
             sessionsRequest.ReturnUrl = $"{_urlService.GetHostUrl()}/giftcardcomponent/redirect?orderRef={orderRef}"; // Redirect from GiftcardComponent.
+
+            // Used for klarna, klarna is not supported everywhere, hence why we've defaulted to countryCode "NL" as it supports the following payment methods below:
+            // "Pay now", "Pay later" and "Pay over time", see docs for more info: https://docs.adyen.com/payment-methods/klarna#supported-countries
+            sessionsRequest.CountryCode = "NL";
+            sessionsRequest.LineItems = new List<LineItem>()
+            {
+                new LineItem(quantity: 1, amountIncludingTax: 5500 , description: "Sunglasses"),
+                new LineItem(quantity: 1, amountIncludingTax: 5500, description: "Headphones")
+            };
 
             try
             {

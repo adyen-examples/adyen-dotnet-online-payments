@@ -49,28 +49,67 @@ function createGiftcardComponent(checkout) {
 }
 
 // Create and mount payment methods that we have retrieved from the paymentMethodsResponse
-// We're using components here, hence why we create and mount the individual <div> elements for every payment method that we want to support
 // Read more about components in the documentation: https://docs.adyen.com/online-payments/web-components
 function createPaymentMethodsComponent(checkout, paymentMethodsResponse) {
-    // You'd want to instantiate the components individually, here's an example of how to instantiate the components from the paymentMethodResponse:
-    
     // 1. Filter giftcard payment methods, so we only show the payment methods that are not gift cards
-    // const paymentMethods = paymentMethodsResponse.paymentMethods.filter((paymentMethod) => paymentMethod.type != 'giftcard')
+    const paymentMethods = paymentMethodsResponse.paymentMethods.filter((paymentMethod) => paymentMethod.type != 'giftcard')
 
-    // 2. Loop over the payment method types, create & mount by using checkout.create(paymentMethodType).mount(...)
-    //for (var i = 0; i < paymentMethods.length; i++) {
-    //    const paymentMethodType = paymentMethods[i].type;
-    //    try {
-    //        const containerName =  paymentMethodType + '-container';
-    //        checkout.create(paymentMethodType).mount('#' + containerName);
-    //    } catch (error) {
-    //        console.error('Could not find type: "' + paymentMethodType + '". Please add your payment component by adding <div id="{paymentMethodType}-container"></div> in Checkout.cshtml.');
-    //        console.error(error);
-    //    }
-    //}
+    // 2. Loop over the payment method types, create & mount using checkout.create(paymentMethodType).mount(...)
+    for (var i = 0; i < paymentMethods.length; i++) {
+        appendPaymentMethodSelector(checkout, paymentMethods[i].type);
+    }
+}
 
-    // For this demo, we use an example of 'scheme' (card or debit card).
-    checkout.create('scheme').mount('#scheme-container');
+// Appends the buttons for each the paymentMethodTypes to the HTML
+// After retrieving the paymentMethods, we create the buttons to show to the shopper
+// We then mount the respective component (based on the paymentMethodType) when the shopper clicks on it.
+// Parameters: `paymentMethodType` (type of the payment method)
+function appendPaymentMethodSelector(checkout, paymentMethodType) {
+    var paymentMethodList = document.querySelector('.payment-method-list');
+
+    // Add <li> root container for the `paymentMethod`
+    var liElement = document.createElement('li');
+    liElement.classList.add(paymentMethodType + '-container');
+    
+    // Add <p> sub-element for `paymentMethod`
+    var pPaymentMethodElement = document.createElement('p');
+    //pPaymentMethodElement.classList.add('payment-method-selector-component');
+    pPaymentMethodElement.classList.add(paymentMethodType + '-container-item');
+    pPaymentMethodElement.setAttribute('hidden', true);
+
+    // Add <button> that allows a shopper to select its `paymentMethod`
+    var buttonElement = document.createElement('button');
+    buttonElement.classList.add(paymentMethodType + '-button-selector');
+    buttonElement.classList.add('payment-method-selector-button');
+
+    // Add <button> text
+    buttonElement.textContent = paymentMethodType;
+
+    // Add event listener to <button>
+    buttonElement.addEventListener('click', async () => {
+        const className = '.' + paymentMethodType + '-container-item';
+        // Create the paymentMethodType component
+        try {
+            checkout.create(paymentMethodType).mount(className);
+            hideAllPaymentMethodButtons();
+            pPaymentMethodElement.hidden = false;
+        } catch (error) {
+            console.warn('Unable to mount: "' + paymentMethodType + '" to the `<div class={paymentMethodType}-container-item></div>`.');
+        }
+    });
+    
+    // Append child elements to HTML
+    liElement.appendChild(buttonElement);
+    liElement.appendChild(pPaymentMethodElement);
+    paymentMethodList.appendChild(liElement);
+}
+
+// Hides all payment method buttons after the shopper selected a payment method
+function hideAllPaymentMethodButtons() {
+    const buttons = document.getElementsByClassName('payment-method-selector-button');
+    for (var i = 0; i < buttons.length; i++) {
+        buttons[i].hidden = true;
+    }
 }
 
 // Appends a visual cue when a giftcard has been successfully added
