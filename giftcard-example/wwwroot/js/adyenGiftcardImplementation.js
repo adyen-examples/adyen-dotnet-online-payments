@@ -181,7 +181,7 @@ async function createAdyenCheckout(session, paymentMethodsResponse) {
             // Calculate how much balance is spent of the giftcard
             var subtractedGiftcardBalance = remainingAmountToPay - orderStatus.remainingAmount.value;
 
-            // Show/set what the shopper still has to pay and show it in two decimals
+            // Calculate and set what the shopper still has to pay and show it in two decimals
             remainingAmountToPay = orderStatus.remainingAmount.value;
             const spanElement = document.getElementById('remaining-due-amount');
             spanElement.textContent = (remainingAmountToPay / 100).toFixed(2);
@@ -191,12 +191,17 @@ async function createAdyenCheckout(session, paymentMethodsResponse) {
             // Show add-gift-card button
             document.getElementById("add-giftcard-button").hidden = false;
 
-            // Show the subtracted balance of the giftcard to thes shopper in two decimals
-            appendGiftcardInformation(subtractedGiftcardBalance);
+            // Show the subtracted balance of the giftcard to the shopper if there's any change
+            if (subtractedGiftcardBalance > 0) {
+                appendGiftcardInformation(subtractedGiftcardBalance);
+            } else { 
+                console.warn('Invalid giftcard.');
+            }
         },
         onRequiringConfirmation: () => {
             // Called when the gift card balance is enough to pay the full payment amount
             // The shopper must then confirm that they want to make the payment with the gift card
+            // If you want to perform any frontend logic here, you can do it here
             console.info("onRequiringConfirmation");
         },
         onPaymentCompleted: (result, component) => {
