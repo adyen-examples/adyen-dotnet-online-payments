@@ -221,7 +221,7 @@ async function createAdyenCheckout(session, paymentMethodsResponse) {
                 clearGiftcardErrorMessages();
                 appendGiftcardInformation(subtractedGiftcardBalance);
             } else { 
-                appendGiftcardErrorMessage('Invalid gift card.');
+                appendGiftcardErrorMessage('Invalid gift card');
             }
         },
         onRequiringConfirmation: () => {

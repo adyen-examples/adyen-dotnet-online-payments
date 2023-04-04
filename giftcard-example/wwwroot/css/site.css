@@ -392,6 +392,12 @@ a:hover {
   text-align: right;
 }
 
+.order-overview-list-item-giftcard-error-message {
+  font-weight: 400;
+  text-align: right;
+  color: red;
+}
+
 .order-overview-list-item-total-amount-price {
   font-weight: 400;
   text-align: right;
