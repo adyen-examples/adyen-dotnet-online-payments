@@ -48,6 +48,7 @@
             </li>
           </ul>
         </div>
+        
         <div class="order-overview"> 
           <ul id="order-overview-list" class="order-overview-list">
             <li class="order-overview-list-item">
@@ -70,7 +71,13 @@
             <!-- See adyenGiftcardImplementation.js > function: `appendGiftcardInformation(..)` -->
             <!-- We insert <div class='order-overview-list-item-giftcard-balance'></div> elements here to show giftcard balance modifications -->
           </ul>
-
+          
+          <ul id="order-overview-list-error" class="order-overview-list">
+            <li class="order-overview-list-item">
+              <p id="giftcard-error-message" class="order-overview-list-item-remaining-price"></p>
+            </li>
+          </ul>
+          
           <ul class="order-overview-list">
             <li class="order-overview-list-item">
                 <div id="giftcard-container" class="payment" hidden></div>

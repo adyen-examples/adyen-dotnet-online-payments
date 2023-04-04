@@ -20,7 +20,7 @@ async function startCheckout() {
         console.info(sessionResponse);
 
         const checkout = await createAdyenCheckout(sessionResponse, paymentMethodsResponse);
-        // Create and mount giftcard component
+        // Create and mount gift card component
         createGiftcardComponent(checkout);
 
         // Create and mount other payment method components (e.g. 'ideal', 'scheme' etc)
@@ -34,7 +34,7 @@ async function startCheckout() {
 
 // Create and mount giftcard component
 function createGiftcardComponent(checkout) {
-    // Adds giftcard container and the eventlistener
+    // Adds gift card container and the eventlistener
     document.getElementById("add-giftcard-button")
         .addEventListener('click', async () => {
             // Create the giftcard component
@@ -51,11 +51,11 @@ function createGiftcardComponent(checkout) {
 // Create and mount payment methods that we have retrieved from the paymentMethodsResponse
 // Read more about components in the documentation: https://docs.adyen.com/online-payments/web-components
 function createPaymentMethodsComponent(checkout, paymentMethodsResponse) {
-    // 1. Filter giftcard payment methods, so we only show the payment methods that are not gift cards
-    const paymentMethods = paymentMethodsResponse.paymentMethods.filter((paymentMethod) => paymentMethod.type != 'giftcard')
+    // 1. Filter gift card payment methods, so we only show the payment methods that are not gift cards
+    const paymentMethods = paymentMethodsResponse.paymentMethods.filter((paymentMethod) => paymentMethod.type !== 'giftcard')
 
     // 2. Loop over the payment method types, create & mount using checkout.create(paymentMethodType).mount(...)
-    for (var i = 0; i < paymentMethods.length; i++) {
+    for (let i = 0; i < paymentMethods.length; i++) {
         appendPaymentMethodSelector(checkout, paymentMethods[i].type);
     }
 }
@@ -65,20 +65,20 @@ function createPaymentMethodsComponent(checkout, paymentMethodsResponse) {
 // We then mount the respective component (based on the paymentMethodType) when the shopper clicks on it.
 // Parameters: `paymentMethodType` (type of the payment method)
 function appendPaymentMethodSelector(checkout, paymentMethodType) {
-    var paymentMethodList = document.querySelector('.payment-method-list');
+    let paymentMethodList = document.querySelector('.payment-method-list');
 
     // Add <li> root container for the `paymentMethod`
-    var liElement = document.createElement('li');
+    let liElement = document.createElement('li');
     liElement.classList.add(paymentMethodType + '-container');
     
     // Add <p> sub-element for `paymentMethod`
-    var pPaymentMethodElement = document.createElement('p');
+    let pPaymentMethodElement = document.createElement('p');
     //pPaymentMethodElement.classList.add('payment-method-selector-component');
     pPaymentMethodElement.classList.add(paymentMethodType + '-container-item');
     pPaymentMethodElement.setAttribute('hidden', true);
 
     // Add <button> that allows a shopper to select its `paymentMethod`
-    var buttonElement = document.createElement('button');
+    let buttonElement = document.createElement('button');
     buttonElement.classList.add(paymentMethodType + '-button-selector');
     buttonElement.classList.add('payment-method-selector-button');
 
@@ -107,30 +107,55 @@ function appendPaymentMethodSelector(checkout, paymentMethodType) {
 // Hides all payment method buttons after the shopper selected a payment method
 function hideAllPaymentMethodButtons() {
     const buttons = document.getElementsByClassName('payment-method-selector-button');
-    for (var i = 0; i < buttons.length; i++) {
+    for (let i = 0; i < buttons.length; i++) {
         buttons[i].hidden = true;
     }
 }
 
-// Appends a visual cue when a giftcard has been successfully added
-// Pass parameter which states how much of the giftcard amount is spent
+// Show all payment method buttons after the shopper selected a payment method
+function showAllPaymentMethodButtons() {
+    const buttons = document.getElementsByClassName('payment-method-selector-button');
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].hidden = false;
+    }
+}
+
+// Appends a visual cue when a gift card has been successfully added
+// Pass parameter which states how much of the gift card amount is spent
 function appendGiftcardInformation(giftcardSubtractedBalance) {
-    var overviewList = document.querySelector('.order-overview-list');
+    let overviewList = document.querySelector('.order-overview-list');
 
     // Add <li>
-    var liElement = document.createElement('li');
+    let liElement = document.createElement('li');
     liElement.classList.add('order-overview-list-item');
 
     // Add <p>
-    var pElement = document.createElement('p');
+    let pElement = document.createElement('p');
     pElement.classList.add('order-overview-list-item-giftcard-balance');
 
-    // Show 'Giftcard applied -50.00' (example)
-    pElement.textContent = 'Giftcard applied -' + (giftcardSubtractedBalance / 100).toFixed(2);
+    // Show 'Gift card applied -50.00' (example)
+    pElement.textContent = 'Gift card applied -' + (giftcardSubtractedBalance / 100).toFixed(2);
 
     // Append the child element to the list
     liElement.appendChild(pElement);
     overviewList.appendChild(liElement);
+}
+
+
+// Appends an error message when gift card is invalid
+function appendGiftcardErrorMessage(errorMessage) {
+    let giftcardErrorMessageComponent = document.querySelector('#giftcard-error-message');
+    
+    // Show the error message
+    giftcardErrorMessageComponent.textContent = errorMessage;
+}
+
+// Clear the error message (if any was shown beforehand).
+function clearGiftcardErrorMessages() {
+    let giftcardErrorMessageComponent = document.querySelector('#giftcard-error-message');
+
+    // Clear the error message
+    giftcardErrorMessageComponent.textContent = '';
 }
 
 // Some payment methods use redirects, this is where we finalize the operation
@@ -178,24 +203,25 @@ async function createAdyenCheckout(session, paymentMethodsResponse) {
         onOrderCreated: (orderStatus) => {
             console.info('Created an order')
             console.info(orderStatus);
-            // Calculate how much balance is spent of the giftcard
-            var subtractedGiftcardBalance = remainingAmountToPay - orderStatus.remainingAmount.value;
+            // Calculate how much balance is spent of the gift card
+            let subtractedGiftcardBalance = remainingAmountToPay - orderStatus.remainingAmount.value;
 
             // Calculate and set what the shopper still has to pay and show it in two decimals
             remainingAmountToPay = orderStatus.remainingAmount.value;
             const spanElement = document.getElementById('remaining-due-amount');
             spanElement.textContent = (remainingAmountToPay / 100).toFixed(2);
 
-            // Hide giftcard component
+            // Hide gift card component
             document.getElementById("giftcard-container").hidden = true;
             // Show add-gift-card button
             document.getElementById("add-giftcard-button").hidden = false;
 
-            // Show the subtracted balance of the giftcard to the shopper if there's any change
+            // Show the subtracted balance of the gift card to the shopper if there's any change
             if (subtractedGiftcardBalance > 0) {
+                clearGiftcardErrorMessages();
                 appendGiftcardInformation(subtractedGiftcardBalance);
             } else { 
-                console.warn('Invalid giftcard.');
+                appendGiftcardErrorMessage('Invalid gift card.');
             }
         },
         onRequiringConfirmation: () => {
@@ -232,7 +258,7 @@ async function callServer(url, data) {
 
 function handleServerResponse(res, _component) {
     console.info(res);
-    switch (res.resultCode) {
+    switch (res?.resultCode) {
         case "Authorised":
             window.location.href = "/result/success";
             break;

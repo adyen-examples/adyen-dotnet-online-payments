@@ -53,7 +53,7 @@ namespace adyen_dotnet_giftcard_example.Controllers
                 {
                     _logger.LogError($"Webhook unsuccessful: {container.NotificationItem.Reason} \n" +
                         $"EventCode: {container.NotificationItem.EventCode}");
-                    return BadRequest($"Webhook unsuccessful: {container.NotificationItem.Reason}");
+                    return Ok("[accepted]"); // The webhook was delivered (but was unsuccessful), hence why we'll return a [accepted] response to confirm that we've received it.
                 }
 
                 // Process notifications asynchronously.
@@ -65,7 +65,7 @@ namespace adyen_dotnet_giftcard_example.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error while calculating HMAC signature::\n{e}\n");
+                _logger.LogError("Exception thrown: " + e.ToString());
                 throw;
             }
 
@@ -79,8 +79,8 @@ namespace adyen_dotnet_giftcard_example.Controllers
                 return Task.CompletedTask;
             }
 
-            // The amount that is authorised on the final payment. E.g. if you paid €110,- with a €50,- giftcard and another €50,- giftcard.
-            // This amount should be `1000` (in units of 100s) which is equivalent to €10,-
+            // The amount that is authorised on the final payment. E.g. if you paid ï¿½110,- with a ï¿½50,- giftcard and another ï¿½50,- giftcard.
+            // This amount should be `1000` (in units of 100s) which is equivalent to ï¿½10,-
             _logger.LogInformation($"[AUTHORISATION]\n" +
                 $"Payment method: {notification.PaymentMethod}\n" +
                 $"Currency: {notification.Amount?.Currency}\n" +
@@ -106,7 +106,7 @@ namespace adyen_dotnet_giftcard_example.Controllers
             _logger.LogInformation($"[ORDER_OPENED]\n" +
                 $"merchantOrderReference: {notification.MerchantReference}\n" +
                 $"Currency: {notification.Amount.Currency}\n" +
-                $"Value: {notification.Amount.Value}\n" + // Total order amount `11000` (in units of 100s) which is equivalent to €110,-
+                $"Value: {notification.Amount.Value}\n" + // Total order amount `11000` (in units of 100s) which is equivalent to ï¿½110,-
                 $"PspReference: {notification.PspReference}");
 
             return Task.CompletedTask;
@@ -151,7 +151,7 @@ namespace adyen_dotnet_giftcard_example.Controllers
 
             _logger.LogInformation($"MerchantOrderReference: {notification.MerchantReference}\n" +
                 $"Currency: {notification.Amount.Currency}\n" +
-                $"Value: {notification.Amount.Value}\n" + // Total order amount `11000` (in units of 100s) which is equivalent to €110,-
+                $"Value: {notification.Amount.Value}\n" + // Total order amount `11000` (in units of 100s) which is equivalent to ï¿½110,-
                 $"PspReference: {notification.PspReference}"); 
 
             return Task.CompletedTask;

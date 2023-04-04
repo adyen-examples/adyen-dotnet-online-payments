@@ -55,7 +55,7 @@ namespace adyen_dotnet_subscription_example.Controllers
                 if (!container.NotificationItem.Success)
                 {
                     _logger.LogError($"Webhook unsuccessful: {container.NotificationItem.Reason}");
-                    return BadRequest($"{container.NotificationItem.Reason}");
+                    return Ok("[accepted]"); // The webhook was delivered (but was unsuccessful), hence why we'll return a [accepted] response to confirm that we've received it.
                 }
 
                 // Process notification asynchronously.
@@ -63,7 +63,7 @@ namespace adyen_dotnet_subscription_example.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error while calculating HMAC signature: \n{e}\n");
+                _logger.LogError("Exception thrown: " + e.ToString());
                 throw;
             }
 
