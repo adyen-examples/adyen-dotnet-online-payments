@@ -276,7 +276,7 @@ function handleServerResponse(res, _component) {
 }
 
 if (!sessionId) {
-    await startCheckout()
+    startCheckout()
 } else {
-    await finalizeCheckout();
+    finalizeCheckout();
 }
