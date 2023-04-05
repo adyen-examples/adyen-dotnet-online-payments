@@ -27,29 +27,6 @@ namespace adyen_dotnet_giftcard_example.Controllers
             _merchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT;
         }
 
-        [HttpPost("api/paymentMethods")]
-        public async Task<ActionResult<string>> PaymentMethods()
-        {
-            var paymentMethodsRequest = new PaymentMethodsRequest(
-                merchantAccount: _merchantAccount, // Required.
-                countryCode: "NL", 
-                shopperLocale: "en_US", 
-                channel: PaymentMethodsRequest.ChannelEnum.Web
-            );
-            
-            try
-            {
-                var res = await _checkout.PaymentMethodsAsync(paymentMethodsRequest);
-                _logger.LogInformation($"Response Payments API:\n{res}\n");
-                return res.ToJson();
-            }
-            catch (Adyen.HttpClient.HttpClientException e)
-            {
-                _logger.LogError($"Request failed for PaymentMethods:\n{e.ResponseBody}\n");
-                throw;
-            }
-        }
-
         [HttpPost("api/sessions/dropin")]
         public async Task<ActionResult<string>> SessionsDropin()
         {

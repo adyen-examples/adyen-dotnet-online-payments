@@ -18,7 +18,7 @@
         <div class="payment-method-selector">
           <p class="select-payment-method-text">Add a giftcard (right-side) and select your payment method to pay the remaining amount: </p>
           <ul class="payment-method-list">
-            <!-- See adyenGiftcardImplementation.js > function: `appendPaymentMethodSelector(..)` -->
+            <!-- See adyenGiftcardImplementation.js > function: `createPaymentMethodButton(..)` -->
             <!-- We insert and mount <div class={paymentMethodType}-container-item></div> elements here to show payment methods-->
           </ul>
         </div>
@@ -68,7 +68,7 @@
               <p class="order-overview-list-item-remaining">Remaining amount to be paid</p>
               <p class="order-overview-list-item-remaining-price" id="remaining-due-amount">110.00</p>
             </li>
-            <!-- See adyenGiftcardImplementation.js > function: `appendGiftcardInformation(..)` -->
+            <!-- See adyenGiftcardImplementation.js > function: `showGiftcardAppliedMessage(..)` -->
             <!-- We insert <div class='order-overview-list-item-giftcard-balance'></div> elements here to show giftcard balance modifications -->
           </ul>
           
