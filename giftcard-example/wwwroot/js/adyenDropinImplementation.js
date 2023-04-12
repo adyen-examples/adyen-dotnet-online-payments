@@ -53,12 +53,17 @@ async function createAdyenCheckout(session) {
                 holderNameRequired: true,
                 name: "Credit or debit card",
             },
+            // You can specify a custom logo for a gift card brand when creating a configuration object
+            // See https://docs.adyen.com/payment-methods/gift-cards/web-drop-in#optional-customize-logos
         },
         onOrderCreated: (orderStatus) => {
+            // Called when a partial order is created and the shopper has to select another payment method to finalize the payment
+            // See https://docs.adyen.com/payment-methods/gift-cards/web-component#required-configuration
+            console.info('onOrderCreated');
             console.info(orderStatus);
         },
         onRequiringConfirmation: () => {
-            // Called when the gift card balance is enough to pay the full payment amount.
+            // Called when the gift card balance is enough to pay the full payment amount
             // The shopper must then confirm that they want to make the payment with the gift card
             console.info("onRequiringConfirmation");
         },
@@ -107,7 +112,7 @@ function handleServerResponse(res, _component) {
 }
 
 if (!sessionId) {
-    startCheckout()
+    startCheckout();
 } else {
     finalizeCheckout();
 }

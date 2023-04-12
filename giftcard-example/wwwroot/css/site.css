@@ -125,28 +125,30 @@ a:hover {
 }
 
 .payment-method-selector-button {
-  background: #e6e9eb;
-  border: 1px;
+  background: #00112c;
+  border: 0;
   border-radius: 4px;
-  color: #00112c;
+  color: #fff;
   cursor: pointer;
   display: inline-block;
   font-size: 1em;
   font-weight: 500;
-  margin: 8px 0px 8px 0px;
-  padding: 8px;
+  margin: 0;
+  padding: 12px;
   text-align: center;
   transition: background 0.3s ease-out, box-shadow 0.3s ease-out;
   width: 100%;
+  margin: 4px;
 }
 
 .payment-method-selector-button:hover {
-  border: 1px solid #0abf53;
+  background: #1c3045;
   box-shadow: 0 3px 4px rgba(0, 15, 45, 0.2);
 }
 
 .payment-method-selector-button:active {
-  background: #3a4a5c;
+  background: #eeeeee;
+  box-shadow: 0 3px 4px rgba(0, 15, 45, 0.2);
 }
 
 .payment-method-selector-button:disabled {

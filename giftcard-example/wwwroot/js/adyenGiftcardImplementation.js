@@ -16,13 +16,16 @@ async function startCheckout() {
         console.info(sessionResponse);
 
         const checkout = await createAdyenCheckout(sessionResponse);
+
         // Create and mount gift card component
         createGiftcardComponent(checkout);
 
-        // Create and mount other payment method components (e.g. 'ideal', 'scheme' etc)
+        // Create and mount your supported payment method components (e.g. 'ideal', 'scheme' etc)
         createPaymentMethodButton(checkout, 'ideal');
         createPaymentMethodButton(checkout, 'scheme');
 
+        // Hide all payment method buttons, once a gift card is added, we show it for this demo
+        hideAllPaymentMethodButtons();
     } catch (error) {
         console.error(error);
         alert("Error occurred. Look at console for details");
@@ -86,6 +89,14 @@ function createPaymentMethodButton(checkout, paymentMethodType) {
     paymentMethodList.appendChild(liElement);
 }
 
+// Show all payment method buttons
+function showAllPaymentMethodButtons() {
+    const buttons = document.getElementsByClassName('payment-method-selector-button');
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].hidden = false;
+    }
+}
+
 // Hides all payment method buttons
 function hideAllPaymentMethodButtons() {
     const buttons = document.getElementsByClassName('payment-method-selector-button');
@@ -93,7 +104,6 @@ function hideAllPaymentMethodButtons() {
         buttons[i].hidden = true;
     }
 }
-
 
 // Appends a visual cue when a gift card has been successfully applied
 // Pass parameter which states how much of the gift card amount is spent
@@ -110,12 +120,11 @@ function showGiftcardAppliedMessage(giftcardSubtractedBalance) {
 
     // Show 'Gift card applied -50.00' (example)
     pElement.textContent = 'Gift card applied -' + (giftcardSubtractedBalance / 100).toFixed(2);
-
+    
     // Append the child element to the list
     liElement.appendChild(pElement);
     overviewList.appendChild(liElement);
 }
-
 
 // Shows an error message when gift card is invalid
 function showGiftCardErrorMessage(errorMessage) {
@@ -170,35 +179,19 @@ async function createAdyenCheckout(session) {
                 holderNameRequired: true,
                 name: "Credit or debit card",
             },
+            // You can specify a custom logo for a gift card brand when creating a configuration object
+            // See https://docs.adyen.com/payment-methods/gift-cards/web-drop-in#optional-customize-logos
         },
         onOrderCreated: (orderStatus) => {
-            console.info('Created an order')
+            // Called when a partial order is created and the shopper has to select another payment method to finalize the payment
+            // See https://docs.adyen.com/payment-methods/gift-cards/web-component#required-configuration
+            console.info('onOrderCreated')
             console.info(orderStatus);
-            // Calculate how much balance is spent of the gift card
-            let subtractedGiftcardBalance = remainingAmountToPay - orderStatus.remainingAmount.value;
-
-            // Calculate and set what the shopper still has to pay and show it in two decimals
-            remainingAmountToPay = orderStatus.remainingAmount.value;
-            const spanElement = document.getElementById('remaining-due-amount');
-            spanElement.textContent = (remainingAmountToPay / 100).toFixed(2);
-
-            // Hide gift card component
-            document.getElementById("giftcard-container").hidden = true;
-            // Show add-gift-card button
-            document.getElementById("add-giftcard-button").hidden = false;
-
-            // Show the subtracted balance of the gift card to the shopper if there are any change
-            if (subtractedGiftcardBalance > 0) {
-                clearGiftCardErrorMessages();
-                showGiftcardAppliedMessage(subtractedGiftcardBalance);
-            } else { 
-                showGiftCardErrorMessage('Invalid gift card');
-            }
+            handleOnOrderCreated(orderStatus);
         },
         onRequiringConfirmation: () => {
             // Called when the gift card balance is enough to pay the full payment amount
             // The shopper must then confirm that they want to make the payment with the gift card
-            // If you want to perform any frontend logic here, you can do it here
             console.info("onRequiringConfirmation");
         },
         onPaymentCompleted: (result, component) => {
@@ -212,6 +205,31 @@ async function createAdyenCheckout(session) {
             handleServerResponse(error, component);
         },
     });
+}
+
+// Called when onOrderCreated is fired.
+function handleOnOrderCreated(orderStatus) {
+    // Calculate how much balance is spent of the gift card
+    let subtractedGiftcardBalance = remainingAmountToPay - orderStatus.remainingAmount.value;
+
+    // Calculate and set what the shopper still has to pay and show it in two decimals
+    remainingAmountToPay = orderStatus.remainingAmount.value;
+    const remainingAmountElement = document.getElementById('remaining-due-amount');
+    remainingAmountElement.textContent = (remainingAmountToPay / 100).toFixed(2);
+
+    // Hide gift card component
+    document.getElementById("giftcard-container").hidden = true;
+    // Show add-gift-card button
+    document.getElementById("add-giftcard-button").hidden = false;
+
+    // Show the subtracted balance of the gift card to the shopper if there are any changes
+    if (subtractedGiftcardBalance > 0) {
+        clearGiftCardErrorMessages();
+        showGiftcardAppliedMessage(subtractedGiftcardBalance);
+        showAllPaymentMethodButtons();
+    } else { 
+        showGiftCardErrorMessage('Invalid gift card');
+    }
 }
 
 // Calls your server endpoints
@@ -247,7 +265,7 @@ function handleServerResponse(res, _component) {
 }
 
 if (!sessionId) {
-    startCheckout()
+    startCheckout();
 } else {
     finalizeCheckout();
 }
