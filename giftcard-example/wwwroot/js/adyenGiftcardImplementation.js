@@ -27,6 +27,7 @@ async function startCheckout() {
 
         // Show the giftcard button
         document.getElementById("add-giftcard-button").hidden = false;
+
     } catch (error) {
         console.error(error);
         alert("Error occurred. Look at console for details");
@@ -38,8 +39,12 @@ function mountGiftcardComponentButton(checkout) {
     // Adds gift card container and the eventlistener
     document.getElementById("add-giftcard-button")
         .addEventListener('click', async () => {
-            // Create the giftcard component
-            giftcardComponent = checkout.create("giftcard").mount("#giftcard-container");
+            // Create the gift card component
+            const giftcardComponent = checkout.create("giftcard");
+            giftcardComponent.mount("#giftcard-container");
+
+            // Binds event listener to the 'Go back'-button for the gift card component
+            bindGoBackButton(giftcardComponent);
 
             // Hides all payment method buttons
             hideAllPaymentMethodButtons();
@@ -49,6 +54,9 @@ function mountGiftcardComponentButton(checkout) {
 
             // Hide gift-card button
             document.getElementById("add-giftcard-button").hidden = true;
+            
+            // Show 'Go back'-button
+            showGoBackButton();
         });
 }
 
@@ -60,14 +68,51 @@ function mountPaymentMethodButton(checkout, paymentMethodType) {
     // Add event listener to <button>
     buttonElement.addEventListener('click', async () => {
         const className = '.' + paymentMethodType + '-container-item';
-        // Create and mount the paymentMethodType component
         try {
-            checkout.create(paymentMethodType).mount(className);
+            // Create and mount the paymentMethodType component
+            const paymentMethodComponent = checkout.create(paymentMethodType);
+            paymentMethodComponent.mount(className);
+
+            // Binds event listener to the 'Go back'-button for the current paymentMethodType
+            bindGoBackButton(paymentMethodComponent);
+
+            // Hides all payment method buttons
             hideAllPaymentMethodButtons();
+
+            // Show 'Go back'-button
+            showGoBackButton();
+
         } catch (error) {
             console.warn('Unable to mount: "' + paymentMethodType + '" to the `<div class={paymentMethodType}-container-item></div>`.');
         }
     });
+}
+
+function bindGoBackButton(paymentMethodComponent) {
+    // Binds event listener to the 'Go back'-button
+    document.getElementById('go-back-button')
+        .addEventListener('click', async () => {
+            // Hide 'Go back'-button
+            hideGoBackButton();
+            
+            // Unmount the current selected payment method
+            paymentMethodComponent.unmount();
+
+            // Show all payment method buttons
+            showAllPaymentMethodButtons();
+        });
+}
+
+// Show 'Go back'-button
+function showGoBackButton() {
+    const goBackButton = document.getElementById('go-back-button');
+    goBackButton.hidden = false;
+}
+
+// Hides 'Go back'-button
+function hideGoBackButton() {
+    const goBackButton = document.getElementById('go-back-button');
+    goBackButton.hidden = true;
 }
 
 // Show all payment method buttons
@@ -114,7 +159,7 @@ function showGiftCardErrorMessage(errorMessage) {
     giftcardErrorMessageComponent.textContent = errorMessage;
 }
 
-// Clears any error messages
+// Clears any (previous) error messages
 function clearGiftCardErrorMessages() {
     let giftcardErrorMessageComponent = document.querySelector('#giftcard-error-message');
     giftcardErrorMessageComponent.textContent = '';
@@ -188,7 +233,7 @@ async function createAdyenCheckout(session) {
     });
 }
 
-// Called when onOrderCreated is fired.
+// Called when onOrderCreated is fired
 function handleOnOrderCreated(orderStatus) {
     // Calculate how much balance is spent of the gift card
     let subtractedGiftcardBalance = remainingAmountToPay - orderStatus.remainingAmount.value;
@@ -208,6 +253,7 @@ function handleOnOrderCreated(orderStatus) {
         clearGiftCardErrorMessages();
         showGiftcardAppliedMessage(subtractedGiftcardBalance);
         showAllPaymentMethodButtons();
+        hideGoBackButton();
     } else { 
         showGiftCardErrorMessage('Invalid gift card');
     }
