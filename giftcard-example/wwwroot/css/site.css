@@ -115,6 +115,43 @@ a:hover {
   user-select: all;
 }
 
+.go-back-button {
+  background: #00112c;
+  border: 0;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 1em;
+  font-weight: 500;
+  margin: 0;
+  padding: 8px;
+  text-align: center;
+  transition: background 0.3s ease-out, box-shadow 0.3s ease-out;
+  width: 15%;
+  margin: 4px;
+}
+
+.go-back-button:hover {
+  background: #1c3045;
+  box-shadow: 0 3px 4px rgba(0, 15, 45, 0.2);
+}
+
+.go-back-buttonn:active {
+  background: #eeeeee;
+  box-shadow: 0 3px 4px rgba(0, 15, 45, 0.2);
+}
+
+.go-back-button:disabled {
+  background: #e6e9eb;
+  box-shadow: none;
+  cursor: not-allowed;
+  -webkit-user-select: all;
+  -moz-user-select: all;
+  -ms-user-select: all;
+  user-select: all;
+}
+
 .select-payment-method-text {
   font-weight: 400;
   text-align: center;
