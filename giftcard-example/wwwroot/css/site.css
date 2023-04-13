@@ -92,6 +92,7 @@ a:hover {
   text-align: center;
   transition: background 0.3s ease-out, box-shadow 0.3s ease-out;
   width: 100%;
+  margin: 4px;
 }
 
 .add-giftcard-button:hover {
@@ -354,6 +355,12 @@ a:hover {
   padding: 4px;
 }
 
+.payment-method-list-item {
+  display: contents;
+  margin: 8px 0px 8px 8px;
+  padding: 4px;
+}
+
 .order-overview-list {
   list-style: none;
 }
@@ -426,6 +433,16 @@ a:hover {
   margin: auto auto auto 0;
 }
 
+.order-summary-list-list-item-no-border {
+  display: flex;
+  height: 80px;
+}
+
+.order-summary-list-list-item-subtitle {
+  font-weight: 400;
+  margin: auto;
+  text-align: center;
+}
 
 .order-summary-list-list-item-price {
   color: #687282;

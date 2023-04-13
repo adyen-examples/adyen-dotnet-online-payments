@@ -9,22 +9,12 @@
     <h2>Checkout</h2>
 
     <div class="container">
-      <p class="select-payment-method-text">Add one (or multiple) gift cards, and finalize your payment by selecting a payment method.</p>
-      <p>Gift card test card numbers can be found on <a href="https://docs.adyen.com/development-resources/testing/test-card-numbers#gift-cards" target="_blank">this page</a>.</p>
-      <p>Givex 6036280000000000000 | Generic 6364530000000000 | SVS 6006490000000000 | Fiserv (formerly ValueLink) 7777182708544835</p>
+      <p class="select-payment-method-text">Begin your checkout by adding one (or multiple) gift cards, and finalize your payment by selecting a payment method.</p>
+      <p>Gift card test card numbers (e.g. 6036280000000000000) can be found on <a href="https://docs.adyen.com/development-resources/testing/test-card-numbers#gift-cards" target="_blank">this page</a>.</p>
     </div>
 
     <div class="preview-container">
       <div class="preview-container-left">
-        <div class="payment-method-selector">
-          <ul class="payment-method-list">
-            <!-- See adyenGiftcardImplementation.js > function: `createPaymentMethodButton(..)` -->
-            <!-- We insert and mount <div class={paymentMethodType}-container-item></div> elements here to show payment methods-->
-          </ul>
-        </div>
-      </div>
-      
-      <div class="preview-container-right">
         <div class="order-summary">
           <ul class="order-summary-list">
             <li class="order-overview-list-item">
@@ -45,10 +35,40 @@
             <li class="order-summary-list-list-item">
               <p class="order-summary-list-list-item-title">Total items:</p>
               <p class="order-summary-list-list-item-price">2x</p>
+            </li>         
+            <li class="order-summary-list-list-item-no-border">
+              <p class="order-summary-list-list-item-subtitle">Please select your payment method:</p>
             </li>
           </ul>
         </div>
-        
+        <div class="payment-method-selector">
+          <ul class="payment-method-list">   
+            <!-- Gift card button -->
+            <li class="payment-method-list-item">
+              <button type="button" id="add-giftcard-button" class="add-giftcard-button payment-method-selector-button">Gift Card</button>
+
+              <!-- See adyenGiftcardImplementation.js > function: `mountGiftcardComponentButton(..)` -->
+              <p id="giftcard-container" class="payment" hidden></p>
+            </li>
+            
+            <!-- Add your payment methods here -->
+            <li class="scheme-container">
+              <button type="button" class="scheme-button-selector payment-method-selector-button" hidden>Credit or debit card</button>
+              <p class="scheme-container-item"></p>
+            </li>
+
+            <li class="ideal-container">
+              <button type="button" class="ideal-button-selector payment-method-selector-button" hidden>iDEAL</button>
+              
+              <!-- See adyenGiftcardImplementation.js > function: `mountPaymentMethodButton(..)` -->
+              <p class="ideal-container-item"></p>
+            </li>
+
+          </ul>
+        </div>
+      </div>
+      
+      <div class="preview-container-right">
         <div class="order-overview"> 
           <ul id="order-overview-list" class="order-overview-list">
             <li class="order-overview-list-item">
@@ -69,19 +89,12 @@
               <p class="order-overview-list-item-remaining-price" id="remaining-due-amount">110.00</p>
             </li>
             <!-- See adyenGiftcardImplementation.js > function: `showGiftcardAppliedMessage(..)` -->
-            <!-- We insert <div class='order-overview-list-item-giftcard-balance'></div> elements here to show giftcard balance modifications -->
+            <!-- We insert <div class='order-overview-list-item-giftcard-balance'></div> elements here to show 'Gift card applied' message(s)  -->
           </ul>
           
           <ul id="order-overview-list-error" class="order-overview-list">
             <li class="order-overview-list-item">
               <p id="giftcard-error-message" class="order-overview-list-item-giftcard-error-message"></p>
-            </li>
-          </ul>
-          
-          <ul class="order-overview-list">
-            <li class="order-overview-list-item">
-                <div id="giftcard-container" class="payment" hidden></div>
-                <button type="button" id="add-giftcard-button" class="add-giftcard-button">Add gift card</button>
             </li>
           </ul>
 
