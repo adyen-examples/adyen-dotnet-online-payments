@@ -88,6 +88,7 @@ function mountPaymentMethodButton(checkout, paymentMethodType) {
     });
 }
 
+// Binds event listener to 'Go back'-button
 function bindGoBackButton(paymentMethodComponent) {
     // Binds event listener to the 'Go back'-button
     document.getElementById('go-back-button')
@@ -250,11 +251,19 @@ function handleOnOrderCreated(orderStatus) {
 
     // Show the subtracted balance of the gift card to the shopper if there are any changes
     if (subtractedGiftcardBalance > 0) {
+        // Clears any (previous) error messages
         clearGiftCardErrorMessages();
+        
+        // Show 'Gift card applied' message
         showGiftcardAppliedMessage(subtractedGiftcardBalance);
+
+        // Show payment method buttons
         showAllPaymentMethodButtons();
+
+        // Hides the 'Go back'-button
         hideGoBackButton();
     } else { 
+        // Show an error message
         showGiftCardErrorMessage('Invalid gift card');
     }
 }

@@ -54,8 +54,8 @@ namespace adyen_dotnet_subscription_example
 
             // Register your dependencies.
             services.AddSingleton<Client>(provider => new Client(
-            provider.GetRequiredService<IOptions<AdyenOptions>>().Value.ADYEN_API_KEY,  // Get your API Key from the AdyenOptions using the Options pattern.
-                Environment.Test) // Test environment
+                provider.GetRequiredService<IOptions<AdyenOptions>>().Value.ADYEN_API_KEY,  // Get your API Key from the AdyenOptions using the Options pattern.
+                Environment.Test) // Test environment.
             );
             services.AddSingleton<Checkout>();
             services.AddSingleton<Recurring>();
