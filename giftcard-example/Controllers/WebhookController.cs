@@ -79,8 +79,8 @@ namespace adyen_dotnet_giftcard_example.Controllers
                 return Task.CompletedTask;
             }
 
-            // The amount that is authorised on the final payment. E.g. if you paid �110,- with a �50,- giftcard and another �50,- giftcard.
-            // This amount should be `1000` (in units of 100s) which is equivalent to �10,-
+            // The amount that is authorised on the final payment. For example: if you paid EUR 110 with a EUR 50 giftcard and another EUR 50 giftcard.
+            // This amount should be `1000` (in units of 100s) which is equivalent to EUR 10
             _logger.LogInformation($"[AUTHORISATION]\n" +
                 $"Payment method: {notification.PaymentMethod}\n" +
                 $"Currency: {notification.Amount?.Currency}\n" +
@@ -106,7 +106,7 @@ namespace adyen_dotnet_giftcard_example.Controllers
             _logger.LogInformation($"[ORDER_OPENED]\n" +
                 $"merchantOrderReference: {notification.MerchantReference}\n" +
                 $"Currency: {notification.Amount.Currency}\n" +
-                $"Value: {notification.Amount.Value}\n" + // Total order amount `11000` (in units of 100s) which is equivalent to �110,-
+                $"Value: {notification.Amount.Value}\n" + // Total order amount `11000` (in units of 100s) which is equivalent to EUR 110
                 $"PspReference: {notification.PspReference}");
 
             return Task.CompletedTask;
@@ -151,7 +151,7 @@ namespace adyen_dotnet_giftcard_example.Controllers
 
             _logger.LogInformation($"MerchantOrderReference: {notification.MerchantReference}\n" +
                 $"Currency: {notification.Amount.Currency}\n" +
-                $"Value: {notification.Amount.Value}\n" + // Total order amount `11000` (in units of 100s) which is equivalent to �110,-
+                $"Value: {notification.Amount.Value}\n" + // Total order amount `11000` (in units of 100s) which is equivalent to EUR 110
                 $"PspReference: {notification.PspReference}"); 
 
             return Task.CompletedTask;
