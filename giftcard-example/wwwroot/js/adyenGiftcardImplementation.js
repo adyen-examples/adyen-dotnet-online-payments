@@ -15,6 +15,7 @@ async function startCheckout() {
         const sessionResponse = await callServer("/api/sessions/giftcardcomponent");
         console.info(sessionResponse);
 
+        // Create Adyen Checkout configuration
         const checkout = await createAdyenCheckout(sessionResponse);
 
         // Mount your supported payment method components (e.g. 'ideal', 'scheme' etc)
@@ -184,6 +185,7 @@ async function finalizeCheckout() {
     }
 }
 
+// Create Adyen Checkout configuration
 async function createAdyenCheckout(session) {
     return new AdyenCheckout({
         clientKey: clientKey,
@@ -281,6 +283,7 @@ async function callServer(url, data) {
     return await res.json();
 }
 
+// Handle server response
 function handleServerResponse(res, _component) {
     console.info(res);
     switch (res?.resultCode) {

@@ -37,6 +37,7 @@ async function finalizeCheckout() {
     }
 }
 
+// Create Adyen Checkout configuration
 async function createAdyenCheckout(session) {
     return new AdyenCheckout({
         clientKey,
@@ -93,6 +94,7 @@ async function callServer(url, data) {
     return await res.json();
 }
 
+// Handle server response
 function handleServerResponse(res, _component) {
     switch (res.resultCode) {
         case "Authorised":
