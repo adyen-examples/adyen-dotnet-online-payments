@@ -53,7 +53,7 @@ function mountGiftcardComponentButton(checkout) {
             // Show giftcard component
             document.getElementById("giftcard-container").hidden = false;
 
-            // Hide gift-card button
+            // Hide gift card button
             document.getElementById("add-giftcard-button").hidden = true;
             
             // Show 'Go back'-button
@@ -102,6 +102,9 @@ function bindGoBackButton(paymentMethodComponent) {
 
             // Show all payment method buttons
             showAllPaymentMethodButtons();
+        
+            // Clear gift card error messages
+            clearGiftCardErrorMessages();
         });
 }
 
