@@ -11,7 +11,7 @@ Get started by navigating to one of the supported demos below.
 | --: | :-- | :-- |
 | [`Checkout Example`](checkout-example) | E-commerce checkout flow with different payment methods. | [See below](#checkout-example) | 
 | [`Subscription Example`](subscription-example) | Subscription flow using Adyen tokenization. | [See below](#subscription-example) | 
-| [`Giftcard Example`](giftcard-example) | Giftcards checkout flow using partial orders. | [See below](#giftcard-example) | 
+| [`Gift Card Example`](giftcard-example) | Gift Cards checkout flow using partial orders. | [See below](#giftcard-example) | 
 
 
 ## [Checkout Example](checkout-example)
@@ -30,11 +30,11 @@ The panel allows admins to make payments on behalf of the shopper using this tok
 
 ![Subscription Demo](subscription-example/wwwroot/images/cardsubscription.gif)
 
-## [Giftcard Example](giftcard-example)
+## [Gift Card Example](giftcard-example)
 
-The [`giftcard example`](giftcard-example) repository includes a giftcard flow during checkout. Within this demo app, you'll find a simplified version of an e-commerce website. The shopper can choose to use giftcards to complete their purchase or use their preferred payment method to pay the remaining amount.
+The [`gift card example`](giftcard-example) repository includes a gift card flow during checkout. Within this demo app, you'll find a simplified version of an e-commerce website. The shopper can choose to use gift cards to complete their purchase or use their preferred payment method to pay the remaining amount.
 
-![Giftcard Demo](giftcard-example/wwwroot/images/cardgiftcard.gif)
+![Gift Card Demo](giftcard-example/wwwroot/images/cardgiftcard.gif)
 
 ## Contributing
 
