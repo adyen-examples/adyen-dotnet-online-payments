@@ -13,7 +13,7 @@ namespace adyen_dotnet_subscription_example.Repositories
     {
         /// <summary>
         /// List of all customers that have bought a subscription using one or more payment methods.
-        /// This repository is populated when we confirm a hmac-valid webhook containing the <see cref="recurringDetailReference"/> payload, see <see cref="Controllers.WebhookController.ReceiveWebhooksAsync(Adyen.Model.Notification.NotificationRequest)"/>.
+        /// This repository is populated when we confirm a hmac-valid webhook containing the <see cref="recurringDetailReference"/> payload, see <see cref="Controllers.WebhookController.Webhooks(Adyen.Model.Notification.NotificationRequest)"/>.
         /// </summary>
         ConcurrentDictionary<string, SubscribedCustomer> SubscribedCustomers { get; }
 
@@ -22,7 +22,7 @@ namespace adyen_dotnet_subscription_example.Repositories
         /// If the shopperReference doesn't contain any <paramref name="recurringDetailReference"/>s, we remove <paramref name="shopperReference"/>.
         /// </summary>
         /// <param name="shopperReference">The unique shopper reference (usually a GUID to identify your shopper).</param>
-        /// <param name="recurringDetailReference">The <paramref name="recurringDetailReference"/> token that is retrieved from <see cref="Controllers.WebhookController.ReceiveWebhooksAsync(Adyen.Model.Notification.NotificationRequest)"/>.</param>
+        /// <param name="recurringDetailReference">The <paramref name="recurringDetailReference"/> token that is retrieved from <see cref="Controllers.WebhookController.Webhooks(Adyen.Model.Notification.NotificationRequest)"/>.</param>
         /// <returns></returns>
         bool Remove(string shopperReference, string recurringDetailReference);
 

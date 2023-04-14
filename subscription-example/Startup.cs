@@ -28,16 +28,24 @@ namespace adyen_dotnet_subscription_example
         public void ConfigureServices(IServiceCollection services)
         {
             // Configure your keys using the Options pattern.
+            // This will auto-retrieve/configure your keys from your environmental variables (ADYEN_CLIENT_KEY, ADYEN_API_KEY, ADYEN_MERCHANT_ACCOUNT, ADYEN_HMAC_KEY).
             services.Configure<AdyenOptions>(
                 options =>
                 {
-                    options.ADYEN_API_KEY = Configuration[nameof(AdyenOptions.ADYEN_API_KEY)];
-                    options.ADYEN_MERCHANT_ACCOUNT = Configuration[nameof(AdyenOptions.ADYEN_MERCHANT_ACCOUNT)];
+                    // Public key used for client-side authentication: https://docs.adyen.com/development-resources/client-side-authentication.
                     options.ADYEN_CLIENT_KEY = Configuration[nameof(AdyenOptions.ADYEN_CLIENT_KEY)];
+
+                    // Your secret API Key: https://docs.adyen.com/development-resources/api-credentials#generate-your-api-key.
+                    options.ADYEN_API_KEY = Configuration[nameof(AdyenOptions.ADYEN_API_KEY)];
+
+                    // Your Merchant Account name: https://docs.adyen.com/account/account-structure.
+                    options.ADYEN_MERCHANT_ACCOUNT = Configuration[nameof(AdyenOptions.ADYEN_MERCHANT_ACCOUNT)];
+
+                    // HMAC Key used to validate your webhook signatures: https://docs.adyen.com/development-resources/webhooks/verify-hmac-signatures.
                     options.ADYEN_HMAC_KEY = Configuration[nameof(AdyenOptions.ADYEN_HMAC_KEY)];
                 }
             );
-            
+
             // Register your controllers.
             services.AddControllersWithViews();
             services.AddControllers().AddNewtonsoftJson();
@@ -46,8 +54,8 @@ namespace adyen_dotnet_subscription_example
 
             // Register your dependencies.
             services.AddSingleton<Client>(provider => new Client(
-            provider.GetRequiredService<IOptions<AdyenOptions>>().Value.ADYEN_API_KEY,  // Get your API Key from the AdyenOptions using the Options pattern.
-                Environment.Test) // Test environment
+                provider.GetRequiredService<IOptions<AdyenOptions>>().Value.ADYEN_API_KEY,  // Get your API Key from the AdyenOptions using the Options pattern.
+                Environment.Test) // Test environment.
             );
             services.AddSingleton<Checkout>();
             services.AddSingleton<Recurring>();

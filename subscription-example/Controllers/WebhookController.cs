@@ -28,7 +28,7 @@ namespace adyen_dotnet_subscription_example.Controllers
         }
 
         [HttpPost("api/webhooks/notifications")]
-        public async Task<ActionResult<string>> ReceiveWebhooksAsync(NotificationRequest notificationRequest)
+        public async Task<ActionResult<string>> Webhooks(NotificationRequest notificationRequest)
         {
             _logger.LogInformation($"Webhook received: \n{notificationRequest}\n");
 
@@ -36,7 +36,7 @@ namespace adyen_dotnet_subscription_example.Controllers
             {
                 // JSON and HTTP POST notifications always contain a single `NotificationRequestItem` object.
                 // Read more: https://docs.adyen.com/development-resources/webhooks/understand-notifications#notification-structure.
-                NotificationRequestItemContainer container = notificationRequest.NotificationItemContainers.FirstOrDefault();
+                NotificationRequestItemContainer container = notificationRequest.NotificationItemContainers?.FirstOrDefault();
 
                 if (container == null)
                 {
@@ -55,7 +55,7 @@ namespace adyen_dotnet_subscription_example.Controllers
                 if (!container.NotificationItem.Success)
                 {
                     _logger.LogError($"Webhook unsuccessful: {container.NotificationItem.Reason}");
-                    return BadRequest($"{container.NotificationItem.Reason}");
+                    return Ok("[accepted]"); // The webhook was delivered (but was unsuccessful), hence why we'll return a [accepted] response to confirm that we've received it.
                 }
 
                 // Process notification asynchronously.
@@ -63,7 +63,7 @@ namespace adyen_dotnet_subscription_example.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error while calculating HMAC signature: \n{e}\n");
+                _logger.LogError("Exception thrown: " + e.ToString());
                 throw;
             }
 
@@ -93,7 +93,7 @@ namespace adyen_dotnet_subscription_example.Controllers
                 return Task.CompletedTask;
             }
 
-            // Get and log the recurringProcessingModel below
+            // Get and log the recurringProcessingModel below.
             notificationRequestItem.AdditionalData.TryGetValue("recurringProcessingModel", out string recurringProcessingModel);
 
             _logger.LogInformation($"Received recurringDetailReference: {recurringDetailReference} for {shopperReference}" +

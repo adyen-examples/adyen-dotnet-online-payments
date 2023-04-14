@@ -33,7 +33,7 @@ namespace adyen_dotnet_checkout_example.Controllers
             {
                 // JSON and HTTP POST notifications always contain a single `NotificationRequestItem` object.
                 // Read more: https://docs.adyen.com/development-resources/webhooks/understand-notifications#notification-structure.
-                NotificationRequestItemContainer container = notificationRequest.NotificationItemContainers.FirstOrDefault();
+                NotificationRequestItemContainer container = notificationRequest.NotificationItemContainers?.FirstOrDefault();
 
                 if (container == null)
                 {
@@ -48,12 +48,20 @@ namespace adyen_dotnet_checkout_example.Controllers
                     return BadRequest("[not accepted invalid hmac key]");
                 }
 
+                // Return if webhook is not successful.
+                if (!container.NotificationItem.Success)
+                {
+                    _logger.LogError($"Webhook unsuccessful: {container.NotificationItem.Reason} \n" +
+                        $"EventCode: {container.NotificationItem.EventCode}");
+                    return Ok("[accepted]"); // The webhook was delivered (but was unsuccessful), hence why we'll return a [accepted] response to confirm that we've received it.
+                }
+
                 // Process notification asynchronously.
                 await ProcessNotificationAsync(container.NotificationItem);
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error while calculating HMAC signature::\n{e}\n");
+                _logger.LogError("Exception thrown: " + e.ToString());
                 throw;
             }
 

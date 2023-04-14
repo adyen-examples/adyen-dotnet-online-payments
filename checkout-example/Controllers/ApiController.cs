@@ -1,4 +1,3 @@
-using Adyen;
 using Adyen.Model.Checkout;
 using Adyen.Service;
 using adyen_dotnet_checkout_example.Options;
@@ -32,17 +31,17 @@ namespace adyen_dotnet_checkout_example.Controllers
         public async Task<ActionResult<string>> Sessions()
         {
             var sessionsRequest = new CreateCheckoutSessionRequest();
-            sessionsRequest.MerchantAccount = _merchantAccount; // required
+            sessionsRequest.MerchantAccount = _merchantAccount; // Required.
             sessionsRequest.Channel = CreateCheckoutSessionRequest.ChannelEnum.Web;
-            var amount = new Amount("EUR", 10000); // value is 100€ in minor units
-            sessionsRequest.Amount = amount;
-            var orderRef = Guid.NewGuid();
-            sessionsRequest.Reference = orderRef.ToString(); // required
+            sessionsRequest.Amount = new Amount("EUR", 10000); // Value is 100€ in minor units.
 
-            // required for 3ds2 redirect flow
+            var orderRef = Guid.NewGuid();
+            sessionsRequest.Reference = orderRef.ToString(); // Required.
+
+            // Required for 3DS2 redirect flow.
             sessionsRequest.ReturnUrl = $"{_urlService.GetHostUrl()}/redirect?orderRef={orderRef}";
 
-            // used for klarna, klarna is not supported everywhere, hence why we've defaulted to countryCode "NL" as it supports the following payment methods below:
+            // Used for klarna, klarna is not supported everywhere, hence why we've defaulted to countryCode "NL" as it supports the following payment methods below:
             // "Pay now", "Pay later" and "Pay over time", see docs for more info: https://docs.adyen.com/payment-methods/klarna#supported-countries
             sessionsRequest.CountryCode = "NL";
             sessionsRequest.LineItems = new List<LineItem>()
@@ -50,16 +49,16 @@ namespace adyen_dotnet_checkout_example.Controllers
                 new LineItem(quantity: 1, amountIncludingTax: 5000 , description: "Sunglasses"),
                 new LineItem(quantity: 1, amountIncludingTax: 5000, description: "Headphones")
             };
-            
+
             try
             {
                 var res = await _checkout.SessionsAsync(sessionsRequest);
-                _logger.LogInformation($"Response for Payment API::\n{res}\n");
+                _logger.LogInformation($"Response for Payments API:\n{res}\n");
                 return res.ToJson();
             }
             catch (Adyen.HttpClient.HttpClientException e)
             {
-                _logger.LogError($"Request for Payments failed::\n{e.ResponseBody}\n");
+                _logger.LogError($"Request for Payments failed:\n{e.ResponseBody}\n");
                 throw;
             }
         }

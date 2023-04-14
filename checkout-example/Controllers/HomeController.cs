@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using adyen_dotnet_checkout_example.Options;
+﻿using adyen_dotnet_checkout_example.Options;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
 namespace adyen_dotnet_checkout_example.Controllers
@@ -7,12 +7,10 @@ namespace adyen_dotnet_checkout_example.Controllers
     public class HomeController : Controller
     {
         private readonly string _clientKey;
-
         public HomeController(IOptions<AdyenOptions> options)
         {
             _clientKey = options.Value.ADYEN_CLIENT_KEY;
         }
-
         [Route("/")]
         public IActionResult Index()
         {
