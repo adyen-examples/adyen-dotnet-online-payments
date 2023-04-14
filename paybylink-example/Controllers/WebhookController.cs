@@ -58,10 +58,6 @@ namespace adyen_dotnet_paybylink_example.Controllers
 
                 // Process notifications asynchronously.
                 await ProcessAuthorisationNotificationAsync(container.NotificationItem);
-
-                await ProcessOrderOpenedNotificationAsync(container.NotificationItem);
-
-                await ProcessOrderClosedNotificationAsync(container.NotificationItem);
             }
             catch (Exception e)
             {
@@ -92,67 +88,6 @@ namespace adyen_dotnet_paybylink_example.Controllers
                 // This is used as reference for "ORDER_OPENED" / "ORDER_CLOSED".
                 _logger.LogInformation($"merchantOrderReference: {merchantOrderReference}");
             }
-
-            return Task.CompletedTask;
-        }
-
-        private Task ProcessOrderOpenedNotificationAsync(NotificationRequestItem notification)
-        {
-            if (notification.EventCode != "ORDER_OPENED")
-            {
-                return Task.CompletedTask;
-            }
-
-            _logger.LogInformation($"[ORDER_OPENED]\n" +
-                $"merchantOrderReference: {notification.MerchantReference}\n" +
-                $"Currency: {notification.Amount.Currency}\n" +
-                $"Value: {notification.Amount.Value}\n" + // Total order amount `11000` (in units of 100s) which is equivalent to EUR 110.
-                $"PspReference: {notification.PspReference}");
-
-            return Task.CompletedTask;
-        }
-
-        private Task ProcessOrderClosedNotificationAsync(NotificationRequestItem notification)
-        {
-            if (notification.EventCode != "ORDER_CLOSED")
-            {
-                return Task.CompletedTask;
-            }
-
-            bool isReading = true;
-            for (int i = 1; i < notification.AdditionalData.Count && isReading; i++)
-            {
-                if (!notification.AdditionalData.TryGetValue($"order-{i}-paymentMethod", out string orderPaymentMethod))
-                {
-                    isReading = false;
-                    continue;
-                }
-
-                
-                if (!notification.AdditionalData.TryGetValue($"order-{i}-pspReference", out string orderPspReference))
-                {
-                    isReading = false;
-                    continue;
-                }
-
-                
-                if (!notification.AdditionalData.TryGetValue($"order-{i}-paymentAmount", out string orderPaymentAmount))
-                {
-                    isReading = false;
-                    continue;
-                }
-
-                _logger.LogInformation($"[ORDER_CLOSED]\n" +
-                    $"orderPaymentMethod: {orderPaymentMethod}\n" + // The payment method that is used to make the purchase (e.g. 'visa').
-                    $"orderPspReference: {orderPspReference}\n" + // Foreach partial payment, you get a new (unique) PspReference.
-                    $"orderPaymentAmount: {orderPaymentAmount}"); // Format: 'EUR 50.00'.
-            }
-
-
-            _logger.LogInformation($"MerchantOrderReference: {notification.MerchantReference}\n" +
-                $"Currency: {notification.Amount.Currency}\n" +
-                $"Value: {notification.Amount.Value}\n" + // Total order amount `11000` (in units of 100s) which is equivalent to EUR 110.
-                $"PspReference: {notification.PspReference}"); 
 
             return Task.CompletedTask;
         }
