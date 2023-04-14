@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>adyen_dotnet_giftcard_example</RootNamespace>
+    <RootNamespace>adyen_dotnet_paybylink_example</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
