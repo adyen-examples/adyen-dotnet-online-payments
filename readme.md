@@ -34,7 +34,7 @@ The panel allows admins to make payments on behalf of the shopper using this tok
 
 The [`giftcard example`](giftcard-example) repository includes a giftcard flow during checkout. Within this demo app, you'll find a simplified version of an e-commerce website. The shopper can choose to use giftcards to complete their purchase or use their preferred payment method to pay the remaining amount.
 
-![Giftcard Demo](subscription-example/wwwroot/images/cardgiftcard.gif)
+![Giftcard Demo](giftcard-example/wwwroot/images/cardgiftcard.gif)
 
 ## Contributing
 
