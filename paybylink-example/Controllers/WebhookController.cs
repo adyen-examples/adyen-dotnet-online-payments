@@ -75,19 +75,11 @@ namespace adyen_dotnet_paybylink_example.Controllers
                 return Task.CompletedTask;
             }
 
-            // The amount that is authorised on the final payment. For example: if you paid EUR 110 with a EUR 50 giftcard and another EUR 50 giftcard.
-            // This amount should be `1000` (in units of 100s) which is equivalent to EUR 10.
             _logger.LogInformation($"[AUTHORISATION]\n" +
                 $"Payment method: {notification.PaymentMethod}\n" +
                 $"Currency: {notification.Amount?.Currency}\n" +
                 $"Value: {notification.Amount?.Value}\n" +
                 $"PspReference: {notification.PspReference}");
-
-            if (notification.AdditionalData.TryGetValue("merchantOrderReference", out string merchantOrderReference))
-            {
-                // This is used as reference for "ORDER_OPENED" / "ORDER_CLOSED".
-                _logger.LogInformation($"merchantOrderReference: {merchantOrderReference}");
-            }
 
             return Task.CompletedTask;
         }
