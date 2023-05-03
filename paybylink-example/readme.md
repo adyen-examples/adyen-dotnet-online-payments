@@ -152,4 +152,4 @@ dotnet run --project paybylink-example
 
 2. Use the link to finalize the payment.
 
-2. Visit the Customer Area → `Pay By-Link`. 
+3. Visit the Customer Area → `Pay By-Link`. 
