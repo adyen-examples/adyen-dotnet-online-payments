@@ -28,7 +28,7 @@ namespace adyen_dotnet_paybylink_example.Controllers
         }
 
         [HttpPost("api/links")]
-        public async Task<ActionResult<string>> PaymentLinks(int amount = 1000)
+        public async Task<ActionResult<string>> PaymentLinks(string customName0, int amount = 1000)
         {
             var orderRef = Guid.NewGuid();
             var createPayByLinkRequest = new CreatePaymentLinkRequest()
@@ -37,14 +37,6 @@ namespace adyen_dotnet_paybylink_example.Controllers
                 Amount = new Amount("EUR", amount), // Value in minor units.
                 Reference = orderRef.ToString(),    // Required.
                 ReturnUrl = $"{_urlService.GetHostUrl()}/redirect?orderRef={orderRef}", // Required for 3DS2 redirect flow.
-                // Used for klarna, klarna is not supported everywhere, hence why we've defaulted to countryCode "NL" as it supports the following payment methods below:
-                // "Pay now", "Pay later" and "Pay over time", see docs for more info: https://docs.adyen.com/payment-methods/klarna#supported-countries
-                CountryCode = "NL",
-                LineItems = new List<LineItem>()
-                {
-                    new LineItem(quantity: 1, amountIncludingTax: 5500 , description: "Sunglasses"),
-                    new LineItem(quantity: 1, amountIncludingTax: 5500, description: "Headphones")
-                }
             };
 
             try
@@ -67,10 +59,11 @@ namespace adyen_dotnet_paybylink_example.Controllers
             throw new NotImplementedException();
         }
 
+        // https://github.com/adyen-examples/adyen-java-spring-online-payments/blob/main/paybylink-example/src/main/java/com/adyen/paybylink/service/PaymentLinkService.java
         //[HttpGet("api/links")]
         //public async Task<ActionResult<string>> PaymentLinks(string id)
         //{
-        //    var t = UpdatePaymentLinkRequest
+        //    var t = UpdatePaymentLinkRequest // GetLink(id);
         //}
     }
 }

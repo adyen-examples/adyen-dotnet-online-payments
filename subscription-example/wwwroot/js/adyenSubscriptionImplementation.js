@@ -10,8 +10,7 @@ async function startTokenization() {
     try {
         const response = await callServer("/api/tokenization/sessions");
         console.log(response);
-        const checkout = await createAdyenCheckout(response);
-        checkout.create(type).mount(document.getElementById("payment"));
+        const checkout = await createAdyenCheckout(response); 
     } catch (error) {
         console.error(error);
         alert("Error occurred. Look at console for details.");
@@ -49,7 +48,7 @@ async function createAdyenCheckout(session) {
                 hasHolderName: true,
                 holderNameRequired: true,
                 name: "Credit or debit card",
-            }
+            },
         },
         onPaymentCompleted: (result, component) => {
             console.info("onPaymentCompleted");

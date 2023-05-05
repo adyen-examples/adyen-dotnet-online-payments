@@ -6,7 +6,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\js - Copy\**" />
+    <Content Remove="wwwroot\js - Copy\**" />
+    <EmbeddedResource Remove="wwwroot\js - Copy\**" />
+    <None Remove="wwwroot\js - Copy\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Adyen" Version="9.2.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.16" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\js\" />
   </ItemGroup>
 </Project>

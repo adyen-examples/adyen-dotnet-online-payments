@@ -56,27 +56,5 @@ namespace adyen_dotnet_paybylink_example.Controllers
         {
             return View();
         }
-
-        [Route("checkout/{id}")]
-        public IActionResult DropinCheckout(string id)
-        {
-            ViewBag.PaymentMethod = id;
-            ViewBag.ClientKey = _clientKey;
-            return View("~/Views/Home/Dropin/Checkout.cshtml");
-        }
-
-        [Route("preview/{id}")]
-        public IActionResult DropinPreview(string id)
-        {
-            ViewBag.PaymentMethod = id;
-            return View("~/Views/Home/Dropin/Preview.cshtml");
-        }
-
-        [Route("redirect")]
-        public IActionResult DropinRedirect()
-        {
-            ViewBag.ClientKey = _clientKey;
-            return View("~/Views/Home/Dropin/Redirect.cshtml");
-        }
     }
 }
