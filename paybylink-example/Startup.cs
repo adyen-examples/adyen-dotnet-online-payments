@@ -3,6 +3,7 @@ using Adyen.Model.Enum;
 using Adyen.Service;
 using Adyen.Util;
 using adyen_dotnet_paybylink_example.Options;
+using adyen_dotnet_paybylink_example.Repositories;
 using adyen_dotnet_paybylink_example.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -57,6 +58,8 @@ namespace adyen_dotnet_paybylink_example
             );
             services.AddSingleton<Checkout>();
             services.AddSingleton<HmacValidator>();
+            services.AddSingleton<IPaymentLinkService, PaymentLinkService>();
+            services.AddSingleton<IPaymentLinkRepository, PaymentLinkRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
