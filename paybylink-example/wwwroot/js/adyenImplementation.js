@@ -5,7 +5,7 @@ async function createPaymentLink() {
         const reference = document.getElementById('reference').value;
         const linksResponse = await sendPostRequest("/api/links", { Amount: amount, Reference: reference});
         console.info(linksResponse);
-
+        window.location.reload();
     } catch (error) {
         console.error(error);
         alert("Error occurred. Look at console for details");
@@ -24,18 +24,6 @@ async function sendPostRequest(url, data) {
 
     return await res.json();
 }
-
-// Sends get request to url
-//async function sendGetRequest(url) {
-//    const res = await fetch(url, {
-//        method: "GET",
-//        headers: {
-//            "Content-Type": "application/json",
-//        },
-//    });
-
-//    return await res.json();
-//}
 
 // TODO
 // Handle server response 

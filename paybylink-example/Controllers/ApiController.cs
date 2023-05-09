@@ -3,6 +3,7 @@ using adyen_dotnet_paybylink_example.Models;
 using adyen_dotnet_paybylink_example.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
@@ -23,15 +24,16 @@ namespace adyen_dotnet_paybylink_example.Controllers
         [HttpPost("api/links")]
         public async Task<ActionResult<string>> CreatePaymentLink(Requests.CreatePaymentLinkRequest request)
         {
-            PaymentLinkResponse response = await _paymentLinkService.CreatePaymentLinkAsync(request.Reference, request.Amount);
-            return Ok(response);
-        }
-
-        [HttpGet("api/links")]
-        public async Task<ActionResult> GetPaymentLinks()
-        {
-            ConcurrentDictionary<string, PaymentLinkModel> links = _paymentLinkService.GetPaymentLinks();
-            return Ok(links);
+            try
+            {
+                PaymentLinkResponse response = await _paymentLinkService.CreatePaymentLinkAsync(request.Reference, request.Amount);
+                return Ok(response);
+            }
+            catch(Exception e)
+            {
+                _logger.LogError(e.ToString());
+                return BadRequest(e.ToString());
+            }
         }
 
         // https://github.com/adyen-examples/adyen-java-spring-online-payments/blob/main/paybylink-example/src/main/java/com/adyen/paybylink/service/PaymentLinkService.java

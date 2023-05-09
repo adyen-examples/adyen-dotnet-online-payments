@@ -19,10 +19,11 @@ namespace adyen_dotnet_paybylink_example.Repositories
         /// </summary>
         /// <param name="reference">The unique reference of the payment link.</param>
         /// <param name="pspReference">The psp reference of the payment link.</param>
+        /// <param name="url">The url of payment link.</param>
         /// <param name="expiresAt">Determines when the link expires.</param>
         /// <param name="status">Status of the payment.</param>
         /// <returns>True if upserted.</returns>
-        bool Upsert(string reference, string pspReference, DateTime expiresAt, string status);
+        bool Upsert(string reference, string pspReference, string url, DateTime expiresAt, string status);
     }
 
     public class PaymentLinkRepository : IPaymentLinkRepository
@@ -34,7 +35,7 @@ namespace adyen_dotnet_paybylink_example.Repositories
             PaymentLinks = new ConcurrentDictionary<string, PaymentLinkModel>();
         }
 
-        public bool Upsert(string reference, string pspReference, DateTime expiresAt, string status)
+        public bool Upsert(string reference, string pspReference, string url, DateTime expiresAt, string status)
         {
             // New payment link:
             if (!PaymentLinks.TryGetValue(reference, out PaymentLinkModel paymentlink))
@@ -44,6 +45,7 @@ namespace adyen_dotnet_paybylink_example.Repositories
                     {
                         Reference = reference,
                         PspReference = pspReference,
+                        Url = url,
                         ExpiresAt = expiresAt,
                         Status = status
                     });
@@ -52,6 +54,7 @@ namespace adyen_dotnet_paybylink_example.Repositories
             // Existing payment link:
             paymentlink.ExpiresAt = expiresAt;
             paymentlink.Status = status;
+            paymentlink.Url = url; // TODO: Investigate whether the url can change when you update the existing reference?
 
             return false;
         }

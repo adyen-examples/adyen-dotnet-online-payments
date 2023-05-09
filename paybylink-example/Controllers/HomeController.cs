@@ -1,22 +1,31 @@
-﻿using adyen_dotnet_paybylink_example.Options;
+﻿using adyen_dotnet_paybylink_example.Models;
+using adyen_dotnet_paybylink_example.Options;
+using adyen_dotnet_paybylink_example.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace adyen_dotnet_paybylink_example.Controllers
 {
     public class HomeController : Controller
     {
         private readonly string _clientKey;
+        private readonly IPaymentLinkService _paymentLinkService;
 
-        public HomeController(IOptions<AdyenOptions> options)
+        public HomeController(IPaymentLinkService paymentLinkService, IOptions<AdyenOptions> options)
         {
             _clientKey = options.Value.ADYEN_CLIENT_KEY;
+            _paymentLinkService = paymentLinkService;
         }
  
         [Route("/")]
         public IActionResult Index()
         {
-            return View();
+            ConcurrentDictionary<string, PaymentLinkModel> paymentLinks = _paymentLinkService.GetPaymentLinks();
+            List<PaymentLinkModel> models = paymentLinks.Select(kvp => kvp.Value).ToList();
+            return View(models);
         }
 
         [HttpGet("result/{status}")]

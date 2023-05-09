@@ -1,6 +1,10 @@
-﻿@{
+﻿@using adyen_dotnet_paybylink_example.Models;
+@model List<PaymentLinkModel>
+
+@{
     ViewData["Title"] = "Adyen Pay By Link Home";
 }
+
 <div class="main-container">
   <div class="info">
     <h1>Pay By Link Demo</h1>
@@ -42,6 +46,37 @@
  <!-- Section that shows all payment links -->
   <section class="payment-links">
     <h2>Payment links</h2>
+    <div class="create-new-link">
+      <table>
+      @foreach (PaymentLinkModel paymentLink in Model)
+      {
+         <tr>
+           <td>Reference</td>            
+           <td>
+              <a href="@paymentLink.Url" id="@paymentLink.Reference">@paymentLink.Reference</a>
+            </td>
+         </tr>
+         <tr>
+           <td>PspReference</td>
+            <td>
+              <div id="@paymentLink.PspReference">@paymentLink.PspReference</div>
+            </td>
+         </tr>
+         <tr>
+           <td>ExpiresAt</td>            
+           <td>
+              <div id="@paymentLink.ExpiresAt">@paymentLink.ExpiresAt</div>
+            </td>
+         </tr>
+          <tr>
+           <td>Status </td>            
+           <td>
+              <div id="@paymentLink.Status">@paymentLink.Status</div>
+            </td>
+         </tr>
+      }
+      </table>
+    </div>
   </section>
 </div>
 

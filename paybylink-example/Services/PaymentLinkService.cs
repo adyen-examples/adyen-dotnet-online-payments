@@ -38,19 +38,19 @@ namespace adyen_dotnet_paybylink_example.Services
 
         public async Task<PaymentLinkResponse> CreatePaymentLinkAsync(string reference, int amount, CancellationToken cancellationToken)
         {
-            var orderRef = Guid.NewGuid(); // TODO: Check whether user is allowed to generate this? Probably not.
-            var createPayByLinkRequest = new CreatePaymentLinkRequest()
-            {
-                MerchantAccount = _merchantAccount, // Required.
-                Amount = new Amount("EUR", amount), // Value in minor units.
-                Reference = orderRef.ToString(),    // Required.
-                ReturnUrl = $"{_urlService.GetHostUrl()}/redirect?orderRef={orderRef}", // Required for 3DS2 redirect flow.
-            };
+            var orderRef = Guid.NewGuid(); // TODO: Check whether the user is allowed to generate an ID from the frontend?
+            var createPayByLinkRequest = new CreatePaymentLinkRequest(
+                merchantAccount: _merchantAccount,       // Required.
+                amount: new Amount("EUR", amount),       // Required, value in minor units.
+                reference: orderRef.ToString(),          // Required.
+                returnUrl: $"{_urlService.GetHostUrl()}" // To direct the customer to your page after completing a Pay by Link payment, include a returnUrl in your /paymentLinks request.
+                                                         // With this request, a continue button will appear on the page. If customers click the button, they’re redirected to the specified URL.
+            );
 
             try
             {
                 var response = await _checkout.PaymentLinksAsync(createPayByLinkRequest);
-                _paymentLinkRepository.Upsert(response.Id, response.Reference, DateTime.Parse(response.ExpiresAt), response.Status.ToString());
+                _paymentLinkRepository.Upsert(response.Id, response.Reference, response.Url, DateTime.Parse(response.ExpiresAt), response.Status.ToString());
                 _logger.LogInformation($"Response Payments API:\n{response}\n");
                 return response;
             }
