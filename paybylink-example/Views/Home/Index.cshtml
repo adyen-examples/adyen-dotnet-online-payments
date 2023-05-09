@@ -14,17 +14,35 @@
         <a href="https://docs.adyen.com/unified-commerce/pay-by-link">Pay By Link</a> in our documentation.
     </p>
   </div>
-  <section class="create-pay-by-link">
-    <h2>Create a new link</h2>
-    <div class="create-new-link">
-      Amount: <input type="text" id="amount"/>
-      Reference: <input type="text" id="reference"/>
-      <button id="create-new-link" class="create-new-link-button">Create</button>
-    </div>
-  </section>
 
+  <div class="info">
+    <!-- Section for creating a new payment link -->
+    <section class="create-pay-by-link">
+      <h2>Create new payment link</h2>
+      <div class="create-new-link">
+        <table>
+          <tr>
+            <td>Amount: </td>
+            <td><input type="text" id="amount"/></td>
+          </tr>
+          <tr>
+            <td>Reference: </td>
+            <td><input type="text" id="reference"/></td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <button id="create-new-link" class="create-new-link-button" onclick="createPaymentLink()">Create!</button>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </section>
+  </div>
+
+ <!-- Section that shows all payment links -->
   <section class="payment-links">
-    <h2>Created payment links</h2>
-    <!-- Fetch all payment links and show -->
+    <h2>Payment links</h2>
   </section>
 </div>
+
+<script src="~/js/adyenImplementation.js" asp-append-version="true"></script>

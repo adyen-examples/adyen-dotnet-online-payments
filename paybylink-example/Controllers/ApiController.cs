@@ -21,14 +21,14 @@ namespace adyen_dotnet_paybylink_example.Controllers
         }
 
         [HttpPost("api/links")]
-        public async Task<ActionResult<string>> PaymentLinks(string reference, int amount = 1000)
+        public async Task<ActionResult<string>> CreatePaymentLink(Requests.CreatePaymentLinkRequest request)
         {
-            PaymentLinkResponse response = await _paymentLinkService.CreatePaymentLinkAsync(reference, amount);
-            return Ok(response.ToJson());
+            PaymentLinkResponse response = await _paymentLinkService.CreatePaymentLinkAsync(request.Reference, request.Amount);
+            return Ok(response);
         }
 
         [HttpGet("api/links")]
-        public async Task<ActionResult> PaymentLinks()
+        public async Task<ActionResult> GetPaymentLinks()
         {
             ConcurrentDictionary<string, PaymentLinkModel> links = _paymentLinkService.GetPaymentLinks();
             return Ok(links);
