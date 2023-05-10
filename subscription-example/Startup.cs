@@ -33,16 +33,16 @@ namespace adyen_dotnet_subscription_example
                 options =>
                 {
                     // Public key used for client-side authentication: https://docs.adyen.com/development-resources/client-side-authentication.
-                    options.ADYEN_CLIENT_KEY = Configuration[nameof(AdyenOptions.ADYEN_CLIENT_KEY) + "_RECRUITMENT"];
+                    options.ADYEN_CLIENT_KEY = Configuration[nameof(AdyenOptions.ADYEN_CLIENT_KEY)];
 
                     // Your secret API Key: https://docs.adyen.com/development-resources/api-credentials#generate-your-api-key.
-                    options.ADYEN_API_KEY = Configuration[nameof(AdyenOptions.ADYEN_API_KEY) + "_RECRUITMENT"];
+                    options.ADYEN_API_KEY = Configuration[nameof(AdyenOptions.ADYEN_API_KEY)];
 
                     // Your Merchant Account name: https://docs.adyen.com/account/account-structure.
-                    options.ADYEN_MERCHANT_ACCOUNT = Configuration[nameof(AdyenOptions.ADYEN_MERCHANT_ACCOUNT) + "_RECRUITMENT"];
+                    options.ADYEN_MERCHANT_ACCOUNT = Configuration[nameof(AdyenOptions.ADYEN_MERCHANT_ACCOUNT)];
 
                     // HMAC Key used to validate your webhook signatures: https://docs.adyen.com/development-resources/webhooks/verify-hmac-signatures.
-                    options.ADYEN_HMAC_KEY = Configuration[nameof(AdyenOptions.ADYEN_HMAC_KEY) + "_RECRUITMENT"];
+                    options.ADYEN_HMAC_KEY = Configuration[nameof(AdyenOptions.ADYEN_HMAC_KEY)];
                 }
             );
 
