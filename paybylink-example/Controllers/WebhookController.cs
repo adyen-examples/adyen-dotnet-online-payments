@@ -1,6 +1,7 @@
 using Adyen.Model.Notification;
 using Adyen.Util;
 using adyen_dotnet_paybylink_example.Options;
+using adyen_dotnet_paybylink_example.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -13,15 +14,17 @@ namespace adyen_dotnet_paybylink_example.Controllers
     [ApiController]
     public class WebhookController : ControllerBase
     {
+        private readonly IPaymentLinkRepository _paymentLinkRepository;
         private readonly ILogger<WebhookController> _logger;
         private readonly HmacValidator _hmacValidator;
         private readonly string _hmacKey;
         
-        public WebhookController(ILogger<WebhookController> logger, IOptions<AdyenOptions> options, HmacValidator hmacValidator)
+        public WebhookController(IPaymentLinkRepository paymentLinkRepository, ILogger<WebhookController> logger, IOptions<AdyenOptions> options, HmacValidator hmacValidator)
         {
             _logger = logger;
-            _hmacKey = options.Value.ADYEN_HMAC_KEY;
+            _paymentLinkRepository = paymentLinkRepository;
             _hmacValidator = hmacValidator;
+            _hmacKey = options.Value.ADYEN_HMAC_KEY;
         }
 
         [HttpPost("api/webhooks/notifications")]
@@ -70,12 +73,17 @@ namespace adyen_dotnet_paybylink_example.Controllers
 
         private Task ProcessAuthorisationNotificationAsync(NotificationRequestItem notification)
         {
-            // TODO pay by link webhook handler
             if (notification.EventCode != "AUTHORISATION")
             {
                 return Task.CompletedTask;
             }
 
+            if (!notification.AdditionalData.TryGetValue("paymentLinkId", out string paymentLinkId))
+            {
+                return Task.CompletedTask;
+            }
+
+            // Update link with paymentLinkId
             _logger.LogInformation($"[AUTHORISATION]\n" +
                 $"Payment method: {notification.PaymentMethod}\n" +
                 $"Currency: {notification.Amount?.Currency}\n" +
