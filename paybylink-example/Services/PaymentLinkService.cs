@@ -14,7 +14,7 @@ namespace adyen_dotnet_paybylink_example.Services
 {
     public interface IPaymentLinkService
     {
-        Task<PaymentLinkResponse> CreatePaymentLinkAsync(string reference, int amount, CancellationToken cancellationToken = default);
+        Task<PaymentLinkResponse> CreatePaymentLinkAsync(string reference, int amount, bool isReusable, CancellationToken cancellationToken = default);
 
         ConcurrentDictionary<string, PaymentLinkModel> GetPaymentLinks(CancellationToken cancellationToken = default);
     }
@@ -36,13 +36,13 @@ namespace adyen_dotnet_paybylink_example.Services
             _merchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT;
         }
 
-        public async Task<PaymentLinkResponse> CreatePaymentLinkAsync(string reference, int amount, CancellationToken cancellationToken)
+        public async Task<PaymentLinkResponse> CreatePaymentLinkAsync(string reference, int amount, bool isReusable, CancellationToken cancellationToken)
         {
-            var orderRef = Guid.NewGuid(); // TODO: Check whether the user is allowed to generate an ID from the frontend?
             var createPayByLinkRequest = new CreatePaymentLinkRequest(
                 merchantAccount: _merchantAccount,       // Required.
                 amount: new Amount("EUR", amount),       // Required, value in minor units.
-                reference: orderRef.ToString(),          // Required.
+                reference: reference,                    // Required, use new Guid().
+                reusable: isReusable,                    // Optional, if set to true, the link can be used multiple times for a payment.
                 returnUrl: $"{_urlService.GetHostUrl()}" // To direct the customer to your page after completing a Pay by Link payment, include a returnUrl in your /paymentLinks request.
                                                          // With this request, a continue button will appear on the page. If customers click the button, they’re redirected to the specified URL.
             );
@@ -50,7 +50,7 @@ namespace adyen_dotnet_paybylink_example.Services
             try
             {
                 var response = await _checkout.PaymentLinksAsync(createPayByLinkRequest);
-                _paymentLinkRepository.Upsert(response.Id, response.Reference, response.Url, DateTime.Parse(response.ExpiresAt), response.Status.ToString());
+                _paymentLinkRepository.Upsert(response.Id, response.Reference, response.Url, DateTime.Parse(response.ExpiresAt), response.Status.ToString(), response.Reusable.HasValue ? response.Reusable.Value : false);
                 _logger.LogInformation($"Response Payments API:\n{response}\n");
                 return response;
             }

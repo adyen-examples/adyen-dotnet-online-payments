@@ -3,10 +3,11 @@ async function createPaymentLink() {
     try {
         const amount = document.getElementById('amount').value;
         const reference = document.getElementById('reference').value;
+        const isreusable = document.getElementById('isreusable').checked;
         if (!amount || !reference) {
             return;
         }
-        const linksResponse = await sendPostRequest("/api/links", { Amount: amount, Reference: reference});
+        const linksResponse = await sendPostRequest("/api/links", { Amount: amount, Reference: reference, IsReusable: isreusable});
         console.info(linksResponse);
         window.location.reload();
     } catch (error) {

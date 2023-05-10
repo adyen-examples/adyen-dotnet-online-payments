@@ -8,7 +8,7 @@
 <div class="main-container">
   <div class="info-mainsection">
     <h1>Pay By Link Demo</h1>
-    <p>Click to view an interactive example of Pay By Link.</p>
+    <p>To use this interactive example of Pay By Link, provide an <b>amount</b> in minor units (e.g. 1000 = 10 EUR) and <b>reference</b> (guid). Set <b>isReusable</b> to <i>true</i> to accept multiple payments per payment link.</p>
     <p>
       Make sure that the payment method you want to use in the payment links are enabled for your account.
       Refer to <a href="https://docs.adyen.com/payment-methods#add-payment-methods-to-your-account">the documentation</a> to add missing payment methods, 
@@ -25,13 +25,16 @@
       <h3>Create new payment link</h3>
       <div class="create-new-link">
         <div class="create-new-link-element">
-        Amount: <input type="text" id="amount"/>
+        Amount: <input type="text" id="amount" placeholder="€"/>
         </div>
 
         <div class="create-new-link-element">
-        Reference: <input type="text" id="reference"/>
+        Reference: <input type="text" id="reference" placeholder="@Guid.NewGuid()"/>
         </div>
 
+        <div class="create-new-link-element">
+        IsReusable: <input type="checkbox" id="isreusable"/>
+        </div>
         <button id="create-new-link" class="create-new-link-button" onclick="createPaymentLink()">Create!</button>
       </div>
     </section>
@@ -43,10 +46,10 @@
     <div class="payment-links">
       <div class="payment-links-header">
         <div class="payment-link-header-element">
-          Reference
+          PaymentLinkId
         </div>
         <div class="payment-link-header-element">
-          PspReference
+          Reference
         </div>
         <div class="payment-link-header-element">
           ExpiresAt
@@ -59,16 +62,16 @@
       {
       <div class="payment-links-content">
         <div class="payment-link-content-element">
-           <a href="@paymentLink.Url" id="@paymentLink.Reference">@paymentLink.Reference</a>
+           <a href="@paymentLink.Url" id="@paymentLink.Id">@paymentLink.Id</a>
         </div>
         <div class="payment-link-content-element">
-           <div id="@paymentLink.PspReference">@paymentLink.PspReference</div>
+           <div id="@paymentLink.Reference">@paymentLink.Reference</div>
         </div>
         <div class="payment-link-content-element">
-           <div id="@paymentLink.ExpiresAt">@paymentLink.ExpiresAt</div>
+           <div>@paymentLink.ExpiresAt</div>
         </div>
         <div class="payment-link-content-element">
-           <div id="@paymentLink.Status">@paymentLink.Status</div>
+           <div>@paymentLink.Status @(paymentLink.IsReusable ? "(Reusable)" : "")</div>
         </div>
       </div>
       }

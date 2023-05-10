@@ -1,4 +1,5 @@
 using Adyen.Model.Notification;
+using Adyen.Service;
 using Adyen.Util;
 using adyen_dotnet_paybylink_example.Options;
 using adyen_dotnet_paybylink_example.Repositories;
@@ -59,6 +60,9 @@ namespace adyen_dotnet_paybylink_example.Controllers
                     return Ok("[accepted]"); // The webhook was delivered (but was unsuccessful), hence why we'll return a [accepted] response to confirm that we've received it.
                 }
 
+                // Process Pay By Link webhook.
+                await ProcessPayByLinkWebhookAsync(container.NotificationItem);
+
                 // Process notifications asynchronously.
                 await ProcessAuthorisationNotificationAsync(container.NotificationItem);
             }
@@ -71,19 +75,26 @@ namespace adyen_dotnet_paybylink_example.Controllers
             return Ok("[accepted]");
         }
 
+        private Task ProcessPayByLinkWebhookAsync(NotificationRequestItem notificationItem)
+        {
+            if (!notificationItem.AdditionalData.TryGetValue("paymentLinkId", out string paymentLinkId))
+            {
+                return Task.CompletedTask;
+            }
+
+            // Perform business logic using `paymentLinkId` here.
+
+            return Task.CompletedTask;
+        }
+
         private Task ProcessAuthorisationNotificationAsync(NotificationRequestItem notification)
         {
+            // For every payment using the Pay By Link, Adyen will send an AUTHORISATION webhook.
             if (notification.EventCode != "AUTHORISATION")
             {
                 return Task.CompletedTask;
             }
 
-            if (!notification.AdditionalData.TryGetValue("paymentLinkId", out string paymentLinkId))
-            {
-                return Task.CompletedTask;
-            }
-
-            // Update link with paymentLinkId
             _logger.LogInformation($"[AUTHORISATION]\n" +
                 $"Payment method: {notification.PaymentMethod}\n" +
                 $"Currency: {notification.Amount?.Currency}\n" +

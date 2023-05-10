@@ -17,13 +17,14 @@ namespace adyen_dotnet_paybylink_example.Repositories
         /// <summary>
         /// Inserts new payment link with <paramref name="reference"/>, update <paramref name="expiresAt"/> and <paramref name="status"/> if it already exists.
         /// </summary>
-        /// <param name="reference">The unique reference of the payment link.</param>
-        /// <param name="pspReference">The psp reference of the payment link.</param>
+        /// <param name="id">The id of the payment link.</param>
+        /// <param name="reference">The reference of the payment link.</param>
         /// <param name="url">The url of payment link.</param>
         /// <param name="expiresAt">Determines when the link expires.</param>
         /// <param name="status">Status of the payment.</param>
+        /// <param name="isReusable">Set to true if you'd like to accept multiple payments per payment link.</param>
         /// <returns>True if upserted.</returns>
-        bool Upsert(string reference, string pspReference, string url, DateTime expiresAt, string status);
+        bool Upsert(string id, string reference, string url, DateTime expiresAt, string status, bool isReusable);
     }
 
     public class PaymentLinkRepository : IPaymentLinkRepository
@@ -35,26 +36,28 @@ namespace adyen_dotnet_paybylink_example.Repositories
             PaymentLinks = new ConcurrentDictionary<string, PaymentLinkModel>();
         }
 
-        public bool Upsert(string reference, string pspReference, string url, DateTime expiresAt, string status)
+        public bool Upsert(string id, string reference, string url, DateTime expiresAt, string status, bool isReusable)
         {
-            // New payment link:
+            // New payment link.
             if (!PaymentLinks.TryGetValue(reference, out PaymentLinkModel paymentlink))
             {
                 return PaymentLinks.TryAdd(reference,
                     new PaymentLinkModel()
                     {
+                        Id = id,
                         Reference = reference,
-                        PspReference = pspReference,
                         Url = url,
                         ExpiresAt = expiresAt,
-                        Status = status
+                        Status = status,
+                        IsReusable = isReusable
                     });
             }
 
-            // Existing payment link:
+            // Update existing payment link.
             paymentlink.ExpiresAt = expiresAt;
             paymentlink.Status = status;
-            paymentlink.Url = url; // TODO: Investigate whether the url can change when you update the existing reference?
+            paymentlink.Url = url;
+            paymentlink.IsReusable = isReusable;
 
             return false;
         }

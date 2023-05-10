@@ -24,7 +24,7 @@ namespace adyen_dotnet_paybylink_example.Controllers
         {
             try
             {
-                PaymentLinkResponse response = await _paymentLinkService.CreatePaymentLinkAsync(request.Reference, request.Amount);
+                PaymentLinkResponse response = await _paymentLinkService.CreatePaymentLinkAsync(request.Reference, request.Amount, request.IsReusable);
                 return Ok(response);
             }
             catch(Exception e)
@@ -33,12 +33,5 @@ namespace adyen_dotnet_paybylink_example.Controllers
                 return BadRequest(e.ToString());
             }
         }
-
-        // https://github.com/adyen-examples/adyen-java-spring-online-payments/blob/main/paybylink-example/src/main/java/com/adyen/paybylink/service/PaymentLinkService.java
-        //[HttpGet("api/links")]
-        //public async Task<ActionResult<string>> PaymentLinks(string id)
-        //{
-        //    var t = UpdatePaymentLinkRequest // GetLink(id);
-        //}
     }
 }
