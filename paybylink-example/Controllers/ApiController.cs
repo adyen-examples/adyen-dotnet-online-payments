@@ -1,10 +1,8 @@
 using Adyen.Model.Checkout;
-using adyen_dotnet_paybylink_example.Models;
 using adyen_dotnet_paybylink_example.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
 namespace adyen_dotnet_paybylink_example.Controllers

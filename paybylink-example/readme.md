@@ -13,18 +13,13 @@ This demo leverages Adyen's API Library for .NET ([GitHub](https://github.com/Ad
 ## Run integration on [Gitpod](https://gitpod.io/)
 1. Open your [Adyen Test Account](https://ca-test.adyen.com/ca/ca/overview/default.shtml) and create a set of [API keys](https://docs.adyen.com/user-management/how-to-get-the-api-key).
     - [`ADYEN_API_KEY`](https://docs.adyen.com/user-management/how-to-get-the-api-key)
-    - [`ADYEN_CLIENT_KEY`](https://docs.adyen.com/user-management/client-side-authentication)
     - [`ADYEN_MERCHANT_ACCOUNT`](https://docs.adyen.com/account/account-structure)
 
 
-2. Go to [Gitpod Environmental Variables](https://gitpod.io/variables) and set the following variables: [`ADYEN_API_KEY`](https://docs.adyen.com/user-management/how-to-get-the-api-key), [`ADYEN_CLIENT_KEY`](https://docs.adyen.com/user-management/client-side-authentication) and [`ADYEN_MERCHANT_ACCOUNT`](https://docs.adyen.com/account/account-structure) with a scope of `*/*`.
+2. Go to [Gitpod Environmental Variables](https://gitpod.io/variables) and set the following variables: [`ADYEN_API_KEY`](https://docs.adyen.com/user-management/how-to-get-the-api-key) and [`ADYEN_MERCHANT_ACCOUNT`](https://docs.adyen.com/account/account-structure) with a scope of `*/*`.
 
-
-3. To allow the Adyen Drop-In and Components to load, add `https://*.gitpod.io` as allowed origin by going to your `ADYEN_MERCHANT_ACCOUNT` in the Customer Area: `Developers` → `API credentials` → Find your `ws_user` → `Client settings` → `Add Allowed origins`.
-> **Warning** You should only allow wild card (*) domains in the **test** environment. In a **live** environment, you should specify the exact URL of the application.
-
-This demo provides a simple webhook integration at `/api/webhooks/notifications`. For it to work, you need to provide a way for Adyen's servers to reach your running application on Gitpod and add a standard webhook in the Customer Area.
-
+3. This demo provides a simple webhook integration at `/api/webhooks/notifications`. For it to work, you need to provide a way for Adyen's servers to reach your running application and add a standard webhook in the Customer Area.
+To expose this endpoint locally, we have highlighted two options in step 4 or 5. Choose one or consider alternative tunneling software.
 
 4. To receive notifications asynchronously, add a webhook:
     - In the Customer Area go to `Developers` → `Webhooks` and add a new `Standard notification webhook`
@@ -62,14 +57,11 @@ git clone https://github.com/adyen-examples/adyen-dotnet-online-payments.git
 
 2. Open your [Adyen Test Account](https://ca-test.adyen.com/ca/ca/overview/default.shtml) and create a set of [API keys](https://docs.adyen.com/user-management/how-to-get-the-api-key). 
     - [`ADYEN_API_KEY`](https://docs.adyen.com/user-management/how-to-get-the-api-key)
-    - [`ADYEN_CLIENT_KEY`](https://docs.adyen.com/user-management/client-side-authentication)
     - [`ADYEN_MERCHANT_ACCOUNT`](https://docs.adyen.com/account/account-structure)
     
 
-3. To allow the Adyen Drop-In and Components to load, add `https://localhost:5001` as allowed origin by going to your `ADYEN_MERCHANT_ACCOUNT` in the Customer Area: `Developers` → `API credentials` → Find your `ws_user` → `Client settings` → `Add Allowed origins`.
-> **Warning** You should only allow wild card (*) domains in the **test** environment. In a **live** environment, you should specify the exact URL of the application.
 
-This demo provides a simple webhook integration at `/api/webhooks/notifications`. For it to work, you need to provide a way for Adyen's servers to reach your running application and add a standard webhook in the Customer Area.
+3. This demo provides a simple webhook integration at `/api/webhooks/notifications`. For it to work, you need to provide a way for Adyen's servers to reach your running application and add a standard webhook in the Customer Area.
 To expose this endpoint locally, we have highlighted two options in step 4 or 5. Choose one or consider alternative tunneling software.
 
 
@@ -108,12 +100,11 @@ If you use a tunneling service like ngrok, the webhook URL will be the generated
     - Make sure the webhook is **Enabled** to send notifications
 
 
-7. Set the following environment variables in your terminal environment: `ADYEN_API_KEY`, `ADYEN_CLIENT_KEY`, `ADYEN_MERCHANT_ACCOUNT` and `ADYEN_HMAC_KEY`. Note that some IDEs will have to be restarted for environmental variables to be injected properly.
+7. Set the following environment variables in your terminal environment: `ADYEN_API_KEY`, `ADYEN_MERCHANT_ACCOUNT` and `ADYEN_HMAC_KEY`. Note that some IDEs will have to be restarted for environmental variables to be injected properly.
 
 ```shell
 export ADYEN_API_KEY=yourAdyenApiKey
 export ADYEN_MERCHANT_ACCOUNT=yourAdyenMerchantAccount
-export ADYEN_CLIENT_KEY=yourAdyenClientKey
 export ADYEN_HMAC_KEY=yourAdyenHmacKey
 ```
 
@@ -122,7 +113,6 @@ On Windows CMD you can use this command instead.
 ```shell
 set ADYEN_API_KEY=yourAdyenApiKey
 set ADYEN_MERCHANT_ACCOUNT=yourAdyenMerchantAccount
-set ADYEN_CLIENT_KEY=yourAdyenClientKey
 set ADYEN_HMAC_KEY=yourAdyenHmacKey
 ```
 

@@ -6,7 +6,7 @@
 }
 
 <div class="main-container">
-  <div class="info">
+  <div class="info-mainsection">
     <h1>Pay By Link Demo</h1>
     <p>Click to view an interactive example of Pay By Link.</p>
     <p>
@@ -19,65 +19,61 @@
     </p>
   </div>
 
-  <div class="info">
+  <div class="info-subsection">
     <!-- Section for creating a new payment link -->
     <section class="create-pay-by-link">
-      <h2>Create new payment link</h2>
+      <h3>Create new payment link</h3>
       <div class="create-new-link">
-        <table>
-          <tr>
-            <td>Amount: </td>
-            <td><input type="text" id="amount"/></td>
-          </tr>
-          <tr>
-            <td>Reference: </td>
-            <td><input type="text" id="reference"/></td>
-          </tr>
-          <tr>
-            <td colspan="2">
-              <button id="create-new-link" class="create-new-link-button" onclick="createPaymentLink()">Create!</button>
-            </td>
-          </tr>
-        </table>
+        <div class="create-new-link-element">
+        Amount: <input type="text" id="amount"/>
+        </div>
+
+        <div class="create-new-link-element">
+        Reference: <input type="text" id="reference"/>
+        </div>
+
+        <button id="create-new-link" class="create-new-link-button" onclick="createPaymentLink()">Create!</button>
       </div>
     </section>
   </div>
 
  <!-- Section that shows all payment links -->
-  <section class="payment-links">
-    <h2>Payment links</h2>
-    <div class="create-new-link">
-      <table>
+  <div class="info-subsection">
+    <h3>Payment links</h3>
+    <div class="payment-links">
+      <div class="payment-links-header">
+        <div class="payment-link-header-element">
+          Reference
+        </div>
+        <div class="payment-link-header-element">
+          PspReference
+        </div>
+        <div class="payment-link-header-element">
+          ExpiresAt
+        </div>
+        <div class="payment-link-header-element">
+          Status
+        </div>
+      </div>
       @foreach (PaymentLinkModel paymentLink in Model)
       {
-         <tr>
-           <td>Reference</td>            
-           <td>
-              <a href="@paymentLink.Url" id="@paymentLink.Reference">@paymentLink.Reference</a>
-            </td>
-         </tr>
-         <tr>
-           <td>PspReference</td>
-            <td>
-              <div id="@paymentLink.PspReference">@paymentLink.PspReference</div>
-            </td>
-         </tr>
-         <tr>
-           <td>ExpiresAt</td>            
-           <td>
-              <div id="@paymentLink.ExpiresAt">@paymentLink.ExpiresAt</div>
-            </td>
-         </tr>
-          <tr>
-           <td>Status </td>            
-           <td>
-              <div id="@paymentLink.Status">@paymentLink.Status</div>
-            </td>
-         </tr>
+      <div class="payment-links-content">
+        <div class="payment-link-content-element">
+           <a href="@paymentLink.Url" id="@paymentLink.Reference">@paymentLink.Reference</a>
+        </div>
+        <div class="payment-link-content-element">
+           <div id="@paymentLink.PspReference">@paymentLink.PspReference</div>
+        </div>
+        <div class="payment-link-content-element">
+           <div id="@paymentLink.ExpiresAt">@paymentLink.ExpiresAt</div>
+        </div>
+        <div class="payment-link-content-element">
+           <div id="@paymentLink.Status">@paymentLink.Status</div>
+        </div>
+      </div>
       }
-      </table>
     </div>
-  </section>
+  </div>
 </div>
 
 <script src="~/js/adyenImplementation.js" asp-append-version="true"></script>

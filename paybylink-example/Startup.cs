@@ -31,9 +31,6 @@ namespace adyen_dotnet_paybylink_example
             services.Configure<AdyenOptions>(
                 options =>
                 {
-                    // Public key used for client-side authentication: https://docs.adyen.com/development-resources/client-side-authentication.
-                    options.ADYEN_CLIENT_KEY = Configuration[nameof(AdyenOptions.ADYEN_CLIENT_KEY)];
-
                     // Your secret API Key: https://docs.adyen.com/development-resources/api-credentials#generate-your-api-key.
                     options.ADYEN_API_KEY = Configuration[nameof(AdyenOptions.ADYEN_API_KEY)];
 

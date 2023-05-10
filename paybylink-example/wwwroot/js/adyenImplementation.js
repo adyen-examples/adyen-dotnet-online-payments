@@ -3,6 +3,9 @@ async function createPaymentLink() {
     try {
         const amount = document.getElementById('amount').value;
         const reference = document.getElementById('reference').value;
+        if (!amount || !reference) {
+            return;
+        }
         const linksResponse = await sendPostRequest("/api/links", { Amount: amount, Reference: reference});
         console.info(linksResponse);
         window.location.reload();
