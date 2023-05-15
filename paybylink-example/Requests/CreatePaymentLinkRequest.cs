@@ -2,7 +2,7 @@
 {
     public class CreatePaymentLinkRequest
     {
-        public int Amount { get; init; }
+        public long Amount { get; init; }
         public string Reference { get; init; }
         public bool IsReusable { get; init; }
     }

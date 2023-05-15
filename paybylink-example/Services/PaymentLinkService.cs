@@ -14,7 +14,7 @@ namespace adyen_dotnet_paybylink_example.Services
 {
     public interface IPaymentLinkService
     {
-        Task<PaymentLinkResponse> CreatePaymentLinkAsync(string reference, int amount, bool isReusable, CancellationToken cancellationToken = default);
+        Task<PaymentLinkResponse> CreatePaymentLinkAsync(string reference, long amount, bool isReusable, CancellationToken cancellationToken = default);
 
         ConcurrentDictionary<string, PaymentLinkModel> GetPaymentLinks(CancellationToken cancellationToken = default);
     }
@@ -36,7 +36,7 @@ namespace adyen_dotnet_paybylink_example.Services
             _merchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT;
         }
 
-        public async Task<PaymentLinkResponse> CreatePaymentLinkAsync(string reference, int amount, bool isReusable, CancellationToken cancellationToken)
+        public async Task<PaymentLinkResponse> CreatePaymentLinkAsync(string reference, long amount, bool isReusable, CancellationToken cancellationToken)
         {
             var createPayByLinkRequest = new CreatePaymentLinkRequest(
                 merchantAccount: _merchantAccount,       // Required.

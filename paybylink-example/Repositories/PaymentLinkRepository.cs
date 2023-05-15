@@ -39,7 +39,7 @@ namespace adyen_dotnet_paybylink_example.Repositories
         public bool Upsert(string id, string reference, string url, DateTime expiresAt, string status, bool isReusable)
         {
             // New payment link.
-            if (!PaymentLinks.TryGetValue(reference, out PaymentLinkModel paymentlink))
+            if (!PaymentLinks.TryGetValue(reference, out PaymentLinkModel paymentLink))
             {
                 return PaymentLinks.TryAdd(reference,
                     new PaymentLinkModel()
@@ -54,10 +54,10 @@ namespace adyen_dotnet_paybylink_example.Repositories
             }
 
             // Update existing payment link.
-            paymentlink.ExpiresAt = expiresAt;
-            paymentlink.Status = status;
-            paymentlink.Url = url;
-            paymentlink.IsReusable = isReusable;
+            paymentLink.ExpiresAt = expiresAt;
+            paymentLink.Status = status;
+            paymentLink.Url = url;
+            paymentLink.IsReusable = isReusable;
 
             return false;
         }
