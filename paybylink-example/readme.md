@@ -1,8 +1,8 @@
 # Adyen [Pay By Link](https://docs.adyen.com/unified-commerce/pay-by-link) Integration Demo
 
-This repository includes examples of PCI-compliant UI integrations for online payments with Adyen. 
-Within this demo app, you'll find a simplified version of an e-commerce website, complete with commented code to highlight key features and concepts of Adyen's API. 
-Check out the underlying code to see how you can integrate Adyen to give your shoppers the option to pay with their preferred payment methods, all in a seamless checkout experience.
+This repository includes an example of Pay By Link with Adyen.
+Within this demo app, you can create links by specifying the amount. The shopper can then choose to accept the links and complete the payment.
+
 
 ![Card Pay By Link demo](wwwroot/images/cardpaybylink.gif)
 

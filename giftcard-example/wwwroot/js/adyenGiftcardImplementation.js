@@ -12,7 +12,7 @@ async function startCheckout() {
     console.info('Start checkout...');
     try {
         // Call /sessions endpoint to start session
-        const sessionResponse = await callServer("/api/sessions/giftcardcomponent");
+        const sessionResponse = await sendPostRequest("/api/sessions/giftcardcomponent");
         console.info(sessionResponse);
 
         // Create Adyen Checkout configuration
@@ -26,7 +26,7 @@ async function startCheckout() {
         // Mount gift card component
         mountGiftcardComponentButton(checkout);
 
-        // Show the giftcard button
+        // Show the gift card button
         document.getElementById("add-giftcard-button").hidden = false;
 
     } catch (error) {
@@ -273,8 +273,8 @@ function handleOnOrderCreated(orderStatus) {
     }
 }
 
-// Calls your server endpoints
-async function callServer(url, data) {
+// Sends POST request
+async function sendPostRequest(url, data) {
     const res = await fetch(url, {
         method: "POST",
         body: data ? JSON.stringify(data) : "",

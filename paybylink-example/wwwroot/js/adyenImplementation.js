@@ -16,7 +16,7 @@ async function createPaymentLink() {
     }
 }
 
-// Sends post request to url
+// Sends POST request
 async function sendPostRequest(url, data) {
     const res = await fetch(url, {
         method: "POST",
@@ -27,24 +27,4 @@ async function sendPostRequest(url, data) {
     });
 
     return await res.json();
-}
-
-// TODO
-// Handle server response 
-function handleServerResponse(res, _component) {
-    switch (res.resultCode) {
-        case "Authorised":
-            window.location.href = "/result/success";
-            break;
-        case "Pending":
-        case "Received":
-            window.location.href = "/result/pending";
-            break;
-        case "Refused":
-            window.location.href = "/result/failed";
-            break;
-        default:
-            window.location.href = "/result/error";
-            break;
-    }
 }

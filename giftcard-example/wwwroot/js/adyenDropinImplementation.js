@@ -11,7 +11,7 @@ async function startCheckout() {
     const type = document.getElementById("type").innerHTML;
 
     try {
-        const checkoutSessionResponse = await callServer("/api/sessions/dropin");
+        const checkoutSessionResponse = await sendPostRequest("/api/sessions/dropin");
         const checkout = await createAdyenCheckout(checkoutSessionResponse);
         checkout.create(type).mount("#payment");
     } catch (error) {
@@ -81,8 +81,8 @@ async function createAdyenCheckout(session) {
     });
 }
 
-// Calls your server endpoints
-async function callServer(url, data) {
+// Sends POST request
+async function sendPostRequest(url, data) {
     const res = await fetch(url, {
         method: "POST",
         body: data ? JSON.stringify(data) : "",

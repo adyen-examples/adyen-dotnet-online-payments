@@ -1,8 +1,7 @@
-# Adyen [Gift Cards](https://docs.adyen.com/checkout) Integration Demo
+# Adyen [Gift Cards](https://docs.adyen.com/payment-methods/gift-cards) Integration Demo
 
-This repository includes examples of PCI-compliant UI integrations for online payments with Adyen. 
-Within this demo app, you'll find a simplified version of an e-commerce website, complete with commented code to highlight key features and concepts of Adyen's API. 
-Check out the underlying code to see how you can integrate Adyen to give your shoppers the option to pay with their preferred payment methods, all in a seamless checkout experience.
+This repository includes an example of gift card payments with Adyen using the Partial Order API.
+Within this demo app, you'll find a simplified version of an e-commerce website. The shopper can choose to use gift cards to complete their purchase or use their preferred payment method to pay the remaining amount.
 
 ![Card gift card demo](wwwroot/images/cardgiftcard.gif)
 

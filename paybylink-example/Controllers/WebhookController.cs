@@ -60,9 +60,6 @@ namespace adyen_dotnet_paybylink_example.Controllers
                     return Ok("[accepted]"); // The webhook was delivered (but was unsuccessful), hence why we'll return a [accepted] response to confirm that we've received it.
                 }
 
-                // Process Pay By Link webhook.
-                await ProcessPayByLinkWebhookAsync(container.NotificationItem);
-
                 // Process notifications asynchronously.
                 await ProcessAuthorisationNotificationAsync(container.NotificationItem);
             }
@@ -75,27 +72,23 @@ namespace adyen_dotnet_paybylink_example.Controllers
             return Ok("[accepted]");
         }
 
-        private Task ProcessPayByLinkWebhookAsync(NotificationRequestItem notificationItem)
-        {
-            if (!notificationItem.AdditionalData.TryGetValue("paymentLinkId", out string paymentLinkId))
-            {
-                return Task.CompletedTask;
-            }
-
-            // Perform business logic using `paymentLinkId` here.
-
-            return Task.CompletedTask;
-        }
-
         private Task ProcessAuthorisationNotificationAsync(NotificationRequestItem notification)
         {
-            // For every payment using the Pay By Link, Adyen will send an AUTHORISATION webhook.
+            // For every payment paid using the Pay By Link, Adyen will send an AUTHORISATION webhook.
             if (notification.EventCode != "AUTHORISATION")
             {
                 return Task.CompletedTask;
             }
+            
+            // Get the PaymentLinkId
+            if (!notification.AdditionalData.TryGetValue("paymentLinkId", out string paymentLinkId))
+            {
+                return Task.CompletedTask;
+            }
 
+            // Perform your business logic (e.g. insert into a message broker), for this demo, we simply log it.
             _logger.LogInformation($"[AUTHORISATION]\n" +
+                $"PaymentLinkId: {paymentLinkId}\n" +
                 $"Payment method: {notification.PaymentMethod}\n" +
                 $"Currency: {notification.Amount?.Currency}\n" +
                 $"Value: {notification.Amount?.Value}\n" +
