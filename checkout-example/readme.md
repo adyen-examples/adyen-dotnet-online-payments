@@ -1,4 +1,4 @@
-# Adyen [Checkout](https://docs.adyen.com/checkout) Integration Demo
+# Adyen [online payment](https://docs.adyen.com/online-payments) integration demos
 
 This repository includes examples of PCI-compliant UI integrations for online payments with Adyen. 
 Within this demo app, you'll find a simplified version of an e-commerce website, complete with commented code to highlight key features and concepts of Adyen's API. 
@@ -146,10 +146,10 @@ dotnet run --project checkout-example
 
 ## Supported Integrations
 
-**ASP.NET** demos of the following client-side integrations are currently available in this repository:
+[Online payments](https://docs.adyen.com/online-payments) **ASP.NET** demos of the following client-side integrations are currently available in this repository:
 
-- [Drop-in](https://docs.adyen.com/checkout/drop-in-web)
-- [Component](https://docs.adyen.com/checkout/components-web)
+- Drop-in
+- Components
     - ACH
     - Card (3DS2)
     - Dotpay
