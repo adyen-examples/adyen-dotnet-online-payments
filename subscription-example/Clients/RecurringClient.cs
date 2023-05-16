@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Threading;
 using System.Threading.Tasks;
-using Recurring = Adyen.Service.Recurring;
+using Adyen.Service;
 
 namespace adyen_dotnet_subscription_example.Clients
 {
@@ -33,13 +33,13 @@ namespace adyen_dotnet_subscription_example.Clients
     {
         private readonly ILogger<RecurringClient> _logger;
         private readonly string _merchantAccount;
-        private readonly Recurring _recurring;
+        private readonly IRecurringService _recurringService;
         private readonly ISubscriptionRepository _repository;
 
-        public RecurringClient(ILogger<RecurringClient> logger, Recurring recurring, ISubscriptionRepository repository, IOptions<AdyenOptions> options)
+        public RecurringClient(ILogger<RecurringClient> logger, IRecurringService recurringService, ISubscriptionRepository repository, IOptions<AdyenOptions> options)
         {
             _logger = logger;
-            _recurring = recurring;
+            _recurringService = recurringService;
             _repository = repository;
             _merchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT;
         }
@@ -54,7 +54,7 @@ namespace adyen_dotnet_subscription_example.Clients
 
             try
             {
-                var recurringDetailsResult = await _recurring.ListRecurringDetailsAsync(request);
+                var recurringDetailsResult = await _recurringService.ListRecurringDetailsAsync(request, cancellationToken: cancellationToken);
                 _logger.LogInformation($"Response for Recurring API::\n{recurringDetailsResult}\n");
                 return recurringDetailsResult;
             }
@@ -76,7 +76,7 @@ namespace adyen_dotnet_subscription_example.Clients
 
             try
             {
-                var disableResult = await _recurring.DisableAsync(request);
+                var disableResult = await _recurringService.DisableAsync(request, cancellationToken: cancellationToken);
                 _repository.Remove(shopperReference, recurringDetailReference);
 
                 _logger.LogInformation($"Response for Recurring API::\n{disableResult}\n");

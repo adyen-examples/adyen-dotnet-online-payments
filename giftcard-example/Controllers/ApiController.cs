@@ -1,5 +1,5 @@
 using Adyen.Model.Checkout;
-using Adyen.Service;
+using Adyen.Service.Checkout;
 using adyen_dotnet_giftcard_example.Options;
 using adyen_dotnet_giftcard_example.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace adyen_dotnet_giftcard_example.Controllers
@@ -16,19 +17,19 @@ namespace adyen_dotnet_giftcard_example.Controllers
     {
         private readonly ILogger<ApiController> _logger;
         private readonly IUrlService _urlService;
-        private readonly Checkout _checkout;
+        private readonly IPaymentsService _paymentsService;
         private readonly string _merchantAccount;
         
-        public ApiController(Checkout checkout, ILogger<ApiController> logger, IUrlService urlService, IOptions<AdyenOptions> options)
+        public ApiController(IPaymentsService paymentsService, ILogger<ApiController> logger, IUrlService urlService, IOptions<AdyenOptions> options)
         {
             _logger = logger;
             _urlService = urlService;
-            _checkout = checkout;
+            _paymentsService = paymentsService;
             _merchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT;
         }
 
         [HttpPost("api/sessions/dropin")]
-        public async Task<ActionResult<string>> SessionsDropin()
+        public async Task<ActionResult<string>> SessionsDropin(CancellationToken cancellationToken = default)
         {
             var sessionsRequest = new CreateCheckoutSessionRequest();
             sessionsRequest.MerchantAccount = _merchantAccount; // Required.
@@ -52,7 +53,7 @@ namespace adyen_dotnet_giftcard_example.Controllers
 
             try
             {
-                var res = await _checkout.SessionsAsync(sessionsRequest);
+                var res = await _paymentsService.SessionsAsync(sessionsRequest, cancellationToken: cancellationToken);
                 _logger.LogInformation($"Response Payments API:\n{res}\n");
                 return res.ToJson();
             }
@@ -64,7 +65,7 @@ namespace adyen_dotnet_giftcard_example.Controllers
         }
 
         [HttpPost("api/sessions/giftcardcomponent")]
-        public async Task<ActionResult<string>> SessionsGiftcardComponent()
+        public async Task<ActionResult<string>> SessionsGiftcardComponent(CancellationToken cancellationToken = default)
         {
             var sessionsRequest = new CreateCheckoutSessionRequest();
             sessionsRequest.MerchantAccount = _merchantAccount; // Required.
@@ -88,7 +89,7 @@ namespace adyen_dotnet_giftcard_example.Controllers
 
             try
             {
-                var res = await _checkout.SessionsAsync(sessionsRequest);
+                var res = await _paymentsService.SessionsAsync(sessionsRequest, cancellationToken: cancellationToken);
                 _logger.LogInformation($"Response Payments API: \n{res}\n");
                 return res.ToJson();
             }

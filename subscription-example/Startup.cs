@@ -1,6 +1,6 @@
 using Adyen;
-using Adyen.Model.Enum;
-using Adyen.Service;
+using Adyen.Model;
+using Adyen.Service.Checkout;
 using Adyen.Util;
 using adyen_dotnet_subscription_example.Clients;
 using adyen_dotnet_subscription_example.Options;
@@ -12,6 +12,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using IRecurringService = Adyen.Service.IRecurringService;
+using RecurringService = Adyen.Service.RecurringService;
 
 namespace adyen_dotnet_subscription_example
 {
@@ -53,13 +55,25 @@ namespace adyen_dotnet_subscription_example
                 .AddTransient<IUrlService, UrlService>();
 
             // Register your dependencies.
-            services.AddSingleton<Client>(provider => new Client(
-                provider.GetRequiredService<IOptions<AdyenOptions>>().Value.ADYEN_API_KEY,  // Get your API Key from the AdyenOptions using the Options pattern.
-                Environment.Test) // Test environment.
-            );
-            services.AddSingleton<Checkout>();
-            services.AddSingleton<Recurring>();
+            services.AddSingleton(provider =>
+            {
+                var options = provider.GetRequiredService<IOptions<AdyenOptions>>();
+                return new Client(
+                    new Config()
+                    {
+                        // Get your `API Key`, `HMAC Key` and `MerchantAccount` from AdyenOptions using the Options pattern.
+                        XApiKey = options.Value.ADYEN_API_KEY,
+                        MerchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT,
+                        HmacKey = options.Value.ADYEN_HMAC_KEY,
+                        // Test environment.
+                        Environment = Environment.Test,
+                    });
+            }).AddHttpClient(); // Add HttpClient.
+
+            services.AddSingleton<IPaymentsService, PaymentsService>(); // Used to be called "Checkout.cs" in Adyen .NET 9.x.x and below, see https://github.com/Adyen/adyen-dotnet-api-library/blob/9.2.1/Adyen/Service/Checkout.cs.
+            services.AddSingleton<IRecurringService, RecurringService>(); // Used to be called "Recurring.cs" in Adyen .NET 9.x.x and below, see https://github.com/Adyen/adyen-dotnet-api-library/blob/9.2.1/Adyen/Service/Recurring.cs.
             services.AddSingleton<HmacValidator>();
+            
             services.AddSingleton<IRecurringClient, RecurringClient>();
             services.AddSingleton<ICheckoutClient, CheckoutClient>();
             services.AddSingleton<ISubscriptionRepository, SubscriptionRepository>();
