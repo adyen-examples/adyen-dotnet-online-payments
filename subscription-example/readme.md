@@ -8,7 +8,7 @@ The panel allows admins to make payments on behalf of the shopper using this tok
 
 ![Subscription Demo](wwwroot/images/cardsubscription.gif)
 
-This demo leverages Adyen's API Library for .NET ([GitHub](https://github.com/Adyen/adyen-dotnet-api-library) | [Docs](https://docs.adyen.com/development-resources/libraries#csharp)).
+This demo leverages Adyen's API Library for .NET ([GitHub](https://github.com/Adyen/adyen-dotnet-api-library) | [Docs](https://docs.adyen.com/development-resources/libraries?tab=c__5#csharp)).
 
 
 ## Run integration on [Gitpod](https://gitpod.io/)

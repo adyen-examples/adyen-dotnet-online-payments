@@ -8,9 +8,9 @@ const redirectResult = urlParams.get('redirectResult');
 async function startTokenization() {
     const type = document.getElementById("type").innerHTML;
     try {
-        const response = await callServer("/api/tokenization/sessions");
+        const response = await sendPostRequest("/api/tokenization/sessions");
         console.log(response);
-        const checkout = await createAdyenCheckout(response);
+        const checkout = await createAdyenCheckout(response); 
         checkout.create(type).mount(document.getElementById("payment"));
     } catch (error) {
         console.error(error);
@@ -64,8 +64,8 @@ async function createAdyenCheckout(session) {
     });
 }
 
-// Calls your server endpoints
-async function callServer(url, data) {
+// Sends POST request
+async function sendPostRequest(url, data) {
     const res = await fetch(url, {
         method: "POST",
         body: data ? JSON.stringify(data) : "",
