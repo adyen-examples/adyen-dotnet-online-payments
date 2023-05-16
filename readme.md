@@ -23,14 +23,6 @@ Check out the underlying code to see how you can integrate Adyen to give your sh
 
 ![Card Checkout Demo](checkout-example/wwwroot/images/cardcheckout.gif)
 
-## [Subscription Example](subscription-example)
-
-The [`subscription example`](subscription-example) repository includes a tokenization example for subscriptions. Within this demo app, you'll find a simplified version of a website that offers a music subscription service.
-The shopper can purchase a subscription and administrators can manage the saved (tokenized) payment methods on a separate admin panel.
-The panel allows admins to make payments on behalf of the shopper using this token.
-
-![Subscription Demo](subscription-example/wwwroot/images/cardsubscription.gif)
-
 ## [Gift Card Example](giftcard-example)
 
 The [`gift card example`](giftcard-example) repository includes a gift card flow during checkout. Within this demo app, you'll find a simplified version of an e-commerce website. The shopper can choose to use gift cards to complete their purchase or use their preferred payment method to pay the remaining amount.
@@ -42,6 +34,15 @@ The [`gift card example`](giftcard-example) repository includes a gift card flow
 The [`pay by link example`](paybylink-example) repository includes a Pay by Link flow. Within this demo app, you can create links by specifying the amount. The shopper can choose to accept the links and complete the payment.
 
 ![Pay by Link Demo](paybylink-example/wwwroot/images/cardpaybylink.gif)
+
+## [Subscription Example](subscription-example)
+
+The [`subscription example`](subscription-example) repository includes a tokenization example for subscriptions. Within this demo app, you'll find a simplified version of a website that offers a music subscription service.
+The shopper can purchase a subscription and administrators can manage the saved (tokenized) payment methods on a separate admin panel.
+The panel allows admins to make payments on behalf of the shopper using this token.
+
+![Subscription Demo](subscription-example/wwwroot/images/cardsubscription.gif)
+
 
 ## Contributing
 
