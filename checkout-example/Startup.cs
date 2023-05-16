@@ -60,8 +60,8 @@ namespace adyen_dotnet_checkout_example
                     {
                         // Get your `API Key`, `HMAC Key` and `MerchantAccount` from AdyenOptions using the Options pattern.
                         XApiKey = options.Value.ADYEN_API_KEY,
-                        MerchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT,
                         HmacKey = options.Value.ADYEN_HMAC_KEY,
+                        MerchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT,
                         // Test environment.
                         Environment = Environment.Test,
                     });
