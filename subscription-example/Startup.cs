@@ -70,7 +70,7 @@ namespace adyen_dotnet_subscription_example
             }).AddHttpClient(); // Add HttpClient.
 
             services.AddSingleton<IPaymentsService, PaymentsService>(); // Used to be called "Checkout.cs" in Adyen .NET 9.x.x and below, see https://github.com/Adyen/adyen-dotnet-api-library/blob/9.2.1/Adyen/Service/Checkout.cs.
-            services.AddSingleton<IRecurringService, RecurringService>(); // Used to be called "Recurring.cs" in Adyen .NET 9.x.x and below, see https://github.com/Adyen/adyen-dotnet-api-library/blob/9.2.1/Adyen/Service/Recurring.cs.
+            services.AddSingleton<Adyen.Service.IRecurringService, Adyen.Service.RecurringService>(); // Used to be called "Recurring.cs" in Adyen .NET 9.x.x and below, see https://github.com/Adyen/adyen-dotnet-api-library/blob/9.2.1/Adyen/Service/Recurring.cs.
             services.AddSingleton<HmacValidator>();
             
             services.AddSingleton<IRecurringClient, RecurringClient>();
