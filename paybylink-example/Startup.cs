@@ -5,7 +5,6 @@ using Adyen.Util;
 using adyen_dotnet_paybylink_example.Options;
 using adyen_dotnet_paybylink_example.Repositories;
 using adyen_dotnet_paybylink_example.Services;
-using Adyen.Model.Transfers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;

@@ -12,8 +12,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using IRecurringService = Adyen.Service.IRecurringService;
-using RecurringService = Adyen.Service.RecurringService;
 
 namespace adyen_dotnet_subscription_example
 {
