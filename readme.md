@@ -10,9 +10,9 @@ Get started by navigating to one of the supported demos below.
 | Demos | Description | Details |
 | --: | :-- | :-- |
 | [`Checkout Example`](checkout-example) | E-commerce checkout flow with different payment methods. | [See below](#checkout-example) | 
-| [`Subscription Example`](subscription-example) | Subscription flow using Adyen tokenization. | [See below](#subscription-example) | 
 | [`Gift Card Example`](giftcard-example) | Gift Cards checkout flow using partial orders. | [See below](#gift-card-example) | 
 | [`Pay by Link Example`](paybylink-example) | Pay by Link flow. | [See below](#paybylink-example) | 
+| [`Subscription Example`](subscription-example) | Subscription flow using Adyen tokenization. | [See below](#subscription-example) | 
 
 
 ## [Checkout Example](checkout-example)
