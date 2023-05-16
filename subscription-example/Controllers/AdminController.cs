@@ -3,12 +3,9 @@ using Adyen.Model.Checkout;
 using Adyen.Model.Recurring;
 using adyen_dotnet_subscription_example.Clients;
 using adyen_dotnet_subscription_example.Models;
-using adyen_dotnet_subscription_example.Options;
 using adyen_dotnet_subscription_example.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace adyen_dotnet_subscription_example.Controllers
@@ -19,7 +16,7 @@ namespace adyen_dotnet_subscription_example.Controllers
         private readonly ICheckoutClient _checkoutClient;
         private readonly ISubscriptionRepository _repository;
 
-        public AdminController(IOptions<AdyenOptions> options, IRecurringClient recurringClient, ICheckoutClient checkoutClient, ISubscriptionRepository repository)
+        public AdminController(IRecurringClient recurringClient, ICheckoutClient checkoutClient, ISubscriptionRepository repository)
         {
             _recurringClient = recurringClient;
             _checkoutClient = checkoutClient;
@@ -41,11 +38,11 @@ namespace adyen_dotnet_subscription_example.Controllers
         }
 
         [Route("admin/makepayment/{recurringDetailReference}")]
-        public async Task<IActionResult> MakePayment(string recurringDetailReference, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> MakePayment(string recurringDetailReference)
         {
             try
             {
-                PaymentResponse result = await _checkoutClient.MakePaymentAsync(ShopperReference.Value, recurringDetailReference, cancellationToken);
+                PaymentResponse result = await _checkoutClient.MakePaymentAsync(ShopperReference.Value, recurringDetailReference);
                 
                 switch (result.ResultCode)
                 {
@@ -69,11 +66,11 @@ namespace adyen_dotnet_subscription_example.Controllers
         }
 
         [Route("admin/disable/{recurringDetailReference}")]
-        public async Task<IActionResult> Disable(string recurringDetailReference, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> Disable(string recurringDetailReference)
         {
             try
             {
-                DisableResult result = await _recurringClient.DisableRecurringDetailAsync(ShopperReference.Value, recurringDetailReference, cancellationToken);
+                DisableResult result = await _recurringClient.DisableRecurringDetailAsync(ShopperReference.Value, recurringDetailReference);
                 
                 switch (result.Response)
                 {
