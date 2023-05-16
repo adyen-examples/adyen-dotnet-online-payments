@@ -44,7 +44,7 @@ jobs:
       - name: Run testing suite against giftcard-example-image
         run: docker run --rm --name adyen-testing-suite -e PLAYWRIGHT_FOLDERNAME=giftcard --network host ghcr.io/adyen-examples/adyen-testing-suite:main
 
-  Paybylink:
+  paybylink:
     runs-on: ubuntu-latest
     steps:
       - name: Pay By Link project
