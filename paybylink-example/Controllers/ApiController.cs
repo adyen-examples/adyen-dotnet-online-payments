@@ -3,6 +3,7 @@ using adyen_dotnet_paybylink_example.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace adyen_dotnet_paybylink_example.Controllers
@@ -11,20 +12,20 @@ namespace adyen_dotnet_paybylink_example.Controllers
     public class ApiController : ControllerBase
     {
         private readonly ILogger<ApiController> _logger;
-        private readonly IPaymentLinkService _paymentLinkService;
+        private readonly ILinksService _linksService;
 
-        public ApiController(ILogger<ApiController> logger, IPaymentLinkService paymentLinkService)
+        public ApiController(ILogger<ApiController> logger, ILinksService linksService)
         {
             _logger = logger;
-            _paymentLinkService = paymentLinkService;
+            _linksService = linksService;
         }
 
         [HttpPost("api/links")]
-        public async Task<ActionResult<string>> CreatePaymentLink(Requests.CreatePaymentLinkRequest request)
+        public async Task<ActionResult<string>> CreatePaymentLink(Requests.CreatePaymentLinkRequest request, CancellationToken cancellationToken = default)
         {
             try
             {
-                PaymentLinkResponse response = await _paymentLinkService.CreatePaymentLinkAsync(request.Reference, request.Amount, request.IsReusable);
+                PaymentLinkResponse response = await _linksService.CreatePaymentLinkAsync(request.Reference, request.Amount, request.IsReusable, cancellationToken);
                 return Ok(response);
             }
             catch(Exception e)

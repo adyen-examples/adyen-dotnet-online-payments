@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Adyen.Service.Checkout;
 
 namespace adyen_dotnet_subscription_example.Clients
 {
@@ -35,13 +36,13 @@ namespace adyen_dotnet_subscription_example.Clients
     {
         private readonly ILogger<RecurringClient> _logger;
         private readonly string _merchantAccount;
-        private readonly Checkout _checkout;
+        private readonly IPaymentsService _paymentsService;
         private readonly IUrlService _urlService;
 
-        public CheckoutClient(ILogger<RecurringClient> logger, Checkout checkout, IUrlService urlService, IOptions<AdyenOptions> options)
+        public CheckoutClient(ILogger<RecurringClient> logger, IPaymentsService paymentsService, IUrlService urlService, IOptions<AdyenOptions> options)
         {
             _logger = logger;
-            _checkout = checkout;
+            _paymentsService = paymentsService;
             _urlService = urlService;
             _merchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT;
         }
@@ -50,24 +51,24 @@ namespace adyen_dotnet_subscription_example.Clients
         {
             var orderRef = Guid.NewGuid();
 
-            var sessionsRequest = new CreateCheckoutSessionRequest();
-            sessionsRequest.MerchantAccount = _merchantAccount; // Required.
-            sessionsRequest.Amount = new Amount("EUR", 0);
-            sessionsRequest.Reference = orderRef.ToString(); // Required.
+            var sessionsRequest = new CreateCheckoutSessionRequest()
+            {
+                MerchantAccount = _merchantAccount, // Required.
+                Reference = orderRef.ToString(),    // Required.
+                
+                Amount = new Amount("EUR", 0),
+                Channel = CreateCheckoutSessionRequest.ChannelEnum.Web,
+                ShopperInteraction = CreateCheckoutSessionRequest.ShopperInteractionEnum.Ecommerce,
+                RecurringProcessingModel = CreateCheckoutSessionRequest.RecurringProcessingModelEnum.Subscription,
+                EnableRecurring = true,
+                ShopperReference = shopperReference,
 
-            sessionsRequest.Channel = CreateCheckoutSessionRequest.ChannelEnum.Web;
-            sessionsRequest.ShopperInteraction = CreateCheckoutSessionRequest.ShopperInteractionEnum.Ecommerce;
-            sessionsRequest.RecurringProcessingModel = CreateCheckoutSessionRequest.RecurringProcessingModelEnum.Subscription;
-            sessionsRequest.EnableRecurring = true;
-
-            sessionsRequest.ShopperReference = shopperReference;
-
-            // Required for 3DS2 redirect flow.
-            sessionsRequest.ReturnUrl = $"{_urlService.GetHostUrl()}/redirect?orderRef={orderRef}";
-
+                // Required for 3DS2 redirect flow.
+                ReturnUrl = $"{_urlService.GetHostUrl()}/redirect?orderRef={orderRef}"
+            };
             try
             {
-                var sessionResponse = await _checkout.SessionsAsync(sessionsRequest);
+                var sessionResponse = await _paymentsService.SessionsAsync(sessionsRequest, cancellationToken: cancellationToken);
                 _logger.LogInformation($"Response for Payments API:\n{sessionResponse}\n");
                 return sessionResponse;
             }
@@ -80,25 +81,23 @@ namespace adyen_dotnet_subscription_example.Clients
 
         public async Task<PaymentResponse> MakePaymentAsync(string shopperReference, string recurringDetailReference, CancellationToken cancellationToken)
         {
-            var details = new DefaultPaymentMethodDetails
-            {
-                StoredPaymentMethodId = recurringDetailReference // Set the RecurringDetailReference.
-            };
+            // Set the RecurringDetailReference.
+            var storedPaymentMethodDetails = new StoredPaymentMethodDetails(storedPaymentMethodId: recurringDetailReference);
 
             var paymentsRequest = new PaymentRequest
             {
-                Reference = Guid.NewGuid().ToString(), // Required.
+                Reference = Guid.NewGuid().ToString(),  // Required.
+                MerchantAccount = _merchantAccount,     // Required.
                 Amount = new Amount("EUR", 1199),
-                MerchantAccount = _merchantAccount, // Required.
                 ShopperInteraction = PaymentRequest.ShopperInteractionEnum.ContAuth, // Set the shopper InteractionEnum to Cont.Auth.
                 RecurringProcessingModel = PaymentRequest.RecurringProcessingModelEnum.Subscription,
                 ShopperReference = shopperReference, // Set the ShopperReference.
-                PaymentMethod = details
+                PaymentMethod = new CheckoutPaymentMethod(storedPaymentMethodDetails) // Set the payment method.
             };
 
             try
             {
-                var paymentResponse = await _checkout.PaymentsAsync(paymentsRequest);
+                var paymentResponse = await _paymentsService.PaymentsAsync(paymentsRequest, cancellationToken: cancellationToken);
                 _logger.LogInformation($"Response for Payments API:\n{paymentResponse}\n");
                 return paymentResponse;
             }

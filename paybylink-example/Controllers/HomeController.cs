@@ -7,22 +7,23 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace adyen_dotnet_paybylink_example.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IPaymentLinkService _paymentLinkService;
+        private readonly ILinksService _linksService;
 
-        public HomeController(IPaymentLinkService paymentLinkService, IOptions<AdyenOptions> options)
+        public HomeController(ILinksService linksService)
         {
-            _paymentLinkService = paymentLinkService;
+            _linksService = linksService;
         }
 
         [Route("/")]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            ConcurrentDictionary<string, PaymentLinkModel> paymentLinks = _paymentLinkService.GetPaymentLinks();
+            ConcurrentDictionary<string, PaymentLinkModel> paymentLinks = await _linksService.GetAndUpdatePaymentLinksAsync();
             List<PaymentLinkModel> models = paymentLinks.Select(kvp => kvp.Value).ToList();
             return View(models);
         }
