@@ -9,7 +9,6 @@ namespace adyen_dotnet_checkout_example_advanced.Services
         /// <summary>
         /// Retrieves the host url dynamically using the origin in the headers of the request.
         /// This is used to generate the correct host url when running on either http(s)://localhost:*, http(s)://*.gitpod or http(s)://*.devtunnels.ms.
-        /// For usage see <see cref="ApiController.Sessions()"/>.
         /// [!] On production (or a dedicated dev environment), use a fixed URL.
         /// </summary>
         /// <returns>Returns the host url.</returns>
