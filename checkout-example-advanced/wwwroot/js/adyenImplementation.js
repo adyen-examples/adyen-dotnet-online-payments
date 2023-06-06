@@ -1,18 +1,51 @@
 const clientKey = document.getElementById("clientKey").innerHTML;
+const type = document.getElementById("type").innerHTML;
 
-// Used to finalize a checkout call in case of redirect
-const urlParams = new URLSearchParams(window.location.search);
-const sessionId = urlParams.get('sessionId'); // Unique identifier for the payment session
-const redirectResult = urlParams.get('redirectResult');
-
-// Typical checkout experience
-async function startCheckout() {
-    // Used in the demo to know which type of checkout was chosen
-    const type = document.getElementById("type").innerHTML;
-
+async function initCheckout() {
     try {
-        const checkoutSessionResponse = await sendPostRequest("/api/sessions");
-        const checkout = await createAdyenCheckout(checkoutSessionResponse);
+        const paymentMethodsResponse = await sendPostRequest("/api/getPaymentMethods");
+        const configuration = {
+            // Pass paymentMethodsResponse to configuration
+            paymentMethodsResponse: paymentMethodsResponse,
+            clientKey,
+            locale: "en_US",
+            environment: "test",
+            showPayButton: true,
+            paymentMethodsConfiguration: {
+                ideal: {
+                    showImage: true,
+                },
+                card: {
+                    hasHolderName: true,
+                    holderNameRequired: true,
+                    name: "Credit or debit card",
+                    amount: {
+                        value: 1000,
+                        currency: "EUR",
+                    },
+                },
+                paypal: {
+                    amount: {
+                        value: 1000,
+                        currency: "USD",
+                    },
+                    environment: "test", // Change this to "live" when you're ready to accept live PayPal payments
+                    countryCode: "US", // Only needed for test. This will be automatically retrieved when you are in production.
+                    onCancel: (data, component) => {
+                        component.setStatus('ready');
+                    },
+                }
+            },
+            onSubmit: (state, component) => {
+                if (state.isValid) {
+                    handleSubmission(state, component, "/api/initiatePayment");
+                }
+            },
+            onAdditionalDetails: (state, component) => {
+                handleSubmission(state, component, "/api/submitAdditionalDetails");
+            },
+        };
+        const checkout = await new AdyenCheckout(configuration);
         checkout.create(type).mount(document.getElementById("payment"));
     } catch (error) {
         console.error(error);
@@ -20,63 +53,19 @@ async function startCheckout() {
     }
 }
 
-// Some payment methods use redirects. This is where we finalize the operation
-async function finalizeCheckout() {
+// Event handlers called when the shopper selects the pay button,
+// or when additional information is required to complete the payment
+async function handleSubmission(state, component, url) {
     try {
-        const checkout = await createAdyenCheckout({
-            id: sessionId
-        });
-        checkout.submitDetails({
-            details: {
-                redirectResult
-            }
-        });
+        const res = await callServer(url, state.data);
+        handleServerResponse(res, component);
     } catch (error) {
         console.error(error);
         alert("Error occurred. Look at console for details");
     }
 }
 
-// Create Adyen Checkout configuration
-async function createAdyenCheckout(session) {
-    return new AdyenCheckout({
-        clientKey,
-        locale: "en_US",
-        environment: "test",
-        session: session,
-        showPayButton: true,
-        paymentMethodsConfiguration: {
-            ideal: {
-                showImage: true,
-            },
-            card: {
-                hasHolderName: true,
-                holderNameRequired: true,
-                name: "Credit or debit card",
-            },
-            paypal: {
-                amount: {
-                    value: 10000,
-                    currency: "USD",
-                },
-                environment: "test", // Change this to "live" when you're ready to accept live PayPal payments
-                countryCode: "US", // Only needed for test. This will be automatically retrieved when you are in production.
-            }
-        },
-        onPaymentCompleted: (result, component) => {
-            console.info("onPaymentCompleted");
-            console.info(result, component);
-            handleServerResponse(result, component);
-        },
-        onError: (error, component) => {
-            console.error("onError");
-            console.error(error.name, error.message, error.stack, component);
-            handleServerResponse(error, component);
-        },
-    });
-}
-
-// Sends POST request
+// Sends POST request to url
 async function sendPostRequest(url, data) {
     const res = await fetch(url, {
         method: "POST",
@@ -89,27 +78,27 @@ async function sendPostRequest(url, data) {
     return await res.json();
 }
 
-// Handle server response
-function handleServerResponse(res, _component) {
-    switch (res.resultCode) {
-        case "Authorised":
-            window.location.href = "/result/success";
-            break;
-        case "Pending":
-        case "Received":
-            window.location.href = "/result/pending";
-            break;
-        case "Refused":
-            window.location.href = "/result/failed";
-            break;
-        default:
-            window.location.href = "/result/error";
-            break;
+// Handles responses sent from your server to the client
+function handleServerResponse(res, component) {
+    if (res.action) {
+        component.handleAction(res.action);
+    } else {
+        switch (res.resultCode) {
+            case "Authorised":
+                window.location.href = "/result/success";
+                break;
+            case "Pending":
+            case "Received":
+                window.location.href = "/result/pending";
+                break;
+            case "Refused":
+                window.location.href = "/result/failed";
+                break;
+            default:
+                window.location.href = "/result/error";
+                break;
+        }
     }
 }
 
-if (!sessionId) {
-    startCheckout()
-} else {
-    finalizeCheckout();
-}
+initCheckout();
