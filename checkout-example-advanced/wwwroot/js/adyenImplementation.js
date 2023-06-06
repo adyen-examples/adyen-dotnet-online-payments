@@ -57,7 +57,7 @@ async function initCheckout() {
 // or when additional information is required to complete the payment
 async function handleSubmission(state, component, url) {
     try {
-        const res = await callServer(url, state.data);
+        const res = await sendPostRequest(url, state.data);
         handleServerResponse(res, component);
     } catch (error) {
         console.error(error);

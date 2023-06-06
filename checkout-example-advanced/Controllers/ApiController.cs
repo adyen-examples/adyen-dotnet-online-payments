@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using adyen_dotnet_checkout_example_advanced.Options;
 using adyen_dotnet_checkout_example_advanced.Services;
+using Microsoft.AspNetCore.Http.Extensions;
 
 namespace adyen_dotnet_checkout_example_advanced.Controllers
 {
@@ -74,10 +75,9 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
                 },
                 AdditionalData = new Dictionary<string, string>() { {  "allow3DS2", "true" } },
                 Origin = _urlService.GetHostUrl(),
+                BrowserInfo = new BrowserInfo() { UserAgent = HttpContext.Request.Headers["user-agent"] }, // Add more browser info here. 
                 ShopperIP = HttpContext.Connection.RemoteIpAddress?.ToString(),
-                // We have to pass on the paymentMethodType from the client here.
-                // TODO: See https://github.com/Adyen/adyen-java-api-library/blob/18.0.0/src/main/java/com/adyen/model/checkout/PaymentsRequest.java#L248
-                PaymentMethod = CheckoutPaymentMethod.FromJson("")
+                PaymentMethod = request.PaymentMethod
             };
 
             try
@@ -93,10 +93,8 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
             }
         }
 
-
-
         [HttpPost("api/submitAdditionalDetails")]
-        public async Task<ActionResult<string>> SubmitAdditionalDetails([FromBody] DetailsRequest request, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<string>> SubmitAdditionalDetails(DetailsRequest request, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -112,7 +110,7 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
         }
 
         [HttpGet("api/handleShopperRedirect")]
-        public Task<ActionResult<string>> HandleShoppperRedirect(string orderReference, string payload = null, string redirectResult = null,
+        public ActionResult<string> HandleShoppperRedirect(string orderReference, string payload = null, string redirectResult = null,
             CancellationToken cancellationToken = default)
         {
             var request = new DetailsRequest();
@@ -123,7 +121,7 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
 
             if (!string.IsNullOrWhiteSpace(payload))
             {
-                request.Details = new PaymentCompletionDetails() {Payload = payload};
+                request.Details = new PaymentCompletionDetails() { Payload = payload };
             }
 
             return request.ToJson();

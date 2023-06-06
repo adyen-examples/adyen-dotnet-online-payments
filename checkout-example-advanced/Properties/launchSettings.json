@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "adyen_dotnet_checkout_example": {
+    "adyen_dotnet_checkout_example_advanced": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
@@ -16,7 +16,7 @@
       },
       "applicationUrl": "https://localhost:5001;http://localhost:8080"
     },
-    "adyen_dotnet_checkout_example_port_tunneling": {
+    "adyen_dotnet_checkout_example_advanced_port_tunneling": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
