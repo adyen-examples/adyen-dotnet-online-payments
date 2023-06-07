@@ -48,33 +48,37 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
                     return BadRequest("[not accepted invalid hmac key]");
                 }
 
-                // Return if webhook is not successful.
-                if (!container.NotificationItem.Success)
-                {
-                    _logger.LogError($"Webhook unsuccessful: {container.NotificationItem.Reason} \n" +
-                        $"EventCode: {container.NotificationItem.EventCode}");
-                    return Ok("[accepted]"); // The webhook was delivered (but was unsuccessful), hence why we'll return a [accepted] response to confirm that we've received it.
-                }
-
                 // Process notification asynchronously.
                 await ProcessNotificationAsync(container.NotificationItem);
+
+                return Ok("[accepted]");
             }
             catch (Exception e)
             {
                 _logger.LogError("Exception thrown: " + e.ToString());
                 throw;
             }
-
-            return Ok("[accepted]");
         }
 
         private Task ProcessNotificationAsync(NotificationRequestItem notification)
-        {        
-            // Perform your business logic or asynchronous operations (awaits) here.
-            // In this case, we just log it.
-            _logger.LogInformation($"Received webhook with event::\n" +
+        {
+            // Regardless of a success or not, you would probably want to update your backend/database or (preferably) send the event to a queue.
+            if (!notification.Success)
+            {
+                // Perform your business logic here, you would probably want to process the success:false event to update your backend. We log it for now.
+                _logger.LogInformation($"Webhook unsuccessful: {notification.Reason} \n" +
+                    $"EventCode: {notification.EventCode} \n" +
+                    $"Merchant Reference ::{notification.MerchantReference} \n" +
+                    $"PSP Reference ::{notification.PspReference} \n");
+
+                return Task.CompletedTask;
+            }
+
+            // Perform your business logic here, you would probably want to process the success:true event to update your backend. We log it for now.
+            _logger.LogInformation($"Received successful webhook with event::\n" +
                                    $"Merchant Reference ::{notification.MerchantReference} \n" +
                                    $"PSP Reference ::{notification.PspReference} \n");
+
             return Task.CompletedTask;
         }
     }

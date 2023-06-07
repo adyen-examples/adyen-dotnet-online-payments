@@ -52,24 +52,16 @@ namespace adyen_dotnet_paybylink_example.Controllers
                     return BadRequest("[not accepted invalid hmac key]");
                 }
 
-                // Return if webhook is not successful.
-                if (!container.NotificationItem.Success)
-                {
-                    _logger.LogError($"Webhook unsuccessful: {container.NotificationItem.Reason} \n" +
-                        $"EventCode: {container.NotificationItem.EventCode}");
-                    return Ok("[accepted]"); // The webhook was delivered (but was unsuccessful), hence why we'll return a [accepted] response to confirm that we've received it.
-                }
-
                 // Process notifications asynchronously.
                 await ProcessAuthorisationNotificationAsync(container.NotificationItem);
+
+                return Ok("[accepted]");
             }
             catch (Exception e)
             {
                 _logger.LogError("Exception thrown: " + e.ToString());
                 throw;
             }
-
-            return Ok("[accepted]");
         }
 
         private Task ProcessAuthorisationNotificationAsync(NotificationRequestItem notification)
@@ -79,14 +71,27 @@ namespace adyen_dotnet_paybylink_example.Controllers
             {
                 return Task.CompletedTask;
             }
-            
-            // Get the PaymentLinkId
+
+            // Perform your business logic here for the success:false scenario.
+            if (!notification.Success)
+            {
+                // We just log it for now. You would probably want to update your backend or send this the message to a queue.
+                _logger.LogInformation($"Webhook unsuccessful: {notification.Reason} \n" +
+                    $"EventCode: {notification.EventCode} \n" +
+                    $"Merchant Reference ::{notification.MerchantReference} \n" +
+                    $"PSP Reference ::{notification.PspReference} \n");
+
+                return Task.CompletedTask;
+            }
+
+            // Perform your business logic here for the success:true scenario.
+            // In this case, we get the PaymentLinkId from the AdditionalData.
             if (!notification.AdditionalData.TryGetValue("paymentLinkId", out string paymentLinkId))
             {
                 return Task.CompletedTask;
             }
 
-            // Perform your business logic (e.g. insert into a message broker), for this demo, we simply log it.
+            // Perform your business logic (e.g. insert into a message broker), we simply log it for now.
             _logger.LogInformation($"[AUTHORISATION]\n" +
                 $"PaymentLinkId: {paymentLinkId}\n" +
                 $"Payment method: {notification.PaymentMethod}\n" +
