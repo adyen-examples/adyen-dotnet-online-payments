@@ -35,7 +35,8 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
             var paymentMethodsRequest = new PaymentMethodsRequest()
             {
                 MerchantAccount = _merchantAccount,
-                Channel = PaymentMethodsRequest.ChannelEnum.Web
+                Channel = PaymentMethodsRequest.ChannelEnum.Web,
+                CountryCode = "NL"
             };
             
             try

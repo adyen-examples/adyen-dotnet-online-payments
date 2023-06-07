@@ -20,17 +20,17 @@ async function initCheckout() {
                     holderNameRequired: true,
                     name: "Credit or debit card",
                     amount: {
-                        value: 1000,
+                        value: 10000,
                         currency: "EUR",
                     },
                 },
                 paypal: {
                     amount: {
-                        value: 1000,
+                        value: 10000,
                         currency: "USD",
                     },
                     environment: "test", // Change this to "live" when you're ready to accept live PayPal payments
-                    countryCode: "US", // Only needed for test. This will be automatically retrieved when you are in production.
+                    countryCode: "US", // Only needed for test. This will be automatically retrieved when you are in production
                     onCancel: (data, component) => {
                         component.setStatus('ready');
                     },
