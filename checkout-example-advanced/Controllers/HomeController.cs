@@ -1,6 +1,8 @@
-﻿using adyen_dotnet_checkout_example_advanced.Options;
+﻿using Adyen.Model.Checkout;
+using adyen_dotnet_checkout_example_advanced.Options;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.Threading;
 
 namespace adyen_dotnet_checkout_example_advanced.Controllers
 {
@@ -28,13 +30,6 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
         public IActionResult Checkout(string id)
         {
             ViewBag.PaymentMethod = id;
-            ViewBag.ClientKey = _clientKey;
-            return View();
-        }
-
-        [Route("redirect")]
-        public IActionResult Redirect()
-        {
             ViewBag.ClientKey = _clientKey;
             return View();
         }

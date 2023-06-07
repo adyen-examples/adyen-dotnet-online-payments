@@ -10,14 +10,13 @@ Get started by navigating to one of the supported demos below.
 | Demos | Description | Details |
 | --: | :-- | :-- |
 | [`Checkout Example`](checkout-example) | E-commerce checkout flow with different payment methods. | [See below](#checkout-example) | 
-| [`Advanced Checkout Example`](checkout-example-advanced) | E-commerce checkout flow with different payment methods, using the 3 steps flow. | [See below](#advanced-checkout-example) |
+| [`Checkout Example Advanced`](checkout-example-advanced) | E-commerce checkout flow with different payment methods, using the 3 steps flow. | [See below](#checkout-example-advanced) |
 | [`Gift Card Example`](giftcard-example) | Gift Cards checkout flow using partial orders. | [See below](#gift-card-example) | 
 | [`Pay by Link Example`](paybylink-example) | Pay by Link flow. | [See below](#pay-by-link-example) | 
 | [`Subscription Example`](subscription-example) | Subscription flow using Adyen tokenization. | [See below](#subscription-example) | 
 
 
 ## [Checkout Example](checkout-example)
-
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/checkout-example)
 [First time with Gitpod?](https://github.com/adyen-examples/.github/blob/main/pages/gitpod-get-started.md)
 
@@ -27,7 +26,7 @@ Check out the underlying code to see how you can integrate Adyen to give your sh
 
 ![Card Checkout Demo](checkout-example/wwwroot/images/cardcheckout.gif)
 
-## [Advanced Checkout Example](checkout-example-advanced)
+## [Checkout Example Advanced](checkout-example-advanced)
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/checkout-advanced-example)
 [First time with Gitpod?](https://github.com/adyen-examples/.github/blob/main/pages/gitpod-get-started.md)

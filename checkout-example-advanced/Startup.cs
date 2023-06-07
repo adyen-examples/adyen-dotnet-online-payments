@@ -1,9 +1,9 @@
 using Adyen;
-using adyen_dotnet_checkout_example_advanced.Options;
-using adyen_dotnet_checkout_example_advanced.Services;
 using Adyen.Model;
 using Adyen.Service.Checkout;
 using Adyen.Util;
+using adyen_dotnet_checkout_example_advanced.Options;
+using adyen_dotnet_checkout_example_advanced.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;

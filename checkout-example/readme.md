@@ -1,6 +1,6 @@
 # Adyen [online payment](https://docs.adyen.com/checkout) integration demos - Sessions Flow
 
-**If you want to integrate a more complex flow, see [here](https://docs.adyen.com/online-payments/web-drop-in/additional-use-cases?tab=sessions_flow_advanced_flow_1) for more information and have a look at the `../checkout-example-advanced` folder**
+**This sample shows the [sessions flow](https://docs.adyen.com/online-payments/web-drop-in/additional-use-cases?tab=sessions_flow_advanced_flow_1), if you want to integrate a more complex flow, have a look at the [checkout-example-advanced](../checkout-example-advanced) folder.**
 
 This repository includes examples of PCI-compliant UI integrations for online payments with Adyen. 
 Within this demo app, you'll find a simplified version of an e-commerce website, complete with commented code to highlight key features and concepts of Adyen's API. 
