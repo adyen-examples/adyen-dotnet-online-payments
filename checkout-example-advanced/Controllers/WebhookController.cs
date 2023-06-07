@@ -1,31 +1,27 @@
 using Adyen.Model.Notification;
-using Adyen.Service;
 using Adyen.Util;
-using adyen_dotnet_paybylink_example.Options;
-using adyen_dotnet_paybylink_example.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using adyen_dotnet_checkout_example_advanced.Options;
 
-namespace adyen_dotnet_paybylink_example.Controllers
+namespace adyen_dotnet_checkout_example_advanced.Controllers
 {
     [ApiController]
     public class WebhookController : ControllerBase
     {
-        private readonly IPaymentLinkRepository _paymentLinkRepository;
         private readonly ILogger<WebhookController> _logger;
         private readonly HmacValidator _hmacValidator;
         private readonly string _hmacKey;
         
-        public WebhookController(IPaymentLinkRepository paymentLinkRepository, ILogger<WebhookController> logger, IOptions<AdyenOptions> options, HmacValidator hmacValidator)
+        public WebhookController(ILogger<WebhookController> logger, IOptions<AdyenOptions> options, HmacValidator hmacValidator)
         {
             _logger = logger;
-            _paymentLinkRepository = paymentLinkRepository;
-            _hmacValidator = hmacValidator;
             _hmacKey = options.Value.ADYEN_HMAC_KEY;
+            _hmacValidator = hmacValidator;
         }
 
         [HttpPost("api/webhooks/notifications")]
@@ -52,8 +48,8 @@ namespace adyen_dotnet_paybylink_example.Controllers
                     return BadRequest("[not accepted invalid hmac key]");
                 }
 
-                // Process notifications asynchronously.
-                await ProcessAuthorisationNotificationAsync(container.NotificationItem);
+                // Process notification asynchronously.
+                await ProcessNotificationAsync(container.NotificationItem);
 
                 return Ok("[accepted]");
             }
@@ -64,18 +60,12 @@ namespace adyen_dotnet_paybylink_example.Controllers
             }
         }
 
-        private Task ProcessAuthorisationNotificationAsync(NotificationRequestItem notification)
+        private Task ProcessNotificationAsync(NotificationRequestItem notification)
         {
-            // For every payment paid using the Pay By Link, Adyen will send an AUTHORISATION webhook.
-            if (notification.EventCode != "AUTHORISATION")
-            {
-                return Task.CompletedTask;
-            }
-
-            // Perform your business logic here for the success:false scenario.
+            // Regardless of a success or not, you would probably want to update your backend/database or (preferably) send the event to a queue.
             if (!notification.Success)
             {
-                // We just log it for now. You would probably want to update your backend or send this the message to a queue.
+                // Perform your business logic here, you would probably want to process the success:false event to update your backend. We log it for now.
                 _logger.LogInformation($"Webhook unsuccessful: {notification.Reason} \n" +
                     $"EventCode: {notification.EventCode} \n" +
                     $"Merchant Reference ::{notification.MerchantReference} \n" +
@@ -84,20 +74,10 @@ namespace adyen_dotnet_paybylink_example.Controllers
                 return Task.CompletedTask;
             }
 
-            // Perform your business logic here for the success:true scenario.
-            // In this case, we get the PaymentLinkId from the AdditionalData.
-            if (!notification.AdditionalData.TryGetValue("paymentLinkId", out string paymentLinkId))
-            {
-                return Task.CompletedTask;
-            }
-
-            // Perform your business logic (e.g. insert into a message broker), we simply log it for now.
-            _logger.LogInformation($"[AUTHORISATION]\n" +
-                $"PaymentLinkId: {paymentLinkId}\n" +
-                $"Payment method: {notification.PaymentMethod}\n" +
-                $"Currency: {notification.Amount?.Currency}\n" +
-                $"Value: {notification.Amount?.Value}\n" +
-                $"PspReference: {notification.PspReference}");
+            // Perform your business logic here, you would probably want to process the success:true event to update your backend. We log it for now.
+            _logger.LogInformation($"Received successful webhook with event::\n" +
+                                   $"Merchant Reference ::{notification.MerchantReference} \n" +
+                                   $"PSP Reference ::{notification.PspReference} \n");
 
             return Task.CompletedTask;
         }

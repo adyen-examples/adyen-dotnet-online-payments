@@ -48,28 +48,20 @@ namespace adyen_dotnet_giftcard_example.Controllers
                     return BadRequest("[not accepted invalid hmac key]");
                 }
 
-                // Return if webhook is not successful.
-                if (!container.NotificationItem.Success)
-                {
-                    _logger.LogError($"Webhook unsuccessful: {container.NotificationItem.Reason} \n" +
-                        $"EventCode: {container.NotificationItem.EventCode}");
-                    return Ok("[accepted]"); // The webhook was delivered (but was unsuccessful), hence why we'll return a [accepted] response to confirm that we've received it.
-                }
-
                 // Process notifications asynchronously.
                 await ProcessAuthorisationNotificationAsync(container.NotificationItem);
 
                 await ProcessOrderOpenedNotificationAsync(container.NotificationItem);
 
                 await ProcessOrderClosedNotificationAsync(container.NotificationItem);
+
+                return Ok("[accepted]");
             }
             catch (Exception e)
             {
                 _logger.LogError("Exception thrown: " + e.ToString());
                 throw;
             }
-
-            return Ok("[accepted]");
         }
 
         private Task ProcessAuthorisationNotificationAsync(NotificationRequestItem notification)
@@ -79,7 +71,21 @@ namespace adyen_dotnet_giftcard_example.Controllers
                 return Task.CompletedTask;
             }
 
-            // The amount that is authorised on the final payment. For example: if you paid EUR 110 with a EUR 50 giftcard and another EUR 50 giftcard.
+            // Perform your business logic here for the success:false scenario.
+            if (!notification.Success)
+            {
+                // We just log it for now. You would probably want to update your backend or send this the message to a queue.
+                _logger.LogInformation($"Webhook unsuccessful: {notification.Reason} \n" +
+                    $"EventCode: {notification.EventCode} \n" +
+                    $"Merchant Reference ::{notification.MerchantReference} \n" +
+                    $"PSP Reference ::{notification.PspReference} \n");
+
+                return Task.CompletedTask;
+            }
+
+            // Perform your business logic here for the success:true scenario.
+
+            // The amount that is authorised on the final payment. For example: if you paid EUR 110 with a EUR 50 giftcard and another EUR 50 gift card.
             // This amount should be `1000` (in units of 100s) which is equivalent to EUR 10.
             _logger.LogInformation($"[AUTHORISATION]\n" +
                 $"Payment method: {notification.PaymentMethod}\n" +
@@ -103,6 +109,19 @@ namespace adyen_dotnet_giftcard_example.Controllers
                 return Task.CompletedTask;
             }
 
+            // Perform your business logic here for the success:false scenario.
+            if (!notification.Success)
+            {
+                // We just log it for now. You would probably want to update your backend or send this the message to a queue.
+                _logger.LogInformation($"Webhook unsuccessful: {notification.Reason} \n" +
+                    $"EventCode: {notification.EventCode} \n" +
+                    $"Merchant Reference ::{notification.MerchantReference} \n" +
+                    $"PSP Reference ::{notification.PspReference} \n");
+
+                return Task.CompletedTask;
+            }
+
+            // Perform your business logic here for the success:true scenario. In this case, we do some logging.
             _logger.LogInformation($"[ORDER_OPENED]\n" +
                 $"merchantOrderReference: {notification.MerchantReference}\n" +
                 $"Currency: {notification.Amount.Currency}\n" +
@@ -119,6 +138,20 @@ namespace adyen_dotnet_giftcard_example.Controllers
                 return Task.CompletedTask;
             }
 
+            // Perform your business logic here for the success:false scenario.
+            if (!notification.Success)
+            {
+                // We just log it for now. You would probably want to update your backend or send this the message to a queue.
+                _logger.LogInformation($"Webhook unsuccessful: {notification.Reason} \n" +
+                    $"EventCode: {notification.EventCode} \n" +
+                    $"Merchant Reference ::{notification.MerchantReference} \n" +
+                    $"PSP Reference ::{notification.PspReference} \n");
+
+                return Task.CompletedTask;
+            }
+
+            // Perform your business logic here for the success:true scenario.
+            // We loop over every partial order: `order-1-...` -> `order-2-...` -> `order-3-...` until there are no more partial orders, we stop if we don't find the sequential number for `i`.
             bool isReading = true;
             for (int i = 1; i < notification.AdditionalData.Count && isReading; i++)
             {
@@ -147,7 +180,6 @@ namespace adyen_dotnet_giftcard_example.Controllers
                     $"orderPspReference: {orderPspReference}\n" + // Foreach partial payment, you get a new (unique) PspReference.
                     $"orderPaymentAmount: {orderPaymentAmount}"); // Format: 'EUR 50.00'.
             }
-
 
             _logger.LogInformation($"MerchantOrderReference: {notification.MerchantReference}\n" +
                 $"Currency: {notification.Amount.Currency}\n" +

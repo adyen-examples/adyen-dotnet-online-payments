@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Linq;
+using adyen_dotnet_checkout_example_advanced.Controllers;
 
-namespace adyen_dotnet_paybylink_example.Services
+namespace adyen_dotnet_checkout_example_advanced.Services
 {
     public interface IUrlService
     {

@@ -8,8 +8,7 @@ namespace adyen_dotnet_subscription_example.Services
         /// <summary>
         /// Retrieves the host url dynamically using the origin in the headers of the request.
         /// This is used to generate the correct host url when running on either http(s)://localhost:*, http(s)://*.gitpod or http(s)://*.devtunnels.ms.
-        /// For usage see <see cref="adyen_dotnet_subscription_example.Controllers.TokenizationController.Sessions()"/>.
-        /// [!] On production (or a dedicated dev environment), use a fixed URL.
+        /// [!] On production, do *not* use this class to generate the returnUrl, but use a fixed URL.
         /// </summary>
         /// <returns>Returns the host url.</returns>
         string GetHostUrl();
