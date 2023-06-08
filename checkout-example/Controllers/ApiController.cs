@@ -29,7 +29,7 @@ namespace adyen_dotnet_checkout_example.Controllers
         }
 
         [HttpPost("api/sessions")]
-        public async Task<ActionResult<string>> Sessions(CancellationToken cancellationToken = default)
+        public async Task<ActionResult<CreateCheckoutSessionResponse>> Sessions(CancellationToken cancellationToken = default)
         {
             var orderRef = Guid.NewGuid();
             var sessionsRequest = new CreateCheckoutSessionRequest()
@@ -56,7 +56,7 @@ namespace adyen_dotnet_checkout_example.Controllers
             {
                 var res = await _paymentsService.SessionsAsync(sessionsRequest, cancellationToken: cancellationToken);
                 _logger.LogInformation($"Response for Payments API:\n{res}\n");
-                return res.ToJson();
+                return res;
             }
             catch (Adyen.HttpClient.HttpClientException e)
             {

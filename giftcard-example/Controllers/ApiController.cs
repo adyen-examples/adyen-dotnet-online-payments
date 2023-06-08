@@ -29,7 +29,7 @@ namespace adyen_dotnet_giftcard_example.Controllers
         }
 
         [HttpPost("api/sessions/dropin")]
-        public async Task<ActionResult<string>> SessionsDropin(CancellationToken cancellationToken = default)
+        public async Task<ActionResult<CreateCheckoutSessionResponse>> SessionsDropin(CancellationToken cancellationToken = default)
         {
             var orderRef = Guid.NewGuid();
             var sessionsRequest = new CreateCheckoutSessionRequest()
@@ -57,7 +57,7 @@ namespace adyen_dotnet_giftcard_example.Controllers
             {
                 var res = await _paymentsService.SessionsAsync(sessionsRequest, cancellationToken: cancellationToken);
                 _logger.LogInformation($"Response Payments API:\n{res}\n");
-                return res.ToJson();
+                return res;
             }
             catch (Adyen.HttpClient.HttpClientException e)
             {
@@ -67,7 +67,7 @@ namespace adyen_dotnet_giftcard_example.Controllers
         }
 
         [HttpPost("api/sessions/giftcardcomponent")]
-        public async Task<ActionResult<string>> SessionsGiftcardComponent(CancellationToken cancellationToken = default)
+        public async Task<ActionResult<CreateCheckoutSessionResponse>> SessionsGiftcardComponent(CancellationToken cancellationToken = default)
         {
             var orderRef = Guid.NewGuid();
             var sessionsRequest = new CreateCheckoutSessionRequest()
@@ -95,7 +95,7 @@ namespace adyen_dotnet_giftcard_example.Controllers
             {
                 var res = await _paymentsService.SessionsAsync(sessionsRequest, cancellationToken: cancellationToken);
                 _logger.LogInformation($"Response Payments API: \n{res}\n");
-                return res.ToJson();
+                return res;
             }
             catch (Adyen.HttpClient.HttpClientException e)
             {
