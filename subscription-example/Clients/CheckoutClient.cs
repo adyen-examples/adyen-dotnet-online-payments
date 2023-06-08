@@ -1,5 +1,4 @@
 ﻿using Adyen.Model.Checkout;
-using Adyen.Service;
 using adyen_dotnet_subscription_example.Options;
 using adyen_dotnet_subscription_example.Services;
 using Microsoft.Extensions.Logging;

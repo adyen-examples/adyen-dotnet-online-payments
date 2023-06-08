@@ -21,7 +21,7 @@ namespace adyen_dotnet_paybylink_example.Controllers
         }
 
         [HttpPost("api/links")]
-        public async Task<ActionResult<string>> CreatePaymentLink(Requests.CreatePaymentLinkRequest request, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<PaymentLinkResponse>> CreatePaymentLink(Requests.CreatePaymentLinkRequest request, CancellationToken cancellationToken = default)
         {
             try
             {
