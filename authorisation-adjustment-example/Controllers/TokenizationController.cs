@@ -44,7 +44,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 Amount = new Amount("EUR", 0),
                 Channel = PaymentRequest.ChannelEnum.Web,
                 ShopperInteraction = PaymentRequest.ShopperInteractionEnum.Ecommerce,
-                RecurringProcessingModel = PaymentRequest.RecurringProcessingModelEnum.Subscription,
+                RecurringProcessingModel = PaymentRequest.RecurringProcessingModelEnum.CardOnFile,
                 EnableRecurring = true,
                 ShopperReference = ShopperReference.Value,
 
