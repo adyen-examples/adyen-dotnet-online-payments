@@ -16,17 +16,6 @@
       },
       "applicationUrl": "https://localhost:5001;http://localhost:8080"
     },
-    "adyen_dotnet_paybylink_example_port_tunneling": {
-      "commandName": "Project",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "applicationUrl": "https://localhost:5001;http://localhost:8080",
-      // The following two properties enable dev tunnels in visual studio 17.4+. This is used to proxy your localhost and receive webhooks.
-      "devTunnelEnabled": true,
-      "devTunnelAccess": "public"
-    },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,

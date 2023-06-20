@@ -65,12 +65,14 @@ namespace adyen_dotnet_subscription_example.Controllers
 
         private Task ProcessNotificationAsync(NotificationRequestItem notification)
         {
-            // (1) For the synchronous flow (enabled by default), check the "Authorisation" eventCode: 
-            // Read more: https://docs.adyen.com/online-payments/tokenization/create-and-use-tokens?tab=subscriptions_2#authorised-result-code-1
-
-            // (2) For the asynchronous flow, (enabled by contacting our support team), you need to check the "RECURRING_CONTRACT" eventCode instead of the "AUTHORISATION" eventCode.
-            // Read more: https://docs.adyen.com/online-payments/tokenization/create-and-use-tokens?tab=subscriptions_2#pending-and-refusal-result-codes-1
-            if (notification.EventCode != "AUTHORISATION")
+            // Per default, Adyen will send a webhook with the eventCode: "AUTHORISATION".
+            // We recommend changing this behavior in the Customer Area to receive the "RECURRING_CONTRACT" eventCode. 
+            // You'll need to do two things:
+            // (1) Enable the "RECURRING_CONTRACT" eventCode in your Customer Area, under "Developers" -> "Webhooks" -> "Settings". Enable "Recurring contract" on `Merchant`-level and hit "Save".
+            // This will send the event code "RECURRING_CONTRACT" when a recurring contract has been created.
+            // (2) Make sure that your webhook also sends the event "RECURRING_CONTRACT" ("Developers" -> "Webhooks" -> Click on your webhook -> "General").
+            // Read more here: https://docs.adyen.com/online-payments/tokenization/create-and-use-tokens?tab=subscriptions_2#pending-and-refusal-result-codes-1.
+            if (notification.EventCode != "RECURRING_CONTRACT")
             {
                 return Task.CompletedTask;
             }
@@ -103,7 +105,7 @@ namespace adyen_dotnet_subscription_example.Controllers
             // Get and log the recurringProcessingModel below.
             notification.AdditionalData.TryGetValue("recurringProcessingModel", out string recurringProcessingModel);
 
-            _logger.LogInformation($"Received recurringDetailReference: {recurringDetailReference} for {shopperReference}" +
+            _logger.LogInformation($"EventCode: {notification.EventCode} \nReceived recurringDetailReference: {recurringDetailReference} for {shopperReference} \n" +
                 $"RecurringProcessingModel: {recurringProcessingModel}");
 
             // Save the paymentMethod, shopperReference and recurringDetailReference in our in-memory cache.
