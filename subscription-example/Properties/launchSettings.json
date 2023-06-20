@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "adyen_dotnet_subscription_example": {
+    "Subscription Example": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

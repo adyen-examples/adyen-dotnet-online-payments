@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "adyen_dotnet_checkout_example": {
+    "Checkout Example": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

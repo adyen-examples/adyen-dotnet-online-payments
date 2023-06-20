@@ -8,7 +8,7 @@
     }
   },
   "profiles": {
-    "adyen_dotnet_giftcard_example": {
+    "Gift Card Example": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

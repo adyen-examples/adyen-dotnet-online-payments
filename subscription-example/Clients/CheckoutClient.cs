@@ -34,9 +34,9 @@ namespace adyen_dotnet_subscription_example.Clients
     public class CheckoutClient : ICheckoutClient
     {
         private readonly ILogger<RecurringClient> _logger;
-        private readonly string _merchantAccount;
         private readonly IPaymentsService _paymentsService;
         private readonly IUrlService _urlService;
+        private readonly string _merchantAccount;
 
         public CheckoutClient(ILogger<RecurringClient> logger, IPaymentsService paymentsService, IUrlService urlService, IOptions<AdyenOptions> options)
         {
