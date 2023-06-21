@@ -10,6 +10,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Reflection;
 
 namespace adyen_dotnet_checkout_example
 {
@@ -51,7 +54,8 @@ namespace adyen_dotnet_checkout_example
             services.AddHttpContextAccessor()
                 .AddTransient<IUrlService, UrlService>();
 
-            // Register your dependencies.
+            // Register Adyen Client.
+            string httpClientName = "YourCustomHttpClientName";
             services.AddSingleton(provider =>
             {
                 var options = provider.GetRequiredService<IOptions<AdyenOptions>>();
@@ -64,8 +68,16 @@ namespace adyen_dotnet_checkout_example
                         MerchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT,
                         // Test environment.
                         Environment = Environment.Test,
-                    });
-            }).AddHttpClient(); // Add HttpClient.
+                    },
+                    provider.GetRequiredService<IHttpClientFactory>(),
+                    httpClientName);
+            });
+
+            // Add a named HttpClient.
+            services.AddHttpClient(httpClientName, (System.IServiceProvider provider, HttpClient httpClient) =>
+            {
+                httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("sample", $"{Assembly.GetExecutingAssembly()?.GetName()?.Name}"));
+            });
 
             services.AddSingleton<IPaymentsService, PaymentsService>(); // Used to be called "Checkout.cs" in Adyen .NET 9.x.x and below, see https://github.com/Adyen/adyen-dotnet-api-library/blob/9.2.1/Adyen/Service/Checkout.cs.
             services.AddSingleton<HmacValidator>();
