@@ -95,7 +95,7 @@ namespace adyen_dotnet_subscription_example.Controllers
 
         private Task ProcessRecurringContractNotificationAsync(NotificationRequestItem notification)
         {
-            // Read more about "RECURRING_CONTRACT" here: https://docs.adyen.com/online-payments/tokenization/create-and-use-tokens?tab=subscriptions_2#pending-and-refusal-result-codes-1.
+            // Read more about EventCode "RECURRING_CONTRACT" here: https://docs.adyen.com/online-payments/tokenization/create-and-use-tokens?tab=subscriptions_2#pending-and-refusal-result-codes-1.
             if (notification.EventCode != "RECURRING_CONTRACT")
             {
                 return Task.CompletedTask;
