@@ -51,8 +51,10 @@ namespace adyen_dotnet_subscription_example.Controllers
                     return BadRequest("[not accepted invalid hmac key]");
                 }
 
-                // Process notification asynchronously.
-                await ProcessNotificationAsync(container.NotificationItem);
+                // Process notifications asynchronously.
+                await ProcessAuthorisationNotificationAsync(container.NotificationItem);
+
+                await ProcessRecurringContractNotificationAsync(container.NotificationItem);
 
                 return Ok("[accepted]");
             }
@@ -63,15 +65,37 @@ namespace adyen_dotnet_subscription_example.Controllers
             }
         }
 
-        private Task ProcessNotificationAsync(NotificationRequestItem notification)
+        private Task ProcessAuthorisationNotificationAsync(NotificationRequestItem notification)
         {
-            // Per default, Adyen will send a webhook with the eventCode: "AUTHORISATION".
-            // We recommend changing this behavior in the Customer Area to receive the "RECURRING_CONTRACT" eventCode. 
-            // You'll need to do two things:
-            // (1) Enable the "RECURRING_CONTRACT" eventCode in your Customer Area, under "Developers" -> "Webhooks" -> "Settings". Enable "Recurring contract" on `Merchant`-level and hit "Save".
-            // This will send the event code "RECURRING_CONTRACT" when a recurring contract has been created.
-            // (2) Make sure that your webhook also sends the event "RECURRING_CONTRACT" ("Developers" -> "Webhooks" -> Click on your webhook -> "General").
-            // Read more here: https://docs.adyen.com/online-payments/tokenization/create-and-use-tokens?tab=subscriptions_2#pending-and-refusal-result-codes-1.
+            // Read more here: https://docs.adyen.com/online-payments/tokenization/create-and-use-tokens?tab=subscriptions_2#pending-and-refusal-result-codes-1
+            if (notification.EventCode != "AUTHORISATION")
+            {
+                return Task.CompletedTask;
+            }
+
+            // Perform your business logic here for the success:false scenario. 
+            if (!notification.Success)
+            {
+                // We just log it for now. You would probably want to update your backend or send this the message to a queue.
+                _logger.LogInformation($"Webhook unsuccessful: {notification.Reason} \n" +
+                    $"EventCode: {notification.EventCode} \n" +
+                    $"Merchant Reference ::{notification.MerchantReference} \n" +
+                    $"PSP Reference ::{notification.PspReference} \n");
+
+                return Task.CompletedTask;
+            }
+
+            _logger.LogInformation($"Received webhook with event: \n" +
+                $"EventCode: {notification.EventCode} \n" +
+                $"Merchant Reference: {notification.MerchantReference} \n" +
+                $"PSP Reference: {notification.PspReference} \n");
+            return Task.CompletedTask;
+        }
+
+
+        private Task ProcessRecurringContractNotificationAsync(NotificationRequestItem notification)
+        {
+            // Read more about "RECURRING_CONTRACT" here: https://docs.adyen.com/online-payments/tokenization/create-and-use-tokens?tab=subscriptions_2#pending-and-refusal-result-codes-1.
             if (notification.EventCode != "RECURRING_CONTRACT")
             {
                 return Task.CompletedTask;
@@ -103,17 +127,19 @@ namespace adyen_dotnet_subscription_example.Controllers
             }
 
             // Get and log the recurringProcessingModel below.
-            notification.AdditionalData.TryGetValue("recurringProcessingModel", out string recurringProcessingModel);
-
-            _logger.LogInformation($"EventCode: {notification.EventCode} \nReceived recurringDetailReference: {recurringDetailReference} for {shopperReference} \n" +
-                $"RecurringProcessingModel: {recurringProcessingModel}");
+            if (notification.AdditionalData.TryGetValue("recurringProcessingModel", out string recurringProcessingModel))
+            {
+                _logger.LogInformation($"EventCode: {notification.EventCode} \nReceived recurringDetailReference: {recurringDetailReference} for {shopperReference} \n" +
+                    $"RecurringProcessingModel: {recurringProcessingModel}");
+            }
 
             // Save the paymentMethod, shopperReference and recurringDetailReference in our in-memory cache.
             _repository.Upsert(notification.PaymentMethod, shopperReference, recurringDetailReference);
             
             _logger.LogInformation($"Received webhook with event: \n" +
-                                   $"Merchant Reference: {notification.MerchantReference} \n" +
-                                   $"PSP Reference: {notification.PspReference} \n");
+                $"EventCode: {notification.EventCode} \n" +
+                $"Merchant Reference: {notification.MerchantReference} \n" +
+                $"PSP Reference: {notification.PspReference} \n");
             return Task.CompletedTask;
         }
     }
