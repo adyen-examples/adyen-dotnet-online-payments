@@ -1,16 +1,15 @@
 ﻿using Adyen.Model.Checkout;
+using Adyen.Service.Checkout;
 using adyen_dotnet_subscription_example.Options;
-using adyen_dotnet_subscription_example.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Adyen.Service.Checkout;
 
-namespace adyen_dotnet_subscription_example.Clients
+namespace adyen_dotnet_subscription_example.Services
 {
-    public interface ICheckoutClient
+    public interface ICheckoutService
     {
         /// <summary>
         /// Initiates a session which creates the subscription for the given <paramref name="shopperReference"/>.
@@ -31,14 +30,14 @@ namespace adyen_dotnet_subscription_example.Clients
         Task<PaymentResponse> MakePaymentAsync(string shopperReference, string recurringDetailReference, CancellationToken cancellationToken = default);
     }
 
-    public class CheckoutClient : ICheckoutClient
+    public class CheckoutService : ICheckoutService
     {
-        private readonly ILogger<RecurringClient> _logger;
-        private readonly string _merchantAccount;
+        private readonly ILogger<RecurringService> _logger;
         private readonly IPaymentsService _paymentsService;
         private readonly IUrlService _urlService;
+        private readonly string _merchantAccount;
 
-        public CheckoutClient(ILogger<RecurringClient> logger, IPaymentsService paymentsService, IUrlService urlService, IOptions<AdyenOptions> options)
+        public CheckoutService(ILogger<RecurringService> logger, IPaymentsService paymentsService, IUrlService urlService, IOptions<AdyenOptions> options)
         {
             _logger = logger;
             _paymentsService = paymentsService;
@@ -54,7 +53,7 @@ namespace adyen_dotnet_subscription_example.Clients
             {
                 MerchantAccount = _merchantAccount, // Required.
                 Reference = orderRef.ToString(),    // Required.
-                
+
                 Amount = new Amount("EUR", 0),
                 Channel = CreateCheckoutSessionRequest.ChannelEnum.Web,
                 ShopperInteraction = CreateCheckoutSessionRequest.ShopperInteractionEnum.Ecommerce,

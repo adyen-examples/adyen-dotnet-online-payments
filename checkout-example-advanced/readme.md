@@ -74,10 +74,8 @@ To expose this endpoint locally, we have highlighted two options in step 4 or 5.
 
 
 4. Expose your localhost with Visual Studio using dev tunnels.
-    - Add `https://*.devtunnels.ms` to your allowed origins
-    - Login to Visual Studio
-    - Under `Options` → `Environment` → `Preview Features` → Check `Enable dev tunnels for Web Application`
-    - Select `adyen_dotnet_checkout_example_port_tunneling` as your launch settings profile
+     - Add `https://*.devtunnels.ms` to your allowed origins
+     - Create your public (temporary/persistent) dev tunnel by following [this guide](https://learn.microsoft.com/en-us/aspnet/core/test/dev-tunnels?view=aspnetcore-7.0)
 
 If you use Visual Studio 17.4 or higher, the webhook URL will be the generated URL (i.e. `https://xd1r2txt-5001.euw.devtunnels.ms`).
 
@@ -134,7 +132,7 @@ set ADYEN_HMAC_KEY=yourAdyenHmacKey
 
 
 ```shell
-dotnet run --project checkout-example 
+dotnet run --project checkout-example-advanced
 ```
 
 10. Update your webhook in your Customer Area with the public url that is generated.
