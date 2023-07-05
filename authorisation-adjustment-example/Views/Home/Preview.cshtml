@@ -1,23 +1,23 @@
 ﻿@{
-    ViewData["Title"] = "Adyen Subscription Preview";
+    ViewData["Title"] = "Adyen Checkout Preview";
 }
 <main class="preview-page">
   <section class="cart">
-    <h1>SUBSCRIPTION DETAILS</h1>
+    <h1>Checkout Details</h1>
     <div class="order-summary">
       <ul class="order-summary-list">
         <li class="order-summary-list-list-item">
           <img src="~/images/musicnote.svg" class="order-summary-list-list-item-image" alt="">
-          <p class="order-summary-list-list-item-title">Music Subscription (monthly)</p>
-          <p class="order-summary-list-list-item-price">11.99</p>
+          <p class="order-summary-list-list-item-title">Hotel</p>
+          <p class="order-summary-list-list-item-price">249.99</p>
         </li>
       </ul>
     </div>
     <div class="cart-footer">
     <span class="cart-footer-label">Total:</span>
-    <span class="cart-footer-amount">11.99</span>
-    <a asp-area="" asp-controller="Home" asp-action="Subscription" asp-route-id="@ViewBag.PaymentMethod">
-      <p class="button">Continue to confirm subscription</p>
+    <span class="cart-footer-amount">249.99</span>
+    <a asp-area="" asp-controller="Home" asp-action="Checkout" asp-route-id="@ViewBag.PaymentMethod">
+      <p class="button">Continue to confirm booking</p>
     </a>
     </div>
   </section>

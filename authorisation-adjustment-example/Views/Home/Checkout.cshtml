@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Adyen Subscription Checkout Cart";
+    ViewData["Title"] = "Adyen Checkout Cart";
 }
 @* Hidden divs with data passed from the server *@
 <div id="clientKey" class="hidden">@ViewBag.ClientKey</div>
@@ -16,4 +16,4 @@
 </div>
 
 @* Adyen Component client code *@
-<script src="~/js/adyenSubscriptionImplementation.js" asp-append-version="true"></script>
+<script src="~/js/adyenAuthorisationAdjustmentImplementation.js" asp-append-version="true"></script>

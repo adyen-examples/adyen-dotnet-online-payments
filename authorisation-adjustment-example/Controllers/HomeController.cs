@@ -26,17 +26,10 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             return View();
         }
         
-        [Route("subscription/{id}")]
-        public IActionResult Subscription(string id)
+        [Route("checkout/{id}")]
+        public IActionResult Checkout(string id)
         {
             ViewBag.PaymentMethod = id;
-            ViewBag.ClientKey = _clientKey;
-            return View();
-        }
-
-        [Route("redirect")]
-        public IActionResult Redirect()
-        {
             ViewBag.ClientKey = _clientKey;
             return View();
         }
@@ -49,11 +42,11 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             switch (status)
             {
                 case "pending":
-                    msg = "Your subscription has been received! Payment completion pending.";
+                    msg = "Your booking has been received! Payment completion pending.";
                     img = "success";
                     break;
                 case "failed":
-                    msg = "The subscription was refused. Please try a different payment method or card.";
+                    msg = "The booking was refused. Please try a different payment method or card.";
                     img = "failed";
                     break;
                 case "error":
@@ -61,7 +54,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                     img = "failed";
                     break;
                 default:
-                    msg = "Your subscription has been successfully confirmed.";
+                    msg = "Your booking has been successfully confirmed.";
                     img = "success";
                     break;
             }
