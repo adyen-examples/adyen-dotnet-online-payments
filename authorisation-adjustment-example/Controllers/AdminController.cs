@@ -39,16 +39,11 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             return View();
         }
 
-        [Route("admin/decremental-adjustment/{pspReference}/{amount}")]
-        public async Task<IActionResult> DecrementalAdjustment(string pspReference, int amount, CancellationToken cancellationToken = default)
-        {
-            throw new System.NotImplementedException();
-            //return View();
-        }
 
-        [Route("admin/incremental-adjustment/{reference}/{pspReference}/{amount}")] // Turn this into a post request.
+        [Route("admin/update-authorised-amount/{reference}/{pspReference}/{amount}")] // Turn this into a post request.
         public async Task<PaymentAmountUpdateResource> IncrementalAdjustment(string reference, string pspReference, int amount, CancellationToken cancellationToken = default)
         {
+            // TODO: handle incremental, decremental, extension.
             try
             {
                 var request = new CreatePaymentAmountUpdateRequest()
@@ -91,32 +86,48 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             //}
         }
 
-        [Route("admin/extend-duration/{pspReference}")]
-        public async Task<IActionResult> ExtendDuration(string pspReference, CancellationToken cancellationToken = default)
+        [Route("admin/capture/{reference}/{pspReference}/{amount}")] // TODO: Move amount/reference into its own storage, it should not be passed on as parameter.
+        public async Task<PaymentCaptureResource> Capture(string reference, string pspReference, int amount, CancellationToken cancellationToken = default)
         {
-            //try
-            //{
-            //    DisableResult result = await _recurringClient.DisableRecurringDetailAsync(ShopperReference.Value, recurringDetailReference, cancellationToken);
-
-            //    switch (result.Response)
-            //    {
-            //        case "[detail-successfully-disabled]":
-            //            ViewBag.Message = $"Disabled RecurringDetailReference {recurringDetailReference}.";
-            //            ViewBag.Img = "success";
-            //            break;
-            //        default:
-            //            ViewBag.Message = $"Disable failed for RecurringDetailReference {recurringDetailReference}. See logs for the response message."; ;
-            //            ViewBag.Img = "failed";
-            //            break;
-            //    }
-            //}
-            //catch (HttpClientException)
-            //{
-            //    ViewBag.Message = $"Disable failed for RecurringDetailReference {recurringDetailReference}. See error logs for the exception.";
-            //    ViewBag.Img = "failed";
-            //}
-            throw new System.NotImplementedException();
-            //return View();
+            try
+            {
+                var request = new CreatePaymentCaptureRequest()
+                {
+                    MerchantAccount = _merchantAccount, // Required.
+                    Amount = new Amount() { Value = amount, Currency = "EUR"}, // Required.
+                    Reference = reference,
+                };
+                
+                var response = await _modificationsService.CaptureAuthorisedPaymentAsync(pspReference, request, cancellationToken: cancellationToken);
+                return response; // Note that the response will have a DIFFERENT PSPReference compared to the initial preauth
+            }
+            catch (HttpClientException e)
+            { 
+                //ViewBag.Message = $"Incremental adjustment failed for PSPReference {pspReference}. See error logs for the exception.";
+                //ViewBag.Img = "failed";
+            }
+        }
+        
+        [Route("admin/cancel-pre-authorisation/{pspReference}/{reference}")] // Move reference
+        public async Task<PaymentCancelResource> CancelPreAuthorisation(string pspReference, string reference, CancellationToken cancellationToken = default)
+        {
+            
+            try
+            {
+                var request = new CreatePaymentCancelRequest()
+                {
+                    MerchantAccount = _merchantAccount, // Required.
+                    Reference = reference,
+                };
+                
+                var response = await _modificationsService.CancelAuthorisedPaymentByPspReferenceAsync(pspReference, request, cancellationToken: cancellationToken);
+                return response;
+            }
+            catch (HttpClientException e)
+            { 
+                //ViewBag.Message = $"Incremental adjustment failed for PSPReference {pspReference}. See error logs for the exception.";
+                //ViewBag.Img = "failed";
+            }
         }
     }
 }
