@@ -61,6 +61,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             { 
                 //ViewBag.Message = $"Incremental adjustment failed for PSPReference {pspReference}. See error logs for the exception.";
                 //ViewBag.Img = "failed";
+                throw;
             }
             //try
             //{
@@ -105,6 +106,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             { 
                 //ViewBag.Message = $"Incremental adjustment failed for PSPReference {pspReference}. See error logs for the exception.";
                 //ViewBag.Img = "failed";
+                throw;
             }
         }
         
@@ -127,6 +129,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             { 
                 //ViewBag.Message = $"Incremental adjustment failed for PSPReference {pspReference}. See error logs for the exception.";
                 //ViewBag.Img = "failed";
+                throw;
             }
         }
     }
