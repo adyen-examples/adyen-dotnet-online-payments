@@ -69,6 +69,7 @@ namespace adyen_dotnet_authorisation_adjustment_example
             }).AddHttpClient(); // Add HttpClient.
 
             services.AddSingleton<IPaymentsService, PaymentsService>(); // Used to be called "Checkout.cs" in Adyen .NET 9.x.x and below, see https://github.com/Adyen/adyen-dotnet-api-library/blob/9.2.1/Adyen/Service/Checkout.cs.
+            services.AddSingleton<IModificationsService, ModificationsService>();
             services.AddSingleton<HmacValidator>();
 
             services.AddSingleton<IPspReferenceRepository, PspReferenceRepository>();

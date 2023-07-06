@@ -73,8 +73,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 CountryCode = "NL",
                 LineItems = new List<LineItem>()
                 {
-                    new LineItem(quantity: 1, amountIncludingTax: 5000, description: "Sunglasses"),
-                    new LineItem(quantity: 1, amountIncludingTax: 5000, description: "Headphones")
+                    new LineItem(quantity: 1, amountIncludingTax: 24999, description: "Hotel")
                 },
                 Origin = _urlService.GetHostUrl(),
                 BrowserInfo = new BrowserInfo() { UserAgent = HttpContext.Request.Headers["user-agent"] }, // Add more browser info here. 

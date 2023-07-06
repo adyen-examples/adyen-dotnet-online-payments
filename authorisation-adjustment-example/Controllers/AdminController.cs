@@ -4,16 +4,25 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using adyen_dotnet_authorisation_adjustment_example.Options;
+using Adyen.HttpClient;
+using Adyen.Model.Checkout;
+using Adyen.Service.Checkout;
+using Microsoft.Extensions.Options;
 
 namespace adyen_dotnet_authorisation_adjustment_example.Controllers
 {
     public class AdminController : Controller
     {
         private readonly IPspReferenceRepository _repository;
-
-        public AdminController(IPspReferenceRepository repository)
+        private readonly IModificationsService _modificationsService;
+        private readonly string _merchantAccount;
+        
+        public AdminController(IPspReferenceRepository repository,  IModificationsService modificationsService, IOptions<AdyenOptions> options)
         {
             _repository = repository;
+            _merchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT;
+            _modificationsService = modificationsService;
         }
 
         [Route("admin")]
@@ -37,9 +46,27 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             //return View();
         }
 
-        [Route("admin/incremental-adjustment/{pspReference}/{amount}")]
-        public async Task<IActionResult> IncrementalAdjustment(string pspReference, int amount, CancellationToken cancellationToken = default)
+        [Route("admin/incremental-adjustment/{reference}/{pspReference}/{amount}")] // Turn this into a post request.
+        public async Task<PaymentAmountUpdateResource> IncrementalAdjustment(string reference, string pspReference, int amount, CancellationToken cancellationToken = default)
         {
+            try
+            {
+                var request = new CreatePaymentAmountUpdateRequest()
+                {
+                    MerchantAccount = _merchantAccount, // Required
+                    Amount = new Amount() { Value = amount, Currency = "EUR"},
+                    Reference = reference,
+                    IndustryUsage = CreatePaymentAmountUpdateRequest.IndustryUsageEnum.DelayedCharge,
+                };
+                
+                var response = await _modificationsService.UpdateAuthorisedAmountAsync(pspReference, request, cancellationToken: cancellationToken);
+                return response;
+            }
+            catch (HttpClientException e)
+            { 
+                //ViewBag.Message = $"Incremental adjustment failed for PSPReference {pspReference}. See error logs for the exception.";
+                //ViewBag.Img = "failed";
+            }
             //try
             //{
             //    PaymentResponse result = await _checkoutClient.MakePaymentAsync(ShopperReference.Value, recurringDetailReference, cancellationToken);
@@ -62,8 +89,6 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             //    ViewBag.Message = $"Payment failed for RecurringDetailReference {recurringDetailReference}. See error logs for the exception.";
             //    ViewBag.Img = "failed";
             //}
-            throw new System.NotImplementedException();
-            //return View();
         }
 
         [Route("admin/extend-duration/{pspReference}")]
