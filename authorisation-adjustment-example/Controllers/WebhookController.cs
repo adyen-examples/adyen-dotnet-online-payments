@@ -15,11 +15,11 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
     public class WebhookController : ControllerBase
     {
         private readonly ILogger<WebhookController> _logger;
-        private readonly IPspReferenceRepository _repository;
+        private readonly IBookingPaymentRepository _repository;
         private readonly HmacValidator _hmacValidator;
         private readonly string _hmacKey;
 
-        public WebhookController(ILogger<WebhookController> logger, IOptions<AdyenOptions> options, IPspReferenceRepository repository, HmacValidator hmacValidator)
+        public WebhookController(ILogger<WebhookController> logger, IOptions<AdyenOptions> options, IBookingPaymentRepository repository, HmacValidator hmacValidator)
         {
             _logger = logger;
             _repository = repository;

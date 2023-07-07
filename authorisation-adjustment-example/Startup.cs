@@ -72,7 +72,7 @@ namespace adyen_dotnet_authorisation_adjustment_example
             services.AddSingleton<IModificationsService, ModificationsService>();
             services.AddSingleton<HmacValidator>();
 
-            services.AddSingleton<IPspReferenceRepository, PspReferenceRepository>();
+            services.AddSingleton<IBookingPaymentRepository, BookingPaymentRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

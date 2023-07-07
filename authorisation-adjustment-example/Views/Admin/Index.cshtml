@@ -2,7 +2,7 @@
 @using adyen_dotnet_authorisation_adjustment_example.Models;
 @{
     ViewData["Title"] = "Adyen Hotel Admin View";
-    List<SubscribedCustomer> recurringDetails = ViewBag.Details;
+    List<BookingPayment> recurringDetails = ViewBag.Details;
 }
 
 <div class="main-container">
@@ -25,18 +25,19 @@
         {
             foreach(var detail in recurringDetails)
             {
-                <b>ShopperReference: @detail.ShopperReference</b><br/><br/>
+                <b>ShopperReference: @detail.PspReference</b
+                // TODO
+                        <li>
+                <a asp-area="" asp-controller="Admin" asp-action="MakePayment" asp-route-id="@info.RecurringDetailReference">Make Payment</a>
+                <a asp-area="" asp-controller="Admin" asp-action="Disable" asp-route-id="@info.RecurringDetailReference">Disable</a>    
+                        </li> 
                 <ul class="adminList">
                 @if (detail.SubscribedCustomerDetails != null)
                 {
                     foreach(var info in detail.SubscribedCustomerDetails)
                     {
-                        <li>
                             PaymentMethod: @info.PaymentMethod<br/>
                             RecurringDetailReference: @info.RecurringDetailReference<br/>
-                            <a asp-area="" asp-controller="Admin" asp-action="MakePayment" asp-route-id="@info.RecurringDetailReference">Make Payment</a> | 
-                            <a asp-area="" asp-controller="Admin" asp-action="Disable" asp-route-id="@info.RecurringDetailReference">Disable</a>     
-                        </li>
                     }
                 }
                 </ul>
