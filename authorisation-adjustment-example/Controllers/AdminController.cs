@@ -28,10 +28,10 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
         [Route("admin")]
         public IActionResult Index()
         {
-            List<BookingPayment> bookingPayments = new List<BookingPayment>();
+            List<BookingPaymentModel> bookingPayments = new List<BookingPaymentModel>();
 
             // We fetch all booking payments that we have stored in our (local) repository and show it.
-            foreach (KeyValuePair<string, BookingPayment> kvp in _repository.BookingPayments)
+            foreach (KeyValuePair<string, BookingPaymentModel> kvp in _repository.BookingPayments)
             {
                 bookingPayments.Add(kvp.Value);
             }

@@ -1,5 +1,7 @@
 ﻿using Adyen.Model.Checkout;
+using Adyen.Model.Management;
 using Adyen.Service.Checkout;
+using adyen_dotnet_authorisation_adjustment_example.Models;
 using adyen_dotnet_authorisation_adjustment_example.Options;
 using adyen_dotnet_authorisation_adjustment_example.Repositories;
 using adyen_dotnet_authorisation_adjustment_example.Services;
@@ -127,7 +129,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 MerchantAccount = _merchantAccount, // Required.
                 Reference = orderRef.ToString(), // Required.
                 Channel = PaymentRequest.ChannelEnum.Web,
-                Amount = new Amount("EUR", 24999), // Value is 249.99€ in minor units.
+                Amount = new Adyen.Model.Checkout.Amount("EUR", 24999), // Value is 249.99€ in minor units.
 
                 // Required for 3DS2 redirect flow.
                 ReturnUrl = $"{_urlService.GetHostUrl()}/api/handleShopperRedirect?orderRef={orderRef}",
@@ -151,14 +153,20 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 var response = await _paymentsService.PaymentsAsync(paymentRequest, cancellationToken: cancellationToken);
                 _logger.LogInformation($"Response for Payments:\n{response}\n");
 
-                if (response.ResultCode == PaymentResponse.ResultCodeEnum.Authorised)
+                var bookingPayment = new BookingPaymentModel()
                 {
-                    _repository.Upsert(response.PspReference, response.MerchantReference, response.Amount.Value.Value, response.Amount.Currency, response.ResultCode.ToString(), response.RefusalReason);
-                }
-                else
-                {
-                    _repository.Upsert(response.PspReference, response.MerchantReference, null, null, response.ResultCode.ToString(), response.RefusalReason);
-                }
+                    PspReference = response.PspReference,
+                    Reference = response.MerchantReference,
+                    Amount = response.Amount.Value.HasValue ? response.Amount.Value : null,
+                    Currency = response.Amount.Currency,
+                    DateTime = DateTime.UtcNow,
+                    ResultCode = response.ResultCode.ToString(),
+                    RefusalReason = response.RefusalReason,
+                    PaymentMethodBrand = response.PaymentMethod?.Brand,
+                    PaymentMethodType = response.PaymentMethod?.Type
+                };
+
+                _repository.Upsert(bookingPayment);
                 return Ok(response);
             }
             catch (Adyen.HttpClient.HttpClientException e)
