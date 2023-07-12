@@ -19,11 +19,11 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
     {
         private readonly IPaymentsService _paymentsService;
         private readonly IUrlService _urlService;
-        private readonly IBookingPaymentRepository _repository;
+        private readonly IHotelPaymentRepository _repository;
         private readonly ILogger<ApiController> _logger;
         private readonly string _merchantAccount;
 
-        public ApiController(IPaymentsService paymentsService, IUrlService urlService, IBookingPaymentRepository repository, ILogger<ApiController> logger, IOptions<AdyenOptions> options)
+        public ApiController(IPaymentsService paymentsService, IUrlService urlService, IHotelPaymentRepository repository, ILogger<ApiController> logger, IOptions<AdyenOptions> options)
         {
             _paymentsService = paymentsService;
             _urlService = urlService;
@@ -152,7 +152,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 var response = await _paymentsService.PaymentsAsync(paymentRequest, cancellationToken: cancellationToken);
                 _logger.LogInformation($"Response for Payments:\n{response}\n");
 
-                var bookingPayment = new BookingPaymentModel()
+                var hotelPayment = new HotelPaymentModel()
                 {
                     PspReference = response.PspReference,
                     Reference = response.MerchantReference,
@@ -165,7 +165,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                     PaymentMethodType = response.PaymentMethod?.Type
                 };
 
-                _repository.Upsert(bookingPayment);
+                _repository.Upsert(hotelPayment);
                 return Ok(response);
             }
             catch (Adyen.HttpClient.HttpClientException e)

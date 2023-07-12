@@ -14,11 +14,11 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
 {
     public class AdminController : Controller
     {
-        private readonly IBookingPaymentRepository _repository;
+        private readonly IHotelPaymentRepository _repository;
         private readonly IModificationsService _modificationsService;
         private readonly string _merchantAccount;
         
-        public AdminController(IBookingPaymentRepository repository,  IModificationsService modificationsService, IOptions<AdyenOptions> options)
+        public AdminController(IHotelPaymentRepository repository,  IModificationsService modificationsService, IOptions<AdyenOptions> options)
         {
             _repository = repository;
             _merchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT;
@@ -28,21 +28,21 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
         [Route("admin")]
         public IActionResult Index()
         {
-            List<BookingPaymentModel> bookingPayments = new List<BookingPaymentModel>();
+            List<HotelPaymentModel> hotelPayments = new List<HotelPaymentModel>();
 
-            // We fetch all booking payments that we have stored in our (local) repository and show it.
-            foreach (KeyValuePair<string, BookingPaymentModel> kvp in _repository.BookingPayments)
+            // We fetch all hotel payments (regardless whether its authorised or not) that we have stored in our (local) repository and show it.
+            foreach (KeyValuePair<string, HotelPaymentModel> kvp in _repository.HotelPayments)
             {
-                bookingPayments.Add(kvp.Value);
+                hotelPayments.Add(kvp.Value);
             }
-            ViewBag.BookingPayments = bookingPayments;
+            ViewBag.HotelPayments = hotelPayments;
             return View();
         }
 
         [HttpPost("admin/update-payment-amount")]
         public async Task<ActionResult<PaymentAmountUpdateResource>> UpdatePaymentAmount(UpdatePaymentAmountRequest request, CancellationToken cancellationToken = default)
         {
-            if (!_repository.BookingPayments.TryGetValue(request.PspReference, out var bookingPayment))
+            if (!_repository.HotelPayments.TryGetValue(request.PspReference, out var hotelPayment))
             {
                 return NotFound();
             }
@@ -52,8 +52,8 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 var createPaymentAmountUpdateRequest = new CreatePaymentAmountUpdateRequest()
                 {
                     MerchantAccount = _merchantAccount, // Required
-                    Amount = new Amount() { Value = request.Amount, Currency = bookingPayment.Currency },
-                    Reference = bookingPayment.Reference,
+                    Amount = new Amount() { Value = request.Amount, Currency = hotelPayment.Currency },
+                    Reference = hotelPayment.Reference,
                     IndustryUsage = CreatePaymentAmountUpdateRequest.IndustryUsageEnum.DelayedCharge,
                 };
                 
@@ -91,7 +91,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
         [HttpPost("admin/create-capture")]
         public async Task<ActionResult<PaymentCaptureResource>> CreateCapture(CreateCaptureRequest request, CancellationToken cancellationToken = default)
         {
-            if (!_repository.BookingPayments.TryGetValue(request.PspReference, out var bookingPayment))
+            if (!_repository.HotelPayments.TryGetValue(request.PspReference, out var hotelPayment))
             {
                 return NotFound();
             }
@@ -101,8 +101,8 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 var createPaymentCaptureRequest = new CreatePaymentCaptureRequest()
                 {
                     MerchantAccount = _merchantAccount, // Required.
-                    Amount = new Amount() { Value = request.Amount, Currency = bookingPayment.Currency }, // Required.
-                    Reference = bookingPayment.Reference
+                    Amount = new Amount() { Value = request.Amount, Currency = hotelPayment.Currency }, // Required.
+                    Reference = hotelPayment.Reference
                 };
                 
                 var response = await _modificationsService.CaptureAuthorisedPaymentAsync(request.PspReference, createPaymentCaptureRequest, cancellationToken: cancellationToken);
@@ -117,7 +117,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
         [HttpPost("admin/cancel-authorised-payment")]
         public async Task<ActionResult<PaymentCancelResource>> CancelAuthorisedPaymentRequest(CancelAuthorisedPaymentRequest request, CancellationToken cancellationToken = default)
         {
-            if (!_repository.BookingPayments.TryGetValue(request.PspReference, out var bookingPayment))
+            if (!_repository.HotelPayments.TryGetValue(request.PspReference, out var hotelPayment))
             {
                 return NotFound();
             }
@@ -127,7 +127,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 var createPaymentCancelRequest = new CreatePaymentCancelRequest()
                 {
                     MerchantAccount = _merchantAccount, // Required.
-                    Reference = bookingPayment.Reference
+                    Reference = hotelPayment.Reference
                 };
                 
                 var response = await _modificationsService.CancelAuthorisedPaymentByPspReferenceAsync(request.PspReference, createPaymentCancelRequest, cancellationToken: cancellationToken);

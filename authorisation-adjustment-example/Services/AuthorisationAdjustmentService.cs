@@ -14,11 +14,11 @@ namespace adyen_dotnet_authorisation_adjustment_example.Services
 {
     public class AuthorisationAdjustmentService
     {
-        private readonly IBookingPaymentRepository _repository;
+        private readonly IHotelPaymentRepository _repository;
         private readonly IModificationsService _modificationsService;
         private readonly string _merchantAccount;
 
-        public AuthorisationAdjustmentService(IBookingPaymentRepository repository, IModificationsService modificationsService, IOptions<AdyenOptions> options)
+        public AuthorisationAdjustmentService(IHotelPaymentRepository repository, IModificationsService modificationsService, IOptions<AdyenOptions> options)
         {
             _repository = repository;
             _merchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT;

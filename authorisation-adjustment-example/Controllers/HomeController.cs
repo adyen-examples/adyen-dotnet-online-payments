@@ -42,11 +42,11 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             switch (status)
             {
                 case "pending":
-                    msg = "Your booking has been received! Payment completion pending.";
+                    msg = "Your payment has been received! Payment completion pending.";
                     img = "success";
                     break;
                 case "failed":
-                    msg = "The booking was refused. Please try a different payment method or card.";
+                    msg = "The payment was refused. Please try a different payment method or card.";
                     img = "failed";
                     break;
                 case "error":
@@ -54,7 +54,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                     img = "failed";
                     break;
                 default:
-                    msg = "Your booking has been successfully confirmed.";
+                    msg = "Your payment has been successfully authorised.";
                     img = "success";
                     break;
             }

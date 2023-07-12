@@ -15,11 +15,11 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
     public class WebhookController : ControllerBase
     {
         private readonly ILogger<WebhookController> _logger;
-        private readonly IBookingPaymentRepository _repository;
+        private readonly IHotelPaymentRepository _repository;
         private readonly HmacValidator _hmacValidator;
         private readonly string _hmacKey;
 
-        public WebhookController(ILogger<WebhookController> logger, IOptions<AdyenOptions> options, IBookingPaymentRepository repository, HmacValidator hmacValidator)
+        public WebhookController(ILogger<WebhookController> logger, IOptions<AdyenOptions> options, IHotelPaymentRepository repository, HmacValidator hmacValidator)
         {
             _logger = logger;
             _repository = repository;
@@ -51,8 +51,14 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                     return BadRequest("[not accepted invalid hmac key]");
                 }
 
-                // Process notification asynchronously.
-                await ProcessNotificationAsync(container.NotificationItem);
+                // Process authorisation notification asynchronously.
+                await ProcessAuthorisationNotificationAsync(container.NotificationItem);
+
+                // Process capture notification asynchronously.
+                await ProcessAuthorisationAdjustmentNotificationAsync(container.NotificationItem);
+
+                // Process capture notification asynchronously.
+                await ProcessCaptureNotificationAsync(container.NotificationItem);
 
                 return Ok("[accepted]");
             }
@@ -63,8 +69,99 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             }
         }
 
-        private Task ProcessNotificationAsync(NotificationRequestItem notification)
+        private Task ProcessAuthorisationNotificationAsync(NotificationRequestItem notification)
         {
+            // Regardless of a success or not, you would probably want to update your backend/database or (preferably) send the event to a queue.
+            if (!notification.Success)
+            {
+                // Perform your business logic here, you would probably want to process the success:false event to update your backend. We log it for now.
+                _logger.LogInformation($"Webhook unsuccessful: {notification.Reason} \n" +
+                    $"EventCode: {notification.EventCode} \n" +
+                    $"Merchant Reference ::{notification.MerchantReference} \n" +
+                    $"PSP Reference ::{notification.PspReference} \n");
+
+                return Task.CompletedTask;
+            }
+
+            if (notification.EventCode != "AUTHORISATION")
+            {
+                return Task.CompletedTask;
+            }
+
+            if (!_repository.HotelPayments.TryGetValue(notification.PspReference, out Models.HotelPaymentModel model))
+            {
+                return Task.CompletedTask;
+            }
+
+            // Perform your business logic here, you would probably want to process the success:true event to update your backend. We log it for now.
+            _logger.LogInformation($"Received successful authorisation webhook::\n" +
+                                   $"Merchant Reference ::{notification.MerchantReference} \n" +
+                                   $"PSP Reference ::{notification.PspReference} \n");
+
+            return Task.CompletedTask;
+        }
+
+        private Task ProcessAuthorisationAdjustmentNotificationAsync(NotificationRequestItem notification)
+        {
+            // Regardless of a success or not, you would probably want to update your backend/database or (preferably) send the event to a queue.
+            if (!notification.Success)
+            {
+                // Perform your business logic here, you would probably want to process the success:false event to update your backend. We log it for now.
+                _logger.LogInformation($"Webhook unsuccessful: {notification.Reason} \n" +
+                    $"EventCode: {notification.EventCode} \n" +
+                    $"Merchant Reference ::{notification.MerchantReference} \n" +
+                    $"PSP Reference ::{notification.PspReference} \n");
+
+                return Task.CompletedTask;
+            }
+
+            if (notification.EventCode != "AUTHORISATION_ADJUSTMENT")
+            {
+                return Task.CompletedTask;
+            }
+
+            if (!_repository.HotelPayments.TryGetValue(notification.PspReference, out Models.HotelPaymentModel model))
+            {
+                return Task.CompletedTask;
+            }
+
+            // Perform your business logic here, you would probably want to process the success:true event to update your backend. We log it for now.
+            _logger.LogInformation($"Received successful authorisation adjustment webhook::\n" +
+                                   $"Merchant Reference ::{notification.MerchantReference} \n" +
+                                   $"PSP Reference ::{notification.PspReference} \n");
+
+            return Task.CompletedTask;
+        }
+
+        private Task ProcessCaptureNotificationAsync(NotificationRequestItem notification)
+        {
+            // Regardless of a success or not, you would probably want to update your backend/database or (preferably) send the event to a queue.
+            if (!notification.Success)
+            {
+                // Perform your business logic here, you would probably want to process the success:false event to update your backend. We log it for now.
+                _logger.LogInformation($"Webhook unsuccessful: {notification.Reason} \n" +
+                    $"EventCode: {notification.EventCode} \n" +
+                    $"Merchant Reference ::{notification.MerchantReference} \n" +
+                    $"PSP Reference ::{notification.PspReference} \n");
+
+                return Task.CompletedTask;
+            }
+
+            if (notification.EventCode != "CAPTURE")
+            {
+                return Task.CompletedTask;
+            }
+
+            if (!_repository.HotelPayments.TryGetValue(notification.PspReference, out Models.HotelPaymentModel model))
+            {
+                return Task.CompletedTask;
+            }
+
+            // Perform your business logic here, you would probably want to process the success:true event to update your backend. We log it for now.
+            _logger.LogInformation($"Received successful capture webhook::\n" +
+                                   $"Merchant Reference ::{notification.MerchantReference} \n" +
+                                   $"PSP Reference ::{notification.PspReference} \n");
+
             return Task.CompletedTask;
         }
     }

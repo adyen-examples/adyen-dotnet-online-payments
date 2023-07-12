@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace adyen_dotnet_authorisation_adjustment_example.Models
 {
@@ -24,5 +25,21 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
         // Payment method used.
         public string PaymentMethodBrand { get; set; } // PaymentMethod brand (e.g. `mc`).
         public string PaymentMethodType { get; set; } // PaymentMethod type (e.g. `scheme`).
+
+        // Override for outputting purposes.
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"{nameof(PspReference)}: {PspReference}");
+            sb.AppendLine($"{nameof(Reference)}: {Reference}");
+            sb.AppendLine($"{nameof(DateTime)}: {DateTime}");
+            sb.AppendLine($"{nameof(Amount)}: {Amount}");
+            sb.AppendLine($"{nameof(Currency)}: {Currency}");
+            sb.AppendLine($"{nameof(ResultCode)}: {ResultCode}");
+            sb.AppendLine($"{nameof(RefusalReason)}: {RefusalReason}");
+            sb.AppendLine($"{nameof(PaymentMethodBrand)}: {PaymentMethodBrand}");
+            sb.AppendLine($"{nameof(PaymentMethodType)}: {PaymentMethodType}");
+            return sb.ToString();
+        }
     }
 }
