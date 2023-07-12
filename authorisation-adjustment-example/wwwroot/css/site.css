@@ -480,15 +480,18 @@ a:hover {
   padding: 16px;
 }
 
-.admin-panel-token-container {
+.admin-panel-payment-container {
   background-color: #fafff3;
   padding: 16px;
 }
 
-
 .adminList {
   list-style-type: decimal;
   border: 2px solid black;
+}
+
+.adminList li {
+  list-style-type: none;
 }
 
 /* end Admin panel view */

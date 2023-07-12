@@ -1,14 +1,14 @@
-﻿using adyen_dotnet_authorisation_adjustment_example.Models;
+﻿using Adyen.HttpClient;
+using Adyen.Model.Checkout;
+using Adyen.Service.Checkout;
+using adyen_dotnet_authorisation_adjustment_example.Models;
+using adyen_dotnet_authorisation_adjustment_example.Options;
 using adyen_dotnet_authorisation_adjustment_example.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using adyen_dotnet_authorisation_adjustment_example.Options;
-using Adyen.HttpClient;
-using Adyen.Model.Checkout;
-using Adyen.Service.Checkout;
-using Microsoft.Extensions.Options;
 
 namespace adyen_dotnet_authorisation_adjustment_example.Controllers
 {
@@ -28,40 +28,41 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
         [Route("admin")]
         public IActionResult Index()
         {
-            List<BookingPayment> details = new List<BookingPayment>();
+            List<BookingPayment> bookingPayments = new List<BookingPayment>();
 
-            // We fetch all shopperReferences that we have stored in our (local) repository and show it.
+            // We fetch all booking payments that we have stored in our (local) repository and show it.
             foreach (KeyValuePair<string, BookingPayment> kvp in _repository.BookingPayments)
             {
-                details.Add(kvp.Value);
+                bookingPayments.Add(kvp.Value);
             }
-            ViewBag.Details = details;
+            ViewBag.BookingPayments = bookingPayments;
             return View();
         }
 
-
-        [Route("admin/update-authorised-amount/{reference}/{pspReference}/{amount}")] // Turn this into a post request.
-        public async Task<PaymentAmountUpdateResource> IncrementalAdjustment(string reference, string pspReference, int amount, CancellationToken cancellationToken = default)
+        [HttpPost("admin/update-payment-amount")]
+        public async Task<ActionResult<PaymentAmountUpdateResource>> UpdatePaymentAmount(UpdatePaymentAmountRequest request, CancellationToken cancellationToken = default)
         {
-            // TODO: handle incremental, decremental, extension.
+            if (!_repository.BookingPayments.TryGetValue(request.PspReference, out var bookingPayment))
+            {
+                return NotFound();
+            }
+
             try
             {
-                var request = new CreatePaymentAmountUpdateRequest()
+                var createPaymentAmountUpdateRequest = new CreatePaymentAmountUpdateRequest()
                 {
                     MerchantAccount = _merchantAccount, // Required
-                    Amount = new Amount() { Value = amount, Currency = "EUR"},
-                    Reference = reference,
+                    Amount = new Amount() { Value = request.Amount, Currency = bookingPayment.Currency },
+                    Reference = bookingPayment.Reference,
                     IndustryUsage = CreatePaymentAmountUpdateRequest.IndustryUsageEnum.DelayedCharge,
                 };
                 
-                var response = await _modificationsService.UpdateAuthorisedAmountAsync(pspReference, request, cancellationToken: cancellationToken);
-                return response;
+                var response = await _modificationsService.UpdateAuthorisedAmountAsync(request.PspReference, createPaymentAmountUpdateRequest, cancellationToken: cancellationToken);
+                return Ok(response);
             }
             catch (HttpClientException e)
-            { 
-                //ViewBag.Message = $"Incremental adjustment failed for PSPReference {pspReference}. See error logs for the exception.";
-                //ViewBag.Img = "failed";
-                throw;
+            {
+                return BadRequest(e);
             }
             //try
             //{
@@ -87,49 +88,54 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             //}
         }
 
-        [Route("admin/capture/{reference}/{pspReference}/{amount}")] // TODO: Move amount/reference into its own storage, it should not be passed on as parameter.
-        public async Task<PaymentCaptureResource> Capture(string reference, string pspReference, int amount, CancellationToken cancellationToken = default)
+        [HttpPost("admin/create-capture")]
+        public async Task<ActionResult<PaymentCaptureResource>> CreateCapture(CreateCaptureRequest request, CancellationToken cancellationToken = default)
         {
+            if (!_repository.BookingPayments.TryGetValue(request.PspReference, out var bookingPayment))
+            {
+                return NotFound();
+            }
+
             try
             {
-                var request = new CreatePaymentCaptureRequest()
+                var createPaymentCaptureRequest = new CreatePaymentCaptureRequest()
                 {
                     MerchantAccount = _merchantAccount, // Required.
-                    Amount = new Amount() { Value = amount, Currency = "EUR"}, // Required.
-                    Reference = reference,
+                    Amount = new Amount() { Value = request.Amount, Currency = bookingPayment.Currency }, // Required.
+                    Reference = bookingPayment.Reference
                 };
                 
-                var response = await _modificationsService.CaptureAuthorisedPaymentAsync(pspReference, request, cancellationToken: cancellationToken);
-                return response; // Note that the response will have a DIFFERENT PSPReference compared to the initial preauth
+                var response = await _modificationsService.CaptureAuthorisedPaymentAsync(request.PspReference, createPaymentCaptureRequest, cancellationToken: cancellationToken);
+                return Ok(response); // Note that the response will have a DIFFERENT PSPReference compared to the initial preauth
             }
             catch (HttpClientException e)
-            { 
-                //ViewBag.Message = $"Incremental adjustment failed for PSPReference {pspReference}. See error logs for the exception.";
-                //ViewBag.Img = "failed";
-                throw;
+            {
+                return BadRequest(e);
             }
         }
         
-        [Route("admin/cancel-pre-authorisation/{pspReference}/{reference}")] // Move reference
-        public async Task<PaymentCancelResource> CancelPreAuthorisation(string pspReference, string reference, CancellationToken cancellationToken = default)
+        [HttpPost("admin/cancel-authorised-payment")]
+        public async Task<ActionResult<PaymentCancelResource>> CancelAuthorisedPaymentRequest(CancelAuthorisedPaymentRequest request, CancellationToken cancellationToken = default)
         {
-            
+            if (!_repository.BookingPayments.TryGetValue(request.PspReference, out var bookingPayment))
+            {
+                return NotFound();
+            }
+
             try
             {
-                var request = new CreatePaymentCancelRequest()
+                var createPaymentCancelRequest = new CreatePaymentCancelRequest()
                 {
                     MerchantAccount = _merchantAccount, // Required.
-                    Reference = reference,
+                    Reference = bookingPayment.Reference
                 };
                 
-                var response = await _modificationsService.CancelAuthorisedPaymentByPspReferenceAsync(pspReference, request, cancellationToken: cancellationToken);
-                return response;
+                var response = await _modificationsService.CancelAuthorisedPaymentByPspReferenceAsync(request.PspReference, createPaymentCancelRequest, cancellationToken: cancellationToken);
+                return Ok(response);
             }
             catch (HttpClientException e)
-            { 
-                //ViewBag.Message = $"Incremental adjustment failed for PSPReference {pspReference}. See error logs for the exception.";
-                //ViewBag.Img = "failed";
-                throw;
+            {
+                return BadRequest(e);
             }
         }
     }

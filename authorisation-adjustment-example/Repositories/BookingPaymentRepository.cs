@@ -6,7 +6,6 @@ namespace adyen_dotnet_authorisation_adjustment_example.Repositories
 {
     /// <summary>
     /// Acts as a local (memory) repository to store <see cref="BookingPayment"/>s.
-    /// These can be used to make authorisation adjustments.
     /// </summary>
     public interface IBookingPaymentRepository
     {
@@ -14,7 +13,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Repositories
        
         bool Remove(string pspReference);
 
-        bool Upsert(string pspReference, string reference, int amount, string currency);
+        bool Upsert(string pspReference, string reference, long? amount, string currency, string resultCode, string refusalReason);
     }
 
     public class BookingPaymentRepository : IBookingPaymentRepository
@@ -31,7 +30,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Repositories
             return BookingPayments.TryRemove(pspReference, out var _);
         }
 
-        public bool Upsert(string pspReference, string reference, int amount, string currency)
+        public bool Upsert(string pspReference, string reference, long? amount, string currency, string resultCode, string refusalReason)
         {
             return BookingPayments.TryAdd(
                 pspReference,
@@ -41,7 +40,9 @@ namespace adyen_dotnet_authorisation_adjustment_example.Repositories
                     Reference = reference,
                     Amount = amount,
                     Currency = currency,
-                    DateTime = DateTime.UtcNow
+                    DateTime = DateTime.UtcNow,
+                    ResultCode = resultCode,
+                    RefusalReason = refusalReason
                 }
             );
         }
