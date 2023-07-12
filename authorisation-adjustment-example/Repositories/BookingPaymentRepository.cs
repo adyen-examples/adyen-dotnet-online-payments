@@ -1,5 +1,4 @@
 ﻿using adyen_dotnet_authorisation_adjustment_example.Models;
-using System;
 using System.Collections.Concurrent;
 
 namespace adyen_dotnet_authorisation_adjustment_example.Repositories

@@ -1,5 +1,4 @@
 ﻿using Adyen.Model.Checkout;
-using Adyen.Model.Management;
 using Adyen.Service.Checkout;
 using adyen_dotnet_authorisation_adjustment_example.Models;
 using adyen_dotnet_authorisation_adjustment_example.Options;
