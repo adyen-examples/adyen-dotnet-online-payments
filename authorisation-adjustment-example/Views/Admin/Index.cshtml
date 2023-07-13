@@ -19,7 +19,8 @@
         if (hotelPayments == null || !hotelPayments.Any())
         {
             <p>
-                <b>No payments are stored. You can make a card payment in the <a href="/">Shopper View</a>.
+                <b>
+                    No payments are stored. You can make a card payment in the <a href="/">Shopper View</a>.
                 </b>
             </p>
         }
@@ -29,21 +30,22 @@
             {
                 <ul class="adminList">   
                     <b>Result Code: @payment.ResultCode </b>
-                     @if (payment.ResultCode == "Authorised")
-                     {
+                    <b>PspReference: @payment.PspReference</b><br/>
+                    <b>Reference:</b> @payment.Reference<br/>
+                    
+                    @if (payment.ResultCode == "Authorised")
+                    {
                         <li>
                             <b>Payment Amount:</b> @payment.Currency @(payment.Amount/100L)<br/>
                         </li>
-                      }
-                     else
-                     {
+                    }
+                    else
+                    {
                         <li>
                             <b>Refusal Reason:</b> (@payment.RefusalReason)
                         </li>
-                     }
-                     <b>PspReference: @payment.PspReference</b>
-                     <b>Reference:</b> @payment.Reference<br/>
-                     <b>DateTime:</b> @payment.DateTime<br/>
+                    }
+                    <b>DateTime:</b> @payment.DateTime<br/>
                 </ul>
             }
         }

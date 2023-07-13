@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace adyen_dotnet_authorisation_adjustment_example.Controllers
 {
@@ -16,13 +17,15 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
     {
         private readonly IHotelPaymentRepository _repository;
         private readonly IModificationsService _modificationsService;
+        private readonly ILogger<AdminController> _logger;
         private readonly string _merchantAccount;
         
-        public AdminController(IHotelPaymentRepository repository,  IModificationsService modificationsService, IOptions<AdyenOptions> options)
+        public AdminController(IHotelPaymentRepository repository,  IModificationsService modificationsService, IOptions<AdyenOptions> options, ILogger<AdminController> logger)
         {
             _repository = repository;
             _merchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT;
             _modificationsService = modificationsService;
+            _logger = logger;
         }
 
         [Route("admin")]
@@ -62,30 +65,9 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             }
             catch (HttpClientException e)
             {
-                return BadRequest(e);
+                _logger.LogError(e.ToString());
+                return BadRequest();
             }
-            //try
-            //{
-            //    PaymentResponse result = await _checkoutClient.MakePaymentAsync(ShopperReference.Value, recurringDetailReference, cancellationToken);
-
-            //    switch (result.ResultCode)
-            //    {
-            //        // Handle other payment response cases here.
-            //        case PaymentResponse.ResultCodeEnum.Authorised:
-            //            ViewBag.Message = $"Successfully authorised a payment with RecurringDetailReference: {recurringDetailReference}.";
-            //            ViewBag.Img = "success";
-            //            break;
-            //        default:
-            //            ViewBag.Message = $"Payment failed for RecurringDetailReference {recurringDetailReference}. See error logs for the message.";
-            //            ViewBag.Img = "failed";
-            //            break;
-            //    }
-            //}   
-            //catch (HttpClientException)
-            //{
-            //    ViewBag.Message = $"Payment failed for RecurringDetailReference {recurringDetailReference}. See error logs for the exception.";
-            //    ViewBag.Img = "failed";
-            //}
         }
 
         [HttpPost("admin/create-capture")]
@@ -110,7 +92,8 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             }
             catch (HttpClientException e)
             {
-                return BadRequest(e);
+                _logger.LogError(e.ToString());
+                return BadRequest();
             }
         }
         
@@ -135,7 +118,8 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             }
             catch (HttpClientException e)
             {
-                return BadRequest(e);
+                _logger.LogError(e.ToString());
+                return BadRequest();
             }
         }
     }

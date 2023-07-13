@@ -50,7 +50,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             catch (Adyen.HttpClient.HttpClientException e)
             {
                 _logger.LogError($"Request for PaymentMethods failed:\n{e.ResponseBody}\n");
-                throw;
+                return BadRequest();
             }
         }
 
@@ -61,12 +61,12 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             {
                 var response = await _paymentsService.PaymentsDetailsAsync(request, cancellationToken: cancellationToken);
                 _logger.LogInformation($"Response for PaymentsDetails:\n{response}\n");
-                return response;
+                return Ok(response);
             }
             catch (Adyen.HttpClient.HttpClientException e)
             {
                 _logger.LogError($"Request for PaymentsDetails failed:\n{e.ResponseBody}\n");
-                throw;
+                return BadRequest();
             }
         }
 
@@ -111,7 +111,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             catch (Adyen.HttpClient.HttpClientException e)
             {
                 _logger.LogError($"Request for PaymentsDetails failed:\n{e.ResponseBody}\n");
-                throw;
+                return BadRequest();
             }
         }
 
@@ -171,7 +171,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             catch (Adyen.HttpClient.HttpClientException e)
             {
                 _logger.LogError($"Request for Payments failed:\n{e.ResponseBody}\n");
-                throw;
+                return BadRequest();
             }
         }
     }
