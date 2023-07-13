@@ -9,8 +9,6 @@ namespace adyen_dotnet_authorisation_adjustment_example.Repositories
     public interface IHotelPaymentRepository
     {
         ConcurrentDictionary<string, HotelPaymentModel> HotelPayments { get; }
-       
-        bool Remove(string pspReference);
 
         bool Upsert(HotelPaymentModel hotelPayment);
     }
@@ -22,11 +20,6 @@ namespace adyen_dotnet_authorisation_adjustment_example.Repositories
         public HotelPaymentRepository()
         {
             HotelPayments = new ConcurrentDictionary<string, HotelPaymentModel>();
-        }
-
-        public bool Remove(string pspReference)
-        {
-            return HotelPayments.TryRemove(pspReference, out var _);
         }
 
         public bool Upsert(HotelPaymentModel hotelPayment)
