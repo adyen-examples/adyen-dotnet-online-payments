@@ -70,7 +70,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             }
         }
 
-        [HttpGet("api/handleShopperRedirect")]
+        [HttpGet("api/handleRedirect")]
         public async Task<IActionResult> HandleShoppperRedirect(string payload = null, string redirectResult = null, CancellationToken cancellationToken = default)
         {
             var detailsRequest = new DetailsRequest();
@@ -131,7 +131,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 Amount = new Amount("EUR", 24999), // Value is 249.99€ in minor units.
 
                 // Required for 3DS2 redirect flow.
-                ReturnUrl = $"{_urlService.GetHostUrl()}/api/handleShopperRedirect?orderRef={orderRef}",
+                ReturnUrl = $"{_urlService.GetHostUrl()}/api/handleRedirect?orderRef={orderRef}",
 
                 CountryCode = "NL",
                 Origin = _urlService.GetHostUrl(),

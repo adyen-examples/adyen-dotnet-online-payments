@@ -1,11 +1,11 @@
 ﻿@{
-    ViewData["Title"] = "Adyen Checkout Shopper View";
+    ViewData["Title"] = "Adyen Booking View";
 }
 
 <div class="main-container">
     <div class="info">
-        <h1>SHOPPER VIEW</h1>
-        <div class="shopper-view-container">
+        <h1>Booking View</h1>
+        <div class="booking-view-container">
             <p>This demo shows how pre-authorisation works. Pick a preferred payment method and initiate a payment request. </p> 
             <p>Once authorised, you can increase/decrease the amount in the <a href="/admin">Admin panel</a> page.</p>
             <p>The default expiry period can also be extended and ensures that Adyen does not automatically expire the authorisation. You can find the tables which includes expiry information from the following supported major card schemes on <a href="https://docs.adyen.com/online-payments/classic-integrations/modify-payments/adjust-authorisation#validity">the documentation page</a>.</p>
@@ -13,6 +13,7 @@
             <p>Make sure the payment method you want to use are enabled for your account. 
             Refer to <a href="https://docs.adyen.com/payment-methods#add-payment-methods-to-your-account">the documentation</a> to add missing payment methods.
             To learn more, check out the documentation about <a href="https://docs.adyen.com/online-payments/classic-integrations/modify-payments/adjust-authorisation">authorisation adjustments</a></p>
+            <p>Start by selecting 'Card' below.</p>
         </div>
     </div>
 
@@ -20,7 +21,7 @@
         <li class="integration-list-item">
             <a asp-area="" asp-controller="Home" asp-action="Preview" asp-route-id="card" class="integration-list-item-link">
             <div class="title-container">
-                <p class="integration-list-item-title">Card (pre-authorisation)</p>
+                <p class="integration-list-item-title">Card</p>
             </div>
             </a>
         </li>

@@ -439,8 +439,10 @@ a:hover {
 /* start Navigation bar menu */
 
 .navMenu {
-  position: relative;
+  position: sticky;
   overflow: hidden;
+  z-index: 9999;
+  top: 0;
 }
 
 .navMenu a {
@@ -464,14 +466,14 @@ a:hover {
 
 /* end Navigation bar menu */
 
-/* start Shopper View */
+/* start Booking View */
 
-.shopper-view-container {
+.booking-view-container {
   background-color: #f1f1f1;
   padding: 16px;
 }
 
-/* end Shopper View */
+/* end Booking View */
 
 /* start Admin panel view */
 
@@ -486,6 +488,7 @@ a:hover {
 }
 
 .adminList {
+  display: inline-block;
   background-color: #f4ffc8;
   padding: 12px 12px 12px 12px;
   list-style-type: decimal;
