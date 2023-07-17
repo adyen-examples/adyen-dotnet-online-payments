@@ -63,6 +63,31 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 Reference = "ref-2",
                 ResultCode = "Authorised"
             });
+            
+            hotelPayments.Add(new HotelPaymentModel()
+            {
+                Amount = 9876,
+                Currency = "EUR",
+                DateTime = DateTime.UtcNow,
+                PaymentMethodBrand = "scheme",
+                PaymentMethodType = "disc",
+                PspReference = "psp-3",
+                Reference = "ref-3",
+                ResultCode = "CAPTURE",
+                RefusalReason = "aaa"
+            });
+            
+            
+            hotelPayments.Add(new HotelPaymentModel()
+            {
+                DateTime = DateTime.UtcNow,
+                PaymentMethodBrand = "scheme",
+                PaymentMethodType = "mc",
+                PspReference = "psp-4",
+                Reference = "ref-4",
+                ResultCode = "CAPTURE",
+                RefusalReason = "aaa"
+            });
             ViewBag.HotelPayments = hotelPayments;
             return View();
         }

@@ -68,11 +68,11 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 // Failure reasons: https://docs.adyen.com/online-payments/capture/failure-reasons
                 await ProcessCaptureFailedNotificationAsync(container.NotificationItem);
 
-                // Process CANCEL_OR_REFUND notification asychronously (also known as: `reversals`).
+                // Process CANCEL_OR_REFUND notification asynchronously (also known as: `reversals`).
                 // Documentation: https://docs.adyen.com/online-payments/reversal
                 await ProcessCancelOrRefundNotificationAsync(container.NotificationItem);
 
-                // Process REFUND_FAILED notification asychronously.
+                // Process REFUND_FAILED notification asynchronously.
                 // Documentation: https://docs.adyen.com/online-payments/refund#refund-failed
                 // Testing this scenario: https://docs.adyen.com/online-payments/refund#testing-failed-refunds
                 await ProcessRefundFailedNotificationAsync(container.NotificationItem);

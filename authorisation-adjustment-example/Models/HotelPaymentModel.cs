@@ -24,5 +24,43 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
         // Payment method used.
         public string PaymentMethodBrand { get; set; } // PaymentMethod brand (e.g. `mc`).
         public string PaymentMethodType { get; set; } // PaymentMethod type (e.g. `scheme`).
+        
+        #region Amount/RefusalReasons/PaymentMethod show logic
+        
+        public bool IsAmountShown()
+        {
+            return Amount != null && !string.IsNullOrWhiteSpace(Currency);
+        }
+
+        public bool IsRefusalReasonShown()
+        {
+            return !string.IsNullOrWhiteSpace(RefusalReason);
+        }
+
+        public bool IsPaymentMethodShown()
+        {
+            return !string.IsNullOrWhiteSpace(PaymentMethodBrand) && !string.IsNullOrWhiteSpace(PaymentMethodType);
+        }
+        
+        #endregion
+
+        #region ResultCodes logic
+        
+        public bool IsAuthorised()
+        {
+            return ResultCode is "Authorised" or "AUTHORISATION";
+        }
+
+        public bool IsAuthorisedAdjusted()
+        {
+            return ResultCode is "AUTHORISATION_ADJUSTMENT";
+        }
+
+        public bool IsCaptured()
+        {
+            return ResultCode is "CAPTURE";
+        }
+        
+        #endregion
     }
 }
