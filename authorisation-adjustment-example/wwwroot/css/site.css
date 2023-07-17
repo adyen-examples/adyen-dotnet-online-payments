@@ -142,7 +142,7 @@ a:hover {
 .integration-list-item:hover {
   box-shadow: 0 16px 24px 0 #e5eaef;
   text-decoration: none;
-  border: 1px solid #06f;
+  border: 2px solid #0abf53;
 }
 
 @media (min-width: 768px) {
@@ -486,12 +486,70 @@ a:hover {
 }
 
 .adminList {
+  background-color: #f4ffc8;
+  padding: 12px 12px 12px 12px;
   list-style-type: decimal;
-  border: 2px solid black;
+  border: 2px solid #0e0e0e;
 }
 
 .adminList li {
   list-style-type: none;
+}
+
+.display-flex {
+  display: flex;
+}
+
+/* `Adjust` submit button */
+.adjustSubmitButton {
+  background-color: #dbae00;
+  color: white;
+  padding: 8px 12px;
+  margin: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  border: 2px solid #dbae00;
+  border-radius: 8px;
+}
+
+.adjustSubmitButton:hover {
+  background-color: #dbae00;
+  border: 2px solid #b69100;
+  border-radius: 8px;
+  transition: border-color 0.15s linear;
+}
+
+.adjustAmountText {
+  padding: 4px;
+  border: 1px solid #ccc;
+  max-width: 120px;
+  border-radius: 4px;
+  outline: none;
+}
+
+.adjustAmountText:focus {
+  border: 2px solid #dbae00;
+}
+
+/* `Extend`/`Capture`/`Reversal` submit button */
+.submitButton {
+  background-color: #0abf53;
+  color: white;
+  padding: 8px 12px;
+  margin: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  border: 2px solid #0abf53;
+  border-radius: 8px;
+}
+
+.submitButton:hover {
+  background-color: #0abf53;
+  border: 2px solid #005623;
+  border-radius: 8px;
+  transition: border-color 0.15s linear;
 }
 
 /* end Admin panel view */

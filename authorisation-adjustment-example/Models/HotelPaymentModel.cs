@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace adyen_dotnet_authorisation_adjustment_example.Models
 {

@@ -51,14 +51,35 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                     return BadRequest("[not accepted invalid hmac key]");
                 }
 
-                // Process authorisation notification asynchronously.
+                // Process AUTHORISATION notification asynchronously.
+                // Read more about authorisation here: https://docs.adyen.com/get-started-with-adyen/payment-glossary#authorisation
                 await ProcessAuthorisationNotificationAsync(container.NotificationItem);
 
-                // Process capture notification asynchronously.
+                // Process AUTHORISATION_ADJUSTMENT notification asynchronously.
+                // Documentation: https://docs.adyen.com/online-payments/adjust-authorisation#adjust-authorisation
                 await ProcessAuthorisationAdjustmentNotificationAsync(container.NotificationItem);
 
-                // Process capture notification asynchronously.
+                // Process CAPTURE notification asynchronously.
+                // Documentation: https://docs.adyen.com/online-payments/capture
                 await ProcessCaptureNotificationAsync(container.NotificationItem);
+
+                // Process CAPTURE_FAILED notification asynchronously. 
+                // Testing this scenario: https://docs.adyen.com/online-payments/classic-integrations/modify-payments/capture#testing-failed-captures
+                // Failure reasons: https://docs.adyen.com/online-payments/capture/failure-reasons
+                await ProcessCaptureFailedNotificationAsync(container.NotificationItem);
+
+                // Process CANCEL_OR_REFUND notification asychronously (also known as: `reversals`).
+                // Documentation: https://docs.adyen.com/online-payments/reversal
+                await ProcessCancelOrRefundNotificationAsync(container.NotificationItem);
+
+                // Process REFUND_FAILED notification asychronously.
+                // Documentation: https://docs.adyen.com/online-payments/refund#refund-failed
+                // Testing this scenario: https://docs.adyen.com/online-payments/refund#testing-failed-refunds
+                await ProcessRefundFailedNotificationAsync(container.NotificationItem);
+
+                // Process REFUNDED_REVERSED notification asynchronously.
+                // Documentation: https://docs.adyen.com/online-payments/refund#refunded-reversed
+                await ProcessRefundedReversedNotificationAsync(container.NotificationItem);
 
                 return Ok("[accepted]");
             }
@@ -71,7 +92,6 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
 
         private Task ProcessAuthorisationNotificationAsync(NotificationRequestItem notification)
         {
-            // Regardless of a success or not, you would probably want to update your backend/database or (preferably) send the event to a queue.
             if (!notification.Success)
             {
                 // Perform your business logic here, you would probably want to process the success:false event to update your backend. We log it for now.
@@ -103,7 +123,6 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
 
         private Task ProcessAuthorisationAdjustmentNotificationAsync(NotificationRequestItem notification)
         {
-            // Regardless of a success or not, you would probably want to update your backend/database or (preferably) send the event to a queue.
             if (!notification.Success)
             {
                 // Perform your business logic here, you would probably want to process the success:false event to update your backend. We log it for now.
@@ -135,7 +154,6 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
 
         private Task ProcessCaptureNotificationAsync(NotificationRequestItem notification)
         {
-            // Regardless of a success or not, you would probably want to update your backend/database or (preferably) send the event to a queue.
             if (!notification.Success)
             {
                 // Perform your business logic here, you would probably want to process the success:false event to update your backend. We log it for now.
@@ -160,6 +178,139 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             // Perform your business logic here, you would probably want to process the success:true event to update your backend. We log it for now.
             _logger.LogInformation($"Received successful capture webhook::\n" +
                                    $"Merchant Reference ::{notification.MerchantReference} \n" +
+                                   $"PSP Reference ::{notification.PspReference} \n");
+
+            return Task.CompletedTask;
+        }
+
+        private Task ProcessCaptureFailedNotificationAsync(NotificationRequestItem notification)
+        {
+            if (!notification.Success)
+            {
+                // Perform your business logic here, you would probably want to process the success:false event to update your backend. We log it for now.
+                _logger.LogInformation($"Webhook unsuccessful: {notification.Reason} \n" +
+                    $"EventCode: {notification.EventCode} \n" +
+                    $"Merchant Reference ::{notification.MerchantReference} \n" +
+                    $"Original Reference ::{notification.OriginalReference} \n" +
+                    $"PSP Reference ::{notification.PspReference} \n");
+
+                return Task.CompletedTask;
+            }
+
+            if (notification.EventCode != "CAPTURE_FAILED")
+            {
+                return Task.CompletedTask;
+            }
+
+            if (!_repository.HotelPayments.TryGetValue(notification.PspReference, out Models.HotelPaymentModel model))
+            {
+                return Task.CompletedTask;
+            }
+
+            // Perform your business logic here, you would probably want to process the success:true event to update your backend. We log it for now.
+            _logger.LogInformation($"Received successful capture webhook::\n" +
+                                   $"Merchant Reference ::{notification.MerchantReference} \n" +
+                                   $"Original Reference ::{notification.OriginalReference} \n" +
+                                   $"PSP Reference ::{notification.PspReference} \n");
+
+            return Task.CompletedTask;
+        }
+
+        private Task ProcessCancelOrRefundNotificationAsync(NotificationRequestItem notification)
+        {
+            if (!notification.Success)
+            {
+                // Perform your business logic here, you would probably want to process the success:false event to update your backend. We log it for now.
+                _logger.LogInformation($"Webhook unsuccessful: {notification.Reason} \n" +
+                    $"EventCode: {notification.EventCode} \n" +
+                    $"Merchant Reference ::{notification.MerchantReference} \n" +
+                    $"Original Reference ::{notification.OriginalReference} \n" +
+                    $"PSP Reference ::{notification.PspReference} \n");
+
+                return Task.CompletedTask;
+            }
+
+            if (notification.EventCode != "CANCEL_OR_REFUND")
+            {
+                return Task.CompletedTask;
+            }
+
+            if (!_repository.HotelPayments.TryGetValue(notification.PspReference, out Models.HotelPaymentModel model))
+            {
+                return Task.CompletedTask;
+            }
+
+            // Perform your business logic here, you would probably want to process the success:true event to update your backend. We log it for now.
+            _logger.LogInformation($"Received successful capture webhook::\n" +
+                                   $"Merchant Reference ::{notification.MerchantReference} \n" +
+                                   $"Original Reference ::{notification.OriginalReference} \n" +
+                                   $"PSP Reference ::{notification.PspReference} \n");
+
+            return Task.CompletedTask;
+        }
+
+        private Task ProcessRefundFailedNotificationAsync(NotificationRequestItem notification)
+        {
+            if (!notification.Success)
+            {
+                // Perform your business logic here, you would probably want to process the success:false event to update your backend. We log it for now.
+                _logger.LogInformation($"Webhook unsuccessful: {notification.Reason} \n" +
+                    $"EventCode: {notification.EventCode} \n" +
+                    $"Merchant Reference ::{notification.MerchantReference} \n" +
+                    $"Original Reference ::{notification.OriginalReference} \n" +
+                    $"PSP Reference ::{notification.PspReference} \n");
+
+                return Task.CompletedTask;
+            }
+
+            if (notification.EventCode != "REFUND_FAILED")
+            {
+                return Task.CompletedTask;
+            }
+
+            if (!_repository.HotelPayments.TryGetValue(notification.PspReference, out Models.HotelPaymentModel model))
+            {
+                return Task.CompletedTask;
+            }
+
+            // Perform your business logic here, you would probably want to process the success:true event to update your backend. We log it for now.
+            _logger.LogInformation($"Received successful capture webhook::\n" +
+                                   $"Merchant Reference ::{notification.MerchantReference} \n" +
+                                   $"Original Reference ::{notification.OriginalReference} \n" +
+                                   $"PSP Reference ::{notification.PspReference} \n");
+
+            return Task.CompletedTask;
+        }
+
+
+        private Task ProcessRefundedReversedNotificationAsync(NotificationRequestItem notification)
+        {
+            if (!notification.Success)
+            {
+                // Perform your business logic here, you would probably want to process the success:false event to update your backend. We log it for now.
+                _logger.LogInformation($"Webhook unsuccessful: {notification.Reason} \n" +
+                    $"EventCode: {notification.EventCode} \n" +
+                    $"Merchant Reference ::{notification.MerchantReference} \n" +
+                    $"Original Reference ::{notification.OriginalReference} \n" +
+                    $"PSP Reference ::{notification.PspReference} \n");
+
+                return Task.CompletedTask;
+            }
+
+            if (notification.EventCode != "REFUNDED_REVERSED")
+            {
+                return Task.CompletedTask;
+            }
+
+            if (!_repository.HotelPayments.TryGetValue(notification.PspReference, out Models.HotelPaymentModel model))
+            {
+                return Task.CompletedTask;
+            }
+
+            // Perform your business logic here, you would probably want to process the success:true event to update your backend. We log it for now.
+            _logger.LogInformation($"Received successful capture webhook::\n" +
+                                   $"Merchant Reference ::{notification.MerchantReference} \n" +
+                                   $"Original Reference ::{notification.OriginalReference} \n" +
                                    $"PSP Reference ::{notification.PspReference} \n");
 
             return Task.CompletedTask;

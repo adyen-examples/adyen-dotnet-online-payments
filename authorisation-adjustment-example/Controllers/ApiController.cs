@@ -128,7 +128,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 MerchantAccount = _merchantAccount, // Required.
                 Reference = orderRef.ToString(), // Required.
                 Channel = PaymentRequest.ChannelEnum.Web,
-                Amount = new Adyen.Model.Checkout.Amount("EUR", 24999), // Value is 249.99€ in minor units.
+                Amount = new Amount("EUR", 24999), // Value is 249.99€ in minor units.
 
                 // Required for 3DS2 redirect flow.
                 ReturnUrl = $"{_urlService.GetHostUrl()}/api/handleShopperRedirect?orderRef={orderRef}",
@@ -165,7 +165,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                     PaymentMethodType = response.PaymentMethod?.Type
                 };
 
-                _repository.Upsert(hotelPayment);
+                _repository.Insert(hotelPayment);
                 return Ok(response);
             }
             catch (Adyen.HttpClient.HttpClientException e)

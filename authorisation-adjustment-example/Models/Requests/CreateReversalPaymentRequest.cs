@@ -1,8 +1,7 @@
 ﻿namespace adyen_dotnet_authorisation_adjustment_example.Models
 {
-    public class UpdatePaymentAmountRequest
+    public class CreateReversalPaymentRequest
     {
         public string PspReference { get; init; }
-        public long Amount { get; init; }
     }
 }

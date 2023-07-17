@@ -9,8 +9,8 @@
     <div class="info">
         <h1>ADMIN PANEL</h1>
         <div class="admin-panel-container">
-            <p>The <b>admin panel</b> shows all payments for hotel bookings. In order to perform actions on the payments, follow the readme to ensure that you have setup your webhooks correctly to receive updates to the payments asynchronously. </p>
-            <p>Select a pre-authorised payment to adjust the payment amount or to extend its validity (expiration date). To learn more, check out the documentation about <a href="https://docs.adyen.com/online-payments/classic-integrations/modify-payments/adjust-authorisation"> authorisation adjustments.</a></p>
+            <p>The <b>admin panel</b> shows all payments for hotel bookings. In order to perform actions on the payments, follow the readme to ensure that you have setup your webhooks correctly to receive payment updates asynchronously. </p>
+            <p>Select a hotel payment to adjust the payment amount or to extend its validity (expiration date). To learn more, check out the documentation about <a href="https://docs.adyen.com/online-payments/classic-integrations/modify-payments/adjust-authorisation"> authorisation adjustments.</a></p>
         </div>
     </div>
     <br/>
@@ -28,27 +28,66 @@
         {
             @foreach(var payment in hotelPayments)
             {
-                <ul class="adminList">   
-                    <b>Result Code: @payment.ResultCode </b>
-                    <b>PspReference: @payment.PspReference</b><br/>
-                    <b>Reference:</b> @payment.Reference<br/>
+                double amount = (double)payment.Amount / 100L; 
+                <div>
+                    <ul class="adminList" value="@payment.PspReference">   
+                        <li><b>Result Code:</b> @payment.ResultCode </li>
+                        <li><b>PspReference:</b> @payment.PspReference</li>
+                        <li><b>Reference:</b> @payment.Reference</li>
                     
-                    @if (payment.ResultCode == "Authorised")
-                    {
+                        @if (payment.ResultCode == "Authorised")
+                        {
+                            <li>
+                                <!-- Show amount from minor units `1234` as: `12.34`-->
+                                <b>Payment Amount:</b> @payment.Currency @amount
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                <b>Refusal Reason:</b> (@payment.RefusalReason)
+                            </li>
+                        }
+                        <li><b>DateTime:</b> @payment.DateTime</li> 
+
                         <li>
-                            <b>Payment Amount:</b> @payment.Currency @(payment.Amount/100L)<br/>
+                            <form name="updatePaymentAmountForm" method="post">
+                                <b>Adjust amount:</b> <input type="text" name="amount" value="@amount" class="adjustAmountText">
+                                <input type="hidden" name="pspReference" value="@payment.PspReference" />
+                                <button type="submit" class="adjustSubmitButton">Adjust</button>
+                            </form>
                         </li>
-                    }
-                    else
-                    {
-                        <li>
-                            <b>Refusal Reason:</b> (@payment.RefusalReason)
+                            
+                        <li class="display-flex">
+                            <form name="extendPaymentForm" method="post">
+                                <input type="hidden" name="amount" value="@amount">
+                                <input type="hidden" name="pspReference" value="@payment.PspReference" />
+                                <button type="submit" class="submitButton">Extend</button>
+                            </form>
+
+                            <form name="capturePaymentForm" method="post">
+                                <input type="hidden" name="pspReference" value="@payment.PspReference" />
+                                <button type="submit" class="submitButton">Capture</button>
+                            </form>
+
+                            <form name="reversalPaymentForm" method="post">
+                                <input type="hidden" name="pspReference" value="@payment.PspReference" />
+                                <button type="submit" class="submitButton">Reversal</button>
+                            </form>
                         </li>
-                    }
-                    <b>DateTime:</b> @payment.DateTime<br/>
-                </ul>
+                    </ul>
+                </div>
             }
         }
     }
     </div>
 </div>
+
+<!-- Binds all submit form buttons for `/update-payment-amount` endpoint -->
+<script src="~/js/adminpanel-updatePaymentAmount-bindings.js" asp-append-version="true"></script>
+
+<!-- Binds all submit form buttons for `/capture-payment` endpoint -->
+<script src="~/js/adminpanel-capturePayment-bindings.js" asp-append-version="true"></script>
+
+<!-- Binds all submit form buttons for `/reversal-payment` endpoint -->
+<script src="~/js/adminpanel-reversalPayment-bindings.js" asp-append-version="true"></script>
