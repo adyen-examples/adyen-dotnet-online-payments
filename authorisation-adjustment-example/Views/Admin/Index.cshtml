@@ -29,50 +29,65 @@
         {
             @foreach(var payment in hotelPayments)
             {
-                double amount = (double)payment.Amount / 100L; 
+                double amount = (payment.Amount ?? 0.0) / 100L;
                 <div>
                     <ul class="adminList" value="@payment.PspReference">   
                         <li><b>Result Code:</b> @payment.ResultCode </li>
                         <li><b>PspReference:</b> @payment.PspReference</li>
                         <li><b>Reference:</b> @payment.Reference</li>
                     
-                        @if (payment.ResultCode == "Authorised")
+                        @if (payment.IsRefusalReasonShown())
                         {
                             <li>
-                                <!-- Show amount from minor units `1234` as: `12.34`-->
+                                <b>Refusal Reason:</b> @payment.RefusalReason
+                            </li>
+                        }
+                        
+                        @if (payment.IsAmountShown())
+                        {
+                            <li>
+                                <!-- Show amount from minor units EUR `1234` as: EUR`12.34`-->
                                 <b>Payment Amount:</b> @payment.Currency @amount
                             </li>
+                            
+                            @if (payment.IsPaymentMethodShown())
+                            {
+                                <li>
+                                    <b>Payment Method Brand/Type:</b> @payment.PaymentMethodBrand / @payment.PaymentMethodType
+                                </li>
+                            }
                         }
-                        else
-                        {
-                            <li>
-                                <b>Refusal Reason:</b> (@payment.RefusalReason)
-                            </li>
-                        }
+                        
                         <li><b>DateTime:</b> @payment.DateTime</li> 
 
                         <li>
-                            <form name="updatePaymentAmountForm" method="post">
-                                <b>Adjust amount:</b> <input type="text" name="amount" value="@amount" class="adjustAmountText">
-                                <input type="hidden" name="pspReference" value="@payment.PspReference" />
-                                <button type="submit" class="adjustSubmitButton">Adjust</button>
-                            </form>
+                            @if (payment.IsAuthorised() || payment.IsAuthorisedAdjusted())
+                            {
+                                <form name="updatePaymentAmountForm" method="post">
+                                    <b>Adjust amount:</b> <input type="text" name="amount" value="@amount" class="adjustAmountText">
+                                    <input type="hidden" name="pspReference" value="@payment.PspReference"/>
+                                    <button type="submit" class="adjustSubmitButton">Adjust</button>
+                                </form>
+                            }
                         </li>
                             
                         <li class="display-flex">
-                            <form name="extendPaymentForm" method="post">
-                                <input type="hidden" name="amount" value="@amount">
-                                <input type="hidden" name="pspReference" value="@payment.PspReference" />
-                                <button type="submit" class="submitButton">Extend</button>
-                            </form>
+                            @if (payment.IsAuthorised() || payment.IsAuthorisedAdjusted())
+                            {
+                                <form name="extendPaymentForm" method="post">
+                                    <input type="hidden" name="amount" value="@amount">
+                                    <input type="hidden" name="pspReference" value="@payment.PspReference"/>
+                                    <button type="submit" class="submitButton">Extend</button>
+                                </form>
 
-                            <form name="capturePaymentForm" method="post">
-                                <input type="hidden" name="pspReference" value="@payment.PspReference" />
-                                <button type="submit" class="submitButton">Capture</button>
-                            </form>
-
+                                <form name="capturePaymentForm" method="post">
+                                    <input type="hidden" name="pspReference" value="@payment.PspReference"/>
+                                    <button type="submit" class="submitButton">Capture</button>
+                                </form>
+                            }
+                            
                             <form name="reversalPaymentForm" method="post">
-                                <input type="hidden" name="pspReference" value="@payment.PspReference" />
+                                <input type="hidden" name="pspReference" value="@payment.PspReference"/>
                                 <button type="submit" class="submitButton">Reversal</button>
                             </form>
                         </li>
