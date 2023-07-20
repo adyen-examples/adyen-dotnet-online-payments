@@ -1,7 +1,7 @@
 ﻿@using Adyen.Model.Recurring;
 @using adyen_dotnet_authorisation_adjustment_example.Models;
 @{
-    ViewData["Title"] = "Adyen Hotel Admin View";
+    ViewData["Title"] = "Adyen Admin Panel";
     List<HotelPaymentModel> hotelPayments = ViewBag.HotelPayments;
 }
 
@@ -9,7 +9,7 @@
     <div class="info">
         <h1>ADMIN PANEL</h1>
         <div class="admin-panel-container">
-            <p>The <b>admin panel</b> shows all payments for hotel bookings. In order to perform actions on the payments, follow the readme to ensure that you have setup your webhooks correctly to receive payment updates asynchronously. </p>
+            <p>The <b>admin panel</b> shows all payments for hotel bookings. In order to perform actions on the payments, follow the readme to ensure that you have set up your webhooks correctly to receive payment updates asynchronously. </p>
             <p>Select a hotel payment to <a href="https://docs.adyen.com/online-payments/classic-integrations/modify-payments/adjust-authorisation">increase/decrease</a> the payment amount.</p>
             <p>Note: The default expiry period can also be extended and ensures that Adyen does not automatically expire the authorisation. You can find the tables which includes expiry information from the following supported major card schemes on <a href="https://docs.adyen.com/online-payments/classic-integrations/modify-payments/adjust-authorisation#validity">the documentation page</a>.</p>
         </div>
@@ -30,69 +30,121 @@
             @foreach(var payment in hotelPayments)
             {
                 double amount = (payment.Amount ?? 0.0) / 100L;
-                <div>
-                    <ul class="adminList" value="@payment.PspReference">   
-                        <li><b>Result Code:</b> @payment.ResultCode </li>
-                        <li><b>PspReference:</b> @payment.PspReference</li>
-                        <li><b>Reference:</b> @payment.Reference</li>
+                <ul class="adminList">   
+                    <li><b>Reference: &nbsp;</b> <a href="admin/details/@payment.Reference">@payment.Reference</a></li>
+                    <li><b>Result Code: &nbsp;</b> @payment.ResultCode </li>
+                    <li><b>PspReference: &nbsp;</b> @payment.PspReference</li>                    
+                    @if(!string.IsNullOrWhiteSpace(payment.OriginalReference))
+                    {
+                        <li><b>Original PspReference: &nbsp;</b> @payment.OriginalReference</li>
+                    }
                     
-                        @if (payment.IsRefusalReasonShown())
-                        {
-                            <li>
-                                <b>Refusal Reason:</b> @payment.RefusalReason
-                            </li>
-                        }
+                    @if (payment.IsRefusalReasonShown())
+                    {
+                        <li>
+                            <b>Refusal Reason: &nbsp;</b> @payment.RefusalReason
+                        </li>
+                    }
                         
-                        @if (payment.IsAmountShown())
-                        {
-                            <li>
-                                <!-- Show amount from minor units EUR `1234` as: EUR`12.34`-->
-                                <b>Payment Amount:</b> @payment.Currency @amount
-                            </li>
-                            
-                            @if (payment.IsPaymentMethodShown())
-                            {
-                                <li>
-                                    <b>Payment Method Brand/Type:</b> @payment.PaymentMethodBrand / @payment.PaymentMethodType
-                                </li>
-                            }
-                        }
-                        
-                        <li><b>DateTime:</b> @payment.DateTime</li> 
+                    @if (payment.IsAmountShown())
+                    {
+                        <li>
+                            <!-- Show amount from minor units EUR `1234` as: EUR`12.34`-->
+                            <b>Payment Amount: &nbsp;</b> @payment.Currency @amount
+                        </li>
 
                         <li>
-                            @if (payment.IsAuthorised() || payment.IsAuthorisedAdjusted())
+                            <b>Payment Method Brand: &nbsp;</b> @payment.PaymentMethodBrand
+                        </li>
+                    }
+                        
+                    <li><b>DateTime: &nbsp;</b> @payment.DateTime</li> 
+
+                    <li>
+                        @{
+                            bool showAdjustButton = (payment.IsAuthorised() || payment.IsAuthorisedAdjusted()) 
+                                && !payment.IsRefusalReasonShown();
+                        
+                            if (showAdjustButton)
                             {
                                 <form name="updatePaymentAmountForm" method="post">
                                     <b>Adjust amount:</b> <input type="text" name="amount" value="@amount" class="adjustAmountText">
-                                    <input type="hidden" name="pspReference" value="@payment.PspReference"/>
+                                        <input type="hidden" name="reference" value="@payment.Reference" />
                                     <button type="submit" class="adjustSubmitButton">Adjust</button>
                                 </form>
                             }
-                        </li>
+                            else
+                            {
+                                <form name="updatePaymentAmountForm" method="post">
+                                    <b>Adjust amount:</b> <input type="text" name="amount" value="@amount" class="adjustAmountText" disabled>
+                                        <input type="hidden" name="reference" value="@payment.Reference" />
+                                    <button type="submit" class="adjustSubmitButton" disabled>Adjust</button>
+                                </form>
+                            }
+                        }
+                    </li>
                             
-                        <li class="display-flex">
-                            @if (payment.IsAuthorised() || payment.IsAuthorisedAdjusted())
+                    <li class="display-flex">
+                        @{
+                            if (showAdjustButton)
                             {
                                 <form name="extendPaymentForm" method="post">
                                     <input type="hidden" name="amount" value="@amount">
-                                    <input type="hidden" name="pspReference" value="@payment.PspReference"/>
+                                    <input type="hidden" name="reference" value="@payment.Reference"/>
                                     <button type="submit" class="submitButton">Extend</button>
                                 </form>
-
+                            }
+                            else
+                            {                            
+                                <form name="extendPaymentForm" method="post">
+                                    <input type="hidden" name="amount" value="@amount">
+                                    <input type="hidden" name="reference" value="@payment.Reference"/>
+                                    <button type="submit" class="submitButton" disabled>Extend</button>
+                                </form>
+                            }
+                        }
+                        @{
+                            bool showCaptureButton = (payment.IsAuthorised() || payment.IsAuthorisedAdjusted()) 
+                                && !payment.IsRefusalReasonShown();
+                        
+                            if (showCaptureButton)
+                            {
                                 <form name="capturePaymentForm" method="post">
-                                    <input type="hidden" name="pspReference" value="@payment.PspReference"/>
+                                    <input type="hidden" name="reference" value="@payment.Reference"/>
                                     <button type="submit" class="submitButton">Capture</button>
                                 </form>
                             }
+                            else
+                            {
+
+                                <form name="capturePaymentForm" method="post">
+                                    <input type="hidden" name="reference" value="@payment.Reference"/>
+                                    <button type="submit" class="submitButton" disabled>Capture</button>
+                                </form>
+                            }
+                        }
+
+                        @{
+                            bool showReversalButton = (payment.IsAuthorised() || payment.IsAuthorisedAdjusted() || payment.IsCaptured()) 
+                                && !payment.IsRefusalReasonShown();
                             
-                            <form name="reversalPaymentForm" method="post">
-                                <input type="hidden" name="pspReference" value="@payment.PspReference"/>
-                                <button type="submit" class="submitButton">Reversal</button>
-                            </form>
-                        </li>
-                    </ul>
-                </div>
+                            if (showReversalButton)
+                            {
+                                <form name="reversalPaymentForm" method="post">
+                                    <input type="hidden" name="reference" value="@payment.Reference"/>
+                                    <button type="submit" class="submitButton">Reversal</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form name="reversalPaymentForm" method="post">
+                                    <input type="hidden" name="reference" value="@payment.Reference"/>
+                                    <button type="submit" class="submitButton" disabled>Reversal</button>
+                                </form>
+                            }
+                        }
+                    </li>
+                </ul>
             }
         }
     }

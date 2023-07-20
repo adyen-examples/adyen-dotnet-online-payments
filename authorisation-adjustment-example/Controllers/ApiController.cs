@@ -71,7 +71,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
         }
 
         [HttpGet("api/handleRedirect")]
-        public async Task<IActionResult> HandleShoppperRedirect(string payload = null, string redirectResult = null, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> HandleRedirect(string payload = null, string redirectResult = null, CancellationToken cancellationToken = default)
         {
             var detailsRequest = new DetailsRequest();
             if (!string.IsNullOrWhiteSpace(redirectResult))
@@ -143,7 +143,6 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 {
                     { "allow3DS2", "true" },            // Required for the 3DS2 flow.
                     { "authorisationType", "PreAuth" }, // Set `authorisationType` to `preAuth`.
-                    { "manualCapture", "true" },        // Set `manualCapture` to `true` so we do not finalize the payment until we capture it.
                 }
             };
 
@@ -155,17 +154,28 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 var hotelPayment = new HotelPaymentModel()
                 {
                     PspReference = response.PspReference,
+                    OriginalReference = null,
                     Reference = response.MerchantReference,
-                    Amount = response.Amount.Value.HasValue ? response.Amount.Value : null,
-                    Currency = response.Amount.Currency,
-                    DateTime = DateTime.UtcNow,
+                    Amount = response.Amount?.Value,
+                    Currency = response.Amount?.Currency,
+                    DateTime = DateTimeOffset.UtcNow,
                     ResultCode = response.ResultCode.ToString(),
                     RefusalReason = response.RefusalReason,
                     PaymentMethodBrand = response.PaymentMethod?.Brand,
-                    PaymentMethodType = response.PaymentMethod?.Type
                 };
 
-                _repository.Insert(hotelPayment);
+                if (!_repository.HotelPayments.TryGetValue(hotelPayment.Reference, out var list))
+                {
+                    // Reference does not exist, let's add it.
+                    _repository.HotelPayments.TryAdd(
+                        hotelPayment.Reference, /// Key: Reference.
+                        new List<HotelPaymentModel>() {
+                        {
+                            hotelPayment        /// Value: <see cref="HotelPaymentModel"/>.
+                        }
+                    });
+                }
+
                 return Ok(response);
             }
             catch (Adyen.HttpClient.HttpClientException e)

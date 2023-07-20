@@ -2,6 +2,6 @@
 {
     public class CreateCapturePaymentRequest
     {
-        public string PspReference { get; init; }
+        public string Reference { get; init; }
     }
 }

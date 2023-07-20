@@ -1,5 +1,7 @@
+using Adyen.Model.Nexo;
 using Adyen.Model.Notification;
 using Adyen.Util;
+using adyen_dotnet_authorisation_adjustment_example.Models;
 using adyen_dotnet_authorisation_adjustment_example.Options;
 using adyen_dotnet_authorisation_adjustment_example.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -92,29 +94,31 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
 
         private Task ProcessAuthorisationNotificationAsync(NotificationRequestItem notification)
         {
-            if (!notification.Success)
-            {
-                // Perform your business logic here, you would probably want to process the success:false event to update your backend. We log it for now.
-                _logger.LogInformation($"Webhook unsuccessful: {notification.Reason} \n" +
-                    $"EventCode: {notification.EventCode} \n" +
-                    $"Merchant Reference ::{notification.MerchantReference} \n" +
-                    $"PSP Reference ::{notification.PspReference} \n");
-
-                return Task.CompletedTask;
-            }
-
             if (notification.EventCode != "AUTHORISATION")
             {
                 return Task.CompletedTask;
             }
 
-            if (!_repository.HotelPayments.TryGetValue(notification.PspReference, out Models.HotelPaymentModel model))
+            var hotelPayment = new HotelPaymentModel()
             {
+                PspReference = notification.PspReference,
+                OriginalReference = notification.OriginalReference,
+                Reference = _repository.FindReferenceByPspReference(notification.PspReference),
+                Amount = notification.Amount?.Value,
+                Currency = notification.Amount?.Currency,
+                DateTime = DateTimeOffset.Parse(notification.EventDate),
+                ResultCode = notification.EventCode,
+                RefusalReason = notification.Success ? null : notification.Reason,
+                PaymentMethodBrand = notification.PaymentMethod
+            };
+
+            if (!_repository.Insert(hotelPayment))
+            {
+                _logger.LogInformation($"Could not insert {notification.PspReference}");
                 return Task.CompletedTask;
             }
 
-            // Perform your business logic here, you would probably want to process the success:true event to update your backend. We log it for now.
-            _logger.LogInformation($"Received successful authorisation webhook::\n" +
+            _logger.LogInformation($"Received {(notification.Success ? "successful" : "unsuccessful")} {notification.EventCode} webhook::\n" +
                                    $"Merchant Reference ::{notification.MerchantReference} \n" +
                                    $"PSP Reference ::{notification.PspReference} \n");
 
@@ -123,95 +127,104 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
 
         private Task ProcessAuthorisationAdjustmentNotificationAsync(NotificationRequestItem notification)
         {
-            if (!notification.Success)
-            {
-                // Perform your business logic here, you would probably want to process the success:false event to update your backend. We log it for now.
-                _logger.LogInformation($"Webhook unsuccessful: {notification.Reason} \n" +
-                    $"EventCode: {notification.EventCode} \n" +
-                    $"Merchant Reference ::{notification.MerchantReference} \n" +
-                    $"PSP Reference ::{notification.PspReference} \n");
-
-                return Task.CompletedTask;
-            }
-
             if (notification.EventCode != "AUTHORISATION_ADJUSTMENT")
             {
                 return Task.CompletedTask;
             }
 
-            if (!_repository.HotelPayments.TryGetValue(notification.PspReference, out Models.HotelPaymentModel model))
+            notification.AdditionalData.TryGetValue("bookingDate", out string dateTime);
+
+            var hotelPayment = new HotelPaymentModel()
             {
+                PspReference = notification.PspReference,
+                OriginalReference = notification.OriginalReference,
+                Reference = _repository.FindReferenceByPspReference(notification.OriginalReference),
+                Amount = notification.Amount?.Value,
+                Currency = notification.Amount?.Currency,
+                DateTime = dateTime == null ? DateTimeOffset.Parse(notification.EventDate) : DateTimeOffset.Parse(dateTime),
+                ResultCode = notification.EventCode,
+                RefusalReason = notification.Success ? null : notification.Reason,
+                PaymentMethodBrand = notification.PaymentMethod
+            };
+
+            if (!_repository.Insert(hotelPayment))
+            {
+                _logger.LogInformation($"Could not insert {notification.PspReference}");
                 return Task.CompletedTask;
             }
 
-            // Perform your business logic here, you would probably want to process the success:true event to update your backend. We log it for now.
-            _logger.LogInformation($"Received successful authorisation adjustment webhook::\n" +
+            _logger.LogInformation($"Received {(notification.Success ? "successful" : "unsuccessful")} {notification.EventCode} webhook::\n" +
                                    $"Merchant Reference ::{notification.MerchantReference} \n" +
-                                   $"PSP Reference ::{notification.PspReference} \n");
+                                   $"PSP Reference ::{notification.PspReference} \n" +
+                                   $"Original Reference ::{notification.OriginalReference} \n");
 
             return Task.CompletedTask;
         }
 
         private Task ProcessCaptureNotificationAsync(NotificationRequestItem notification)
         {
-            if (!notification.Success)
-            {
-                // Perform your business logic here, you would probably want to process the success:false event to update your backend. We log it for now.
-                _logger.LogInformation($"Webhook unsuccessful: {notification.Reason} \n" +
-                    $"EventCode: {notification.EventCode} \n" +
-                    $"Merchant Reference ::{notification.MerchantReference} \n" +
-                    $"PSP Reference ::{notification.PspReference} \n");
-
-                return Task.CompletedTask;
-            }
-
             if (notification.EventCode != "CAPTURE")
             {
                 return Task.CompletedTask;
             }
 
-            if (!_repository.HotelPayments.TryGetValue(notification.PspReference, out Models.HotelPaymentModel model))
+            var hotelPayment = new HotelPaymentModel()
             {
+                PspReference = notification.PspReference,
+                OriginalReference = notification.OriginalReference,
+                Reference = _repository.FindReferenceByPspReference(notification.OriginalReference),
+                Amount = notification.Amount?.Value,
+                Currency = notification.Amount?.Currency,
+                DateTime = DateTimeOffset.Parse(notification.EventDate),
+                ResultCode = notification.EventCode,
+                RefusalReason = notification.Success ? null : notification.Reason,
+                PaymentMethodBrand = notification.PaymentMethod
+            };
+
+            if (!_repository.Insert(hotelPayment))
+            {
+                _logger.LogInformation($"Could not insert {notification.PspReference}");
                 return Task.CompletedTask;
             }
 
-            // Perform your business logic here, you would probably want to process the success:true event to update your backend. We log it for now.
-            _logger.LogInformation($"Received successful capture webhook::\n" +
+            _logger.LogInformation($"Received {(notification.Success ? "successful" : "unsuccessful")} {notification.EventCode} webhook::\n" +
                                    $"Merchant Reference ::{notification.MerchantReference} \n" +
-                                   $"PSP Reference ::{notification.PspReference} \n");
+                                   $"PSP Reference ::{notification.PspReference} \n" +
+                                   $"Original Reference ::{notification.OriginalReference} \n");
 
             return Task.CompletedTask;
         }
 
         private Task ProcessCaptureFailedNotificationAsync(NotificationRequestItem notification)
         {
-            if (!notification.Success)
-            {
-                // Perform your business logic here, you would probably want to process the success:false event to update your backend. We log it for now.
-                _logger.LogInformation($"Webhook unsuccessful: {notification.Reason} \n" +
-                    $"EventCode: {notification.EventCode} \n" +
-                    $"Merchant Reference ::{notification.MerchantReference} \n" +
-                    $"Original Reference ::{notification.OriginalReference} \n" +
-                    $"PSP Reference ::{notification.PspReference} \n");
-
-                return Task.CompletedTask;
-            }
-
             if (notification.EventCode != "CAPTURE_FAILED")
             {
                 return Task.CompletedTask;
             }
 
-            if (!_repository.HotelPayments.TryGetValue(notification.PspReference, out Models.HotelPaymentModel model))
+            var hotelPayment = new HotelPaymentModel()
             {
+                PspReference = notification.PspReference,
+                OriginalReference = notification.OriginalReference,
+                Reference = _repository.FindReferenceByPspReference(notification.OriginalReference),
+                Amount = notification.Amount?.Value,
+                Currency = notification.Amount?.Currency,
+                DateTime = DateTimeOffset.Parse(notification.EventDate),
+                ResultCode = notification.EventCode,
+                RefusalReason = notification.Reason,
+                PaymentMethodBrand = notification.PaymentMethod
+            };
+
+            if (!_repository.Insert(hotelPayment))
+            {
+                _logger.LogInformation($"Could not insert {notification.PspReference}");
                 return Task.CompletedTask;
             }
 
-            // Perform your business logic here, you would probably want to process the success:true event to update your backend. We log it for now.
-            _logger.LogInformation($"Received successful capture webhook::\n" +
+            _logger.LogInformation($"Received {(notification.Success ? "successful" : "unsuccessful")} {notification.EventCode} webhook::\n" +
                                    $"Merchant Reference ::{notification.MerchantReference} \n" +
-                                   $"Original Reference ::{notification.OriginalReference} \n" +
-                                   $"PSP Reference ::{notification.PspReference} \n");
+                                   $"PSP Reference ::{notification.PspReference} \n" +
+                                   $"Original Reference ::{notification.OriginalReference} \n");
 
             return Task.CompletedTask;
         }
@@ -235,49 +248,63 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 return Task.CompletedTask;
             }
 
-            if (!_repository.HotelPayments.TryGetValue(notification.PspReference, out Models.HotelPaymentModel model))
+            var hotelPayment = new HotelPaymentModel()
             {
+                PspReference = notification.PspReference,
+                OriginalReference = notification.OriginalReference,
+                Reference = _repository.FindReferenceByPspReference(notification.OriginalReference),
+                Amount = notification.Amount?.Value,
+                Currency = notification.Amount?.Currency,
+                DateTime = DateTimeOffset.Parse(notification.EventDate),
+                ResultCode = notification.EventCode,
+                RefusalReason = notification.Success ? null : notification.Reason,
+                PaymentMethodBrand = notification.PaymentMethod
+            };
+
+            if (!_repository.Insert(hotelPayment))
+            {
+                _logger.LogInformation($"Could not insert {notification.PspReference}");
                 return Task.CompletedTask;
             }
 
-            // Perform your business logic here, you would probably want to process the success:true event to update your backend. We log it for now.
-            _logger.LogInformation($"Received successful capture webhook::\n" +
+            _logger.LogInformation($"Received {(notification.Success ? "successful" : "unsuccessful")} {notification.EventCode} webhook::\n" +
                                    $"Merchant Reference ::{notification.MerchantReference} \n" +
-                                   $"Original Reference ::{notification.OriginalReference} \n" +
-                                   $"PSP Reference ::{notification.PspReference} \n");
+                                   $"PSP Reference ::{notification.PspReference} \n" +
+                                   $"Original Reference ::{notification.OriginalReference} \n");
 
             return Task.CompletedTask;
         }
 
         private Task ProcessRefundFailedNotificationAsync(NotificationRequestItem notification)
         {
-            if (!notification.Success)
-            {
-                // Perform your business logic here, you would probably want to process the success:false event to update your backend. We log it for now.
-                _logger.LogInformation($"Webhook unsuccessful: {notification.Reason} \n" +
-                    $"EventCode: {notification.EventCode} \n" +
-                    $"Merchant Reference ::{notification.MerchantReference} \n" +
-                    $"Original Reference ::{notification.OriginalReference} \n" +
-                    $"PSP Reference ::{notification.PspReference} \n");
-
-                return Task.CompletedTask;
-            }
-
             if (notification.EventCode != "REFUND_FAILED")
             {
                 return Task.CompletedTask;
             }
 
-            if (!_repository.HotelPayments.TryGetValue(notification.PspReference, out Models.HotelPaymentModel model))
+            var hotelPayment = new HotelPaymentModel()
             {
+                PspReference = notification.PspReference,
+                OriginalReference = notification.OriginalReference,
+                Reference = _repository.FindReferenceByPspReference(notification.OriginalReference),
+                Amount = notification.Amount?.Value,
+                Currency = notification.Amount?.Currency,
+                DateTime = DateTimeOffset.Parse(notification.EventDate),
+                ResultCode = notification.EventCode,
+                RefusalReason = notification.Success ? null : notification.Reason,
+                PaymentMethodBrand = notification.PaymentMethod
+            };
+
+            if (!_repository.Insert(hotelPayment))
+            {
+                _logger.LogInformation($"Could not insert {notification.PspReference}");
                 return Task.CompletedTask;
             }
 
-            // Perform your business logic here, you would probably want to process the success:true event to update your backend. We log it for now.
-            _logger.LogInformation($"Received successful capture webhook::\n" +
+            _logger.LogInformation($"Received {(notification.Success ? "successful" : "unsuccessful")} {notification.EventCode} webhook::\n" +
                                    $"Merchant Reference ::{notification.MerchantReference} \n" +
-                                   $"Original Reference ::{notification.OriginalReference} \n" +
-                                   $"PSP Reference ::{notification.PspReference} \n");
+                                   $"PSP Reference ::{notification.PspReference} \n" +
+                                   $"Original Reference ::{notification.OriginalReference} \n");
 
             return Task.CompletedTask;
         }
@@ -285,33 +312,34 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
 
         private Task ProcessRefundedReversedNotificationAsync(NotificationRequestItem notification)
         {
-            if (!notification.Success)
-            {
-                // Perform your business logic here, you would probably want to process the success:false event to update your backend. We log it for now.
-                _logger.LogInformation($"Webhook unsuccessful: {notification.Reason} \n" +
-                    $"EventCode: {notification.EventCode} \n" +
-                    $"Merchant Reference ::{notification.MerchantReference} \n" +
-                    $"Original Reference ::{notification.OriginalReference} \n" +
-                    $"PSP Reference ::{notification.PspReference} \n");
-
-                return Task.CompletedTask;
-            }
-
             if (notification.EventCode != "REFUNDED_REVERSED")
             {
                 return Task.CompletedTask;
             }
 
-            if (!_repository.HotelPayments.TryGetValue(notification.PspReference, out Models.HotelPaymentModel model))
+            var hotelPayment = new HotelPaymentModel()
             {
+                PspReference = notification.PspReference,
+                OriginalReference = notification.OriginalReference,
+                Reference = _repository.FindReferenceByPspReference(notification.OriginalReference),
+                Amount = notification.Amount?.Value,
+                Currency = notification.Amount?.Currency,
+                DateTime = DateTimeOffset.Parse(notification.EventDate),
+                ResultCode = notification.EventCode,
+                RefusalReason = notification.Success ? null : notification.Reason,
+                PaymentMethodBrand = notification.PaymentMethod
+            };
+
+            if (!_repository.Insert(hotelPayment))
+            {
+                _logger.LogInformation($"Could not insert {notification.PspReference}");
                 return Task.CompletedTask;
             }
 
-            // Perform your business logic here, you would probably want to process the success:true event to update your backend. We log it for now.
-            _logger.LogInformation($"Received successful capture webhook::\n" +
+            _logger.LogInformation($"Received {(notification.Success ? "successful" : "unsuccessful")} {notification.EventCode} webhook::\n" +
                                    $"Merchant Reference ::{notification.MerchantReference} \n" +
-                                   $"Original Reference ::{notification.OriginalReference} \n" +
-                                   $"PSP Reference ::{notification.PspReference} \n");
+                                   $"PSP Reference ::{notification.PspReference} \n" +
+                                   $"Original Reference ::{notification.OriginalReference} \n");
 
             return Task.CompletedTask;
         }

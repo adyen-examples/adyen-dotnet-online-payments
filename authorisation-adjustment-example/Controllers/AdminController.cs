@@ -7,8 +7,8 @@ using adyen_dotnet_authorisation_adjustment_example.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -34,73 +34,79 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
         {
             List<HotelPaymentModel> hotelPayments = new List<HotelPaymentModel>();
 
-            // We fetch all hotel payments (regardless whether its authorised or not) that we have stored in our (local) repository and show it.
-            foreach (KeyValuePair<string, HotelPaymentModel> kvp in _repository.HotelPayments)
+            // We fetch the latest payment update. // TODO, do not filter by datetime
+            foreach (var kvp in _repository.HotelPayments)
             {
-                hotelPayments.Add(kvp.Value);
+                hotelPayments.Add(_repository.FindLatestHotelPaymentByReference(kvp.Key));
             }
 
-            hotelPayments.Add(new HotelPaymentModel()
-            {
-                Amount = 1234,
-                Currency = "EUR",
-                DateTime = DateTime.UtcNow,
-                PaymentMethodBrand = "scheme",
-                PaymentMethodType = "mc",
-                PspReference = "psp-1",
-                Reference = "ref-1",
-                ResultCode = "Authorised"
-            });
+            //hotelPayments.Add(new HotelPaymentModel()
+            //{
+            //    Amount = 1234,
+            //    Currency = "EUR",
+            //    DateTime = System.DateTime.UtcNow,
+            //    PaymentMethodBrand = "mc",
+            //    PspReference = "psp-1",
+            //    Reference = "ref-1",
+            //    ResultCode = "Authorised"
+            //});
 
-            hotelPayments.Add(new HotelPaymentModel()
-            {
-                Amount = 5678,
-                Currency = "EUR",
-                DateTime = DateTime.UtcNow,
-                PaymentMethodBrand = "scheme",
-                PaymentMethodType = "visa",
-                PspReference = "psp-2",
-                Reference = "ref-2",
-                ResultCode = "Authorised"
-            });
-            
-            hotelPayments.Add(new HotelPaymentModel()
-            {
-                Amount = 9876,
-                Currency = "EUR",
-                DateTime = DateTime.UtcNow,
-                PaymentMethodBrand = "scheme",
-                PaymentMethodType = "disc",
-                PspReference = "psp-3",
-                Reference = "ref-3",
-                ResultCode = "CAPTURE",
-                RefusalReason = "aaa"
-            });
-            
-            
-            hotelPayments.Add(new HotelPaymentModel()
-            {
-                DateTime = DateTime.UtcNow,
-                PaymentMethodBrand = "scheme",
-                PaymentMethodType = "mc",
-                PspReference = "psp-4",
-                Reference = "ref-4",
-                ResultCode = "CAPTURE",
-                RefusalReason = "aaa"
-            });
+            //hotelPayments.Add(new HotelPaymentModel()
+            //{
+            //    Amount = 5678,
+            //    Currency = "EUR",
+            //    DateTime = System.DateTime.UtcNow,
+            //    PaymentMethodBrand = "visa",
+            //    PspReference = "psp-2",
+            //    Reference = "ref-2",
+            //    ResultCode = "AUTHORISATION_ADJUSTED",
+            //    OriginalReference = "original-psp-1"
+            //});
+
+            //hotelPayments.Add(new HotelPaymentModel()
+            //{
+            //    Amount = 9876,
+            //    Currency = "EUR",
+            //    DateTime = System.DateTime.UtcNow,
+            //    PaymentMethodBrand = "visa",
+            //    PspReference = "psp-3",
+            //    Reference = "ref-3",
+            //    ResultCode = "CAPTURE",
+            //    RefusalReason = "aaa",
+            //    OriginalReference = "original-psp-1"
+            //});
+
+
+            //hotelPayments.Add(new HotelPaymentModel()
+            //{
+            //    DateTime = System.DateTime.UtcNow,
+            //    PaymentMethodBrand = "mc",
+            //    PspReference = "psp-4",
+            //    Reference = "ref-4",
+            //    ResultCode = "CAPTURE",
+            //    RefusalReason = "aaa"
+            //});
             ViewBag.HotelPayments = hotelPayments;
             return View();
         }
 
-        [HttpGet("admin/result/{status}/{pspReference}")]
-        public IActionResult Result(string pspReference, string status, [FromQuery(Name = "reason")] string refusalReason)
+        [Route("admin/details/{reference}")]
+        public IActionResult Details(string reference)
+        {
+            // We fetch all hotel payments (regardless whether its authorised/refused) that we have stored in our local repository and show it.
+            ViewBag.HotelPayments = _repository.FindByReference(reference).OrderBy(x=>x.DateTime).ToList();
+            return View();
+        }
+
+        [HttpGet("admin/result/{status}/{reference}")]
+        public IActionResult Result(string reference, string status, [FromQuery(Name = "reason")] string refusalReason)
         {
             string msg;
             string img;
             switch (status)
             {
                 case "received":
-                    msg = $"Request received for {pspReference}.";
+                    msg = $"Request received for Merchant Reference: {reference}. Wait a bit to receive the asynchronous webhook response.";
                     img = "success";
                     break;
                 default:
@@ -114,11 +120,10 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             return View();
         }
 
-
         [HttpPost("admin/update-payment-amount")]
         public async Task<ActionResult<PaymentAmountUpdateResource>> UpdatePaymentAmount([FromBody] UpdatePaymentAmountRequest request, CancellationToken cancellationToken = default)
         {
-            var hotelPayment = _repository.GetByPspReference(request.PspReference);
+            var hotelPayment = _repository.FindLatestHotelPaymentByReference(request.Reference);
 
             if (hotelPayment == null)
             {
@@ -135,7 +140,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                     IndustryUsage = CreatePaymentAmountUpdateRequest.IndustryUsageEnum.DelayedCharge,
                 };
                 
-                var response = await _modificationsService.UpdateAuthorisedAmountAsync(request.PspReference, createPaymentAmountUpdateRequest, cancellationToken: cancellationToken);
+                var response = await _modificationsService.UpdateAuthorisedAmountAsync(hotelPayment.GetOriginalPspReference(), createPaymentAmountUpdateRequest, cancellationToken: cancellationToken);
                 return Ok(response);
             }
             catch (HttpClientException e)
@@ -148,7 +153,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
         [HttpPost("admin/capture-payment")]
         public async Task<ActionResult<PaymentCaptureResource>> CapturePayment([FromBody] CreateCapturePaymentRequest request, CancellationToken cancellationToken = default)
         {
-            var hotelPayment = _repository.GetByPspReference(request.PspReference);
+            var hotelPayment = _repository.FindLatestHotelPaymentByReference(request.Reference);
 
             if (hotelPayment == null)
             {
@@ -164,7 +169,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                     Reference = hotelPayment.Reference
                 };
                 
-                var response = await _modificationsService.CaptureAuthorisedPaymentAsync(request.PspReference, createPaymentCaptureRequest, cancellationToken: cancellationToken);
+                var response = await _modificationsService.CaptureAuthorisedPaymentAsync(hotelPayment.GetOriginalPspReference(), createPaymentCaptureRequest, cancellationToken: cancellationToken);
                 return Ok(response); // Note that the response will have a different PSPReference compared to the initial preauthorisation.
             }
             catch (HttpClientException e)
@@ -177,7 +182,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
         [HttpPost("admin/reversal-payment")]
         public async Task<ActionResult<PaymentReversalResource>> ReversalPayment([FromBody] CreateReversalPaymentRequest request, CancellationToken cancellationToken = default)
         {
-            var hotelPayment = _repository.GetByPspReference(request.PspReference);
+            var hotelPayment = _repository.FindLatestHotelPaymentByReference(request.Reference);
 
             if (hotelPayment == null)
             {
@@ -192,7 +197,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                     Reference = hotelPayment.Reference
                 };
 
-                var response = await _modificationsService.RefundOrCancelPaymentAsync(request.PspReference, createPaymentReversalRequest, cancellationToken: cancellationToken);
+                var response = await _modificationsService.RefundOrCancelPaymentAsync(hotelPayment.GetOriginalPspReference(), createPaymentReversalRequest, cancellationToken: cancellationToken);
                 return Ok(response);
             }
             catch (HttpClientException e)

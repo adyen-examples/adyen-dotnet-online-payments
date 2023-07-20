@@ -2,6 +2,6 @@
 {
     public class CreateReversalPaymentRequest
     {
-        public string PspReference { get; init; }
+        public string Reference { get; init; }
     }
 }

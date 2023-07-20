@@ -1,9 +1,9 @@
 ﻿@{
-    ViewData["Title"] = "Adyen Checkout Preview";
+    ViewData["Title"] = "Adyen Booking Preview";
 }
 <main class="preview-page">
   <section class="cart">
-    <h1>Checkout Details</h1>
+    <h1>Booking Details</h1>
     <div class="order-summary">
       <ul class="order-summary-list">
         <li class="order-summary-list-list-item">
@@ -16,7 +16,7 @@
     <div class="cart-footer">
     <span class="cart-footer-label">Total:</span>
     <span class="cart-footer-amount">249.99</span>
-    <a asp-area="" asp-controller="Home" asp-action="Checkout" asp-route-id="@ViewBag.PaymentMethod">
+    <a asp-area="" asp-controller="Home" asp-action="Booking" asp-route-id="@ViewBag.PaymentMethod">
       <p class="button">Continue to confirm booking</p>
     </a>
     </div>

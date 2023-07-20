@@ -11,17 +11,17 @@ async function sendPostRequest(url, data) {
     return await res.json();
 }
 
-// Captures payment of the given pspReference
-async function sendCapturePaymentRequest(pspReference) {
+// Captures payment of the given reference
+async function sendCapturePaymentRequest(reference) {
     try {
-        const res = await sendPostRequest("/admin/capture-payment", { pspReference: pspReference});
+        const res = await sendPostRequest("/admin/capture-payment", { reference: reference});
         console.log(res);
         switch (res.status) {
             case "received":
-                window.location.href = "admin/result/received/" + pspReference;
+                window.location.href = "admin/result/received/" + reference;
                 break;
             default:
-                window.location.href = "admin/result/error" + pspReference;
+                window.location.href = "admin/result/error" + reference;
                 break;
         };
     } catch (error) {
@@ -38,9 +38,9 @@ function bindCapturePaymentFormButtons() {
             event.preventDefault();
 
             var formData = new FormData(event.target);
-            var pspReference = formData.get('pspReference');
+            var reference = formData.get('reference');
 
-            await sendCapturePaymentRequest(pspReference);
+            await sendCapturePaymentRequest(reference);
         });
     }
 }

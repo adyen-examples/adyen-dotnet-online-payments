@@ -1,0 +1,67 @@
+﻿@using Adyen.Model.Recurring;
+@using adyen_dotnet_authorisation_adjustment_example.Models;
+@{
+    ViewData["Title"] = "Adyen Admin Panel Details";
+    List<HotelPaymentModel> hotelPayments = ViewBag.HotelPayments;
+}
+
+<div class="main-container">
+    <div class="details-panel-payment-container"> 
+    @{
+        if (hotelPayments == null || !hotelPayments.Any())
+        {
+            <p>
+                <b>
+                    No payments are stored. You can make a card payment in the <a href="/">Booking View</a>.
+                </b>
+            </p>
+        }
+        else
+        {
+            @foreach(var payment in hotelPayments)
+            {
+                double amount = (payment.Amount ?? 0.0) / 100L;
+                <ul class="detailsList">
+                    <li><b>Reference: &nbsp;</b> @payment.Reference</li>
+                    <li><b>Result Code: &nbsp;</b> @payment.ResultCode </li>
+                    <li><b>PspReference: &nbsp;</b> @payment.PspReference</li>
+                    @if(!string.IsNullOrWhiteSpace(payment.OriginalReference))
+                    {
+                        <li><b>Original PspReference: &nbsp;</b> @payment.OriginalReference</li>
+                    }
+ 
+                    @if (payment.IsRefusalReasonShown())
+                    {
+                        <li>
+                            <b>Refusal Reason: &nbsp;</b> @payment.RefusalReason
+                        </li>
+                    }
+                        
+                    @if (payment.IsAmountShown())
+                    {
+                        <li>
+                            <!-- Show amount from minor units EUR `1234` as: EUR`12.34`-->
+                            <b>Payment Amount: &nbsp;</b> @payment.Currency @amount
+                        </li>
+
+                        <li>
+                            <b>Payment Method Brand: &nbsp;</b> @payment.PaymentMethodBrand
+                        </li>
+                    }
+                        
+                    <li><b>DateTime: &nbsp;</b> @payment.DateTime</li>
+                </ul>
+            }
+        }
+    }
+    </div>
+</div>
+
+<!-- Binds all submit form buttons for `/update-payment-amount` endpoint -->
+<script src="~/js/adminpanel-updatePaymentAmount-bindings.js" asp-append-version="true"></script>
+
+<!-- Binds all submit form buttons for `/capture-payment` endpoint -->
+<script src="~/js/adminpanel-capturePayment-bindings.js" asp-append-version="true"></script>
+
+<!-- Binds all submit form buttons for `/reversal-payment` endpoint -->
+<script src="~/js/adminpanel-reversalPayment-bindings.js" asp-append-version="true"></script>

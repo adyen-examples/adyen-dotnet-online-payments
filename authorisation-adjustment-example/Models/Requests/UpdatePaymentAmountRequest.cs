@@ -2,7 +2,7 @@
 {
     public class UpdatePaymentAmountRequest
     {
-        public string PspReference { get; init; }
+        public string Reference { get; init; }
         public long Amount { get; init; }
     }
 }

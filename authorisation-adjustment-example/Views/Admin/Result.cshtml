@@ -8,18 +8,15 @@
           var SvgImg = ViewBag.Img + ".svg";
     }
     <img src="~/images/@SvgImg" class="status-image" alt="@ViewBag.Img" />
-    @if (ViewBag.Status != "failed" || ViewBag.Status != "error")
-    {
-    <img src="~/images/thank-you.svg" class="status-image" alt="" />
-    }
+
     <p class="status-message">@ViewBag.Msg</p>
     @if (ViewBag.Status == "error")
     {
-    <p class="status-message">
-      Please review response in console and refer to
-      <a href="https://docs.adyen.com/development-resources/response-handling">Response handling.</a>
-    </p>
+        <p class="status-message">
+            Please review response in console and refer to
+            <a href="https://docs.adyen.com/development-resources/refusal-reasons">refusal reasons.</a>
+        </p>
     }
-    <a class="button" href="/admin" to="#/">Return to Admin View</a>
+    <a class="button" href="/admin" to="#/">Return to Admin Panel</a>
   </div>
 </div>

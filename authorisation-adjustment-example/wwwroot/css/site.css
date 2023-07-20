@@ -42,7 +42,6 @@ a:hover {
   left: 0;
   margin-bottom: 24px;
   padding: 14px 26px;
-  position: fixed;
   text-align: center;
   top: 0;
   width: 100%;
@@ -92,10 +91,7 @@ a:hover {
 /* Index page */
 
 .main-container {
-  margin: auto;
   max-width: 1048px;
-  padding: 16px 16px;
-  display: flex;
   flex-direction: column;
 }
 
@@ -438,15 +434,19 @@ a:hover {
 }
 
 .adminList {
-  display: inline-block;
-  background-color: #f4ffc8;
-  padding: 12px 12px 12px 12px;
+  display: inline-grid;
+  background-color: #f6ffd4;
+  padding: 12px 8px 12px 8px;
   list-style-type: decimal;
   border: 2px solid #0e0e0e;
+  border-radius: 8px;
+  margin-right: 12px;
 }
 
 .adminList li {
+  display: flex;
   list-style-type: none;
+  padding: 4px 64px 4px 4px;
 }
 
 .display-flex {
@@ -457,7 +457,7 @@ a:hover {
 .adjustSubmitButton {
   background-color: #dbae00;
   color: white;
-  padding: 8px 12px;
+  padding: 6px 32px 6px 32px;
   margin: 10px;
   border: none;
   cursor: pointer;
@@ -468,9 +468,17 @@ a:hover {
 
 .adjustSubmitButton:hover {
   background-color: #dbae00;
-  border: 2px solid #b69100;
+  border: 2px solid #db7900;
   border-radius: 8px;
   transition: border-color 0.15s linear;
+}
+
+.adjustSubmitButton:disabled,
+adjustSubmitButton[disabled=disabled] {
+  border: 2px solid #cccccc;
+  background-color: #cccccc;
+  color: #999999;
+  pointer-events: none;
 }
 
 .adjustAmountText {
@@ -481,15 +489,24 @@ a:hover {
   outline: none;
 }
 
+.adjustAmountText:disabled,
+adjustAmountText[disabled=disabled] {
+  border: 2px solid #cccccc;
+  background-color: #cccccc;
+  color: #999999;
+  pointer-events: none;
+}
+
 .adjustAmountText:focus {
   border: 2px solid #dbae00;
 }
+
 
 /* `Extend`/`Capture`/`Reversal` submit button */
 .submitButton {
   background-color: #0abf53;
   color: white;
-  padding: 8px 12px;
+  padding: 6px 24px 6px 24px;
   margin: 10px;
   border: none;
   cursor: pointer;
@@ -505,4 +522,36 @@ a:hover {
   transition: border-color 0.15s linear;
 }
 
+.submitButton:disabled,
+submitButton[disabled=disabled]{
+  border: 2px solid #cccccc;
+  background-color: #cccccc;
+  color: #999999;
+  pointer-events: none;
+}
+
 /* end Admin panel view */
+
+/* start Admin panel details view */
+
+.details-panel-payment-container {
+  background-color: #fafff3;
+  padding: 64px 4px 16px 4px;
+}
+
+.detailsList {
+  display: grid;
+  background-color: #f6ffd4;
+  padding: 12px 8px 12px 8px;
+  list-style-type: decimal;
+  border: 2px solid #0e0e0e;
+  border-radius: 8px;
+  margin-right: 12px;
+}
+
+.detailsList li {
+  list-style-type: none;
+  padding: 4px 64px 4px 4px;
+}
+
+/* end Admin panel details view*/

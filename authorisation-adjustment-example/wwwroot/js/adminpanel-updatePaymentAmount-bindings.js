@@ -11,17 +11,17 @@ async function sendPostRequest(url, data) {
     return await res.json();
 }
 
-// Updates payment amount of the given pspReference
-async function sendUpdatePaymentAmountRequest(pspReference, amount) {
+// Updates payment amount of the given reference
+async function sendUpdatePaymentAmountRequest(reference, amount) {
     try {
-        const res = await sendPostRequest("/admin/update-payment-amount", { pspReference: pspReference, amount: amount});
+        const res = await sendPostRequest("/admin/update-payment-amount", { reference: reference, amount: amount});
         console.log(res);
         switch (res.status) {
             case "received":
-                window.location.href = "admin/result/received/" + pspReference;
+                window.location.href = "admin/result/received/" + reference;
                 break;
             default:
-                window.location.href = "admin/result/error" + pspReference;
+                window.location.href = "admin/result/error" + reference;
                 break;
         };
     } catch (error) {
@@ -39,9 +39,9 @@ function bindUpdatePaymentAmountFormButtons() {
 
             var formData = new FormData(event.target);
             var amount = formData.get('amount') * 100; //  Multiple by 100, so that `12.34` EUR becomes `1234` in minor units
-            var pspReference = formData.get('pspReference');
+            var reference = formData.get('reference');
 
-            await sendUpdatePaymentAmountRequest(pspReference, amount);
+            await sendUpdatePaymentAmountRequest(reference, amount);
         });
     }
 }
@@ -56,9 +56,9 @@ function bindExtendPaymentFormButtons() {
 
             var formData = new FormData(event.target);
             var amount = formData.get('amount') * 100; //  Multiple by 100, so that `12.34` EUR becomes `1234` in minor units
-            var pspReference = formData.get('pspReference');
+            var reference = formData.get('reference');
 
-            await sendUpdatePaymentAmountRequest(pspReference, amount);
+            await sendUpdatePaymentAmountRequest(reference, amount);
         });
     }
 }
