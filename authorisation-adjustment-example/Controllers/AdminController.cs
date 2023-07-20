@@ -34,7 +34,6 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
         {
             List<HotelPaymentModel> hotelPayments = new List<HotelPaymentModel>();
 
-            // We fetch the latest payment update. // TODO, do not filter by datetime
             foreach (var kvp in _repository.HotelPayments)
             {
                 hotelPayments.Add(_repository.FindLatestHotelPaymentByReference(kvp.Key));
@@ -94,7 +93,9 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
         public IActionResult Details(string reference)
         {
             // We fetch all hotel payments (regardless whether its authorised/refused) that we have stored in our local repository and show it.
-            ViewBag.HotelPayments = _repository.FindByReference(reference).OrderBy(x=>x.DateTime).ToList();
+            ViewBag.HotelPayments = _repository.FindByReference(reference)
+                .OrderBy(x=>x.DateTime)
+                .ToList();
             return View();
         }
 
