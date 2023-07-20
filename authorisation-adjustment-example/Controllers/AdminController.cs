@@ -94,7 +94,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
         {
             // We fetch all hotel payments (regardless whether its authorised/refused) that we have stored in our local repository and show it.
             ViewBag.HotelPayments = _repository.FindByReference(reference)
-                .OrderBy(x=>x.DateTime)
+                .OrderBy(x=> x.DateTime)
                 .ToList();
             return View();
         }
@@ -171,7 +171,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 };
                 
                 var response = await _modificationsService.CaptureAuthorisedPaymentAsync(hotelPayment.GetOriginalPspReference(), createPaymentCaptureRequest, cancellationToken: cancellationToken);
-                return Ok(response); // Note that the response will have a different PSPReference compared to the initial preauthorisation.
+                return Ok(response); // Note that the response will have a different PSPReference compared to the initial pre-authorisation.
             }
             catch (HttpClientException e)
             {
