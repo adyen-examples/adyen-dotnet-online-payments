@@ -38,53 +38,6 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             {
                 hotelPayments.Add(_repository.FindLatestHotelPaymentByReference(kvp.Key));
             }
-
-            //hotelPayments.Add(new HotelPaymentModel()
-            //{
-            //    Amount = 1234,
-            //    Currency = "EUR",
-            //    DateTime = System.DateTime.UtcNow,
-            //    PaymentMethodBrand = "mc",
-            //    PspReference = "psp-1",
-            //    Reference = "ref-1",
-            //    ResultCode = "Authorised"
-            //});
-
-            //hotelPayments.Add(new HotelPaymentModel()
-            //{
-            //    Amount = 5678,
-            //    Currency = "EUR",
-            //    DateTime = System.DateTime.UtcNow,
-            //    PaymentMethodBrand = "visa",
-            //    PspReference = "psp-2",
-            //    Reference = "ref-2",
-            //    ResultCode = "AUTHORISATION_ADJUSTED",
-            //    OriginalReference = "original-psp-1"
-            //});
-
-            //hotelPayments.Add(new HotelPaymentModel()
-            //{
-            //    Amount = 9876,
-            //    Currency = "EUR",
-            //    DateTime = System.DateTime.UtcNow,
-            //    PaymentMethodBrand = "visa",
-            //    PspReference = "psp-3",
-            //    Reference = "ref-3",
-            //    ResultCode = "CAPTURE",
-            //    RefusalReason = "aaa",
-            //    OriginalReference = "original-psp-1"
-            //});
-
-
-            //hotelPayments.Add(new HotelPaymentModel()
-            //{
-            //    DateTime = System.DateTime.UtcNow,
-            //    PaymentMethodBrand = "mc",
-            //    PspReference = "psp-4",
-            //    Reference = "ref-4",
-            //    ResultCode = "CAPTURE",
-            //    RefusalReason = "aaa"
-            //});
             ViewBag.HotelPayments = hotelPayments;
             return View();
         }
