@@ -32,7 +32,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
         [HttpPost("api/webhooks/notifications")]
         public async Task<ActionResult<string>> Webhooks(NotificationRequest notificationRequest)
         {
-            _logger.LogInformation($"Webhook received: \n{notificationRequest}\n");
+            _logger.LogInformation($"Webhook received::\n{notificationRequest.ToJson()}");
 
             try
             {
@@ -103,7 +103,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             {
                 PspReference = notification.PspReference,
                 OriginalReference = notification.OriginalReference,
-                Reference = _repository.FindReferenceByPspReference(notification.PspReference),
+                Reference = notification.MerchantReference,
                 Amount = notification.Amount?.Value,
                 Currency = notification.Amount?.Currency,
                 DateTime = DateTimeOffset.Parse(notification.EventDate),
@@ -132,16 +132,19 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 return Task.CompletedTask;
             }
 
-            notification.AdditionalData.TryGetValue("bookingDate", out string dateTime);
+            if (notification.AdditionalData.TryGetValue("bookingDate", out string dateTime))
+            {
+                _logger.LogInformation("BookingDate: " + dateTime);
+            }
 
             var hotelPayment = new HotelPaymentModel()
             {
                 PspReference = notification.PspReference,
                 OriginalReference = notification.OriginalReference,
-                Reference = _repository.FindReferenceByPspReference(notification.OriginalReference),
+                Reference = notification.MerchantReference,
                 Amount = notification.Amount?.Value,
                 Currency = notification.Amount?.Currency,
-                DateTime = dateTime == null ? DateTimeOffset.Parse(notification.EventDate) : DateTimeOffset.Parse(dateTime),
+                DateTime = DateTimeOffset.Parse(notification.EventDate),
                 ResultCode = notification.EventCode,
                 RefusalReason = notification.Success ? null : notification.Reason,
                 PaymentMethodBrand = notification.PaymentMethod
@@ -168,11 +171,16 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 return Task.CompletedTask;
             }
 
+            if (notification.AdditionalData.TryGetValue("bookingDate", out string dateTime))
+            {
+                _logger.LogInformation("BookingDate: " + dateTime);
+            }
+
             var hotelPayment = new HotelPaymentModel()
             {
                 PspReference = notification.PspReference,
                 OriginalReference = notification.OriginalReference,
-                Reference = _repository.FindReferenceByPspReference(notification.OriginalReference),
+                Reference = notification.MerchantReference,
                 Amount = notification.Amount?.Value,
                 Currency = notification.Amount?.Currency,
                 DateTime = DateTimeOffset.Parse(notification.EventDate),
@@ -202,11 +210,16 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 return Task.CompletedTask;
             }
 
+            if (notification.AdditionalData.TryGetValue("bookingDate", out string dateTime))
+            {
+                _logger.LogInformation("BookingDate: " + dateTime);
+            }
+
             var hotelPayment = new HotelPaymentModel()
             {
                 PspReference = notification.PspReference,
                 OriginalReference = notification.OriginalReference,
-                Reference = _repository.FindReferenceByPspReference(notification.OriginalReference),
+                Reference = notification.MerchantReference,
                 Amount = notification.Amount?.Value,
                 Currency = notification.Amount?.Currency,
                 DateTime = DateTimeOffset.Parse(notification.EventDate),
@@ -248,11 +261,16 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 return Task.CompletedTask;
             }
 
+            if (notification.AdditionalData.TryGetValue("bookingDate", out string dateTime))
+            {
+                _logger.LogInformation("BookingDate: " + dateTime);
+            }
+
             var hotelPayment = new HotelPaymentModel()
             {
                 PspReference = notification.PspReference,
                 OriginalReference = notification.OriginalReference,
-                Reference = _repository.FindReferenceByPspReference(notification.OriginalReference),
+                Reference = notification.MerchantReference,
                 Amount = notification.Amount?.Value,
                 Currency = notification.Amount?.Currency,
                 DateTime = DateTimeOffset.Parse(notification.EventDate),
@@ -282,11 +300,16 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 return Task.CompletedTask;
             }
 
+            if (notification.AdditionalData.TryGetValue("bookingDate", out string dateTime))
+            {
+                _logger.LogInformation("BookingDate: " + dateTime);
+            }
+
             var hotelPayment = new HotelPaymentModel()
             {
                 PspReference = notification.PspReference,
                 OriginalReference = notification.OriginalReference,
-                Reference = _repository.FindReferenceByPspReference(notification.OriginalReference),
+                Reference = notification.MerchantReference,
                 Amount = notification.Amount?.Value,
                 Currency = notification.Amount?.Currency,
                 DateTime = DateTimeOffset.Parse(notification.EventDate),
@@ -317,11 +340,16 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 return Task.CompletedTask;
             }
 
+            if (notification.AdditionalData.TryGetValue("bookingDate", out string dateTime))
+            {
+                _logger.LogInformation("BookingDate: " + dateTime);
+            }
+
             var hotelPayment = new HotelPaymentModel()
             {
                 PspReference = notification.PspReference,
                 OriginalReference = notification.OriginalReference,
-                Reference = _repository.FindReferenceByPspReference(notification.OriginalReference),
+                Reference = notification.MerchantReference,
                 Amount = notification.Amount?.Value,
                 Currency = notification.Amount?.Currency,
                 DateTime = DateTimeOffset.Parse(notification.EventDate),

@@ -28,7 +28,7 @@ namespace adyen_dotnet_checkout_example.Controllers
         [HttpPost("api/webhooks/notifications")]
         public async Task<ActionResult<string>> Webhooks(NotificationRequest notificationRequest)
         {
-            _logger.LogInformation($"Webhook received::\n{notificationRequest}\n");
+            _logger.LogInformation($"Webhook received::\n{notificationRequest.ToJson()}");
 
             try
             {

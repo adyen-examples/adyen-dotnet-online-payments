@@ -43,7 +43,7 @@
                     {
                         <li>
                             <b>Refusal Reason: &nbsp;</b> @payment.RefusalReason
-                        </li>
+                        </li><li></li>
                     }
                         
                     @if (payment.IsAmountShown())
@@ -58,7 +58,7 @@
                         </li>
                     }
                         
-                    <li><b>DateTime: &nbsp;</b> @payment.DateTime</li> 
+                    <li><b>DateTime: &nbsp;</b> @payment.DateTime.ToLocalTime()</li> 
 
                     <li>
                         @{

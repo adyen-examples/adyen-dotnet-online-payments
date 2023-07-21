@@ -1,4 +1,5 @@
 ﻿using adyen_dotnet_authorisation_adjustment_example.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -38,13 +39,6 @@ namespace adyen_dotnet_authorisation_adjustment_example.Repositories
         HotelPaymentModel FindLatestHotelPaymentByReference(string reference);
 
         /// <summary>
-        /// Finds <see cref="HotelPaymentModel.Reference"/> by <see cref="HotelPaymentModel.PspReference"/>.
-        /// </summary>
-        /// <param name="pspReference"><see cref="HotelPaymentModel.PspReference"/>.</param>
-        /// <returns><see cref="HotelPaymentModel.Reference"/>.</returns>
-        string FindReferenceByPspReference(string pspReference);
-
-        /// <summary>
         /// Finds the initial preauthorisation <see cref="HotelPaymentModel"/>.
         /// </summary>
         /// <param name="reference"><see cref="HotelPaymentModel.Reference"/>.</param>
@@ -63,16 +57,15 @@ namespace adyen_dotnet_authorisation_adjustment_example.Repositories
 
         public bool Insert(HotelPaymentModel hotelPayment)
         {
-            // If `Reference` is not specified, do nothing.
+            // If `Reference` is not specified, throw an ArgumentNullException.
             if (string.IsNullOrWhiteSpace(hotelPayment.Reference))
             {
-                return false;
+                throw new ArgumentNullException(nameof(hotelPayment.Reference));
             }    
 
-            // Check if `Reference` is already in the list.
+            // Check if `Reference` is in the list, do nothing if we've never saved the reference.
             if (!HotelPayments.TryGetValue(hotelPayment.Reference, out var list))
             {
-                // `Reference` does not exist, do nothing.
                 return false;
             }
 
@@ -85,8 +78,9 @@ namespace adyen_dotnet_authorisation_adjustment_example.Repositories
                 return true;
             }
 
-            // If the values are exactly the same. We consider it a duplicate, and we do not add anything to the list.
-            if (hotelPayment.Equals(existingHotelPayment))
+            // If the values are exactly the same (f.e. when we receive the webhook twice).
+            // Consider it a duplicate, and do not add anything to the list.
+            if (hotelPayment.IsEqual(existingHotelPayment))
             {
                 return false;
             }
@@ -107,24 +101,10 @@ namespace adyen_dotnet_authorisation_adjustment_example.Repositories
         public HotelPaymentModel FindLatestHotelPaymentByReference(string reference)
         {
             List<HotelPaymentModel> result = FindByReference(reference)
-                .OrderBy(x=>x.DateTime)
+                .OrderBy(x => x.DateTime)
                 .ToList();
-            return result.LastOrDefault();
-        }
 
-        public string FindReferenceByPspReference(string pspReference)
-        {
-            foreach (var kvp in HotelPayments)
-            {
-                foreach (HotelPaymentModel hotelPayment in kvp.Value)
-                {
-                    if (hotelPayment.GetOriginalPspReference() == pspReference)
-                    {
-                        return hotelPayment.Reference;
-                    }
-                }
-            }
-            return null;
+            return result.LastOrDefault();
         }
 
         public HotelPaymentModel FindPreAuthorisationHotelPayment(string reference)

@@ -12,12 +12,13 @@
         {
             <p>
                 <b>
-                    No payments are stored. You can make a card payment in the <a href="/">Booking View</a>.
+                    No details were found.
                 </b>
             </p>
         }
         else
         {
+            <p>This page shows all hotel payments details of the reference, sorted by DateTime.</p>
             @foreach(var payment in hotelPayments)
             {
                 double amount = (payment.Amount ?? 0.0) / 100L;
@@ -49,10 +50,12 @@
                         </li>
                     }
                         
-                    <li><b>DateTime: &nbsp;</b> @payment.DateTime</li>
+                    <li><b>DateTime: &nbsp;</b> @payment.DateTime.ToLocalTime()</li>
                 </ul>
             }
         }
     }
+    
+    <a class="button" href="/admin" to="#/">Return</a>
     </div>
 </div>
