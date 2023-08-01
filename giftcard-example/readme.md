@@ -69,12 +69,9 @@ git clone https://github.com/adyen-examples/adyen-dotnet-online-payments.git
 This demo provides a simple webhook integration at `/api/webhooks/notifications`. For it to work, you need to provide a way for Adyen's servers to reach your running application and add a standard webhook in the Customer Area.
 To expose this endpoint locally, we have highlighted two options in step 4 or 5. Choose one or consider alternative tunneling software.
 
-
 4. Expose your localhost with Visual Studio using dev tunnels.
-    - Add `https://*.devtunnels.ms` to your allowed origins
-    - Login to Visual Studio
-    - Under `Options` → `Environment` → `Preview Features` → Check `Enable dev tunnels for Web Application`
-    - Select `adyen_dotnet_giftcard_example_port_tunneling` as your launch settings profile
+     - Add `https://*.devtunnels.ms` to your allowed origins
+     - Create your public (temporary/persistent) dev tunnel by following [this guide](https://learn.microsoft.com/en-us/aspnet/core/test/dev-tunnels?view=aspnetcore-7.0)
 
 If you use Visual Studio 17.4 or higher, the webhook URL will be the generated URL (i.e. `https://xd1r2txt-5001.euw.devtunnels.ms`).
 
