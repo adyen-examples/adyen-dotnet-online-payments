@@ -1,17 +1,17 @@
-﻿using adyen_dotnet_subscription_example.Clients;
-using Adyen.Model.Checkout;
+﻿using Adyen.Model.Checkout;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;
+using adyen_dotnet_subscription_example.Services;
 
 namespace adyen_dotnet_subscription_example.Controllers
 {
     [ApiController]
     public class TokenizationController : ControllerBase
     {
-        private readonly ICheckoutClient _checkoutService;
+        private readonly ICheckoutService _checkoutService;
 
-        public TokenizationController(ICheckoutClient checkoutService)
+        public TokenizationController(ICheckoutService checkoutService)
         {
             _checkoutService = checkoutService;
         }

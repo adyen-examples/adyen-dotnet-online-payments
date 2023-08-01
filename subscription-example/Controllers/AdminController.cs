@@ -1,10 +1,11 @@
 ﻿using Adyen.HttpClient;
 using Adyen.Model.Checkout;
 using Adyen.Model.Recurring;
-using adyen_dotnet_subscription_example.Clients;
 using adyen_dotnet_subscription_example.Models;
 using adyen_dotnet_subscription_example.Repositories;
+using adyen_dotnet_subscription_example.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,15 +14,17 @@ namespace adyen_dotnet_subscription_example.Controllers
 {
     public class AdminController : Controller
     {
-        private readonly IRecurringClient _recurringClient;
-        private readonly ICheckoutClient _checkoutClient;
+        private readonly ISubscriptionService _subscriptionService;
+        private readonly ICheckoutService _checkoutClient;
         private readonly ISubscriptionRepository _repository;
+        private readonly ILogger<AdminController> _logger;
 
-        public AdminController(IRecurringClient recurringClient, ICheckoutClient checkoutClient, ISubscriptionRepository repository)
+        public AdminController(ISubscriptionService subscriptionService, ICheckoutService checkoutClient, ISubscriptionRepository repository, ILogger<AdminController> logger)
         {
-            _recurringClient = recurringClient;
+            _subscriptionService = subscriptionService;
             _checkoutClient = checkoutClient;
             _repository = repository;
+            _logger = logger;
         }
 
         [Route("admin")]
@@ -58,10 +61,11 @@ namespace adyen_dotnet_subscription_example.Controllers
                         break;
                 }
             }   
-            catch (HttpClientException)
+            catch (HttpClientException e)
             {
                 ViewBag.Message = $"Payment failed for RecurringDetailReference {recurringDetailReference}. See error logs for the exception.";
                 ViewBag.Img = "failed";
+                _logger.LogError($"Payment failed for RecurringDetailReference {recurringDetailReference}: \n{e.ResponseBody}\n");
             }
             return View();
         }
@@ -71,7 +75,7 @@ namespace adyen_dotnet_subscription_example.Controllers
         {
             try
             {
-                DisableResult result = await _recurringClient.DisableRecurringDetailAsync(ShopperReference.Value, recurringDetailReference, cancellationToken);
+                DisableResult result = await _subscriptionService.DisableRecurringDetailAsync(ShopperReference.Value, recurringDetailReference, cancellationToken);
                 
                 switch (result.Response)
                 {
@@ -85,10 +89,11 @@ namespace adyen_dotnet_subscription_example.Controllers
                         break;
                 }
             }
-            catch (HttpClientException)
+            catch (HttpClientException e)
             {
                 ViewBag.Message = $"Disable failed for RecurringDetailReference {recurringDetailReference}. See error logs for the exception.";
                 ViewBag.Img = "failed";
+                _logger.LogError($"Disable failed for RecurringDetailReference {recurringDetailReference}: \n{e.ResponseBody}\n");
             }
             return View();
         }

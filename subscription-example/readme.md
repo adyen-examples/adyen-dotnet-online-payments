@@ -32,7 +32,9 @@ This demo provides a simple webhook integration at `/api/webhooks/notifications`
     - Define username and password (Basic Authentication) to [protect your endpoint](https://docs.adyen.com/development-resources/webhooks/best-practices#security) - Basic authentication only guarantees that the notification was sent by Adyen, not that it wasn't modified during transmission
     - Generate the [HMAC Key](https://docs.adyen.com/development-resources/webhooks/verify-hmac-signatures) and set the `ADYEN_HMAC_KEY` in your [Gitpod Environment Variables](https://gitpod.io/variables) with a scope of `*/*` -  This key is used to [verify](https://docs.adyen.com/development-resources/webhooks/best-practices#security) whether the HMAC signature that is included in the notification, was sent by Adyen and not modified during transmission
     - For the URL, enter `https://gitpod.io` for now, we will need to update this webhook URL in step 7
-    - Make sure the webhook is **Enabled** to send notifications
+    - Make sure that the `Recurring contract` setting is **enabled** on `Merchant` account-level - In the `Customer Area`, under `Developers` -> `Webhooks` -> `Settings` -> Enable `Recurring contract` on `Merchant`-level and hit "Save".
+    - Make sure that your webhook sends the `RECURRING_CONTRACT` event when you've created the webhook
+    - Make sure the webhook is **enabled** to send notifications
 
 
 5. In the Customer Area, go to `Developers` → `Additional Settings` → Under `Payment` enable `Recurring Details` for subscriptions.
@@ -73,12 +75,9 @@ git clone https://github.com/adyen-examples/adyen-dotnet-online-payments.git
 This demo provides a simple webhook integration at `/api/webhooks/notifications`. For it to work, you need to provide a way for Adyen's servers to reach your running application and add a standard webhook in the Customer Area. 
 To expose this endpoint locally, we have highlighted two options in step 4 or 5. Choose one or consider alternative tunneling software.
 
-
 4. Expose your localhost with Visual Studio using dev tunnels.
      - Add `https://*.devtunnels.ms` to your allowed origins
-     - Login to Visual Studio
-     - Under `Options` → `Environment` → `Preview Features` → Check `Enable dev tunnels for Web Application`
-     - Select `adyen_dotnet_subscription_example_port_tunneling` as your launch settings profile
+     - Create your public (temporary/persistent) dev tunnel by following [this guide](https://learn.microsoft.com/en-us/aspnet/core/test/dev-tunnels?view=aspnetcore-7.0)
 
 If you use Visual Studio 17.4 or higher, the webhook URL will be the generated URL (i.e. `https://xd1r2txt-5001.euw.devtunnels.ms`).
 
@@ -104,7 +103,9 @@ If you use a tunneling service like ngrok, the webhook URL will be the generated
     - Generate the [HMAC Key](https://docs.adyen.com/development-resources/webhooks/verify-hmac-signatures) - This key is used to [verify](https://docs.adyen.com/development-resources/webhooks/best-practices#security) whether the HMAC signature that is included in the notification, was sent by Adyen and not modified during transmission
     - See script below that allows you to easily set your environmental variables
     - For the URL, enter `https://ngrok.io` for now - We will need to update this webhook URL in step 10
-    - Make sure the webhook is **Enabled** to send notifications
+    - Make sure that the `Recurring contract` setting is **enabled** on `Merchant` account-level - In the `Customer Area`, under `Developers` -> `Webhooks` -> `Settings` -> Enable `Recurring contract` on `Merchant`-level and hit "Save".
+    - Make sure that your webhook sends the `RECURRING_CONTRACT` event when you've created the webhook
+    - Make sure the webhook is **enabled** to send notifications
 
     
 7. Set the following environment variables in your terminal environment: `ADYEN_API_KEY`, `ADYEN_CLIENT_KEY`, `ADYEN_MERCHANT_ACCOUNT` and `ADYEN_HMAC_KEY`. Note that some IDEs will have to be restarted for environmental variables to be injected properly.
@@ -147,11 +148,15 @@ dotnet run --project subscription-example
 ## Usage
 To try out this application with test card numbers, visit [Test card numbers](https://docs.adyen.com/development-resources/test-cards/test-card-numbers). We recommend saving multiple test cards in your browser so you can test your integration faster in the future.
 
-1. Visit the main page 'Shopper View' to test the application, enter one or multiple card details. Once the payment is authorized, you will receive a webhook notification with the recurringDetailReference. Enter multiple cards to receive multiple different recurringDetailReferences.
+1. Visit the main page 'Shopper View' to test the application, enter one or multiple card details. 
 
-2. Visit 'Admin Panel' to find the saved recurringDetailReferences and choose to make a payment request or disable the recurringDetailReference.
+2. Once the payment is authorized, you will receive a (delayed) webhook notification with the event code `RECURRING_CONTRACT` and the recurringDetailReference. 
 
-3. Visit the Customer Area `Developers` → `API logs` to view your logs.
+3. Enter multiple cards to receive multiple different recurringDetailReferences.
+
+4. Visit 'Admin Panel' to find the saved recurringDetailReferences and choose to make a payment request or disable the recurringDetailReference.
+
+5. Visit the Customer Area `Developers` → `API logs` to view your logs.
 
 > **Note** We currently store these values in a local memory cache, if you restart/stop the application these values are lost. However, the tokens will still be persisted on the Adyen Platform.
 > You can view the stored payment details by going to a recent payment of the shopper in the Customer Area: `Transactions` → `Payments` → `Shopper Details` → `Recurring: View stored payment details`.

@@ -1,15 +1,15 @@
 ﻿using Adyen.Model.Recurring;
+using Adyen.Service;
 using adyen_dotnet_subscription_example.Options;
 using adyen_dotnet_subscription_example.Repositories;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Threading;
 using System.Threading.Tasks;
-using Adyen.Service;
 
-namespace adyen_dotnet_subscription_example.Clients
+namespace adyen_dotnet_subscription_example.Services
 {
-    public interface IRecurringClient
+    public interface ISubscriptionService
     {
         /// <summary>
         /// Disables the <paramref name="recurringDetailReference"/> (token) for the given <paramref name="shopperReference"/>.
@@ -29,14 +29,14 @@ namespace adyen_dotnet_subscription_example.Clients
         Task<RecurringDetailsResult> ListRecurringDetailAsync(string shopperReference, CancellationToken cancellationToken = default);
     }
 
-    public class RecurringClient : IRecurringClient
+    public class SubscriptionService : ISubscriptionService
     {
-        private readonly ILogger<RecurringClient> _logger;
+        private readonly ILogger<SubscriptionService> _logger;
         private readonly string _merchantAccount;
         private readonly IRecurringService _recurringService;
         private readonly ISubscriptionRepository _repository;
 
-        public RecurringClient(ILogger<RecurringClient> logger, IRecurringService recurringService, ISubscriptionRepository repository, IOptions<AdyenOptions> options)
+        public SubscriptionService(ILogger<SubscriptionService> logger, IRecurringService recurringService, ISubscriptionRepository repository, IOptions<AdyenOptions> options)
         {
             _logger = logger;
             _recurringService = recurringService;

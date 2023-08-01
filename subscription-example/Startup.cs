@@ -2,7 +2,6 @@ using Adyen;
 using Adyen.Model;
 using Adyen.Service.Checkout;
 using Adyen.Util;
-using adyen_dotnet_subscription_example.Clients;
 using adyen_dotnet_subscription_example.Options;
 using adyen_dotnet_subscription_example.Repositories;
 using adyen_dotnet_subscription_example.Services;
@@ -73,8 +72,8 @@ namespace adyen_dotnet_subscription_example
             services.AddSingleton<Adyen.Service.IRecurringService, Adyen.Service.RecurringService>(); // Used to be called "Recurring.cs" in Adyen .NET 9.x.x and below, see https://github.com/Adyen/adyen-dotnet-api-library/blob/9.2.1/Adyen/Service/Recurring.cs.
             services.AddSingleton<HmacValidator>();
             
-            services.AddSingleton<IRecurringClient, RecurringClient>();
-            services.AddSingleton<ICheckoutClient, CheckoutClient>();
+            services.AddSingleton<ISubscriptionService, SubscriptionService>();
+            services.AddSingleton<ICheckoutService, CheckoutService>();
             services.AddSingleton<ISubscriptionRepository, SubscriptionRepository>();
         }
 
