@@ -553,4 +553,9 @@ submitButton[disabled=disabled]{
   padding: 4px 64px 4px 4px;
 }
 
+.arrow-down {
+  display: grid;
+  justify-content: center;
+}
+
 /* end Admin panel details view*/

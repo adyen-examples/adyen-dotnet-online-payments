@@ -19,8 +19,14 @@
         else
         {
             <p>This page shows all payments details of the reference, sorted by DateTime.</p>
-            @foreach(var payment in payments)
+            @for(int i = 0; i < payments.Count; i++)
             {
+                var payment = payments[i];
+                <!-- Add an `arrow down`-symbol when there is more than 1 payment. -->
+                if (i != 0 && i != payments.Count)
+                {
+                    <ul class="arrow-down">↓</ul>
+                }
                 double amount = (payment.Amount ?? 0.0) / 100L;
                 <ul class="detailsList">
                     <li><b>Reference: &nbsp;</b> @payment.Reference</li>

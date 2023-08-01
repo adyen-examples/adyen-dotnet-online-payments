@@ -33,7 +33,6 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
         public IActionResult Index()
         {
             List<PaymentModel> payments = new List<PaymentModel>();
-
             foreach (var kvp in _repository.Payments)
             {
                 payments.Add(_repository.FindLatestPaymentByReference(kvp.Key));
