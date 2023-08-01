@@ -3,8 +3,18 @@ name: E2E Testing Suite (Playwright)
 on:
   workflow_dispatch:
   push:
+    paths-ignore:
+      - '**/readme.md'
+      - .gitignore
+      - .gitpod.yml
+      - LICENSE
     branches: [ main ]
   pull_request:
+    paths-ignore:
+      - '**/readme.md'
+      - .gitignore
+      - .gitpod.yml
+      - LICENSE
     branches: [ main ]
 
 jobs:

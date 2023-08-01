@@ -2,7 +2,18 @@ name: .NET
 
 on:
   push:
+    paths-ignore:
+      - '**/readme.md'
+      - .gitignore
+      - .gitpod.yml
+      - LICENSE
+    branches: [ main ]
   pull_request:
+    paths-ignore:
+      - '**/readme.md'
+      - .gitignore
+      - .gitpod.yml
+      - LICENSE
     branches: [ main ]
 
 jobs:

@@ -138,5 +138,18 @@ dotnet run --project authorisation-adjustment-example
 ## Usage
 To try out this application with test card numbers, visit [Test card numbers](https://docs.adyen.com/development-resources/test-cards/test-card-numbers). We recommend saving multiple test cards in your browser so you can test your integration faster in the future.
 
-1. ...
+1. Make a booking in the `Booking View` 
+2. Visit the `Admin Panel` to see the incoming webhooks and perform operations on the initial preauthorisation.
+
+
+A success scenario for a payment followed by two adjustments, a capture and a reversal looks like: 
+
+`AUTHORISATION` (preauthorisation) → `AUTHORISATION_ADJUSTMENT` (adjust) → `AUTHORISATION_ADJUSTMENT` (adjust) → `CAPTURE` (capture) → `CANCEL_OR_REFUND` (reversal)
+
+Adyen expires an authorisation request automatically after XX days depending on the card brand.
+The `EXTEND` operation in this sample is used to extend the expiry date manually, for the exact days, refer to the [documentation](https://docs.adyen.com/online-payments/adjust-authorisation/#validity) (section: validity).
+
+When CAPTURE is executed, it will perform the operation on the latest amount. You'll have to wait for the `AUTHORISATION_ADJUSTMENT` response, before making the capture once it's final.
+
+3. Make sure to have your webhooks configured and wait for a while to confirm that the changes have been received by your application (f.e. a [CAPTURE_FAILED](https://docs.adyen.com/online-payments/capture/#testing-failed-captures) event can take several hours to process).
 
