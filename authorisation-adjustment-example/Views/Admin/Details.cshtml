@@ -2,13 +2,13 @@
 @using adyen_dotnet_authorisation_adjustment_example.Models;
 @{
     ViewData["Title"] = "Adyen Admin Panel Details";
-    List<HotelPaymentModel> hotelPayments = ViewBag.HotelPayments;
+    List<PaymentModel> payments = ViewBag.Payments;
 }
 
 <div class="main-container">
     <div class="details-panel-payment-container"> 
     @{
-        if (hotelPayments == null || !hotelPayments.Any())
+        if (payments == null || !payments.Any())
         {
             <p>
                 <b>
@@ -18,8 +18,8 @@
         }
         else
         {
-            <p>This page shows all hotel payments details of the reference, sorted by DateTime.</p>
-            @foreach(var payment in hotelPayments)
+            <p>This page shows all payments details of the reference, sorted by DateTime.</p>
+            @foreach(var payment in payments)
             {
                 double amount = (payment.Amount ?? 0.0) / 100L;
                 <ul class="detailsList">

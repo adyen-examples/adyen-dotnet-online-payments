@@ -2,7 +2,7 @@
 
 namespace adyen_dotnet_authorisation_adjustment_example.Models
 {
-    public class HotelPaymentModel
+    public class PaymentModel
     {
         /// PspReference provided by Adyen, you can receive this in the response of the <see cref="Controllers.ApiController.PreAuthorisation(Adyen.Model.Checkout.PaymentRequest, System.Threading.CancellationToken)"/> call.
         public string PspReference { get; set; }
@@ -34,7 +34,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
             return string.IsNullOrWhiteSpace(OriginalReference) ? PspReference : OriginalReference;
         }
 
-        public bool IsEqual(HotelPaymentModel other)
+        public bool IsEqual(PaymentModel other)
         {
             return PspReference == other.PspReference
                 && OriginalReference == other.OriginalReference
@@ -62,16 +62,22 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
 
         #region ResultCodes - Methods are used to show elements on frontend.
 
+        // The payment details of the shopper are verified, and the funds are reserved.
+        // https://docs.adyen.com/online-payments/adjust-authorisation/#pre-authorise
         public bool IsAuthorised()
         {
             return ResultCode is "Authorised" or "AUTHORISATION";
         }
 
+        // The preauthorisation amount has been adjusted or extended.
+        // https://docs.adyen.com/online-payments/adjust-authorisation/#adjust-the-amount
         public bool IsAuthorisedAdjusted()
         {
             return ResultCode is "AUTHORISATION_ADJUSTMENT";
         }
 
+        // The reserved funds are transferred from the shopper to your account. 
+        // https://docs.adyen.com/online-payments/adjust-authorisation/#capture-authorisation
         public bool IsCaptured()
         {
             return ResultCode is "CAPTURE";

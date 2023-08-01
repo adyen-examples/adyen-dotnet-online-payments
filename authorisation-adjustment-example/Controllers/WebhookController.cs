@@ -17,11 +17,11 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
     public class WebhookController : ControllerBase
     {
         private readonly ILogger<WebhookController> _logger;
-        private readonly IHotelPaymentRepository _repository;
+        private readonly IPaymentRepository _repository;
         private readonly HmacValidator _hmacValidator;
         private readonly string _hmacKey;
 
-        public WebhookController(ILogger<WebhookController> logger, IOptions<AdyenOptions> options, IHotelPaymentRepository repository, HmacValidator hmacValidator)
+        public WebhookController(ILogger<WebhookController> logger, IOptions<AdyenOptions> options, IPaymentRepository repository, HmacValidator hmacValidator)
         {
             _logger = logger;
             _repository = repository;
@@ -99,7 +99,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 return Task.CompletedTask;
             }
 
-            var hotelPayment = new HotelPaymentModel()
+            var payment = new PaymentModel()
             {
                 PspReference = notification.PspReference,
                 OriginalReference = notification.OriginalReference,
@@ -112,7 +112,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 PaymentMethodBrand = notification.PaymentMethod
             };
 
-            if (!_repository.Insert(hotelPayment))
+            if (!_repository.Insert(payment))
             {
                 _logger.LogInformation($"Could not insert {notification.PspReference}");
                 return Task.CompletedTask;
@@ -137,7 +137,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 _logger.LogInformation("BookingDate: " + dateTime);
             }
 
-            var hotelPayment = new HotelPaymentModel()
+            var payment = new PaymentModel()
             {
                 PspReference = notification.PspReference,
                 OriginalReference = notification.OriginalReference,
@@ -150,7 +150,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 PaymentMethodBrand = notification.PaymentMethod
             };
 
-            if (!_repository.Insert(hotelPayment))
+            if (!_repository.Insert(payment))
             {
                 _logger.LogInformation($"Could not insert {notification.PspReference}");
                 return Task.CompletedTask;
@@ -176,7 +176,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 _logger.LogInformation("BookingDate: " + dateTime);
             }
 
-            var hotelPayment = new HotelPaymentModel()
+            var payment = new PaymentModel()
             {
                 PspReference = notification.PspReference,
                 OriginalReference = notification.OriginalReference,
@@ -189,7 +189,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 PaymentMethodBrand = notification.PaymentMethod
             };
 
-            if (!_repository.Insert(hotelPayment))
+            if (!_repository.Insert(payment))
             {
                 _logger.LogInformation($"Could not insert {notification.PspReference}");
                 return Task.CompletedTask;
@@ -215,7 +215,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 _logger.LogInformation("BookingDate: " + dateTime);
             }
 
-            var hotelPayment = new HotelPaymentModel()
+            var payment = new PaymentModel()
             {
                 PspReference = notification.PspReference,
                 OriginalReference = notification.OriginalReference,
@@ -228,7 +228,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 PaymentMethodBrand = notification.PaymentMethod
             };
 
-            if (!_repository.Insert(hotelPayment))
+            if (!_repository.Insert(payment))
             {
                 _logger.LogInformation($"Could not insert {notification.PspReference}");
                 return Task.CompletedTask;
@@ -266,7 +266,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 _logger.LogInformation("BookingDate: " + dateTime);
             }
 
-            var hotelPayment = new HotelPaymentModel()
+            var payment = new PaymentModel()
             {
                 PspReference = notification.PspReference,
                 OriginalReference = notification.OriginalReference,
@@ -279,7 +279,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 PaymentMethodBrand = notification.PaymentMethod
             };
 
-            if (!_repository.Insert(hotelPayment))
+            if (!_repository.Insert(payment))
             {
                 _logger.LogInformation($"Could not insert {notification.PspReference}");
                 return Task.CompletedTask;
@@ -305,7 +305,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 _logger.LogInformation("BookingDate: " + dateTime);
             }
 
-            var hotelPayment = new HotelPaymentModel()
+            var payment = new PaymentModel()
             {
                 PspReference = notification.PspReference,
                 OriginalReference = notification.OriginalReference,
@@ -318,7 +318,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 PaymentMethodBrand = notification.PaymentMethod
             };
 
-            if (!_repository.Insert(hotelPayment))
+            if (!_repository.Insert(payment))
             {
                 _logger.LogInformation($"Could not insert {notification.PspReference}");
                 return Task.CompletedTask;
@@ -345,7 +345,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 _logger.LogInformation("BookingDate: " + dateTime);
             }
 
-            var hotelPayment = new HotelPaymentModel()
+            var payment = new PaymentModel()
             {
                 PspReference = notification.PspReference,
                 OriginalReference = notification.OriginalReference,
@@ -358,7 +358,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 PaymentMethodBrand = notification.PaymentMethod
             };
 
-            if (!_repository.Insert(hotelPayment))
+            if (!_repository.Insert(payment))
             {
                 _logger.LogInformation($"Could not insert {notification.PspReference}");
                 return Task.CompletedTask;

@@ -19,11 +19,11 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
     {
         private readonly IPaymentsService _paymentsService;
         private readonly IUrlService _urlService;
-        private readonly IHotelPaymentRepository _repository;
+        private readonly IPaymentRepository _repository;
         private readonly ILogger<ApiController> _logger;
         private readonly string _merchantAccount;
 
-        public ApiController(IPaymentsService paymentsService, IUrlService urlService, IHotelPaymentRepository repository, ILogger<ApiController> logger, IOptions<AdyenOptions> options)
+        public ApiController(IPaymentsService paymentsService, IUrlService urlService, IPaymentRepository repository, ILogger<ApiController> logger, IOptions<AdyenOptions> options)
         {
             _paymentsService = paymentsService;
             _urlService = urlService;
@@ -151,7 +151,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 var response = await _paymentsService.PaymentsAsync(paymentRequest, cancellationToken: cancellationToken);
                 _logger.LogInformation($"Response for Payments:\n{response}\n");
 
-                var hotelPayment = new HotelPaymentModel()
+                var payment = new PaymentModel()
                 {
                     PspReference = response.PspReference,
                     OriginalReference = null,
@@ -164,14 +164,14 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                     PaymentMethodBrand = response.PaymentMethod?.Brand,
                 };
 
-                if (!_repository.HotelPayments.TryGetValue(hotelPayment.Reference, out var list))
+                if (!_repository.Payments.TryGetValue(payment.Reference, out var list))
                 {
                     // Reference does not exist, let's add it.
-                    _repository.HotelPayments.TryAdd(
-                        hotelPayment.Reference, /// Key: Reference.
-                        new List<HotelPaymentModel>() {
+                    _repository.Payments.TryAdd(
+                        payment.Reference, /// Key: Reference.
+                        new List<PaymentModel>() {
                         {
-                            hotelPayment        /// Value: <see cref="HotelPaymentModel"/>.
+                            payment        /// Value: <see cref="PaymentModel"/>.
                         }
                     });
                 }

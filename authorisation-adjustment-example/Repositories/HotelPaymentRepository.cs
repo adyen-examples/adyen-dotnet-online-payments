@@ -6,110 +6,110 @@ using System.Linq;
 namespace adyen_dotnet_authorisation_adjustment_example.Repositories
 {
     /// <summary>
-    /// Acts as a local (in-memory) repository to store <see cref="HotelPaymentModel"/>s by <see cref="HotelPaymentModel.PspReference"/>.
+    /// Acts as a local (in-memory) repository to store <see cref="PaymentModel"/>s by <see cref="PaymentModel.PspReference"/>.
     /// </summary>
-    public interface IHotelPaymentRepository
+    public interface IPaymentRepository
     {
         /// <summary>
-        /// Dictionary of all payments for the hotel bookings by <see cref="HotelPaymentModel.Reference"/>.
-        /// Key: <see cref="HotelPaymentModel.Reference"/>  |  
-        /// Value: <see cref="List{string, HotelPaymentModel}"/>.
+        /// Dictionary of all payments for the hotel bookings by <see cref="PaymentModel.Reference"/>.
+        /// Key: <see cref="PaymentModel.Reference"/>  |  
+        /// Value: <see cref="List{string, PaymentModel}"/>.
         /// </summary>
-        public Dictionary<string, List<HotelPaymentModel>> HotelPayments { get; }
+        public Dictionary<string, List<PaymentModel>> Payments { get; }
 
         /// <summary>
-        /// Insert <see cref="HotelPaymentModel"/> into the <see cref="HotelPayments"/> dictionary with the <see cref="HotelPaymentModel.PspReference"/> as its key.
+        /// Insert <see cref="PaymentModel"/> into the <see cref="Payments"/> dictionary with the <see cref="PaymentModel.PspReference"/> as its key.
         /// </summary>
-        /// <param name="hotelPayment"><see cref="HotelPaymentModel"/>.</param>
+        /// <param name="payment"><see cref="PaymentModel"/>.</param>
         /// <returns>True if inserted.</returns>
-        bool Insert(HotelPaymentModel hotelPayment);
+        bool Insert(PaymentModel payment);
 
         /// <summary>
-        /// Gets <see cref="HotelPaymentModel"/>s by <see cref="HotelPaymentModel.Reference"/>.
+        /// Gets <see cref="PaymentModel"/>s by <see cref="PaymentModel.Reference"/>.
         /// </summary>
-        /// <param name="reference"><see cref="HotelPaymentModel.Reference"/>.</param>
-        /// <returns><see cref="IEnumerable{HotelPaymentModel}"/>.</returns>
-        IEnumerable<HotelPaymentModel> FindByReference(string reference);
+        /// <param name="reference"><see cref="PaymentModel.Reference"/>.</param>
+        /// <returns><see cref="IEnumerable{PaymentModel}"/>.</returns>
+        IEnumerable<PaymentModel> FindByReference(string reference);
 
         /// <summary>
-        /// Gets latest version of <see cref="HotelPaymentModel"/> by <see cref="HotelPaymentModel.Reference"/>.
+        /// Gets latest version of <see cref="PaymentModel"/> by <see cref="PaymentModel.Reference"/>.
         /// </summary>
-        /// <param name="reference"><see cref="HotelPaymentModel.Reference"/>.</param>
-        /// <returns><see cref="HotelPaymentModel"/>.</returns>
-        HotelPaymentModel FindLatestHotelPaymentByReference(string reference);
+        /// <param name="reference"><see cref="PaymentModel.Reference"/>.</param>
+        /// <returns><see cref="PaymentModel"/>.</returns>
+        PaymentModel FindLatestPaymentByReference(string reference);
 
         /// <summary>
-        /// Finds the initial preauthorisation <see cref="HotelPaymentModel"/>.
+        /// Finds the initial preauthorisation <see cref="PaymentModel"/>.
         /// </summary>
-        /// <param name="reference"><see cref="HotelPaymentModel.Reference"/>.</param>
-        /// <returns><see cref="HotelPaymentModel"/>.</returns>
-        HotelPaymentModel FindPreAuthorisationHotelPayment(string reference);
+        /// <param name="reference"><see cref="PaymentModel.Reference"/>.</param>
+        /// <returns><see cref="PaymentModel"/>.</returns>
+        PaymentModel FindPreAuthorisationPayment(string reference);
     }
 
-    public class HotelPaymentRepository : IHotelPaymentRepository
+    public class PaymentRepository : IPaymentRepository
     {
-        public Dictionary<string, List<HotelPaymentModel>> HotelPayments { get; }
+        public Dictionary<string, List<PaymentModel>> Payments { get; }
 
-        public HotelPaymentRepository()
+        public PaymentRepository()
         {
-            HotelPayments = new Dictionary<string, List<HotelPaymentModel>>();
+            Payments = new Dictionary<string, List<PaymentModel>>();
         }
 
-        public bool Insert(HotelPaymentModel hotelPayment)
+        public bool Insert(PaymentModel payment)
         {
             // If `Reference` is not specified, throw an ArgumentNullException.
-            if (string.IsNullOrWhiteSpace(hotelPayment.Reference))
+            if (string.IsNullOrWhiteSpace(payment.Reference))
             {
-                throw new ArgumentNullException(nameof(hotelPayment.Reference));
+                throw new ArgumentNullException(nameof(payment.Reference));
             }    
 
             // Check if `Reference` is in the list, do nothing if we've never saved the reference.
-            if (!HotelPayments.TryGetValue(hotelPayment.Reference, out var list))
+            if (!Payments.TryGetValue(payment.Reference, out var list))
             {
                 return false;
             }
 
             // Check if `PspReference` already exists.
-            var existingHotelPayment = list.FirstOrDefault(x => x.PspReference == hotelPayment.PspReference);
-            if (existingHotelPayment is null)
+            var existingPayment = list.FirstOrDefault(x => x.PspReference == payment.PspReference);
+            if (existingPayment is null)
             {
                 // If it doesn't exists, we add it.
-                list.Add(hotelPayment);
+                list.Add(payment);
                 return true;
             }
 
             // If the values are exactly the same (f.e. when we receive the webhook twice).
             // Consider it a duplicate, and do not add anything to the list.
-            if (hotelPayment.IsEqual(existingHotelPayment))
+            if (payment.IsEqual(existingPayment))
             {
                 return false;
             }
 
-            // Add the hotel payment.
-            list.Add(hotelPayment);
+            // Add the payment.
+            list.Add(payment);
             return true;
         }
 
-        public IEnumerable<HotelPaymentModel> FindByReference(string reference)
+        public IEnumerable<PaymentModel> FindByReference(string reference)
         {
-            if (!HotelPayments.TryGetValue(reference, out List<HotelPaymentModel> result))
-                return Enumerable.Empty<HotelPaymentModel>();
+            if (!Payments.TryGetValue(reference, out List<PaymentModel> result))
+                return Enumerable.Empty<PaymentModel>();
 
             return result;
         }
 
-        public HotelPaymentModel FindLatestHotelPaymentByReference(string reference)
+        public PaymentModel FindLatestPaymentByReference(string reference)
         {
-            List<HotelPaymentModel> result = FindByReference(reference)
+            List<PaymentModel> result = FindByReference(reference)
                 .OrderBy(x => x.DateTime)
                 .ToList();
 
             return result.LastOrDefault();
         }
 
-        public HotelPaymentModel FindPreAuthorisationHotelPayment(string reference)
+        public PaymentModel FindPreAuthorisationPayment(string reference)
         {
-            if (!HotelPayments.TryGetValue(reference, out List<HotelPaymentModel> result))
+            if (!Payments.TryGetValue(reference, out List<PaymentModel> result))
                 return null;
 
             return result.FirstOrDefault();

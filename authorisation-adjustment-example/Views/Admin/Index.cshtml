@@ -2,7 +2,7 @@
 @using adyen_dotnet_authorisation_adjustment_example.Models;
 @{
     ViewData["Title"] = "Adyen Admin Panel";
-    List<HotelPaymentModel> hotelPayments = ViewBag.HotelPayments;
+    List<PaymentModel> payments = ViewBag.Payments;
 }
 
 <div class="main-container">
@@ -10,14 +10,35 @@
         <h1>ADMIN PANEL</h1>
         <div class="admin-panel-container">
             <p>The <b>admin panel</b> shows all payments for hotel bookings. In order to perform actions on the payments, follow the readme to ensure that you have set up your webhooks correctly to receive payment updates asynchronously. </p>
-            <p>Select a hotel payment to <a href="https://docs.adyen.com/online-payments/classic-integrations/modify-payments/adjust-authorisation">increase/decrease</a> the payment amount.</p>
-            <p>Note: The default expiry period can also be extended and ensures that Adyen does not automatically expire the authorisation. You can find the tables which includes expiry information from the following supported major card schemes on <a href="https://docs.adyen.com/online-payments/classic-integrations/modify-payments/adjust-authorisation#validity">the documentation page</a>.</p>
+
+            @if (payments != null && payments.Any())
+            {
+                <p>
+                    <b>Actions:</b><br />
+                    
+                    <b>
+                        <a href="https://docs.adyen.com/online-payments/classic-integrations/modify-payments/adjust-authorisation">Adjust:</a>
+                    </b> Increase/decrease the payment amount of a preauthorisation. <br />
+                    
+                    <b>
+                        <a href="https://docs.adyen.com/online-payments/classic-integrations/modify-payments/adjust-authorisation/#extend-authorisation">Extend:</a>
+                    </b> Extends expiry date, see <a href="https://docs.adyen.com/online-payments/classic-integrations/modify-payments/adjust-authorisation#validity">validity</a>. <br />
+
+                    <b>
+                        <a href="https://docs.adyen.com/online-payments/adjust-authorisation/#capture-authorisation">Capture:</a>
+                    </b> Finalize the payment, e.g. the reserved funds are transferred from the shopper to your account. <br />
+                    
+                    <b>
+                        <a href="https://docs.adyen.com/online-payments/classic-integrations/modify-payments/cancel-or-refund/">Reversal:</a>
+                    </b> Cancels or refunds the payment.
+                </p>
+            }
         </div>
     </div>
     <br/>
     <div class="admin-panel-payment-container"> 
     @{
-        if (hotelPayments == null || !hotelPayments.Any())
+        if (payments == null || !payments.Any())
         {
             <p>
                 <b>
@@ -27,7 +48,7 @@
         }
         else
         {
-            @foreach(var payment in hotelPayments)
+            @foreach(var payment in payments)
             {
                 double amount = (payment.Amount ?? 0.0) / 100L;
                 <ul class="adminList">   
