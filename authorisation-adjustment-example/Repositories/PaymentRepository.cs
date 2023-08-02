@@ -43,7 +43,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Repositories
         /// </summary>
         /// <param name="reference"><see cref="PaymentModel.Reference"/>.</param>
         /// <returns><see cref="PaymentModel"/>.</returns>
-        PaymentModel FindPreAuthorisationPayment(string reference);
+        PaymentModel FindPreAuthorisatedPayment(string reference);
     }
 
     public class PaymentRepository : IPaymentRepository
@@ -104,14 +104,16 @@ namespace adyen_dotnet_authorisation_adjustment_example.Repositories
                 .OrderBy(x => x.DateTime)
                 .ToList();
 
+            // Returns the last entry in the list. Note that this can also return results that have failed.
             return result.LastOrDefault();
         }
 
-        public PaymentModel FindPreAuthorisationPayment(string reference)
+        public PaymentModel FindPreAuthorisatedPayment(string reference)
         {
             if (!Payments.TryGetValue(reference, out List<PaymentModel> result))
                 return null;
 
+            // Returns the first entry in our list (the result from the API call).
             return result.FirstOrDefault();
         }
     }

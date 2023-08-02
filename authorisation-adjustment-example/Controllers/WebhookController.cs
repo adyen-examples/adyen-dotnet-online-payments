@@ -242,6 +242,12 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             return Task.CompletedTask;
         }
 
+        // Webhook: https://docs.adyen.com/online-payments/reversal/#cancel-or-refund-webhook
+        // >> True: Adyen's validations were successful and we sent the refund request to the card scheme.
+        // This usually means that the refund will be processed successfully. However, in rare cases the refund can be rejected by the card scheme, or reversed.
+        // For information about these exceptions, see REFUND_FAILED webhook and REFUNDED_REVERSED webhook.
+        // >> False: the refund validations failed.
+        // The webhook includes a reason field with a short description of the problem. Review the reason, fix the issue if possible, and resubmit the refund request.
         private Task ProcessCancelOrRefundNotificationAsync(NotificationRequestItem notification)
         {
             if (!notification.Success)
