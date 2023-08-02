@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "adyen-dotnet-checkout-examp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "authorisation-adjustment-example", "authorisation-adjustment-example", "{61BDBE25-C448-4640-A4C7-E6744FA2D44F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "authorisation-adjustment-example", "authorisation-adjustment-example\authorisation-adjustment-example.csproj", "{EC4006F7-EC06-4DBC-A9F7-2273AE677AC2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "adyen-dotnet-authorisation-adjustment-example", "authorisation-adjustment-example\adyen-dotnet-authorisation-adjustment-example.csproj", "{EC4006F7-EC06-4DBC-A9F7-2273AE677AC2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
