@@ -1,4 +1,3 @@
-using Adyen.Model.Nexo;
 using Adyen.Model.Notification;
 using Adyen.Util;
 using adyen_dotnet_authorisation_adjustment_example.Models;
