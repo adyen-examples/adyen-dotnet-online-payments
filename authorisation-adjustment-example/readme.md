@@ -1,6 +1,6 @@
 # Adyen [Authorisation Adjustment](https://docs.adyen.com/online-payments/classic-integrations/modify-payments/adjust-authorisation) Integration Demo
 
-This repository includes an adjust authorisation example for the following three use cases after a pre-authorised payment: incremental, decremental adjustments. Within this demo app, you'll find a simplified version of a hotel booking, where the shopper can book a hotel and administrators can adjust (increase/decrease) the payment amount, extend the authorisation expiry date, capture the final amount and/or reverse the payment.
+This repository includes an adjust authorisation example for the following three use cases after a pre-authorised payment: incremental, decremental adjustments. Within this demo app, you'll find a simplified version of a hotel booking, where the shopper can book a hotel and administrators can [1] **adjust** (increase/decrease) the payment amount, [2] **extend** the authorisation expiry date, [3] **capture** the final amount and/or [4] **reverse** an authorised payment.
 
 ![Authorisation Adjustment Demo](wwwroot/images/cardauthorisationadjustment.gif)
 
