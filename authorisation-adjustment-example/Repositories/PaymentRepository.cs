@@ -43,7 +43,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Repositories
         /// </summary>
         /// <param name="reference"><see cref="PaymentModel.Reference"/>.</param>
         /// <returns><see cref="PaymentModel"/>.</returns>
-        PaymentModel FindPreAuthorisatedPayment(string reference);
+        PaymentModel FindPreAuthorisedPayment(string reference);
     }
 
     public class PaymentRepository : IPaymentRepository
@@ -108,7 +108,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Repositories
             return result.LastOrDefault();
         }
 
-        public PaymentModel FindPreAuthorisatedPayment(string reference)
+        public PaymentModel FindPreAuthorisedPayment(string reference)
         {
             if (!Payments.TryGetValue(reference, out List<PaymentModel> result))
                 return null;
