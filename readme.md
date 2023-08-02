@@ -14,6 +14,7 @@ Get started by navigating to one of the supported demos below.
 | [`Gift Card Example`](giftcard-example) | Gift Cards checkout flow using partial orders. | [See below](#gift-card-example) | 
 | [`Pay by Link Example`](paybylink-example) | Pay by Link flow. | [See below](#pay-by-link-example) | 
 | [`Subscription Example`](subscription-example) | Subscription flow using Adyen tokenization. | [See below](#subscription-example) | 
+| [`Authorisation Adjustment Example`](authorisation-adjustment-example) | Pre-authorise a payment, adjust the authorised amount, and capture the payment. | [See below](#authorisation-adjustment-example) | 
 
 
 ## [Checkout Example](checkout-example)
@@ -36,6 +37,16 @@ The [advanced checkout example](checkout-example-advanced) performs the same fun
 See the [advanced integration flow](https://docs.adyen.com/online-payments/web-drop-in/additional-use-cases?tab=sessions_flow_advanced_flow_1) for more information.
 
 ![Card Checkout Demo](checkout-example-advanced/wwwroot/images/cardcheckout.gif)
+
+## [Authorisation Adjustment Example](authorisation-adjustment-example)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/authorisation-adjustment-example)
+
+[First time with Gitpod?](https://github.com/adyen-examples/.github/blob/main/pages/gitpod-get-started.md)
+
+The [`authorisation adjustment example`](authorisation-adjustment-example) repository includes an adjust authorisation example for the following three use cases after a pre-authorised payment: incremental, decremental adjustments. 
+Within this demo app, you'll find a simplified version of a hotel booking, where the shopper can book a hotel and administrators can adjust (increase/decrease) the payment amount, extend the authorisation expiry date, capture the final amount and/or reverse the payment.
+
+![Authorisation Adjustment Card Demo](authorisation-adjustment-example/wwwroot/images/cardauthorisationadjustment.gif)
 
 ## [Gift Card Example](giftcard-example)
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/giftcard-example)
