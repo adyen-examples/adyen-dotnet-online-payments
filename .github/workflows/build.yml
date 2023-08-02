@@ -11,7 +11,7 @@ on:
       - LICENSE
   pull_request:
     branches: [ main ]
-    paths-ignore
+    paths-ignore:
       - '**/readme.md'
       - readme.md
       - .gitignore
