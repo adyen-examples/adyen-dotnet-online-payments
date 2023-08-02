@@ -1,0 +1,182 @@
+﻿@using Adyen.Model.Recurring;
+@using adyen_dotnet_authorisation_adjustment_example.Models;
+@{
+    ViewData["Title"] = "Adyen Admin Panel";
+    List<PaymentModel> payments = ViewBag.Payments;
+}
+
+<div class="main-container">
+    <div class="info">
+        <h1>ADMIN PANEL</h1>
+        <div class="admin-panel-container">
+            <p>The <b>admin panel</b> shows all payments for hotel bookings. In order to perform actions on the payments, follow the readme to ensure that you have set up your webhooks correctly to receive payment updates asynchronously. </p>
+
+            @if (payments != null && payments.Any())
+            {
+                <p>
+                    <b>Actions:</b><br />
+                    
+                    <b>
+                        <a href="https://docs.adyen.com/online-payments/classic-integrations/modify-payments/adjust-authorisation">Adjust:</a>
+                    </b> Increase/decrease the payment amount of a preauthorisation. <br />
+                    
+                    <b>
+                        <a href="https://docs.adyen.com/online-payments/classic-integrations/modify-payments/adjust-authorisation/#extend-authorisation">Extend:</a>
+                    </b> Extends expiry date, see <a href="https://docs.adyen.com/online-payments/classic-integrations/modify-payments/adjust-authorisation#validity">validity</a>. <br />
+
+                    <b>
+                        <a href="https://docs.adyen.com/online-payments/adjust-authorisation/#capture-authorisation">Capture:</a>
+                    </b> Finalize the payment, e.g. the reserved funds are transferred from the shopper to your account. <br />
+                    
+                    <b>
+                        <a href="https://docs.adyen.com/online-payments/classic-integrations/modify-payments/cancel-or-refund/">Reversal:</a>
+                    </b> Cancels or refunds the payment.
+                </p>
+            }
+        </div>
+    </div>
+    <br/>
+    <div class="admin-panel-payment-container"> 
+    @{
+        if (payments == null || !payments.Any())
+        {
+            <p>
+                <b>
+                    No payments are stored. You can make a card payment in the <a href="/">Booking View</a>.
+                </b>
+            </p>
+        }
+        else
+        {
+            @foreach(var payment in payments)
+            {
+                double amount = (payment.Amount ?? 0.0) / 100L;
+                <ul class="adminList">   
+                    <li><b>Reference: &nbsp;</b> <a href="admin/details/@payment.Reference">@payment.Reference</a></li>
+                    <li><b>Result Code: &nbsp;</b> @payment.ResultCode </li>
+                    <li><b>PspReference: &nbsp;</b> @payment.PspReference</li>                    
+                    @if(!string.IsNullOrWhiteSpace(payment.OriginalReference))
+                    {
+                        <li><b>Original PspReference: &nbsp;</b> @payment.OriginalReference</li>
+                    }
+                    
+                    @if (payment.IsRefusalReasonShown())
+                    {
+                        <li>
+                            <b>Refusal Reason: &nbsp;</b> @payment.RefusalReason
+                        </li><li></li>
+                    }
+                        
+                    @if (payment.IsAmountShown())
+                    {
+                        <li>
+                            <!-- Show amount from minor units EUR `1234` as: EUR`12.34`-->
+                            <b>Payment Amount: &nbsp;</b> @payment.Currency @amount
+                        </li>
+
+                        <li>
+                            <b>Payment Method Brand: &nbsp;</b> @payment.PaymentMethodBrand
+                        </li>
+                    }
+                        
+                    <li><b>DateTime: &nbsp;</b> @payment.DateTime.ToLocalTime()</li> 
+
+                    <li>
+                        @{
+                            bool showAdjustButton = (payment.IsAuthorised() || payment.IsAuthorisedAdjusted()) 
+                                && !payment.IsRefusalReasonShown();
+                        
+                            if (showAdjustButton)
+                            {
+                                <form name="updatePaymentAmountForm" method="post">
+                                    <b>Adjust amount:</b> <input type="text" name="amount" value="@amount" class="adjustAmountText">
+                                        <input type="hidden" name="reference" value="@payment.Reference" />
+                                    <button type="submit" class="adjustSubmitButton">Adjust</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form name="updatePaymentAmountForm" method="post">
+                                    <b>Adjust amount:</b> <input type="text" name="amount" value="@amount" class="adjustAmountText" disabled>
+                                        <input type="hidden" name="reference" value="@payment.Reference" />
+                                    <button type="submit" class="adjustSubmitButton" disabled>Adjust</button>
+                                </form>
+                            }
+                        }
+                    </li>
+                            
+                    <li class="display-flex">
+                        @{
+                            if (showAdjustButton)
+                            {
+                                <form name="extendPaymentForm" method="post">
+                                    <input type="hidden" name="amount" value="@amount">
+                                    <input type="hidden" name="reference" value="@payment.Reference"/>
+                                    <button type="submit" class="submitButton">Extend</button>
+                                </form>
+                            }
+                            else
+                            {                            
+                                <form name="extendPaymentForm" method="post">
+                                    <input type="hidden" name="amount" value="@amount">
+                                    <input type="hidden" name="reference" value="@payment.Reference"/>
+                                    <button type="submit" class="submitButton" disabled>Extend</button>
+                                </form>
+                            }
+                        }
+                        @{
+                            bool showCaptureButton = (payment.IsAuthorised() || payment.IsAuthorisedAdjusted()) 
+                                && !payment.IsRefusalReasonShown();
+                        
+                            if (showCaptureButton)
+                            {
+                                <form name="capturePaymentForm" method="post">
+                                    <input type="hidden" name="reference" value="@payment.Reference"/>
+                                    <button type="submit" class="submitButton">Capture</button>
+                                </form>
+                            }
+                            else
+                            {
+
+                                <form name="capturePaymentForm" method="post">
+                                    <input type="hidden" name="reference" value="@payment.Reference"/>
+                                    <button type="submit" class="submitButton" disabled>Capture</button>
+                                </form>
+                            }
+                        }
+
+                        @{
+                            bool showReversalButton = (payment.IsAuthorised() || payment.IsAuthorisedAdjusted() || payment.IsCaptured()) 
+                                && !payment.IsRefusalReasonShown();
+                            
+                            if (showReversalButton)
+                            {
+                                <form name="reversalPaymentForm" method="post">
+                                    <input type="hidden" name="reference" value="@payment.Reference"/>
+                                    <button type="submit" class="submitButton">Reversal</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form name="reversalPaymentForm" method="post">
+                                    <input type="hidden" name="reference" value="@payment.Reference"/>
+                                    <button type="submit" class="submitButton" disabled>Reversal</button>
+                                </form>
+                            }
+                        }
+                    </li>
+                </ul>
+            }
+        }
+    }
+    </div>
+</div>
+
+<!-- Binds all submit form buttons for `/update-payment-amount` endpoint -->
+<script src="~/js/adminpanel-updatePaymentAmount-bindings.js" asp-append-version="true"></script>
+
+<!-- Binds all submit form buttons for `/capture-payment` endpoint -->
+<script src="~/js/adminpanel-capturePayment-bindings.js" asp-append-version="true"></script>
+
+<!-- Binds all submit form buttons for `/reversal-payment` endpoint -->
+<script src="~/js/adminpanel-reversalPayment-bindings.js" asp-append-version="true"></script>
