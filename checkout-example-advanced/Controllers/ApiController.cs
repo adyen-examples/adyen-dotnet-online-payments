@@ -94,7 +94,7 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
         }
 
         [HttpPost("api/submitAdditionalDetails")]
-        public async Task<ActionResult<PaymentDetailsResponse>> SubmitAdditionalDetails(DetailsRequest request, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<PaymentDetailsResponse>> SubmitAdditionalDetails(PaymentDetailsRequest request, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -112,7 +112,7 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
         [HttpGet("api/handleShopperRedirect")]
         public async Task<IActionResult> HandleShoppperRedirect(string payload = null, string redirectResult = null, CancellationToken cancellationToken = default)
         {
-            var detailsRequest = new DetailsRequest();
+            var detailsRequest = new PaymentDetailsRequest();
             if (!string.IsNullOrWhiteSpace(redirectResult))
             {
                 detailsRequest.Details = new PaymentCompletionDetails() { RedirectResult = redirectResult };
