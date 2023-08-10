@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>adyen_dotnet_in-person-payments_example</RootNamespace>
+    <RootNamespace>adyen_dotnet_in_person_payments_example</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
