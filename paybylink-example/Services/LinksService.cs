@@ -38,7 +38,7 @@ namespace adyen_dotnet_paybylink_example.Services
 
         public async Task<PaymentLinkResponse> CreatePaymentLinkAsync(string reference, long amount, bool isReusable, CancellationToken cancellationToken)
         {
-            var createPayByLinkRequest = new CreatePaymentLinkRequest(
+            var createPayByLinkRequest = new PaymentLinkRequest(
                 merchantAccount: _merchantAccount,          // Required.
                 amount: new Amount("EUR", amount),  // Required, value in minor units.
                 reference: reference,                       // Required, use for example: new Guid().
@@ -55,8 +55,8 @@ namespace adyen_dotnet_paybylink_example.Services
                     id: response.Id, 
                     reference: response.Reference, response.Url, 
                     expiresAt: DateTime.Parse(response.ExpiresAt), 
-                    status: response.Status.ToString(), 
-                    isReusable: response.Reusable
+                    status: response.Status.ToString(),
+                    isReusable: response.Reusable.HasValue ? response.Reusable.Value : false
                 );
                 _logger.LogInformation($"Response from API:\n{response}\n");
                 return response;
@@ -75,8 +75,7 @@ namespace adyen_dotnet_paybylink_example.Services
             {
                 try
                 {
-                    var response =
-                        await _paymentLinksService.GetPaymentLinkAsync(kvp.Value.Id, cancellationToken: cancellationToken);
+                    PaymentLinkResponse response = await _paymentLinksService.GetPaymentLinkAsync(kvp.Value.Id, cancellationToken: cancellationToken);
                     
                     // Update each individual link.
                     _paymentLinkRepository.Upsert(
@@ -84,7 +83,7 @@ namespace adyen_dotnet_paybylink_example.Services
                         reference: response.Reference, response.Url,
                         expiresAt: DateTime.Parse(response.ExpiresAt),
                         status: response.Status.ToString(),
-                        isReusable: response.Reusable
+                        isReusable: response.Reusable.HasValue ? response.Reusable.Value : false
                     );
                 }
                 catch (Adyen.HttpClient.HttpClientException e)
