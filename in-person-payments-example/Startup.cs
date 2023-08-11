@@ -1,7 +1,6 @@
 using Adyen;
 using Adyen.Model;
 using Adyen.Service;
-using Adyen.Service.Checkout;
 using Adyen.Util;
 using adyen_dotnet_in_person_payments_example.Options;
 using adyen_dotnet_in_person_payments_example.Services;
@@ -33,10 +32,10 @@ namespace adyen_dotnet_in_person_payments_example
                 options =>
                 {
                     // Your secret API Key: https://docs.adyen.com/development-resources/api-credentials#generate-your-api-key.
-                    options.ADYEN_API_KEY = Configuration[nameof(AdyenOptions.ADYEN_API_KEY) + "_KWOK_POS"];
+                    options.ADYEN_API_KEY = Configuration[nameof(AdyenOptions.ADYEN_API_KEY)];
                     
                     // Your Merchant Account name: https://docs.adyen.com/account/account-structure.
-                    options.ADYEN_MERCHANT_ACCOUNT = Configuration[nameof(AdyenOptions.ADYEN_MERCHANT_ACCOUNT) + "_KWOK_POS"];
+                    options.ADYEN_MERCHANT_ACCOUNT = Configuration[nameof(AdyenOptions.ADYEN_MERCHANT_ACCOUNT)];
                 }
             );
 
@@ -60,7 +59,9 @@ namespace adyen_dotnet_in_person_payments_example
                         MerchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT,
                         // Test environment.
                         Environment = Environment.Test,
-                    }, provider.GetRequiredService<IHttpClientFactory>());
+                    }, 
+                    provider.GetRequiredService<IHttpClientFactory>()
+                );
             }).AddHttpClient(); // Add HttpClient.
 
             services.AddSingleton<IPosPaymentCloudApi, PosPaymentCloudApi>();
