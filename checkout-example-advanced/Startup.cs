@@ -1,5 +1,4 @@
 using Adyen;
-using Adyen.Model;
 using Adyen.Service.Checkout;
 using Adyen.Util;
 using adyen_dotnet_checkout_example_advanced.Options;
@@ -10,6 +9,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using System;
+using System.Net.Http;
+using System.Threading;
 
 namespace adyen_dotnet_checkout_example_advanced
 {
@@ -51,21 +53,31 @@ namespace adyen_dotnet_checkout_example_advanced
             services.AddHttpContextAccessor()
                 .AddTransient<IUrlService, UrlService>();
 
-            // Register your dependencies.
-            services.AddSingleton(provider =>
+            // Register Adyen.Client as singleton.
+            string httpClientName = "HttpClientName";
+
+            services.AddSingleton((IServiceProvider provider) =>
             {
-                var options = provider.GetRequiredService<IOptions<AdyenOptions>>();
-                return new Client(
-                    new Config()
-                    {
-                        // Get your `API Key`, `HMAC Key` and `MerchantAccount` from AdyenOptions using the Options pattern.
-                        XApiKey = options.Value.ADYEN_API_KEY,
-                        HmacKey = options.Value.ADYEN_HMAC_KEY,
-                        MerchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT,
-                        // Test environment.
-                        Environment = Environment.Test,
-                    });
-            }).AddHttpClient(); // Add HttpClient.
+                AdyenOptions options = provider.GetRequiredService<IOptions<AdyenOptions>>().Value;
+                Config config = new Config()
+                {
+                    // Get your `API Key` from AdyenOptions using the Options pattern.
+                    XApiKey = options.ADYEN_API_KEY,
+                    // Test environment.
+                    Environment = Adyen.Model.Environment.Test,
+                };
+                return new Client(config, provider.GetRequiredService<IHttpClientFactory>(), httpClientName);
+            });
+
+            // Register named HttpClient.
+            services.AddHttpClient(httpClientName)
+            .ConfigurePrimaryHttpMessageHandler((IServiceProvider provider) =>
+            {
+                return new SocketsHttpHandler()
+                {
+                    PooledConnectionLifetime = TimeSpan.FromMinutes(1)
+                };
+            }).SetHandlerLifetime(Timeout.InfiniteTimeSpan);
 
             services.AddSingleton<IPaymentsService, PaymentsService>(); // Used to be called "Checkout.cs" in Adyen .NET 9.x.x and below, see https://github.com/Adyen/adyen-dotnet-api-library/blob/9.2.1/Adyen/Service/Checkout.cs.
             services.AddSingleton<HmacValidator>();

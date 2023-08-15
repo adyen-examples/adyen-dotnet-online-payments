@@ -74,7 +74,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
         }
 
         [HttpPost("admin/update-payment-amount")]
-        public async Task<ActionResult<PaymentAmountUpdateResource>> UpdatePaymentAmount([FromBody] UpdatePaymentAmountRequest request, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<PaymentAmountUpdateResponse>> UpdatePaymentAmount([FromBody] UpdatePaymentAmountRequest request, CancellationToken cancellationToken = default)
         {
             PaymentModel payment = _repository.FindLatestPaymentByReference(request.Reference);
 
@@ -85,15 +85,15 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
 
             try
             {
-                var createPaymentAmountUpdateRequest = new CreatePaymentAmountUpdateRequest()
+                var paymentAmountUpdateRequest = new PaymentAmountUpdateRequest()
                 {
                     MerchantAccount = _merchantAccount, // Required
                     Amount = new Amount() { Value = request.Amount, Currency = payment.Currency },
                     Reference = payment.Reference,
-                    IndustryUsage = CreatePaymentAmountUpdateRequest.IndustryUsageEnum.DelayedCharge,
+                    IndustryUsage = PaymentAmountUpdateRequest.IndustryUsageEnum.DelayedCharge,
                 };
                 
-                var response = await _modificationsService.UpdateAuthorisedAmountAsync(payment.GetOriginalPspReference(), createPaymentAmountUpdateRequest, cancellationToken: cancellationToken);
+                var response = await _modificationsService.UpdateAuthorisedAmountAsync(payment.GetOriginalPspReference(), paymentAmountUpdateRequest, cancellationToken: cancellationToken);
                 return Ok(response);
             }
             catch (HttpClientException e)
@@ -104,7 +104,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
         }
 
         [HttpPost("admin/capture-payment")]
-        public async Task<ActionResult<PaymentCaptureResource>> CapturePayment([FromBody] CreateCapturePaymentRequest request, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<PaymentCaptureResponse>> CapturePayment([FromBody] CreateCapturePaymentRequest request, CancellationToken cancellationToken = default)
         {
             PaymentModel payment = _repository.FindLatestPaymentByReference(request.Reference);
 
@@ -115,14 +115,14 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
 
             try
             {
-                var createPaymentCaptureRequest = new CreatePaymentCaptureRequest()
+                var paymentCaptureRequest = new PaymentCaptureRequest()
                 {
                     MerchantAccount = _merchantAccount, // Required.
                     Amount = new Amount() { Value = payment.Amount, Currency = payment.Currency }, // Required.
                     Reference = payment.Reference
                 };
                 
-                var response = await _modificationsService.CaptureAuthorisedPaymentAsync(payment.GetOriginalPspReference(), createPaymentCaptureRequest, cancellationToken: cancellationToken);
+                var response = await _modificationsService.CaptureAuthorisedPaymentAsync(payment.GetOriginalPspReference(), paymentCaptureRequest, cancellationToken: cancellationToken);
                 return Ok(response); // Note that the response will have a different PSPReference compared to the initial pre-authorisation.
             }
             catch (HttpClientException e)
@@ -133,7 +133,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
         }
 
         [HttpPost("admin/reversal-payment")]
-        public async Task<ActionResult<PaymentReversalResource>> ReversalPayment([FromBody] CreateReversalPaymentRequest request, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<PaymentReversalResponse>> ReversalPayment([FromBody] CreateReversalPaymentRequest request, CancellationToken cancellationToken = default)
         {
             PaymentModel payment = _repository.FindLatestPaymentByReference(request.Reference);
 
@@ -144,13 +144,13 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
 
             try
             {
-                var createPaymentReversalRequest = new CreatePaymentReversalRequest()
+                var paymentReversalRequest = new PaymentReversalRequest()
                 {
                     MerchantAccount = _merchantAccount, // Required.
                     Reference = payment.Reference
                 };
 
-                var response = await _modificationsService.RefundOrCancelPaymentAsync(payment.GetOriginalPspReference(), createPaymentReversalRequest, cancellationToken: cancellationToken);
+                var response = await _modificationsService.RefundOrCancelPaymentAsync(payment.GetOriginalPspReference(), paymentReversalRequest, cancellationToken: cancellationToken);
                 return Ok(response);
             }
             catch (HttpClientException e)
