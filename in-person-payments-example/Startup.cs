@@ -1,5 +1,4 @@
 using Adyen;
-using Adyen.Model;
 using Adyen.Service;
 using Adyen.Util;
 using adyen_dotnet_in_person_payments_example.Options;
@@ -10,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using System;
 using System.Net.Http;
 
 namespace adyen_dotnet_in_person_payments_example
@@ -47,22 +47,29 @@ namespace adyen_dotnet_in_person_payments_example
                 .AddTransient<IUrlService, UrlService>();
 
             // Register your dependencies.
+            string httpClientName = "YourCustomHttpClientName";
             services.AddSingleton(provider =>
             {
                 var options = provider.GetRequiredService<IOptions<AdyenOptions>>();
                 return new Client(
                     new Config()
                     {
-                        // Get your `API Key`, `HMAC Key` and `MerchantAccount` from AdyenOptions using the Options pattern.
+                        // Get your `API Key` from AdyenOptions using the Options pattern.
                         XApiKey = options.Value.ADYEN_API_KEY,
-                        HmacKey = options.Value.ADYEN_HMAC_KEY,
-                        MerchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT,
                         // Test environment.
-                        Environment = Environment.Test,
-                    }, 
-                    provider.GetRequiredService<IHttpClientFactory>()
+                        Environment = Adyen.Model.Environment.Test,
+                        Timeout = 150,
+                    },
+                    provider.GetRequiredService<IHttpClientFactory>(),
+                    httpClientName
                 );
-            }).AddHttpClient(); // Add HttpClient.
+            });
+
+            // Register a named HttpClient for Adyen.Client.
+            services.AddHttpClient(httpClientName, client =>
+            {
+                client.Timeout = TimeSpan.FromSeconds(180); // https://docs.adyen.com/point-of-sale/design-your-integration/choose-your-architecture/cloud/#sync
+            });
 
             services.AddSingleton<IPosPaymentCloudApi, PosPaymentCloudApi>();
             services.AddSingleton<InPersonPaymentService>();
@@ -73,7 +80,7 @@ namespace adyen_dotnet_in_person_payments_example
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            var response = app.ApplicationServices.GetRequiredService<InPersonPaymentService>().SendSaleToPOIRequest("EUR", 50).GetAwaiter().GetResult();
+            //var response = app.ApplicationServices.GetRequiredService<InPersonPaymentService>().SendSaleToPOIRequest("EUR", 50).GetAwaiter().GetResult();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

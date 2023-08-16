@@ -11,31 +11,16 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
         {
             _clientKey = options.Value.ADYEN_CLIENT_KEY;
         }
+
         [Route("/")]
         public IActionResult Index()
         {
             return View();
         }
 
-        [Route("preview/{id}")]
-        public IActionResult Preview(string id)
+        [Route("cashregister")]
+        public IActionResult CashRegister()
         {
-            ViewBag.PaymentMethod = id;
-            return View();
-        }
-
-        [Route("checkout/{id}")]
-        public IActionResult Checkout(string id)
-        {
-            ViewBag.PaymentMethod = id;
-            ViewBag.ClientKey = _clientKey;
-            return View();
-        }
-
-        [Route("redirect")]
-        public IActionResult Redirect()
-        {
-            ViewBag.ClientKey = _clientKey;
             return View();
         }
 

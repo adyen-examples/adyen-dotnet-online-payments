@@ -8,7 +8,12 @@ using System.Threading.Tasks;
 
 namespace adyen_dotnet_in_person_payments_example.Services
 {
-    public class InPersonPaymentService
+    public interface IInPersonPaymentService
+    {
+        Task<SaleToPOIResponse> SendSaleToPOIRequestAsync(string poiId, string saleId, string currency, decimal? amount, CancellationToken cancellationToken = default);
+    }
+
+    public class InPersonPaymentService : IInPersonPaymentService
     {
         private static string AlphanumericCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -21,13 +26,15 @@ namespace adyen_dotnet_in_person_payments_example.Services
             _posPaymentCloudApi = posPaymentCloudApi;
         }
 
-        public Task<SaleToPOIResponse> SendSaleToPOIRequest(string currency, decimal? amount, CancellationToken cancellationToken = default)
+        public Task<SaleToPOIResponse> SendSaleToPOIRequestAsync(string poiId, string saleId, string currency, decimal? amount, CancellationToken cancellationToken)
         {
-            SaleToPOIRequest request = GetPaymentRequest(currency, amount);
+            // https://docs.adyen.com/get-started-with-adyen/payment-glossary/#tender-definition.
+
+            SaleToPOIRequest request = GetPaymentRequest(poiId, saleId, currency, amount);
             return _posPaymentCloudApi.TerminalApiCloudSynchronousAsync(request); // Missing cancellationToken here.
         }
 
-        private SaleToPOIRequest GetPaymentRequest(string currency, decimal? amount)
+        private SaleToPOIRequest GetPaymentRequest(string poiId, string saleId, string currency, decimal? amount)
         {
             SaleToPOIRequest request = new SaleToPOIRequest()
             {
@@ -37,10 +44,8 @@ namespace adyen_dotnet_in_person_payments_example.Services
                     MessageCategory = MessageCategoryType.Payment,
                     MessageClass = MessageClassType.Service,
                     MessageType = MessageType.Request,
-                    POIID = "", // The unique ID of the terminal to send this request to. Format: [device model]-[serial number].
-                    SaleID = "Kwok_POSMachine_V400m_001", // Your unique ID for the POS system component to send this request from.
-                    
-                    // Is this your idem-potency key?
+                    POIID = "V400m-347374578", // The unique ID of the terminal to send this request to. Format: [device model]-[serial number].
+                    SaleID = saleId, // Your unique ID for the POS system component to send this request from.
                     ServiceID = GetRandomAlphanumericId(10), // Your unique ID for this request, consisting of 1-10 alphanumeric characters. Must be unique within the last 48 hours for the terminal (POIID) being used.
                 },
                 MessagePayload = new PaymentRequest()

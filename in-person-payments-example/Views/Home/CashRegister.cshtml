@@ -1,9 +1,9 @@
 ﻿@{
-    ViewData["Title"] = "Adyen Checkout Cart";
+    ViewData["Title"] = "Adyen Cash Register View";
 }
 <main class="preview-page">
   <section class="cart">
-    <h2>Cart</h2>
+    <h2>Pick a table:</h2>
     <div class="order-summary">
       <ul class="order-summary-list">
         <li class="order-summary-list-list-item">
@@ -21,7 +21,7 @@
     <div class="cart-footer">
       <span class="cart-footer-label">Total:</span>
       <span class="cart-footer-amount">100.00</span>
-      <a asp-area="" asp-controller="Home" asp-action="Checkout" asp-route-id="@ViewBag.PaymentMethod">
+      <a asp-area="" asp-controller="Home" asp-action="Checkout">
         <p class="button">Continue to checkout</p>
       </a>
     </div>
