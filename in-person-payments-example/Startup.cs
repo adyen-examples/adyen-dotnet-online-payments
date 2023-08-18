@@ -39,14 +39,13 @@ namespace adyen_dotnet_in_person_payments_example
                 }
             );
 
-            // Register your controllers.
+            // Register controllers.
             services.AddControllersWithViews();
             services.AddControllers().AddNewtonsoftJson();
 
-            services.AddHttpContextAccessor()
-                .AddTransient<IUrlService, UrlService>();
+            services.AddHttpContextAccessor();
 
-            // Register your dependencies.
+            // Register Adyen dependencies.
             string httpClientName = "YourCustomHttpClientName";
             services.AddSingleton(provider =>
             {
@@ -71,10 +70,13 @@ namespace adyen_dotnet_in_person_payments_example
                 client.Timeout = TimeSpan.FromSeconds(180); // https://docs.adyen.com/point-of-sale/design-your-integration/choose-your-architecture/cloud/#sync
             });
 
+            // Register Adyen services and utilities.
             services.AddSingleton<IPosPaymentCloudApi, PosPaymentCloudApi>();
-            services.AddSingleton<InPersonPaymentService>();
-
             services.AddSingleton<HmacValidator>();
+
+            // Register our services.
+            services.AddSingleton<IPosPaymentService, PosPaymentService>();
+            services.AddSingleton<IPosPaymentReversalService, PosPaymentReversalService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
