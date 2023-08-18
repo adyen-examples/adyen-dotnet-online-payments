@@ -1,15 +1,11 @@
-﻿using adyen_dotnet_in_person_payments_example.Options;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace adyen_dotnet_in_person_payments_example.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly string _clientKey;
-        public HomeController(IOptions<AdyenOptions> options)
+        public HomeController()
         {
-            _clientKey = options.Value.ADYEN_CLIENT_KEY;
         }
 
         [Route("/")]

@@ -27,15 +27,14 @@ namespace adyen_dotnet_in_person_payments_example
         public void ConfigureServices(IServiceCollection services)
         {
             // Configure your keys using the Options pattern.
-            // This will auto-retrieve/configure your keys from your environmental variables (ADYEN_CLIENT_KEY, ADYEN_API_KEY, ADYEN_MERCHANT_ACCOUNT, ADYEN_HMAC_KEY).
+            // This will auto-retrieve/configure your keys from your environmental variables (ADYEN_API_KEY, ADYEN_MERCHANT_ACCOUNT, ADYEN_HMAC_KEY, ADYEN_POS_POI_ID).
             services.Configure<AdyenOptions>(
                 options =>
                 {
-                    // Your secret API Key: https://docs.adyen.com/development-resources/api-credentials#generate-your-api-key.
                     options.ADYEN_API_KEY = Configuration[nameof(AdyenOptions.ADYEN_API_KEY)];
-                    
-                    // Your Merchant Account name: https://docs.adyen.com/account/account-structure.
                     options.ADYEN_MERCHANT_ACCOUNT = Configuration[nameof(AdyenOptions.ADYEN_MERCHANT_ACCOUNT)];
+                    options.ADYEN_HMAC_KEY = Configuration[nameof(AdyenOptions.ADYEN_HMAC_KEY)];
+                    options.ADYEN_POS_POI_ID = Configuration[nameof(AdyenOptions.ADYEN_POS_POI_ID)];
                 }
             );
 

@@ -1,7 +1,9 @@
 using Adyen.Model.Nexo;
+using adyen_dotnet_in_person_payments_example.Options;
 using adyen_dotnet_in_person_payments_example.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,18 +13,20 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
     [ApiController]
     public class ApiController : ControllerBase
     {
-        private const string PoiId = "V400m-123456789";
-        private const string SaleId = "YOUR_UNIQUE_POS_ID_001";
-
         private readonly ILogger<ApiController> _logger;
-        private readonly PosPaymentService _posPaymentService;
-        private readonly PosPaymentReversalService _posPaymentReversalService;
+        private readonly IPosPaymentService _posPaymentService;
+        private readonly IPosPaymentReversalService _posPaymentReversalService;
 
-        public ApiController(ILogger<ApiController> logger, PosPaymentService posPaymentService, PosPaymentReversalService posPaymentReversalService)
+        private const string _saleId = "YOUR_UNIQUE_POS_SYSTEM_ID_001"; // Your unique ID for the POS system component to send this request from.
+        private readonly string _poiId;
+
+        public ApiController(ILogger<ApiController> logger, IPosPaymentService posPaymentService, IPosPaymentReversalService posPaymentReversalService, IOptions<AdyenOptions> options)
         {
             _logger = logger;
             _posPaymentService = posPaymentService;
             _posPaymentReversalService = posPaymentReversalService;
+
+            _poiId = options.Value.ADYEN_POS_POI_ID;
         }
 
         [HttpPost("api/send-payment-request")]
@@ -30,7 +34,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
         {
             try
             {
-                var response = await _posPaymentService.SendPaymentRequestAsync(PoiId, SaleId, "EUR", new decimal(42.42), cancellationToken);
+                var response = await _posPaymentService.SendPaymentRequestAsync(_poiId, _saleId, "EUR", new decimal(42.42), cancellationToken);
 
                 PaymentResponse paymentResponse = response?.MessagePayload as PaymentResponse;
                 if (response == null)
@@ -65,7 +69,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
         {
             try
             {
-                var response = await _posPaymentReversalService.SendReversalRequestAsync(ReversalReasonType.CustCancel, "Customer cancelled", "salereferenceId", PoiId, SaleId, new decimal(42.42), cancellationToken);
+                var response = await _posPaymentReversalService.SendReversalRequestAsync(ReversalReasonType.CustCancel, "Customer cancelled", "salereferenceId", _poiId, _saleId, new decimal(42.42), cancellationToken);
 
                 ReversalResponse reversalResponse = response?.MessagePayload as ReversalResponse;
                 if (response == null)
