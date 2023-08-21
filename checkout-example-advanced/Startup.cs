@@ -46,7 +46,7 @@ namespace adyen_dotnet_checkout_example_advanced
             services.AddHttpContextAccessor()
                 .AddTransient<IUrlService, UrlService>();
 
-            // Register Adyen.Client as singleton.
+            // Register Adyen Client.
             string httpClientName = "HttpClientName";
 
             services.AddSingleton((IServiceProvider provider) =>
@@ -72,7 +72,7 @@ namespace adyen_dotnet_checkout_example_advanced
                 };
             }).SetHandlerLifetime(Timeout.InfiniteTimeSpan);
 
-            // Register Adyen service and utilities.
+            // Register Adyen services and utilities.
             services.AddSingleton<IPaymentsService, PaymentsService>(); // Used to be called "Checkout.cs" in Adyen .NET 9.x.x and below, see https://github.com/Adyen/adyen-dotnet-api-library/blob/9.2.1/Adyen/Service/Checkout.cs.
             services.AddSingleton<HmacValidator>();
         }

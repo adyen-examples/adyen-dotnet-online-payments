@@ -174,89 +174,37 @@ a:hover {
   display: inline-block;
   position: relative;
 }
-.order-summary-list {
-  border-top: 1px solid #e6e9eb;
-}
-.order-summary-list-list-item {
-  border-bottom: 1px solid #e6e9eb;
-  display: flex;
-  height: 97px;
-}
-.order-summary-list-list-item-image {
-  height: 64px;
-  margin: 16px;
-  width: 64px;
-}
-.order-summary-list-list-item-title {
-  font-weight: 700;
-  margin: auto auto auto 0;
-}
-.order-summary-list-list-item-price {
-  color: #687282;
-  margin: auto 16px;
-  text-align: right;
-  width: 80px;
-}
-@media (min-width: 768px) {
-  .order-summary-list-list-item-price {
-    margin-left: 24px;
-    margin-bottom: auto;
-    margin-right: 24px;
-    margin-top: auto;
-  }
-}
-.order-summary-list-list-item-remove-product {
-  background: none;
-  border: 0;
-  cursor: pointer;
-  height: 25px;
-  margin: auto 0;
-  padding: 0;
-  width: 25px;
-}
-.cart {
+
+/* Tables start */
+.tables {
   text-align: center;
   margin-top: 80px;
 }
-.cart-footer {
+.tables-grid-list {
+  border-top: 1px solid #e6e9eb;
+}
+.tables-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.tables-grid-item {
+  border: 1px solid #e6e9eb;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 16px;
+}
+.tables-grid-item-title {
   font-weight: 700;
-  margin-top: 17px;
+  margin-bottom: 8px;
+}
+.tables-grid-item-price {
+  color: #687282;
   text-align: right;
 }
-@media (min-width: 768px) {
-  .cart-footer {
-    margin-top: 24px;
-  }
-}
-.cart-footer .button {
-  margin-top: 30px;
-  width: 100%;
-}
-@media (min-width: 768px) {
-  .cart-footer .button {
-    margin-top: 0;
-    width: 288px;
-  }
-}
-.cart-footer-amount {
-  margin-left: 16px;
-  margin-right: 24px;
-}
-.whole-preview {
-  margin: auto;
-  max-width: 1110px;
-  padding: 0 16px;
-}
-@media (min-width: 1440px) {
-  .whole-preview {
-    padding-left: 0;
-    padding-bottom: 0;
-    padding-right: 0;
-    padding-top: 0;
-  }
-}
+/* Tables end */
 
-/* end of Cart preview page */
 
 /* Payment page */
 

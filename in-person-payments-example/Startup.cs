@@ -44,7 +44,7 @@ namespace adyen_dotnet_in_person_payments_example
 
             services.AddHttpContextAccessor();
 
-            // Register Adyen dependencies.
+            // Register Adyen Client.
             string httpClientName = "YourCustomHttpClientName";
             services.AddSingleton(provider =>
             {
@@ -73,7 +73,7 @@ namespace adyen_dotnet_in_person_payments_example
             services.AddSingleton<IPosPaymentCloudApi, PosPaymentCloudApi>();
             services.AddSingleton<HmacValidator>();
 
-            // Register our services.
+            // Register application services.
             services.AddSingleton<IPosPaymentService, PosPaymentService>();
             services.AddSingleton<IPosPaymentReversalService, PosPaymentReversalService>();
         }

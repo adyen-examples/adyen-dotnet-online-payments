@@ -46,7 +46,7 @@ namespace adyen_dotnet_authorisation_adjustment_example
             services.AddHttpContextAccessor()
                 .AddTransient<IUrlService, UrlService>();
 
-            // Register Adyen.Client as singleton.
+            // Register Adyen Client.
             string httpClientName = "HttpClientName";
 
             services.AddSingleton((IServiceProvider provider) =>

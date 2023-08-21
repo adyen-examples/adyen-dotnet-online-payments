@@ -1,13 +1,12 @@
 using Adyen.Model.Notification;
 using Adyen.Util;
+using adyen_dotnet_in_person_payments_example.Options;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using adyen_dotnet_in_person_payments_example.Options;
 
 namespace adyen_dotnet_in_person_payments_example.Controllers
 {

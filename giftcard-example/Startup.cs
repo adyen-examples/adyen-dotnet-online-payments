@@ -44,8 +44,8 @@ namespace adyen_dotnet_giftcard_example
             services.AddControllers().AddNewtonsoftJson();
             services.AddHttpContextAccessor()
                 .AddTransient<IUrlService, UrlService>();
-
-            // Register Adyen.Client as singleton.
+            
+            // Register Adyen Client.
             string httpClientName = "HttpClientName";
 
             services.AddSingleton((IServiceProvider provider) =>
