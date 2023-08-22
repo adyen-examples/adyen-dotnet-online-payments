@@ -1,4 +1,5 @@
 using Adyen.Model.Nexo;
+using adyen_dotnet_in_person_payments_example.Models.Requests;
 using adyen_dotnet_in_person_payments_example.Options;
 using adyen_dotnet_in_person_payments_example.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -30,12 +31,12 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
             _saleId = options.Value.ADYEN_POS_SALE_ID;
         }
 
-        [HttpPost("api/send-payment-request")]
-        public async Task<ActionResult<SaleToPOIResponse>> SendPaymentRequest(CancellationToken cancellationToken = default)
+        [HttpPost("api/create-payment")] // TODO response
+        public async Task<ActionResult<SaleToPOIResponse>> SendPaymentRequest([FromBody] CreatePaymentRequest request, CancellationToken cancellationToken = default)
         {
             try
             {
-                var response = await _posPaymentService.SendPaymentRequestAsync(_poiId, _saleId, "EUR", new decimal(42.42), cancellationToken);
+                var response = await _posPaymentService.SendPaymentRequestAsync(_poiId, _saleId, request.Currency, request.Amount, cancellationToken);
 
                 PaymentResponse paymentResponse = response?.MessagePayload as PaymentResponse;
                 if (response == null)
@@ -56,7 +57,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                 }
                 
 
-                return Ok(response);
+                return Ok(paymentResponse);
             }
             catch (Exception e)
             {
@@ -65,12 +66,12 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
             }
         }
 
-        [HttpPost("api/send-payment-reversal-request")]
-        public async Task<ActionResult<SaleToPOIResponse>> SendPaymentReversalRequest(CancellationToken cancellationToken = default)
+        [HttpPost("api/create-payment-reversal")] // TODO response 
+        public async Task<ActionResult<SaleToPOIResponse>> SendPaymentReversalRequest([FromBody] CreatePaymentReversalRequest request, CancellationToken cancellationToken = default)
         {
             try
             {
-                var response = await _posPaymentReversalService.SendReversalRequestAsync(ReversalReasonType.CustCancel, "Customer cancelled", "salereferenceId", _poiId, _saleId, new decimal(42.42), cancellationToken);
+                var response = await _posPaymentReversalService.SendReversalRequestAsync(ReversalReasonType.CustCancel, request.SaleReferenceId, _poiId, _saleId, request.Amount, cancellationToken);
 
                 ReversalResponse reversalResponse = response?.MessagePayload as ReversalResponse;
                 if (response == null)
@@ -90,7 +91,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                         throw new ArgumentOutOfRangeException(nameof(reversalResponse.Response.Result));
                 }
 
-                return Ok(response);
+                return Ok(reversalResponse);
             }
             catch (Exception e)
             {

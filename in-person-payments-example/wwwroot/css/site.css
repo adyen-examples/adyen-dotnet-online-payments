@@ -166,8 +166,8 @@ a:hover {
 
 .tables-grid-list {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
   padding: 20px;
   background: #e6e9eb;
 }
@@ -176,8 +176,8 @@ a:hover {
   border: 1px solid #e6e9eb;
   background-color: #f7f7f7;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row;
+  align-items: baseline;
   justify-content: center;
   padding: 20px;
   cursor: pointer;
@@ -203,12 +203,24 @@ a:hover {
 .tables-grid-item-title {
   font-weight: 600;
   margin-top: 10px;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: black;
 }
 
-.tables-grid-item-price {
+.tables-grid-item-amount {
+  display: flex;
   font-size: 1rem;
+  margin-left: 4px;
+}
+
+.tables-grid-item-currency {
+  display: flex;
+  font-size: 1rem;
+  margin-left: 8px;
+}
+
+#currentActiveTable {
+  font-size: 2rem;
 }
 
 /* Tables-grid end */
@@ -255,6 +267,38 @@ a:hover {
   padding: 8px;
 }
 /* Info-grid end */
+
+
+/* `Payment request` button start */
+
+.payment-request-button {
+  background-color: #0abf53;
+  color: white;
+  padding: 6px 24px 6px 24px;
+  margin: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  border: 2px solid #0abf53;
+  border-radius: 8px;
+}
+
+.payment-request-button:hover {
+  background-color: #0abf53;
+  border: 2px solid #005623;
+  border-radius: 8px;
+  transition: border-color 0.15s linear;
+}
+
+.payment-request-button:disabled,
+payment-request-button[disabled=disabled] {
+  border: 2px solid #cccccc;
+  background-color: #cccccc;
+  color: #999999;
+  pointer-events: none;
+}
+
+/* Payment request button end */
 
 /* Payment page */
 

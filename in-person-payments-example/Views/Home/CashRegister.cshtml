@@ -3,59 +3,72 @@
     string poiId = @ViewBag.PoiId;
     string saleId = @ViewBag.SaleId;
 }
+
 <div class="main-container">
   <div class="info">
     <h1>Pick a table</h1>
     <section class="tables-section">
       <div class="tables-grid">
         <ul class="tables-grid-list">
-          <li class="tables-grid-item active">
+          <li class="tables-grid-item">
             <p class="tables-grid-item-title">Table 1</p>
-            <p class="tables-grid-item-price">EUR 11.11</p>
+            <p class="tables-grid-item-currency">EUR</p>
+            <p class="tables-grid-item-amount">11.11</p>
           </li>
           <li class="tables-grid-item">
             <p class="tables-grid-item-title">Table 2</p>
-            <p class="tables-grid-item-price">EUR 22.22</p>
+            <p class="tables-grid-item-currency">EUR</p>
+            <p class="tables-grid-item-amount">22.22</p>
           </li>
           <li class="tables-grid-item">
             <p class="tables-grid-item-title">Table 3</p>
-            <p class="tables-grid-item-price">EUR 33.33</p>
+            <p class="tables-grid-item-currency">EUR</p>
+            <p class="tables-grid-item-amount">33.33</p>
           </li>
           <li class="tables-grid-item">
             <p class="tables-grid-item-title">Table 4</p>
-            <p class="tables-grid-item-price">EUR 44.44</p>
+            <p class="tables-grid-item-currency">EUR</p>
+            <p class="tables-grid-item-amount">44.44</p>
           </li>
           <li class="tables-grid-item">
             <p class="tables-grid-item-title">Table 5</p>
-            <p class="tables-grid-item-price">EUR 55.55</p>
+            <p class="tables-grid-item-currency">EUR</p>
+            <p class="tables-grid-item-amount">55.55</p>
           </li>
           <li class="tables-grid-item">
             <p class="tables-grid-item-title">Table 6</p>
-            <p class="tables-grid-item-price">EUR 66.66</p>
+            <p class="tables-grid-item-currency">EUR</p>
+            <p class="tables-grid-item-amount">66.66</p>
           </li>
           <li class="tables-grid-item">
             <p class="tables-grid-item-title">Table 7</p>
-            <p class="tables-grid-item-price">EUR 77.77</p>
+            <p class="tables-grid-item-currency">EUR</p>
+            <p class="tables-grid-item-amount">77.77</p>
           </li>
           <li class="tables-grid-item">
             <p class="tables-grid-item-title">Table 8</p>
-            <p class="tables-grid-item-price">EUR 88.88</p>
+            <p class="tables-grid-item-currency">EUR</p>
+            <p class="tables-grid-item-amount">88.88</p>
           </li>
           <li class="tables-grid-item">
             <p class="tables-grid-item-title">Table 9</p>
-            <p class="tables-grid-item-price">EUR 99.99</p>
+            <p class="tables-grid-item-currency">EUR</p>
+            <p class="tables-grid-item-amount">99.99</p>
           </li>
           <li class="tables-grid-item">
             <p class="tables-grid-item-title">Table 10</p>
-            <p class="tables-grid-item-price">EUR 100.00</p>
+            <p class="tables-grid-item-currency">EUR</p>
+            <p class="tables-grid-item-amount">100.00</p>
           </li>
           <li class="tables-grid-item">
             <p class="tables-grid-item-title">Table 11</p>
-            <p class="tables-grid-item-price">EUR 111.11</p>
+            <p class="tables-grid-item-currency">EUR</p>
+            <p class="tables-grid-item-amount">111.11</p>
           </li>
           <li class="tables-grid-item">
             <p class="tables-grid-item-title">Table 12</p>
-            <p class="tables-grid-item-price">EUR 112.12</p>
+            <p class="tables-grid-item-currency">EUR</p>
+            <p class="tables-grid-item-amount">112.12</p>
           </li>
         </ul>
       </div>
@@ -64,10 +77,25 @@
 
   <section class="info-grid-section">
     <div class="info-grid">
+      <p>Actions:</p>
+      <form name="sendPaymentRequestForm" method="post">
+        <p id="currentActiveTable">No table selected</p>
+        <input type="text" id="amount" name="amount">
+        <input type="text" id="currency" name="currency" disabled>
+        <button type="submit" class="payment-request-button">Send Payment Request</button>
+      </form>
+
+      <!-- TODO: Bind the reversal button in a different receipt? screen, so you can reverse a payment
+      <form name="sendPaymentReversalForm" method="post">
+        <input type="text" id="saleReferencId" hidden">
+        <input type="text" id="reversalAmount" hidden>
+        <button type="submit" class="payment-request-button">Send Reversal Request</button>
+      </form>
+      -->
       <ul class="info-grid-list">
         <li class="info-grid-item">
           <p class="info-grid-item-title">
-            POI Id - The unique ID <em class="em-highlight">[device model]-[serial number]</em> of the payment terminal:
+            POI ID - The unique ID <em class="em-highlight">[device model]-[serial number]</em> of the payment terminal:
           </p>
           <p class="info-grid-item-description">
             @if (string.IsNullOrWhiteSpace(poiId))
@@ -81,7 +109,7 @@
       <ul class="info-grid-list">
         <li class="info-grid-item">
           <p class="info-grid-item-title">
-            SALE Id - The unique ID of this cash register:
+            SALE ID - The unique ID of this cash register:
           </p>
           <p class="info-grid-item-description">
             @saleId
@@ -92,23 +120,5 @@
   </section>
 </div>
 
-<script>
-    const tables = document.querySelectorAll('.tables-grid-item');
-
-    tables.forEach(table => {
-        table.addEventListener('click', () => {
-            // Remove the 'active' class from all table-grid-items
-            tables.forEach(item => item.classList.remove('active'));
-
-            // Add the 'active' class to tables-grid-item
-            table.classList.add('active');
-
-            const tableName = table.querySelector('.tables-grid-item-title').textContent;
-            const tablePrice = table.querySelector('.tables-grid-item-price').textContent;
-
-            // Log it for now
-            console.log(`Selected Table: ${tableName}`);
-            console.log(`Price: ${tablePrice}`);
-        });
-    });
-</script>
+<!-- Binds all buttons for the `api/send-payment-request` and `api/send-payment-reversal-request` endpoints -->
+<script src="~/js/cashregister-table-grid-item-bindings.js" asp-append-version="true"></script>

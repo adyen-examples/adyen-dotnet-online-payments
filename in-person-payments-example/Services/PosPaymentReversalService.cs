@@ -9,7 +9,7 @@ namespace adyen_dotnet_in_person_payments_example.Services
 {
     public interface IPosPaymentReversalService
     {
-        Task<SaleToPOIResponse> SendReversalRequestAsync(ReversalReasonType reversalReasonType, string reversalReason, string saleReferenceId, string poiId, string saleId, decimal? reversedAmount, CancellationToken cancellationToken = default);
+        Task<SaleToPOIResponse> SendReversalRequestAsync(ReversalReasonType reversalReasonType, string saleReferenceId, string poiId, string saleId, decimal? reversedAmount, CancellationToken cancellationToken = default);
     }
 
     public class PosPaymentReversalService : IPosPaymentReversalService
@@ -21,13 +21,13 @@ namespace adyen_dotnet_in_person_payments_example.Services
             _posPaymentCloudApi = posPaymentCloudApi;
         }
 
-        public Task<SaleToPOIResponse> SendReversalRequestAsync(ReversalReasonType reversalReasonType, string reversalReason, string saleReferenceId, string poiId, string saleId, decimal? reversedAmount, CancellationToken cancellationToken)
+        public Task<SaleToPOIResponse> SendReversalRequestAsync(ReversalReasonType reversalReasonType, string saleReferenceId, string poiId, string saleId, decimal? reversedAmount, CancellationToken cancellationToken)
         {
-            SaleToPOIRequest request = GetReversalRequest(reversalReasonType, reversalReason, saleReferenceId, poiId, saleId, reversedAmount, cancellationToken);
+            SaleToPOIRequest request = GetReversalRequest(reversalReasonType, saleReferenceId, poiId, saleId, reversedAmount, cancellationToken);
             return _posPaymentCloudApi.TerminalApiCloudSynchronousAsync(request); // Missing cancellationToken here & naming here is kinda confusing for devs.
         }
 
-        private SaleToPOIRequest GetReversalRequest(ReversalReasonType reversalReasonType, string reversalReason, string saleReferenceId, string poiId, string saleId, decimal? reversedAmount, CancellationToken cancellationToken)
+        private SaleToPOIRequest GetReversalRequest(ReversalReasonType reversalReasonType, string saleReferenceId, string poiId, string saleId, decimal? reversedAmount, CancellationToken cancellationToken)
         {
             SaleToPOIRequest request = new SaleToPOIRequest()
             {
@@ -58,7 +58,7 @@ namespace adyen_dotnet_in_person_payments_example.Services
                     ReversalReason = reversalReasonType,
                     ReversedAmount = reversedAmount,
                     ReversedAmountSpecified = true,
-                    SaleReferenceID = saleReferenceId,
+                    SaleReferenceID = saleReferenceId
                 }
             };
 
