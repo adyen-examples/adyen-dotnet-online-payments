@@ -10,15 +10,15 @@
     <img src="~/images/@SvgImg" class="status-image" alt="@ViewBag.Img" />
     @if (ViewBag.Status != "failed" || ViewBag.Status != "error")
     {
-    <img src="~/images/thank-you.svg" class="status-image" alt="" />
+      <img src="~/images/thank-you.svg" class="status-image" alt="" />
     }
     <p class="status-message">@ViewBag.Msg</p>
     @if (ViewBag.Status == "error")
     {
-    <p class="status-message">
-      Please review response in console and refer to
-      <a href="https://docs.adyen.com/development-resources/response-handling">Response handling.</a>
-    </p>
+      <p class="status-message">
+        Please review response in console and refer to
+        <a href="https://docs.adyen.com/development-resources/response-handling">Response handling.</a>
+      </p>
     }
     <a class="button" href="/" to="#/">Return Home</a>
   </div>

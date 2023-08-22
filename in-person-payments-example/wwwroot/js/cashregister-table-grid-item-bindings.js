@@ -19,11 +19,11 @@ async function sendPaymentRequest(amount, currency) {
         const res = await sendPostRequest("/api/create-payment", { amount: amount, currency: currency });
         console.log(res);
         switch (res.status) {
-            case "received":
-                window.location.href = "result/received/" + res.PoiData.SaleData.SaleTransactionID; // TODO
+            case "success":
+                window.location.href = "result/success/" + res.PoiData.SaleData.SaleTransactionID; // TODO
                 break;
             default:
-                window.location.href = "result/error";
+                window.location.href = "result/error/";
                 break;
         };
     } catch (error) {
@@ -38,11 +38,11 @@ async function sendPaymentReversalRequest(amount, saleReferenceId) {
         const res = await sendPostRequest("/api/create-payment-reversal", { amount: amount, saleReferenceId: saleReferenceId });
         console.log(res);
         switch (res.status) {
-            case "received":
-                window.location.href = "result/received/" + saleReferenceId; // TODO
+            case "success":
+                window.location.href = "result/success/" + saleReferenceId; // TODO
                 break;
             default:
-                window.location.href = "result/error" + saleReferenceId;
+                window.location.href = "result/error/" + saleReferenceId;
                 break;
         };
     } catch (error) {
@@ -89,6 +89,7 @@ function bindTableElements() {
             const tableName = document.getElementById('currentActiveTable');
             tableName.textContent = table.querySelector('.tables-grid-item-title').textContent;
             
+            updateButtons();
         });
     });
 }
@@ -123,4 +124,3 @@ function updateButtons() {
 }
 
 bindTableElements();
-updateButtons();

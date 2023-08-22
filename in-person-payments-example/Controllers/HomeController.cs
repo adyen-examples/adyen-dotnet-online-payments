@@ -36,20 +36,12 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
             string img;
             switch (status)
             {
-                case "pending":
-                    msg = "Your order has been received! Payment completion pending.";
-                    img = "success";
-                    break;
-                case "failed":
-                    msg = "The payment was refused. Please try a different payment method or card.";
-                    img = "failed";
-                    break;
                 case "error":
                     msg = $"Error! Reason: {refusalReason}";
                     img = "failed";
                     break;
                 default:
-                    msg = "Your order has been successfully placed.";
+                    msg = "Your payment has been successfully processed.";
                     img = "success";
                     break;
             }

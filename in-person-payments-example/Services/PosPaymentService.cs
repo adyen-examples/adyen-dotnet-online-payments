@@ -34,7 +34,7 @@ namespace adyen_dotnet_in_person_payments_example.Services
         public Task<SaleToPOIResponse> SendPaymentRequestAsync(string poiId, string saleId, string currency, decimal? amount, CancellationToken cancellationToken)
         {
             SaleToPOIRequest request = GetPaymentRequest(poiId, saleId, currency, amount);
-            return _posPaymentCloudApi.TerminalApiCloudSynchronousAsync(request); // Missing cancellationToken here & naming here is kinda confusing for devs.
+            return _posPaymentCloudApi.TerminalApiCloudSynchronousAsync(request);
         }
 
         private SaleToPOIRequest GetPaymentRequest(string poiId, string saleId, string currency, decimal? amount)
