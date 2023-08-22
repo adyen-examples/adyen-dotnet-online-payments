@@ -26,5 +26,11 @@ namespace adyen_dotnet_in_person_payments_example.Options
         /// See https://docs.adyen.com/point-of-sale/basic-tapi-integration/make-a-payment/#make-a-payment.
         /// </summary>
         public string ADYEN_POS_POI_ID { get; set; }
+
+        /// <summary>
+        /// Your unique ID for the POS system (cash register) to send this request from.
+        /// </summary>
+        public string ADYEN_POS_SALE_ID { get; set; } 
+
     }
 }

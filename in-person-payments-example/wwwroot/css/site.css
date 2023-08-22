@@ -60,7 +60,7 @@ a:hover {
 }
 
 .button:hover {
-  background: #1c3045;
+  background: #0abf53;
   box-shadow: 0 3px 4px rgba(0, 15, 45, 0.2);
 }
 
@@ -108,6 +108,7 @@ a:hover {
   box-shadow: 0 16px 24px 0 #e5eaef;
   text-decoration: none;
   border: 3px solid #0abf53;
+  transform: scale(1.005);
 }
 
 .integration-list-item-link {
@@ -157,54 +158,103 @@ a:hover {
 
 /* end Index page */
 
-/* Cart preview page */
 
-.shopping-cart {
-  float: right;
-}
-@media (min-width: 768px) {
-  .shopping-cart {
-    padding-left: 0;
-    padding-bottom: 0;
-    padding-right: 0;
-    padding-top: 3px;
-  }
-}
-.shopping-cart-link {
-  display: inline-block;
-  position: relative;
-}
-
-/* Tables start */
-.tables {
+/* Tables-grid start */
+.tables-section {
   text-align: center;
-  margin-top: 80px;
 }
+
 .tables-grid-list {
-  border-top: 1px solid #e6e9eb;
-}
-.tables-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  gap: 20px;
+  padding: 20px;
+  background: #e6e9eb;
 }
+
 .tables-grid-item {
   border: 1px solid #e6e9eb;
+  background-color: #f7f7f7;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  padding: 16px;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  border-radius: 8px;
 }
-.tables-grid-item-title {
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-.tables-grid-item-price {
-  color: #687282;
-  text-align: right;
-}
-/* Tables end */
 
+.tables-grid-item:hover {
+  background-color: #e0e0e0;
+  transform: scale(1.05);
+  border-radius: 8px;
+}
+
+.tables-grid-item.active {
+  background-color: #0abf53;
+  transform: scale(1.05);
+  font-weight: 600;
+  border: 1px ridge #00112c;
+  border-radius: 8px;
+  color: white;
+}
+
+.tables-grid-item-title {
+  font-weight: 600;
+  margin-top: 10px;
+  font-size: 1.2rem;
+  color: black;
+}
+
+.tables-grid-item-price {
+  font-size: 1rem;
+}
+
+/* Tables-grid end */
+
+
+/* Info-grid start */
+.em-highlight {
+  font-weight: 700;
+  color: #687282;
+  font-style: normal;
+}
+
+.info-grid-section {
+  margin-top: 80px;
+  display: grid;
+}
+
+.info-grid-list {
+  padding: 0px 8px 0px 8px;
+  border: 2px solid #e6e9eb;
+}
+
+.info-grid {
+  display: inline-grid;    
+  align-items: center;
+  justify-items: left;
+}
+
+.info-grid-item {
+  display: inline-flex;
+  align-items: center;
+  list-style: none;
+}
+
+.info-grid-item-title {
+  font-weight: 700;
+  padding-right: 8px;
+}
+
+.info-grid-item-description {
+  border: 2px solid #e6e9eb;
+  font-weight: 600;
+  color: #687282;
+  padding: 8px;
+}
+/* Info-grid end */
 
 /* Payment page */
 

@@ -35,6 +35,7 @@ namespace adyen_dotnet_in_person_payments_example
                     options.ADYEN_MERCHANT_ACCOUNT = Configuration[nameof(AdyenOptions.ADYEN_MERCHANT_ACCOUNT)];
                     options.ADYEN_HMAC_KEY = Configuration[nameof(AdyenOptions.ADYEN_HMAC_KEY)];
                     options.ADYEN_POS_POI_ID = Configuration[nameof(AdyenOptions.ADYEN_POS_POI_ID)];
+                    options.ADYEN_POS_SALE_ID = "SALE_ID_POS_SYSTEM_CASH_REGISTER_001";
                 }
             );
 

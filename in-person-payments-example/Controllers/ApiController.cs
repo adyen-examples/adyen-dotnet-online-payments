@@ -17,7 +17,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
         private readonly IPosPaymentService _posPaymentService;
         private readonly IPosPaymentReversalService _posPaymentReversalService;
 
-        private const string _saleId = "YOUR_UNIQUE_POS_SYSTEM_ID_001"; // Your unique ID for the POS system component to send this request from.
+        private readonly string _saleId;
         private readonly string _poiId;
 
         public ApiController(ILogger<ApiController> logger, IPosPaymentService posPaymentService, IPosPaymentReversalService posPaymentReversalService, IOptions<AdyenOptions> options)
@@ -27,6 +27,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
             _posPaymentReversalService = posPaymentReversalService;
 
             _poiId = options.Value.ADYEN_POS_POI_ID;
+            _saleId = options.Value.ADYEN_POS_SALE_ID;
         }
 
         [HttpPost("api/send-payment-request")]

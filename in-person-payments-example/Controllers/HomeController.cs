@@ -1,11 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using adyen_dotnet_in_person_payments_example.Options;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace adyen_dotnet_in_person_payments_example.Controllers
 {
     public class HomeController : Controller
     {
-        public HomeController()
+        private readonly string _poiId;
+        private readonly string _saleId;
+
+        public HomeController(IOptions<AdyenOptions> optionsAccessor)
         {
+            _poiId = optionsAccessor.Value.ADYEN_POS_POI_ID;
+            _saleId = optionsAccessor.Value.ADYEN_POS_SALE_ID;
         }
 
         [Route("/")]
@@ -17,6 +24,8 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
         [Route("cashregister")]
         public IActionResult CashRegister()
         {
+            ViewBag.PoiId = _poiId;
+            ViewBag.SaleId = _saleId;
             return View();
         }
 

@@ -1,20 +1,114 @@
 ﻿@{
     ViewData["Title"] = "Adyen Cash Register View";
+    string poiId = @ViewBag.PoiId;
+    string saleId = @ViewBag.SaleId;
 }
-<main class="preview-page">
-  <section class="tables">
-    <h2>Pick a table:</h2>
-    <div class="tables-grid">
-      <ul class="tables-grid-list">
-        <li class="tables-grid-item">
-          <p class="tables-grid-item-title">Table 1</p>
-          <p class="tables-grid-item-price">11.11</p>
-        </li>
-        <li class="tables-grid-item">
-          <p class="tables-grid-item-title">Table 2</p>
-          <p class="tables-grid-item-price">22.22</p>
+<div class="main-container">
+  <div class="info">
+    <h1>Pick a table</h1>
+    <section class="tables-section">
+      <div class="tables-grid">
+        <ul class="tables-grid-list">
+          <li class="tables-grid-item active">
+            <p class="tables-grid-item-title">Table 1</p>
+            <p class="tables-grid-item-price">EUR 11.11</p>
+          </li>
+          <li class="tables-grid-item">
+            <p class="tables-grid-item-title">Table 2</p>
+            <p class="tables-grid-item-price">EUR 22.22</p>
+          </li>
+          <li class="tables-grid-item">
+            <p class="tables-grid-item-title">Table 3</p>
+            <p class="tables-grid-item-price">EUR 33.33</p>
+          </li>
+          <li class="tables-grid-item">
+            <p class="tables-grid-item-title">Table 4</p>
+            <p class="tables-grid-item-price">EUR 44.44</p>
+          </li>
+          <li class="tables-grid-item">
+            <p class="tables-grid-item-title">Table 5</p>
+            <p class="tables-grid-item-price">EUR 55.55</p>
+          </li>
+          <li class="tables-grid-item">
+            <p class="tables-grid-item-title">Table 6</p>
+            <p class="tables-grid-item-price">EUR 66.66</p>
+          </li>
+          <li class="tables-grid-item">
+            <p class="tables-grid-item-title">Table 7</p>
+            <p class="tables-grid-item-price">EUR 77.77</p>
+          </li>
+          <li class="tables-grid-item">
+            <p class="tables-grid-item-title">Table 8</p>
+            <p class="tables-grid-item-price">EUR 88.88</p>
+          </li>
+          <li class="tables-grid-item">
+            <p class="tables-grid-item-title">Table 9</p>
+            <p class="tables-grid-item-price">EUR 99.99</p>
+          </li>
+          <li class="tables-grid-item">
+            <p class="tables-grid-item-title">Table 10</p>
+            <p class="tables-grid-item-price">EUR 100.00</p>
+          </li>
+          <li class="tables-grid-item">
+            <p class="tables-grid-item-title">Table 11</p>
+            <p class="tables-grid-item-price">EUR 111.11</p>
+          </li>
+          <li class="tables-grid-item">
+            <p class="tables-grid-item-title">Table 12</p>
+            <p class="tables-grid-item-price">EUR 112.12</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <section class="info-grid-section">
+    <div class="info-grid">
+      <ul class="info-grid-list">
+        <li class="info-grid-item">
+          <p class="info-grid-item-title">
+            POI Id - The unique ID <em class="em-highlight">[device model]-[serial number]</em> of the payment terminal:
+          </p>
+          <p class="info-grid-item-description">
+            @if (string.IsNullOrWhiteSpace(poiId))
+            {
+                poiId = "No POI Id is configured in the AdyenOptions class. Please specify the POI Id in your environmental variables.";
+            }
+            @poiId
+          </p>
         </li>
       </ul>
-    </div>
+      <ul class="info-grid-list">
+        <li class="info-grid-item">
+          <p class="info-grid-item-title">
+            SALE Id - The unique ID of this cash register:
+          </p>
+          <p class="info-grid-item-description">
+            @saleId
+          </p>
+        </li>
+      </ul>
+    </div>    
   </section>
-</main>
+</div>
+
+<script>
+    const tables = document.querySelectorAll('.tables-grid-item');
+
+    tables.forEach(table => {
+        table.addEventListener('click', () => {
+            // Remove the 'active' class from all table-grid-items
+            tables.forEach(item => item.classList.remove('active'));
+
+            // Add the 'active' class to tables-grid-item
+            table.classList.add('active');
+
+            const tableName = table.querySelector('.tables-grid-item-title').textContent;
+            const tablePrice = table.querySelector('.tables-grid-item-price').textContent;
+
+            // Log it for now
+            console.log(`Selected Table: ${tableName}`);
+            console.log(`Price: ${tablePrice}`);
+        });
+    });
+</script>

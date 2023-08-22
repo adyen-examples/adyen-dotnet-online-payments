@@ -14,7 +14,7 @@ namespace adyen_dotnet_in_person_payments_example.Services
         /// Sends a cloud terminal api payment request for the specified <paramref name="amount"/> and <paramref name="currency"/>.
         /// </summary>
         /// <param name="poiId">The unique ID of the terminal to send this request to. Format: [device model]-[serial number].</param>
-        /// <param name="saleId">Your unique ID for the POS system component to send this request from.</param>
+        /// <param name="saleId">Your unique ID for the POS system (cash register) to send this request from.</param>
         /// <param name="currency">Your <see cref="AmountsReq.Currency"/> (example: "EUR", "USD").</param>
         /// <param name="amount">Your <see cref="AmountsReq.RequestedAmount"/> in DECIMAL units (example: 42.99), the terminal API does not use minor units.</param>
         /// <param name="cancellationToken"><see cref="CancellationToken"/>.</param>
