@@ -170,6 +170,7 @@ a:hover {
   gap: 16px;
   padding: 16px;
   background: #e6e9eb;
+  border-radius: 8px;
 }
 
 .tables-grid-item {
@@ -177,8 +178,8 @@ a:hover {
   border-radius: 8px;
   background-color: #f7f7f7;
   display: flex;
-  flex-direction: row;
-  align-items: baseline;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   padding: 16px;
   cursor: pointer;
@@ -195,28 +196,31 @@ a:hover {
   background-color: #0abf53;
   transform: scale(1.05);
   font-weight: 600;
-  border: 1px ridge #00112c;
+  border: 1px ridge #0f0f0f;
   border-radius: 8px;
   color: white;
 }
 
 .tables-grid-item-title {
+  display: block;
   font-weight: 600;
   margin-top: 10px;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   color: black;
 }
 
 .tables-grid-item-amount {
-  display: flex;
   font-size: 1rem;
   margin-left: 4px;
 }
 
 .tables-grid-item-currency {
-  display: flex;
   font-size: 1rem;
-  margin-left: 8px;
+}
+
+.tables-grid-item-currency-amount {
+  display: flex;
+  align-items: center;
 }
 
 .info-actions {
@@ -238,13 +242,15 @@ a:hover {
 }
 
 .info-grid-section {
-  margin-top: 80px;
+  margin-top: 16px;
   display: grid;
+  padding: 20px;
+  background: #e6e9eb;
+  border-radius: 8px;
 }
 
 .info-grid-list {
   padding: 0px 8px 0px 8px;
-  /*border: 2px solid #e6e9eb;*/
 }
 
 .info-grid {
@@ -262,13 +268,16 @@ a:hover {
 .info-grid-item-title {
   font-weight: 700;
   padding-right: 8px;
+  font-size: 0.7rem;
 }
 
 .info-grid-item-description {
-  border: 2px solid #e6e9eb;
+  border: 1px solid #0abf53;
+  border-radius: 4px;
   font-weight: 600;
   color: #687282;
   padding: 8px;
+  font-size: 0.7rem;
 }
 /* Info-grid end */
 

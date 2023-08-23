@@ -49,7 +49,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                     });
                 }
 
-                switch (paymentResponse.Response.Result)
+                switch (paymentResponse?.Response?.Result)
                 {
                     case ResultType.Success:
                         return Ok(new CreatePaymentResponse()
@@ -75,7 +75,11 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                     case ResultType.Partial:
                         throw new NotImplementedException(nameof(ResultType.Partial));
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(paymentResponse.Response.Result));
+                        return NotFound(new CreatePaymentResponse()
+                        {
+                            Result = "failure",
+                            RefusalReason = _poiId == null ? "Could not reach payment terminal - POI ID was not set." : $"Could not reach payment terminal with POI ID {_poiId}."
+                        });
                 }
             }
             catch (Exception e)
