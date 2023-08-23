@@ -219,8 +219,12 @@ a:hover {
   margin-left: 8px;
 }
 
-#currentActiveTable {
-  font-size: 2rem;
+.info-actions {
+  font-size: 1.5rem;
+}
+
+#current-selection {
+  font-size: 1.5rem;
 }
 
 /* Tables-grid end */

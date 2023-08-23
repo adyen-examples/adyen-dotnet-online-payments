@@ -13,11 +13,11 @@
       <img src="~/images/thank-you.svg" class="status-image" alt="" />
     }
     <p class="status-message">@ViewBag.Msg</p>
-    @if (ViewBag.Status == "error")
+    @if (ViewBag.Status == "failure")
     {
       <p class="status-message">
-        Please review response in console and refer to
-        <a href="https://docs.adyen.com/development-resources/response-handling">Response handling.</a>
+        Learn how to resolve Terminal API errors and handle declined payments in 
+        <a href="https://docs.adyen.com/point-of-sale/error-scenarios/">our documentation.</a>
       </p>
     }
     <a class="button" href="/" to="#/">Return Home</a>

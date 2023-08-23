@@ -17,14 +17,16 @@ async function sendPostRequest(url, data) {
 async function sendPaymentRequest(amount, currency) {
     try {
         console.log("Sending payment request... " +  currency + " " + amount);
-        const res = await sendPostRequest("/api/create-payment", { amount: amount, currency: currency });
-        console.log(res);
-        switch (res.status) {
+        const response = await sendPostRequest("/api/create-payment", { amount: amount, currency: currency });
+        console.log(response);
+        switch (response.result) {
             case "success":
-                window.location.href = "result/success/" + res.PoiData.SaleData.SaleTransactionID; // TODO
+                window.location.href = "result/success";
+                break;
+            case "failure":
+                window.location.href = "result/failure/" + response.refusalReason;
                 break;
             default:
-                window.location.href = "result/error/";
                 break;
         };
     } catch (error) {
@@ -36,14 +38,16 @@ async function sendPaymentRequest(amount, currency) {
 // Send payment reversal request
 async function sendPaymentReversalRequest(amount, saleReferenceId) {
     try {
-        const res = await sendPostRequest("/api/create-payment-reversal", { amount: amount, saleReferenceId: saleReferenceId });
-        console.log(res);
-        switch (res.status) {
+        const response = await sendPostRequest("/api/create-payment-reversal", { amount: amount, saleReferenceId: saleReferenceId });
+        console.log(response);
+        switch (response.result) {
             case "success":
-                window.location.href = "result/success/" + saleReferenceId; // TODO
+                window.location.href = "result/success";
+                break;
+            case "failure":
+                window.location.href = "result/failure/" + response.refusalReason;
                 break;
             default:
-                window.location.href = "result/error/" + saleReferenceId;
                 break;
         };
     } catch (error) {
@@ -53,7 +57,7 @@ async function sendPaymentReversalRequest(amount, saleReferenceId) {
 }
 
 // Bind table selection buttons and the `send payment request` submit-button
-function bindTableElements() {
+function bindButtons() {
     const tables = document.querySelectorAll('.tables-grid-item');
 
     tables.forEach(table => {
@@ -91,4 +95,4 @@ function bindTableElements() {
 
 }
 
-bindTableElements();
+bindButtons();

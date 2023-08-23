@@ -1,5 +1,6 @@
 using Adyen.Model.Nexo;
 using adyen_dotnet_in_person_payments_example.Models.Requests;
+using adyen_dotnet_in_person_payments_example.Models.Responses;
 using adyen_dotnet_in_person_payments_example.Options;
 using adyen_dotnet_in_person_payments_example.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +32,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
             _saleId = options.Value.ADYEN_POS_SALE_ID;
         }
 
-        [HttpPost("api/create-payment")] // TODO response
+        [HttpPost("api/create-payment")]
         public async Task<ActionResult<SaleToPOIResponse>> SendPaymentRequest([FromBody] CreatePaymentRequest request, CancellationToken cancellationToken = default)
         {
             try
@@ -41,28 +42,50 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                 PaymentResponse paymentResponse = response?.MessagePayload as PaymentResponse;
                 if (response == null)
                 {
-                    return BadRequest();
+                    return BadRequest(new CreatePaymentResponse()
+                    {
+                        Result = "failure",
+                        RefusalReason = "Empty payment response"
+                    });
                 }
 
                 switch (paymentResponse.Response.Result)
                 {
                     case ResultType.Success:
-                        break;
+                        return Ok(new CreatePaymentResponse()
+                        {
+                            Result = "success",
+                            PoiTransactionId = paymentResponse.POIData.POITransactionID.TransactionID,
+                            PoiTransactionDateTime = paymentResponse.POIData.POITransactionID.TimeStamp,
+
+                            SaleTransactionId = paymentResponse.SaleData.SaleTransactionID.TransactionID,
+                            SaleTransactionDateTime = paymentResponse.SaleData.SaleTransactionID.TimeStamp
+                        });
                     case ResultType.Failure:
-                        break;
+                        return Ok(new CreatePaymentResponse()
+                        {
+                            Result = "failure",
+                            RefusalReason = "Payment terminal responded with: " + paymentResponse.Response.ErrorCondition.ToString(),
+                            PoiTransactionId = paymentResponse.POIData.POITransactionID.TransactionID,
+                            PoiTransactionDateTime = paymentResponse.POIData.POITransactionID.TimeStamp,
+
+                            SaleTransactionId = paymentResponse.SaleData.SaleTransactionID.TransactionID,
+                            SaleTransactionDateTime = paymentResponse.SaleData.SaleTransactionID.TimeStamp
+                        });
                     case ResultType.Partial:
-                        break;
+                        throw new NotImplementedException(nameof(ResultType.Partial));
                     default:
                         throw new ArgumentOutOfRangeException(nameof(paymentResponse.Response.Result));
                 }
-                
-
-                return Ok(paymentResponse);
             }
             catch (Exception e)
             {
                 _logger.LogInformation(e.ToString());
-                throw;
+                return StatusCode(500, new CreatePaymentResponse()
+                {
+                    Result = "failure",
+                    RefusalReason = "Check the stacktrace: " + e.Message
+                });
             }
         }
 

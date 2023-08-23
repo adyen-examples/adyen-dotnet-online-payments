@@ -1,6 +1,7 @@
 ﻿using adyen_dotnet_in_person_payments_example.Options;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System;
 
 namespace adyen_dotnet_in_person_payments_example.Controllers
 {
@@ -29,21 +30,23 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
             return View();
         }
 
-        [HttpGet("result/{status}")]
-        public IActionResult Result(string status, [FromQuery(Name = "reason")] string refusalReason)
+        [HttpGet("result/{status}/{refusalReason?}")]
+        public IActionResult Result(string status, string refusalReason = null)
         {
             string msg;
             string img;
             switch (status)
             {
-                case "error":
-                    msg = $"Error! Reason: {refusalReason}";
+                case "failure":
+                    msg = $"Failed to process transaction. {refusalReason}.";
                     img = "failed";
                     break;
-                default:
-                    msg = "Your payment has been successfully processed.";
+                case "success":
+                    msg = $"Your transaction has been successfully processed.";
                     img = "success";
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(status);
             }
             ViewBag.Status = status;
             ViewBag.Msg = msg;
