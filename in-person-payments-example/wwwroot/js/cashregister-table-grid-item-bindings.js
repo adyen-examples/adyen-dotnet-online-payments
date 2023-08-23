@@ -16,7 +16,7 @@ async function sendPostRequest(url, data) {
 // Send payment request
 async function sendPaymentRequest(amount, currency) {
     try {
-        console.log("Sending payment request... " +  currency + " " + amount);
+        console.log("Sending payment request... " + currency + " " + amount);
         const response = await sendPostRequest("/api/create-payment", { amount: amount, currency: currency });
         console.log(response);
         switch (response.result) {
@@ -35,7 +35,7 @@ async function sendPaymentRequest(amount, currency) {
     }
 }
 
-// Send payment reversal request
+// Send payment reversal request // TODO
 async function sendPaymentReversalRequest(amount, saleReferenceId) {
     try {
         const response = await sendPostRequest("/api/create-payment-reversal", { amount: amount, saleReferenceId: saleReferenceId });
@@ -90,6 +90,7 @@ function bindButtons() {
         var formData = new FormData(event.target);
         var amount = formData.get('amount');
         var currency = formData.get('currency');
+
         await sendPaymentRequest(amount, currency);
     });
 

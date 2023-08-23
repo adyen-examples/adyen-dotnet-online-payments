@@ -84,7 +84,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                 return StatusCode(500, new CreatePaymentResponse()
                 {
                     Result = "failure",
-                    RefusalReason = "Check the stacktrace: " + e.Message
+                    RefusalReason = e.Message
                 });
             }
         }

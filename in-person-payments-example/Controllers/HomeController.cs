@@ -38,7 +38,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
             switch (status)
             {
                 case "failure":
-                    msg = $"Failed to process transaction. {refusalReason}.";
+                    msg = $"Failed to initialize transaction. {refusalReason}.";
                     img = "failed";
                     break;
                 case "success":
