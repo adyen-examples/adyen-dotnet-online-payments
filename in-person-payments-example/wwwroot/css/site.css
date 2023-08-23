@@ -168,21 +168,21 @@ a:hover {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
-  padding: 20px;
+  padding: 16px;
   background: #e6e9eb;
 }
 
 .tables-grid-item {
   border: 1px solid #e6e9eb;
+  border-radius: 8px;
   background-color: #f7f7f7;
   display: flex;
   flex-direction: row;
   align-items: baseline;
   justify-content: center;
-  padding: 20px;
+  padding: 16px;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.2s;
-  border-radius: 8px;
 }
 
 .tables-grid-item:hover {

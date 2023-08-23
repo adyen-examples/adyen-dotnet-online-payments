@@ -16,6 +16,7 @@ async function sendPostRequest(url, data) {
 // Send payment request
 async function sendPaymentRequest(amount, currency) {
     try {
+        console.log("Sending payment request... " +  currency + " " + amount);
         const res = await sendPostRequest("/api/create-payment", { amount: amount, currency: currency });
         console.log(res);
         switch (res.status) {
@@ -51,21 +52,7 @@ async function sendPaymentReversalRequest(amount, saleReferenceId) {
     }
 }
 
-// Binds submit buttons to `capture-payment`-endpoint
-/*function bindCapturePaymentFormButtons() { 
-    var elements = document.getElementsByName('capturePaymentForm');
-    for (var i = 0; i < elements.length;  i++) {
-        elements[i].addEventListener('submit', async function(event) {
-            event.preventDefault();
-
-            var formData = new FormData(event.target);
-            var reference = formData.get('reference');
-
-            await sendCapturePaymentRequest(reference);
-        });
-    }
-}*/
-
+// Bind table selection buttons and the `send payment request` submit-button
 function bindTableElements() {
     const tables = document.querySelectorAll('.tables-grid-item');
 
@@ -84,43 +71,24 @@ function bindTableElements() {
             // Copies 'currency' value to the form
             const currency = document.getElementById('currency');
             currency.value = table.querySelector('.tables-grid-item-currency').textContent;
-            
-            // Copies 'table name' value to the form
-            const tableName = document.getElementById('currentActiveTable');
-            tableName.textContent = table.querySelector('.tables-grid-item-title').textContent;
-            
-            updateButtons();
+
+            // Copies 'table name' value to display 
+            const currentSelection = document.getElementById('current-selection');
+            currentSelection.textContent = table.querySelector('.tables-grid-item-title').textContent;
         });
     });
-}
 
-function updateButtons() {
-    var elements = document.getElementsByName('sendPaymentRequestForm');
-    for (var i = 0; i < elements.length;  i++) {
-        elements[i].addEventListener('submit', async function(event) {
-            event.preventDefault();
+    // Bind `payment-request-form` submit-button.
+    var element = document.getElementById('payment-request-form');
+    element.addEventListener('submit', async function(event) {
+        event.preventDefault();
 
-            var formData = new FormData(event.target);
-            var amount = formData.get('amount');
-            var currency = formData.get('currency');
-            console.log(amount);
-            await sendPaymentRequest(amount, currency);
-        });
-    }
+        var formData = new FormData(event.target);
+        var amount = formData.get('amount');
+        var currency = formData.get('currency');
+        await sendPaymentRequest(amount, currency);
+    });
 
-    // TODO: bind reversals
-    /*var elements = document.getElementsByName('sendPaymentReversalForm');
-    for (var i = 0; i < elements.length; i++) {
-        elements[i].addEventListener('submit', async function(event) {
-            event.preventDefault();
-
-            var formData = new FormData(event.target);
-            var saleReferenceId = formData.get('saleReferenceId');
-            var reversalAmount = formData.get('reversalAmount');
-
-            await sendPaymentReversalRequest(reversalAmount, saleReferenceId);
-        });
-    }*/
 }
 
 bindTableElements();

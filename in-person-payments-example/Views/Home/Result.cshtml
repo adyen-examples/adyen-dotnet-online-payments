@@ -8,7 +8,7 @@
       var SvgImg = ViewBag.Img + ".svg";
     }
     <img src="~/images/@SvgImg" class="status-image" alt="@ViewBag.Img" />
-    @if (ViewBag.Status != "failed" || ViewBag.Status != "error")
+    @if (ViewBag.Status == "success")
     {
       <img src="~/images/thank-you.svg" class="status-image" alt="" />
     }
