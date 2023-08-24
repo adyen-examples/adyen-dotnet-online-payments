@@ -49,6 +49,11 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
         /// </summary>
         public string PaymentMethodBrand { get; set; }
 
+        /// <summary>
+        /// Compares a <see cref="PaymentDetailsModel"/>.
+        /// </summary>
+        /// <param name="other"><see cref="PaymentDetailsModel"/>.</param>
+        /// <returns>Returns true if all values are equal.</returns>
         public bool IsEqual(PaymentDetailsModel other)
         {
             if (other == null)
@@ -66,6 +71,15 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
                    && RefusalReason == other.RefusalReason
                    && PaymentMethodBrand == other.PaymentMethodBrand;
         }
+
+        /// <summary>
+        /// We populate the refusal reason when: 1) refused status code from the API response or 2) an unsuccessful webhook.
+        /// </summary>
+        /// <returns>True is there's a refusal reason.</returns>
+        public bool HasRefusalReason()
+        {
+            return !string.IsNullOrWhiteSpace(RefusalReason);
+        }
         
         /// <summary>
         /// The payment details of the shopper are verified, and the funds are reserved.
@@ -74,7 +88,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
         /// <returns>True if authorised.</returns>
         public bool IsAuthorised()
         {
-            return ResultCode is "Authorised" or "AUTHORISATION";
+            return 
         }
         
         /// <summary>

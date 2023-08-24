@@ -39,6 +39,8 @@ namespace adyen_dotnet_authorisation_adjustment_example.Repositories
         /// <param name="merchantReference"><see cref="PaymentModel.MerchantReference"/>.</param>
         /// <returns><see cref="PaymentModel"/>.</returns>
         PaymentModel GetPayment(string merchantReference);
+
+        void UpdatePayment(string merchantReference);
     }
 
     public class PaymentRepository : IPaymentRepository
@@ -120,6 +122,16 @@ namespace adyen_dotnet_authorisation_adjustment_example.Repositories
             }
 
             return result;
+        }
+
+        public void UpdatePayment(string merchantReference)
+        {
+            var payment = GetPayment(merchantReference);
+
+            var history = payment.PaymentsHistory.OrderBy(x => x.DateTime);
+            var authorisedPayment = payment.PaymentsHistory.FirstOrDefault(x => x.ResultCode is "Authorised" or "AUTHORISATION" && !x.HasRefusalReason());
+            
+
         }
     }
 }

@@ -157,13 +157,6 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 return Task.CompletedTask;
             }
 
-            // Do business logic here. In this case, we update the amount shown to the user.
-            var payment = _repository.GetPayment(notification.MerchantReference);
-            if (notification.Success)
-            {
-                payment.Amount = details.Amount;
-            }
-
             _logger.LogInformation($"Received {(notification.Success ? "successful" : "unsuccessful")} {notification.EventCode} webhook::\n" +
                                    $"Merchant Reference ::{notification.MerchantReference} \n" +
                                    $"PSP Reference ::{notification.PspReference} \n" +
