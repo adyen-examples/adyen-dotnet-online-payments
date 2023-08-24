@@ -1,4 +1,5 @@
 ﻿using adyen_dotnet_in_person_payments_example.Options;
+using adyen_dotnet_in_person_payments_example.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
@@ -9,11 +10,13 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
     {
         private readonly string _poiId;
         private readonly string _saleId;
+        private readonly ITableService _tableService;
 
-        public HomeController(IOptions<AdyenOptions> optionsAccessor)
+        public HomeController(IOptions<AdyenOptions> optionsAccessor, ITableService tableService)
         {
             _poiId = optionsAccessor.Value.ADYEN_POS_POI_ID;
             _saleId = optionsAccessor.Value.ADYEN_POS_SALE_ID;
+            _tableService = tableService;
         }
 
         [Route("/")]
@@ -27,6 +30,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
         {
             ViewBag.PoiId = _poiId;
             ViewBag.SaleId = _saleId;
+            ViewBag.Tables = _tableService.Tables;
             return View();
         }
 

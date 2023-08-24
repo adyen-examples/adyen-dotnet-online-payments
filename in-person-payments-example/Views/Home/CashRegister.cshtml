@@ -1,99 +1,27 @@
-﻿@{
+﻿@using adyen_dotnet_in_person_payments_example.Models;
+@{
     ViewData["Title"] = "Adyen Cash Register View";
-    string poiId = @ViewBag.PoiId;
-    string saleId = @ViewBag.SaleId;
+    string poiId = ViewBag.PoiId;
+    string saleId = ViewBag.SaleId;
+    List<TableModel> list = ViewBag.Tables;
 }
 
 <div class="main-container">
   <div class="info">
-    <h2>Pick a table</h2>
+    <h2>Select a table</h2>
     <section class="tables-section">
       <div class="tables-grid">
         <ul class="tables-grid-list">
-          <li class="tables-grid-item">
-            <p class="tables-grid-item-title">Table 1</p>
-            <div class="tables-grid-item-currency-amount">
-              <p class="tables-grid-item-currency">EUR</p>
-              <p class="tables-grid-item-amount">11.11</p>
-            </div>
-          </li>
-          <li class="tables-grid-item">
-            <p class="tables-grid-item-title">Table 2</p>
-            <div class="tables-grid-item-currency-amount">
-              <p class="tables-grid-item-currency">EUR</p>
-              <p class="tables-grid-item-amount">22.22</p>
-            </div>
-          </li>
-          <li class="tables-grid-item">
-            <p class="tables-grid-item-title">Table 3</p>
-            <div class="tables-grid-item-currency-amount">
-              <p class="tables-grid-item-currency">EUR</p>
-              <p class="tables-grid-item-amount">33.33</p>
-            </div>
-          </li>
-          <li class="tables-grid-item">
-            <p class="tables-grid-item-title">Table 4</p>
-            <div class="tables-grid-item-currency-amount">
-              <p class="tables-grid-item-currency">EUR</p>
-              <p class="tables-grid-item-amount">44.44</p>
-            </div>
-          </li>
-          <li class="tables-grid-item">
-            <p class="tables-grid-item-title">Table 5</p>
-            <div class="tables-grid-item-currency-amount">
-              <p class="tables-grid-item-currency">EUR</p>
-              <p class="tables-grid-item-amount">55.55</p>
-            </div>
-          </li>
-          <li class="tables-grid-item">
-            <p class="tables-grid-item-title">Table 6</p>
-            <div class="tables-grid-item-currency-amount">
-              <p class="tables-grid-item-currency">EUR</p>
-              <p class="tables-grid-item-amount">66.66</p>
-            </div>
-          </li>
-          <li class="tables-grid-item">
-            <p class="tables-grid-item-title">Table 7</p>
-            <div class="tables-grid-item-currency-amount">
-              <p class="tables-grid-item-currency">EUR</p>
-              <p class="tables-grid-item-amount">77.77</p>
-            </div>
-          </li>
-          <li class="tables-grid-item">
-            <p class="tables-grid-item-title">Table 8</p>
-            <div class="tables-grid-item-currency-amount">
-              <p class="tables-grid-item-currency">EUR</p>
-              <p class="tables-grid-item-amount">88.88</p>
-            </div>
-          </li>
-          <li class="tables-grid-item">
-            <p class="tables-grid-item-title">Table 9</p>
-            <div class="tables-grid-item-currency-amount">
-              <p class="tables-grid-item-currency">EUR</p>
-              <p class="tables-grid-item-amount">99.99</p>
-            </div>
-          </li>
-          <li class="tables-grid-item">
-            <p class="tables-grid-item-title">Table 10</p>
-            <div class="tables-grid-item-currency-amount">
-              <p class="tables-grid-item-currency">EUR</p>
-              <p class="tables-grid-item-amount">100.00</p>
-            </div>
-          </li>
-          <li class="tables-grid-item">
-            <p class="tables-grid-item-title">Table 11</p>
-            <div class="tables-grid-item-currency-amount">
-              <p class="tables-grid-item-currency">EUR</p>
-              <p class="tables-grid-item-amount">111.11</p>
-            </div>
-          </li>
-          <li class="tables-grid-item">
-            <p class="tables-grid-item-title">Table 12</p>
-            <div class="tables-grid-item-currency-amount">
-              <p class="tables-grid-item-currency">EUR</p>
-              <p class="tables-grid-item-amount">112.12</p>
-            </div>
-          </li>
+           @foreach(TableModel table in list)
+           {
+             <li class="tables-grid-item">
+               <p class="tables-grid-item-title">@table.Name</p>
+               <div class="tables-grid-item-currency-amount">
+                 <p class="tables-grid-item-currency">@table.Currency</p>
+                 <p class="tables-grid-item-amount">@table.Amount</p>
+               </div>
+             </li>
+           }
         </ul>
       </div>
     </section>
@@ -101,29 +29,7 @@
 
   <section class="info-grid-section">
     <div class="info-grid">
-      <p class="info-actions">Perform an action:</p>
-      <ul class="info-grid-list">
-        <li class="info-grid-item">
-          <p class="info-grid-item-title">
-            POI ID - The unique ID <em class="em-highlight">[device model]-[serial number]</em> of the payment terminal:
-          </p>
-          <p class="info-grid-item-description">
-            @if (string.IsNullOrWhiteSpace(poiId))
-            {
-                poiId = "No POI Id is configured in the AdyenOptions class. Please specify the POI Id in your environmental variables.";
-            }
-            @poiId
-          </p>
-        </li>
-        <li class="info-grid-item">
-          <p class="info-grid-item-title">
-            SALE ID - The unique ID of this cash register:
-          </p>
-          <p class="info-grid-item-description">
-            @saleId
-          </p>
-        </li>
-      </ul>
+      <p class="info-actions">Current selection:</p>
       <p id="current-selection">No table selected</p>
       <form id="payment-request-form" method="post">
         <input type="text" id="amount" name="amount">
@@ -138,8 +44,31 @@
         <button type="submit" class="payment-request-button">Send Reversal Request</button>
       </form>
       -->
-    </div>    
+    </div>   
   </section>
+  
+  <ul class="info-grid-list">
+    <li class="info-grid-item">
+      <p class="info-grid-item-title">
+        POI ID - The unique ID <em class="em-highlight">[device model]-[serial number]</em> of the payment terminal:
+      </p>
+      <p class="info-grid-item-description">
+        @if (string.IsNullOrWhiteSpace(poiId))
+        {
+            poiId = "No POI Id is configured in the AdyenOptions class. Please specify the POI Id in your environmental variables.";
+        }
+        @poiId
+      </p>
+    </li>
+    <li class="info-grid-item">
+      <p class="info-grid-item-title">
+        SALE ID - The unique ID of this cash register:
+      </p>
+      <p class="info-grid-item-description">
+        @saleId
+      </p>
+    </li>
+  </ul>
 </div>
 
 <!-- Binds all buttons for the `api/send-payment-request` and `api/send-payment-reversal-request` endpoints -->

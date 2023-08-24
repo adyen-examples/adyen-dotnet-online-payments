@@ -166,7 +166,7 @@ a:hover {
 
 .tables-grid-list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 16px;
   padding: 16px;
   background: #e6e9eb;
@@ -231,16 +231,15 @@ a:hover {
   font-size: 1.5rem;
 }
 
-/* Tables-grid end */
-
-
-/* Info-grid start */
 .em-highlight {
   font-weight: 700;
   color: #687282;
   font-style: normal;
 }
 
+/* Tables-grid end */
+
+/* Info-grid start */
 .info-grid-section {
   margin-top: 16px;
   display: grid;
@@ -263,12 +262,13 @@ a:hover {
   display: inline-flex;
   align-items: center;
   list-style: none;
+  padding: 2px;
 }
 
 .info-grid-item-title {
-  font-weight: 700;
+  font-weight: 600;
   padding-right: 8px;
-  font-size: 0.7rem;
+  font-size: 1rem;
 }
 
 .info-grid-item-description {
@@ -276,8 +276,8 @@ a:hover {
   border-radius: 4px;
   font-weight: 600;
   color: #687282;
-  padding: 8px;
-  font-size: 0.7rem;
+  font-size: 1rem;
+  padding: 4px;
 }
 /* Info-grid end */
 
