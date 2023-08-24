@@ -49,13 +49,21 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
         /// </summary>
         public List<PaymentDetailsModel> PaymentsHistory { get; set; }
 
+        /// <summary>
+        /// Gets the payment status by checking the <see cref="PaymentsHistory"/>.
+        /// Check if the payment has been successfully reversed (cancelled or refunded).
+        /// Check if the payment has been successfully captured.
+        /// Check if the latest authorised/authorisation adjusted payment is successful.
+        /// Otherwise return refused.
+        /// </summary>
+        /// <returns><see cref="PaymentStatus"/>.</returns>
         public PaymentStatus GetPaymentStatus()
         {
             List<PaymentDetailsModel> orderedPayments = PaymentsHistory.OrderBy(p => p.DateTime).ToList();
 
             PaymentDetailsModel? reversedPayment = orderedPayments
                 .Where(x => x.IsReversed())?
-                .LastOrDefault();
+                .FirstOrDefault(x => x.IsSuccess());
             
             if (reversedPayment is not null)
             {
@@ -64,7 +72,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
             
             PaymentDetailsModel? capturedPayment = orderedPayments
                 .Where(x => x.IsCaptured())?
-                .LastOrDefault();
+                .FirstOrDefault(x => x.IsSuccess());
             
             if (capturedPayment is not null)
             {
@@ -72,7 +80,8 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
             }
             
             PaymentDetailsModel? authorisedPayment = orderedPayments
-                .Where(x => x.IsAuthorisedAdjusted() || x.IsAuthorised())?
+                .Where(x => (x.IsAuthorisedAdjusted() || x.IsAuthorised()) 
+                    && x.IsSuccess())?
                 .LastOrDefault();
             
             if (authorisedPayment is not null)
@@ -82,28 +91,5 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
             
             return PaymentStatus.Refused;
         }
-    }
-
-    public enum PaymentStatus
-    {
-        /// <summary>
-        /// https://docs.adyen.com/development-resources/refusal-reasons/.
-        /// </summary>
-        Refused = 1,
-        
-        /// <summary>
-        /// https://docs.adyen.com/get-started-with-adyen/payment-glossary/#authorisation.
-        /// </summary>
-        Authorised = 2,
-        
-        /// <summary>
-        /// https://docs.adyen.com/online-payments/capture/.
-        /// </summary>
-        Captured = 3,
-        
-        /// <summary>
-        /// https://docs.adyen.com/online-payments/reversal/.
-        /// </summary>
-        Reversed = 4,
     }
 }

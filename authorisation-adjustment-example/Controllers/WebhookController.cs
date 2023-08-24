@@ -324,7 +324,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 Currency = notification.Amount?.Currency,
                 DateTime = DateTimeOffset.Parse(notification.EventDate),
                 ResultCode = notification.EventCode,
-                RefusalReason = notification.Success ? null : notification.Reason,
+                RefusalReason = notification.Success ? notification.Reason : null, // A successful notification, success = true. Populate the refusal reason.
                 PaymentMethodBrand = notification.PaymentMethod
             };
 
@@ -365,7 +365,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 Currency = notification.Amount?.Currency,
                 DateTime = DateTimeOffset.Parse(notification.EventDate),
                 ResultCode = notification.EventCode,
-                RefusalReason = notification.Success ? null : notification.Reason,
+                RefusalReason = notification.Success ? notification.Reason : null, // A successful notification, success = true. Populate the refusal reason.
                 PaymentMethodBrand = notification.PaymentMethod
             };
 

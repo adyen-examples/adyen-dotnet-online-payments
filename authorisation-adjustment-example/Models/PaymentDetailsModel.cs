@@ -75,13 +75,25 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
         }
 
         /// <summary>
+        /// Returns true if the refusal reason is not populated and ResultCodes are not equal to CAPTURE_FAILED, REFUNDED_REVERSED or REFUND_FAILED.
+        /// </summary>
+        /// <returns>True is there are no errors.</returns>
+        public bool IsSuccess()
+        {
+            return string.IsNullOrWhiteSpace(RefusalReason) &&
+                ResultCode != "CAPTURE_FAILED" && 
+                ResultCode != "REFUNDED_REVERSED" &&
+                ResultCode != "REFUND_FAILED";
+        }
+        
+        /// <summary>
         /// The payment details of the shopper are verified, and the funds are reserved.
         /// https://docs.adyen.com/online-payments/adjust-authorisation/#pre-authorise
         /// </summary>
         /// <returns>True if authorisation was successful.</returns>
         public bool IsAuthorised()
         {
-            return ResultCode is "AUTHORISATION" or "Authorised";
+            return ResultCode == "AUTHORISATION" || ResultCode == "Authorised";
         }
         
         /// <summary>
@@ -91,7 +103,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
         /// <returns>True if authorisation adjustment was successful.</returns>
         public bool IsAuthorisedAdjusted()
         {
-            return ResultCode is "AUTHORISATION_ADJUSTMENT";
+            return ResultCode == "AUTHORISATION_ADJUSTMENT";
         }
 
         /// <summary>
@@ -101,20 +113,27 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
         /// <returns>True if capture was successful.</returns>
         public bool IsCaptured()
         {
-            return ResultCode is "CAPTURE";
+            return ResultCode == "CAPTURE";
         }
 
         /// <summary>
-        /// Adyen's validations were successful and we sent the refund request to the card scheme.
+        /// CANCEL_OR_REFUND success: Adyen's validations were successful and we sent the refund request to the card scheme.
         /// This usually means that the refund will be processed successfully.
+        /// For more information on CANCEL_OR_REFUND: https://docs.adyen.com/online-payments/reversal/#cancel-or-refund-webhook
         /// However, in rare cases the refund can be rejected by the card scheme, or reversed.
-        /// For information about these exceptions, see REFUND_FAILED webhook, and REFUNDED_REVERSED webhook.
-        /// https://docs.adyen.com/online-payments/reversal/#cancel-or-refund-webhook
+        /// Adyen will send a REFUND_FAILED webhook (success=true) or a REFUNDED_REVERSED webhook (success=true).
+        /// For information about these exceptions:
+        /// REFUND_FAILED: https://docs.adyen.com/online-payments/refund/#refund-failed
+        /// REFUNDED_REVERSED: https://docs.adyen.com/online-payments/refund/#refunded-reversed
         /// </summary>
         /// <returns>True is reversal was successful.</returns>
         public bool IsReversed()
         {
-            return ResultCode is "CANCEL_OR_REFUND";
+            return ResultCode == "CANCEL_OR_REFUND" ||
+                (
+                    !string.IsNullOrWhiteSpace(RefusalReason) &&
+                    (ResultCode == "REFUNDED_REVERSED" || ResultCode == "REFUND_FAILED") 
+                );
         }
     }
 }
