@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Adyen.HttpClient;
+﻿using Adyen.HttpClient;
 using Adyen.Model.Checkout;
 using Adyen.Service.Checkout;
 using adyen_dotnet_authorisation_adjustment_example.Models;

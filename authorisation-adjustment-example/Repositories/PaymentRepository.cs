@@ -1,8 +1,8 @@
 ﻿using adyen_dotnet_authorisation_adjustment_example.Models;
+using Adyen.Model.Checkout;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Adyen.Model.Checkout;
 
 namespace adyen_dotnet_authorisation_adjustment_example.Repositories
 {
