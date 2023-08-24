@@ -45,7 +45,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
         public string PaymentMethodBrand { get; set; }
         
         /// <summary>
-        /// List of <see cref="PaymentDetailsModel"/>s, this is populated through the initial pre-authorisation and the webhook events.
+        /// List of <see cref="PaymentDetailsModel"/>s, this is populated through the initial pre-authorisation and the following webhook events.
         /// </summary>
         public List<PaymentDetailsModel> PaymentsHistory { get; set; }
 
@@ -59,11 +59,11 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
         /// <returns><see cref="PaymentStatus"/>.</returns>
         public PaymentStatus GetPaymentStatus()
         {
-            List<PaymentDetailsModel> orderedPayments = PaymentsHistory.OrderBy(p => p.DateTime).ToList();
+            List<PaymentDetailsModel> orderedPayments = PaymentsHistory.OrderBy(paymentDetails => paymentDetails.DateTime).ToList();
 
             PaymentDetailsModel? reversedPayment = orderedPayments
-                .Where(x => x.IsReversed())?
-                .FirstOrDefault(x => x.IsSuccess());
+                .Where(paymentDetails => paymentDetails.IsReversed())?
+                .FirstOrDefault(paymentDetails => paymentDetails.IsSuccess());
             
             if (reversedPayment is not null)
             {
@@ -71,8 +71,8 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
             }
             
             PaymentDetailsModel? capturedPayment = orderedPayments
-                .Where(x => x.IsCaptured())?
-                .FirstOrDefault(x => x.IsSuccess());
+                .Where(paymentDetails => paymentDetails.IsCaptured())?
+                .FirstOrDefault(paymentDetails => paymentDetails.IsSuccess());
             
             if (capturedPayment is not null)
             {
@@ -80,8 +80,8 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
             }
             
             PaymentDetailsModel? authorisedPayment = orderedPayments
-                .Where(x => (x.IsAuthorisedAdjusted() || x.IsAuthorised()) 
-                    && x.IsSuccess())?
+                .Where(paymentDetails => (paymentDetails.IsAuthorisedAdjusted() || paymentDetails.IsAuthorised()) 
+                    && paymentDetails.IsSuccess())?
                 .LastOrDefault();
             
             if (authorisedPayment is not null)

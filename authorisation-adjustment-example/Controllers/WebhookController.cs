@@ -161,18 +161,23 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             // Update payment amount to latest.
             if (details.IsSuccess())
             {
-                var payment = _repository.GetPayment(notification.MerchantReference);
+                PaymentModel payment = _repository.GetPayment(notification.MerchantReference);
                 List<PaymentDetailsModel> orderedPayments = payment
-                    .PaymentsHistory.OrderBy(p => p.DateTime)
+                    .PaymentsHistory.OrderBy(paymentDetails => paymentDetails.DateTime)
                     .ToList();
 
+                // Take latest amount that has been successfully authorisation adjusted.
                 PaymentDetailsModel? latestAuthorisedPayment = orderedPayments
-                    .Where(x => x.IsAuthorisedAdjusted() && x.IsSuccess())?
+                    .Where(paymentDetails => paymentDetails.IsAuthorisedAdjusted() && paymentDetails.IsSuccess())?
                     .LastOrDefault();
 
                 if (latestAuthorisedPayment is not null)
                 {
+                    // Update amount.
                     payment.Amount = latestAuthorisedPayment.Amount;
+
+                    // Update expiry date.
+                    payment.ExpiryDate = latestAuthorisedPayment.DateTime.AddDays(28); // The value of '28' varies per scheme, see https://docs.adyen.com/online-payments/adjust-authorisation/#validity.
                 }
             }
             

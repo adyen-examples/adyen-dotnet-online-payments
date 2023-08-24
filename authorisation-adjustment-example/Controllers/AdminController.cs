@@ -40,7 +40,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
         {
             ViewBag.PaymentsHistory = _repository.GetPayment(reference)?
                 .PaymentsHistory?
-                .OrderBy(x => x.DateTime)?
+                .OrderBy(paymentDetails => paymentDetails.DateTime)?
                 .ToList();
             return View();
         }
