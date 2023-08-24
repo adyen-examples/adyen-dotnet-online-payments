@@ -1,4 +1,5 @@
-﻿using Adyen.HttpClient;
+﻿using System.Collections.Generic;
+using Adyen.HttpClient;
 using Adyen.Model.Checkout;
 using Adyen.Service.Checkout;
 using adyen_dotnet_authorisation_adjustment_example.Models;
@@ -7,7 +8,6 @@ using adyen_dotnet_authorisation_adjustment_example.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,21 +32,16 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
         [Route("admin")]
         public IActionResult Index()
         {
-            List<PaymentModel> payments = new List<PaymentModel>();
-            foreach (var kvp in _repository.Payments)
-            {
-                payments.Add(_repository.FindLatestPaymentByReference(kvp.Key));
-            }
-            ViewBag.Payments = payments;
+            ViewBag.Payments = _repository.Payments.Values.ToList();
             return View();
         }
 
         [Route("admin/details/{reference}")]
         public IActionResult Details(string reference)
         {
-            // We fetch all payments (regardless whether its authorised/refused) that we have stored in our local repository and show it.
-            ViewBag.Payments = _repository.FindByReference(reference)
-                .OrderBy(x=> x.DateTime)
+            ViewBag.PaymentsHistory = _repository.GetPayment(reference)?
+                .PaymentsHistory?
+                .OrderBy(x => x.DateTime)?
                 .ToList();
             return View();
         }
@@ -76,9 +71,9 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
         [HttpPost("admin/update-payment-amount")]
         public async Task<ActionResult<PaymentAmountUpdateResponse>> UpdatePaymentAmount([FromBody] UpdatePaymentAmountRequest request, CancellationToken cancellationToken = default)
         {
-            PaymentModel payment = _repository.FindLatestPaymentByReference(request.Reference);
+            PaymentModel preauthorisedPayment = _repository.GetPayment(request.Reference);
 
-            if (payment == null)
+            if (preauthorisedPayment == null)
             {
                 return NotFound();
             }
@@ -88,12 +83,12 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 var paymentAmountUpdateRequest = new PaymentAmountUpdateRequest()
                 {
                     MerchantAccount = _merchantAccount, // Required
-                    Amount = new Amount() { Value = request.Amount, Currency = payment.Currency },
-                    Reference = payment.Reference,
+                    Amount = new Amount() { Value = request.Amount, Currency = preauthorisedPayment.Currency },
+                    Reference = preauthorisedPayment.MerchantReference,
                     IndustryUsage = PaymentAmountUpdateRequest.IndustryUsageEnum.DelayedCharge,
                 };
                 
-                var response = await _modificationsService.UpdateAuthorisedAmountAsync(payment.GetOriginalPspReference(), paymentAmountUpdateRequest, cancellationToken: cancellationToken);
+                var response = await _modificationsService.UpdateAuthorisedAmountAsync(preauthorisedPayment.PspReference, paymentAmountUpdateRequest, cancellationToken: cancellationToken);
                 return Ok(response);
             }
             catch (HttpClientException e)
@@ -106,9 +101,9 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
         [HttpPost("admin/capture-payment")]
         public async Task<ActionResult<PaymentCaptureResponse>> CapturePayment([FromBody] CreateCapturePaymentRequest request, CancellationToken cancellationToken = default)
         {
-            PaymentModel payment = _repository.FindLatestPaymentByReference(request.Reference);
+            PaymentModel preauthorisedPayment = _repository.GetPayment(request.Reference);
 
-            if (payment == null)
+            if (preauthorisedPayment == null)
             {
                 return NotFound();
             }
@@ -118,11 +113,11 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 var paymentCaptureRequest = new PaymentCaptureRequest()
                 {
                     MerchantAccount = _merchantAccount, // Required.
-                    Amount = new Amount() { Value = payment.Amount, Currency = payment.Currency }, // Required.
-                    Reference = payment.Reference
+                    Amount = new Amount() { Value = preauthorisedPayment.Amount, Currency = preauthorisedPayment.Currency }, // Required.
+                    Reference = preauthorisedPayment.MerchantReference
                 };
                 
-                var response = await _modificationsService.CaptureAuthorisedPaymentAsync(payment.GetOriginalPspReference(), paymentCaptureRequest, cancellationToken: cancellationToken);
+                var response = await _modificationsService.CaptureAuthorisedPaymentAsync(preauthorisedPayment.PspReference, paymentCaptureRequest, cancellationToken: cancellationToken);
                 return Ok(response); // Note that the response will have a different PSPReference compared to the initial pre-authorisation.
             }
             catch (HttpClientException e)
@@ -135,9 +130,9 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
         [HttpPost("admin/reversal-payment")]
         public async Task<ActionResult<PaymentReversalResponse>> ReversalPayment([FromBody] CreateReversalPaymentRequest request, CancellationToken cancellationToken = default)
         {
-            PaymentModel payment = _repository.FindLatestPaymentByReference(request.Reference);
+            PaymentModel preauthorisedPayment = _repository.GetPayment(request.Reference);
 
-            if (payment == null)
+            if (preauthorisedPayment == null)
             {
                 return NotFound();
             }
@@ -147,10 +142,10 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 var paymentReversalRequest = new PaymentReversalRequest()
                 {
                     MerchantAccount = _merchantAccount, // Required.
-                    Reference = payment.Reference
+                    Reference = preauthorisedPayment.MerchantReference
                 };
 
-                var response = await _modificationsService.RefundOrCancelPaymentAsync(payment.GetOriginalPspReference(), paymentReversalRequest, cancellationToken: cancellationToken);
+                var response = await _modificationsService.RefundOrCancelPaymentAsync(preauthorisedPayment.PspReference, paymentReversalRequest, cancellationToken: cancellationToken);
                 return Ok(response);
             }
             catch (HttpClientException e)

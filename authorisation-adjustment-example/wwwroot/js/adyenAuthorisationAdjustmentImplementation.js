@@ -1,5 +1,4 @@
 ﻿const clientKey = document.getElementById("clientKey").innerHTML;
-const type = document.getElementById("type").innerHTML;
 
 async function initCheckout() {
     try {
@@ -32,7 +31,7 @@ async function initCheckout() {
             },
         };
         const checkout = await new AdyenCheckout(configuration);
-        checkout.create(type).mount(document.getElementById("payment"));
+        checkout.create("card").mount(document.getElementById("payment"));
     } catch (error) {
         console.error(error);
         alert("Error occurred. Look at console for details");

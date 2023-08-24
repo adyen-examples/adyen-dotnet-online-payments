@@ -1,5 +1,4 @@
-﻿@using Adyen.Model.Recurring;
-@using adyen_dotnet_authorisation_adjustment_example.Models;
+﻿@using adyen_dotnet_authorisation_adjustment_example.Models;
 @{
     ViewData["Title"] = "Adyen Admin Panel";
     List<PaymentModel> payments = ViewBag.Payments;
@@ -16,19 +15,19 @@
                 <p>
                     <b>Actions:</b><br />
                     
-                    <b>
+                    <b> 1. 
                         <a href="https://docs.adyen.com/online-payments/classic-integrations/modify-payments/adjust-authorisation">Adjust:</a>
-                    </b> Increase/decrease the payment amount of a preauthorisation. <br />
+                    </b> Increases/decreases the payment amount of a pre-authorisation. <br />
                     
-                    <b>
+                    <b> 2. 
                         <a href="https://docs.adyen.com/online-payments/classic-integrations/modify-payments/adjust-authorisation/#extend-authorisation">Extend:</a>
                     </b> Extends expiry date, see <a href="https://docs.adyen.com/online-payments/classic-integrations/modify-payments/adjust-authorisation#validity">validity</a>. <br />
 
-                    <b>
+                    <b> 3. 
                         <a href="https://docs.adyen.com/online-payments/adjust-authorisation/#capture-authorisation">Capture:</a>
-                    </b> Finalize the payment, e.g. the reserved funds are transferred from the shopper to your account. <br />
+                    </b> Finalises the payment, e.g. the reserved funds are transferred from the shopper to your account. <br />
                     
-                    <b>
+                    <b> 4. 
                         <a href="https://docs.adyen.com/online-payments/classic-integrations/modify-payments/cancel-or-refund/">Reversal:</a>
                     </b> Cancels or refunds the payment.
                 </p>
@@ -52,35 +51,35 @@
             {
                 double amount = (payment.Amount ?? 0.0) / 100L;
                 <ul class="adminList">   
-                    <li><b>Reference: &nbsp;</b> <a href="admin/details/@payment.Reference">@payment.Reference</a></li>
-                    <li><b>Result Code: &nbsp;</b> @payment.ResultCode </li>
-                    <li><b>PspReference: &nbsp;</b> @payment.PspReference</li>                    
-                    @if(!string.IsNullOrWhiteSpace(payment.OriginalReference))
+                    <li><b>Merchant Reference: &nbsp;</b> <a href="admin/details/@payment.MerchantReference">@payment.MerchantReference</a></li>
+                    <li><b>Pre-authorisation PspReference: &nbsp;</b> @payment.PspReference</li>
+                    
+                    
+                    @if (payment.Amount != null && !string.IsNullOrWhiteSpace(payment.Currency))
                     {
-                        <li><b>Original PspReference: &nbsp;</b> @payment.OriginalReference</li>
+                        <li>
+                            <!-- Convert amount from minor units EUR `1234` to EUR`12.34`-->
+                            <b>Preauthorised Amount: &nbsp;</b> @payment.Currency @amount
+                        </li>
                     }
                     
-                    @if (payment.IsRefusalReasonShown())
+                    @if (!string.IsNullOrWhiteSpace(payment.PaymentMethodBrand))
                     {
-                        <li>
-                            <b>Refusal Reason: &nbsp;</b> @payment.RefusalReason
-                        </li><li></li>
-                    }
-                        
-                    @if (payment.IsAmountShown())
-                    {
-                        <li>
-                            <!-- Show amount from minor units EUR `1234` as: EUR`12.34`-->
-                            <b>Payment Amount: &nbsp;</b> @payment.Currency @amount
-                        </li>
-
                         <li>
                             <b>Payment Method Brand: &nbsp;</b> @payment.PaymentMethodBrand
                         </li>
                     }
                         
-                    <li><b>DateTime: &nbsp;</b> @payment.DateTime.ToLocalTime()</li> 
+                    <li><b>Booking Date: &nbsp;</b> @payment.BookingDate.ToLocalTime()</li> 
+                    
+                    @{
+                        var expiryDaysLeft = payment.ExpiryDate.Subtract(payment.BookingDate).Days;
+                    }
+                    <li><b>Expiry Date: &nbsp;</b> @payment.ExpiryDate.ToLocalTime() (@expiryDaysLeft days until&nbsp;<a href="https://docs.adyen.com/online-payments/classic-integrations/modify-payments/adjust-authorisation#validity">expiry</a>)</li> 
+                   
+                    <li><b>Last Updated: &nbsp;</b> @payment.LastUpdated.ToLocalTime()</li> 
 
+                    
                     <li>
                         @{
                             bool showAdjustButton = (payment.IsAuthorised() || payment.IsAuthorisedAdjusted()) 
@@ -90,7 +89,7 @@
                             {
                                 <form name="updatePaymentAmountForm" method="post">
                                     <b>Adjust amount:</b> <input type="text" name="amount" value="@amount" class="adjustAmountText">
-                                        <input type="hidden" name="reference" value="@payment.Reference" />
+                                        <input type="hidden" name="reference" value="@payment.MerchantReference" />
                                     <button type="submit" class="adjustSubmitButton">Adjust</button>
                                 </form>
                             }
@@ -98,7 +97,7 @@
                             {
                                 <form name="updatePaymentAmountForm" method="post">
                                     <b>Adjust amount:</b> <input type="text" name="amount" value="@amount" class="adjustAmountText" disabled>
-                                        <input type="hidden" name="reference" value="@payment.Reference" />
+                                        <input type="hidden" name="reference" value="@payment.MerchantReference" />
                                     <button type="submit" class="adjustSubmitButton" disabled>Adjust</button>
                                 </form>
                             }
@@ -111,7 +110,7 @@
                             {
                                 <form name="extendPaymentForm" method="post">
                                     <input type="hidden" name="amount" value="@amount">
-                                    <input type="hidden" name="reference" value="@payment.Reference"/>
+                                    <input type="hidden" name="reference" value="@payment.MerchantReference"/>
                                     <button type="submit" class="submitButton">Extend</button>
                                 </form>
                             }
@@ -119,7 +118,7 @@
                             {                            
                                 <form name="extendPaymentForm" method="post">
                                     <input type="hidden" name="amount" value="@amount">
-                                    <input type="hidden" name="reference" value="@payment.Reference"/>
+                                    <input type="hidden" name="reference" value="@payment.MerchantReference"/>
                                     <button type="submit" class="submitButton" disabled>Extend</button>
                                 </form>
                             }
@@ -131,7 +130,7 @@
                             if (showCaptureButton)
                             {
                                 <form name="capturePaymentForm" method="post">
-                                    <input type="hidden" name="reference" value="@payment.Reference"/>
+                                    <input type="hidden" name="reference" value="@payment.MerchantReference"/>
                                     <button type="submit" class="submitButton">Capture</button>
                                 </form>
                             }
@@ -139,7 +138,7 @@
                             {
 
                                 <form name="capturePaymentForm" method="post">
-                                    <input type="hidden" name="reference" value="@payment.Reference"/>
+                                    <input type="hidden" name="reference" value="@payment.MerchantReference"/>
                                     <button type="submit" class="submitButton" disabled>Capture</button>
                                 </form>
                             }
@@ -152,14 +151,14 @@
                             if (showReversalButton)
                             {
                                 <form name="reversalPaymentForm" method="post">
-                                    <input type="hidden" name="reference" value="@payment.Reference"/>
+                                    <input type="hidden" name="reference" value="@payment.MerchantReference"/>
                                     <button type="submit" class="submitButton">Reversal</button>
                                 </form>
                             }
                             else
                             {
                                 <form name="reversalPaymentForm" method="post">
-                                    <input type="hidden" name="reference" value="@payment.Reference"/>
+                                    <input type="hidden" name="reference" value="@payment.MerchantReference"/>
                                     <button type="submit" class="submitButton" disabled>Reversal</button>
                                 </form>
                             }
