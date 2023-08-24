@@ -114,7 +114,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             // Upsert details in history.
             if (!_repository.UpsertPaymentDetails(details))
             {
-                _logger.LogInformation($"Skipped insertion because {notification.MerchantReference} was not present when the application started.");
+                _logger.LogInformation($"Skipped insertion because {notification.MerchantReference} was not present when the application started or because it already exists.");
                 return Task.CompletedTask;
             }
 
@@ -153,7 +153,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             // Upsert details in history.
             if (!_repository.UpsertPaymentDetails(details))
             {
-                _logger.LogInformation($"Skipped insertion because {notification.MerchantReference} was not present when the application started.");
+                _logger.LogInformation($"Skipped insertion because {notification.MerchantReference} was not present when the application started or because it already exists.");
                 return Task.CompletedTask;
             }
 
@@ -193,7 +193,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             // Upsert details in history.
             if (!_repository.UpsertPaymentDetails(details))
             {
-                _logger.LogInformation($"Skipped insertion because {notification.MerchantReference} was not present when the application started.");
+                _logger.LogInformation($"Skipped insertion because {notification.MerchantReference} was not present when the application started or because it already exists.");
                 return Task.CompletedTask;
             }
 
@@ -233,7 +233,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             // Upsert details in history.
             if (!_repository.UpsertPaymentDetails(details))
             {
-                _logger.LogInformation($"Skipped insertion because {notification.MerchantReference} was not present when the application started.");
+                _logger.LogInformation($"Skipped insertion because {notification.MerchantReference} was not present when the application started or because it already exists.");
                 return Task.CompletedTask;
             }
 
@@ -291,7 +291,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             // Upsert details in history.
             if (!_repository.UpsertPaymentDetails(details))
             {
-                _logger.LogInformation($"Skipped insertion because {notification.MerchantReference} was not present when the application started.");
+                _logger.LogInformation($"Skipped insertion because {notification.MerchantReference} was not present when the application started or because it already exists.");
                 return Task.CompletedTask;
             }
 
@@ -331,7 +331,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             // Upsert details in history.
             if (!_repository.UpsertPaymentDetails(details))
             {
-                _logger.LogInformation($"Skipped insertion because {notification.MerchantReference} was not present when the application started.");
+                _logger.LogInformation($"Skipped insertion because {notification.MerchantReference} was not present when the application started or because it already exists.");
                 return Task.CompletedTask;
             }
 
@@ -372,7 +372,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             // Upsert details in history.
             if (!_repository.UpsertPaymentDetails(details))
             {
-                _logger.LogInformation($"Skipped insertion because {notification.MerchantReference} was not present when the application started.");
+                _logger.LogInformation($"Skipped insertion because {notification.MerchantReference} was not present when the application started or because it already exists.");
                 return Task.CompletedTask;
             }
 

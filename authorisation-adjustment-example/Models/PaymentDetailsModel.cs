@@ -40,7 +40,9 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
         public string ResultCode { get; set; }
         
         /// <summary>
-        /// Populated when <seealso cref="ResultCode"/> is not authorised (for example: 'refused'), or when a webhook is unsuccessful.
+        /// We populate the refusal reason when we receive 
+        /// 1) an error/refused/cancelled <seealso cref="ResultCode"/> API response or
+        /// 2) an unsuccessful webhook.
         /// </summary>
         public string RefusalReason { get; set; } 
         
@@ -73,29 +75,20 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
         }
 
         /// <summary>
-        /// We populate the refusal reason when: 1) refused status code from the API response or 2) an unsuccessful webhook.
-        /// </summary>
-        /// <returns>True is there's a refusal reason.</returns>
-        public bool HasRefusalReason()
-        {
-            return !string.IsNullOrWhiteSpace(RefusalReason);
-        }
-        
-        /// <summary>
         /// The payment details of the shopper are verified, and the funds are reserved.
         /// https://docs.adyen.com/online-payments/adjust-authorisation/#pre-authorise
         /// </summary>
-        /// <returns>True if authorised.</returns>
+        /// <returns>True if authorisation was successful.</returns>
         public bool IsAuthorised()
         {
-            return 
+            return ResultCode is "AUTHORISATION" or "Authorised";
         }
         
         /// <summary>
         /// The preauthorisation amount has been adjusted or extended.
         /// https://docs.adyen.com/online-payments/adjust-authorisation/#adjust-the-amount
         /// </summary>
-        /// <returns>True is authorised adjusted.</returns>
+        /// <returns>True if authorisation adjustment was successful.</returns>
         public bool IsAuthorisedAdjusted()
         {
             return ResultCode is "AUTHORISATION_ADJUSTMENT";
@@ -105,10 +98,23 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
         /// The reserved funds are transferred from the shopper to your account. 
         /// https://docs.adyen.com/online-payments/adjust-authorisation/#capture-authorisation
         /// </summary>
-        /// <returns></returns>
+        /// <returns>True if capture was successful.</returns>
         public bool IsCaptured()
         {
             return ResultCode is "CAPTURE";
+        }
+
+        /// <summary>
+        /// Adyen's validations were successful and we sent the refund request to the card scheme.
+        /// This usually means that the refund will be processed successfully.
+        /// However, in rare cases the refund can be rejected by the card scheme, or reversed.
+        /// For information about these exceptions, see REFUND_FAILED webhook, and REFUNDED_REVERSED webhook.
+        /// https://docs.adyen.com/online-payments/reversal/#cancel-or-refund-webhook
+        /// </summary>
+        /// <returns>True is reversal was successful.</returns>
+        public bool IsReversed()
+        {
+            return ResultCode is "CANCEL_OR_REFUND";
         }
     }
 }

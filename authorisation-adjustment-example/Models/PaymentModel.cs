@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace adyen_dotnet_authorisation_adjustment_example.Models
 {
@@ -47,14 +48,62 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
         /// List of <see cref="PaymentDetailsModel"/>s, this is populated through the initial pre-authorisation and the webhook events.
         /// </summary>
         public List<PaymentDetailsModel> PaymentsHistory { get; set; }
-        
-        public PaymentStatus PaymentStatus { get; set; } 
+
+        public PaymentStatus GetPaymentStatus()
+        {
+            List<PaymentDetailsModel> orderedPayments = PaymentsHistory.OrderBy(p => p.DateTime).ToList();
+
+            PaymentDetailsModel? reversedPayment = orderedPayments
+                .Where(x => x.IsReversed())?
+                .LastOrDefault();
+            
+            if (reversedPayment is not null)
+            {
+                return PaymentStatus.Reversed;
+            }
+            
+            PaymentDetailsModel? capturedPayment = orderedPayments
+                .Where(x => x.IsCaptured())?
+                .LastOrDefault();
+            
+            if (capturedPayment is not null)
+            {
+                return PaymentStatus.Captured;
+            }
+            
+            PaymentDetailsModel? authorisedPayment = orderedPayments
+                .Where(x => x.IsAuthorisedAdjusted() || x.IsAuthorised())?
+                .LastOrDefault();
+            
+            if (authorisedPayment is not null)
+            {
+                return PaymentStatus.Authorised;
+            }
+            
+            return PaymentStatus.Refused;
+        }
     }
 
     public enum PaymentStatus
     {
-        Authorised = 1,
-        Refused = 2,
+        /// <summary>
+        /// https://docs.adyen.com/development-resources/refusal-reasons/.
+        /// </summary>
+        Refused = 1,
+        
+        /// <summary>
+        /// https://docs.adyen.com/get-started-with-adyen/payment-glossary/#authorisation.
+        /// </summary>
+        Authorised = 2,
+        
+        /// <summary>
+        /// https://docs.adyen.com/online-payments/capture/.
+        /// </summary>
         Captured = 3,
+        
+        /// <summary>
+        /// https://docs.adyen.com/online-payments/reversal/.
+        /// </summary>
+        Reversed = 4,
     }
 }

@@ -39,8 +39,6 @@ namespace adyen_dotnet_authorisation_adjustment_example.Repositories
         /// <param name="merchantReference"><see cref="PaymentModel.MerchantReference"/>.</param>
         /// <returns><see cref="PaymentModel"/>.</returns>
         PaymentModel GetPayment(string merchantReference);
-
-        void UpdatePayment(string merchantReference);
     }
 
     public class PaymentRepository : IPaymentRepository
@@ -65,44 +63,44 @@ namespace adyen_dotnet_authorisation_adjustment_example.Repositories
                 ExpiryDate = DateTimeOffset.UtcNow.AddDays(28), // The value of '28' varies per scheme, see https://docs.adyen.com/online-payments/adjust-authorisation/#validity.
                 PaymentMethodBrand = response.PaymentMethod?.Brand,
                 PaymentsHistory = new List<PaymentDetailsModel>()
+                {
+                    new PaymentDetailsModel()
+                    {
+                        PspReference = response.PspReference,
+                        OriginalReference = null,
+                        MerchantReference = response.MerchantReference,
+                        Amount = response.Amount?.Value,
+                        Currency = response.Amount?.Currency,
+                        DateTime = DateTimeOffset.UtcNow,
+                        ResultCode = response.ResultCode.ToString(),
+                        RefusalReason = response.RefusalReason,
+                        PaymentMethodBrand = response.PaymentMethod?.Brand,
+                    }
+                }
             };
 
-            // Add payment to history.
-            UpsertPaymentDetails(new PaymentDetailsModel()
-                {
-                    PspReference = response.PspReference,
-                    OriginalReference = null,
-                    MerchantReference = response.MerchantReference,
-                    Amount = response.Amount?.Value,
-                    Currency = response.Amount?.Currency,
-                    DateTime = DateTimeOffset.UtcNow,
-                    ResultCode = response.ResultCode.ToString(),
-                    RefusalReason = response.RefusalReason,
-                    PaymentMethodBrand = response.PaymentMethod?.Brand,
-                });
-            
             return Payments.TryAdd(payment.MerchantReference, payment);
         }
 
         public bool UpsertPaymentDetails(PaymentDetailsModel paymentDetails)
         {
-            // If `Reference` is not specified, throw an ArgumentNullException.
+            // If the `Merchant Reference` is not specified, throw an ArgumentNullException.
             if (string.IsNullOrWhiteSpace(paymentDetails.MerchantReference))
             {
                 throw new ArgumentNullException();
             }
 
-            // Check if `Reference` is in the list, do nothing if we've never saved the reference.
+            // Check if the `Merchant Reference` is in the list, do nothing if we've never saved the reference.
             if (!Payments.TryGetValue(paymentDetails.MerchantReference, out var payment))
             {
                 return false;
             }
 
-            // Check if `PspReference` already exists.
+            // Check if the `PspReference` already exists.
             var existingPayment = payment.PaymentsHistory.FirstOrDefault(p => p.PspReference == payment.PspReference);
 
-            // If the values are exactly the same (f.e. when we receive the webhook twice).
-            // Consider it a duplicate, and don't add anything.
+            // If the values are exactly the same (in the case of receiving a webhook multiple times).
+            // We consider it a duplicate, and don't add anything.
             if (paymentDetails.IsEqual(existingPayment))
             {
                 return false;
@@ -122,16 +120,6 @@ namespace adyen_dotnet_authorisation_adjustment_example.Repositories
             }
 
             return result;
-        }
-
-        public void UpdatePayment(string merchantReference)
-        {
-            var payment = GetPayment(merchantReference);
-
-            var history = payment.PaymentsHistory.OrderBy(x => x.DateTime);
-            var authorisedPayment = payment.PaymentsHistory.FirstOrDefault(x => x.ResultCode is "Authorised" or "AUTHORISATION" && !x.HasRefusalReason());
-            
-
         }
     }
 }

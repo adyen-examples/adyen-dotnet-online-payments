@@ -82,8 +82,7 @@
                     
                     <li>
                         @{
-                            bool showAdjustButton = (payment.IsAuthorised() || payment.IsAuthorisedAdjusted()) 
-                                && !payment.IsRefusalReasonShown();
+                            bool showAdjustButton = payment.GetPaymentStatus() is PaymentStatus.Authorised;
                         
                             if (showAdjustButton)
                             {
@@ -124,8 +123,7 @@
                             }
                         }
                         @{
-                            bool showCaptureButton = (payment.IsAuthorised() || payment.IsAuthorisedAdjusted()) 
-                                && !payment.IsRefusalReasonShown();
+                            bool showCaptureButton = payment.GetPaymentStatus() is PaymentStatus.Authorised;
                         
                             if (showCaptureButton)
                             {
@@ -145,9 +143,8 @@
                         }
 
                         @{
-                            bool showReversalButton = (payment.IsAuthorised() || payment.IsAuthorisedAdjusted() || payment.IsCaptured()) 
-                                && !payment.IsRefusalReasonShown();
-                            
+                            bool showReversalButton = payment.GetPaymentStatus() is PaymentStatus.Authorised or PaymentStatus.Captured;
+
                             if (showReversalButton)
                             {
                                 <form name="reversalPaymentForm" method="post">
