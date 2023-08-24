@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -157,6 +158,24 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 return Task.CompletedTask;
             }
 
+            // Update payment amount to latest.
+            if (details.IsSuccess())
+            {
+                var payment = _repository.GetPayment(notification.MerchantReference);
+                List<PaymentDetailsModel> orderedPayments = payment
+                    .PaymentsHistory.OrderBy(p => p.DateTime)
+                    .ToList();
+
+                PaymentDetailsModel? latestAuthorisedPayment = orderedPayments
+                    .Where(x => x.IsAuthorisedAdjusted() && x.IsSuccess())?
+                    .LastOrDefault();
+
+                if (latestAuthorisedPayment is not null)
+                {
+                    payment.Amount = latestAuthorisedPayment.Amount;
+                }
+            }
+            
             _logger.LogInformation($"Received {(notification.Success ? "successful" : "unsuccessful")} {notification.EventCode} webhook::\n" +
                                    $"Merchant Reference ::{notification.MerchantReference} \n" +
                                    $"PSP Reference ::{notification.PspReference} \n" +
