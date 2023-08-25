@@ -83,8 +83,8 @@ a:hover {
 /* Index page */
 
 .main-container {
-  max-width: 1048px;
   flex-direction: column;
+  display: flex;
 }
 
 .integration-list {
@@ -162,6 +162,7 @@ a:hover {
 /* Tables-grid start */
 .tables-section {
   text-align: center;
+  display: flex;
 }
 
 .tables-grid-list {
@@ -170,7 +171,11 @@ a:hover {
   gap: 16px;
   padding: 16px;
   background: #e6e9eb;
+  margin: 0px;
   border-radius: 8px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-right: 2px solid #0abf53;
 }
 
 .tables-grid-item {
@@ -181,7 +186,7 @@ a:hover {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 16px;
+  padding: 4px 48px 4px 48px;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.2s;
 }
@@ -194,9 +199,8 @@ a:hover {
 
 .tables-grid-item.active {
   background-color: #0abf53;
-  transform: scale(1.05);
+  transform: scale(1.07);
   font-weight: 600;
-  border: 1px ridge #0f0f0f;
   border-radius: 8px;
   color: white;
 }
@@ -223,84 +227,69 @@ a:hover {
   align-items: center;
 }
 
-.info-actions {
-  font-size: 1.5rem;
-}
-
 #current-selection {
   font-size: 1.5rem;
+  margin: 0px;
+  padding: 16px 0px 0px 0px;
 }
-
-.em-highlight {
-  font-weight: 700;
-  color: #687282;
-  font-style: normal;
-}
-
 /* Tables-grid end */
 
 /* Info-grid start */
-.info-grid-section {
-  margin-top: 16px;
-  display: grid;
-  padding: 20px;
-  background: #e6e9eb;
-  border-radius: 8px;
-}
-
 .info-grid-list {
-  padding: 0px 8px 0px 8px;
+  padding: 4px;
 }
 
 .info-grid {
-  display: inline-grid;    
-  align-items: center;
-  justify-items: left;
+  text-align: left;
+  display: grid;
+  padding: 20px;
+  background: #e6e9e9;
+  border-radius: 8px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
 }
 
 .info-grid-item {
-  display: inline-flex;
-  align-items: center;
+  display: block;
   list-style: none;
-  padding: 2px;
 }
 
 .info-grid-item-title {
   font-weight: 600;
-  padding-right: 8px;
   font-size: 1rem;
 }
 
 .info-grid-item-description {
-  border: 1px solid #0abf53;
-  border-radius: 4px;
   font-weight: 600;
   color: #687282;
   font-size: 1rem;
-  padding: 4px;
 }
+
 /* Info-grid end */
 
-
 /* `Payment request` button start */
+
+#payment-request-form {
+  margin: 10px;
+}
 
 .payment-request-button {
   background-color: #0abf53;
   color: white;
-  padding: 6px 24px 6px 24px;
-  margin: 10px;
+  padding: 6px 16px 6px 16px;
+  margin: 8px 0px 8px 0px;
   border: none;
   cursor: pointer;
   font-weight: bold;
-  border: 2px solid #0abf53;
+  border: 1px solid #0abf53;
   border-radius: 8px;
 }
 
 .payment-request-button:hover {
   background-color: #0abf53;
-  border: 2px solid #005623;
+  border: 1px solid #005623;
   border-radius: 8px;
-  transition: border-color 0.15s linear;
+  transition: border-color 0.3s ease-in-out;
 }
 
 .payment-request-button:disabled,

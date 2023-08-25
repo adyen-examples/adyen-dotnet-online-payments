@@ -8,7 +8,7 @@
 
 <div class="main-container">
   <div class="info">
-    <h2>Select a table</h2>
+    <h2>Cash Register</h2>
     <section class="tables-section">
       <div class="tables-grid">
         <ul class="tables-grid-list">
@@ -24,51 +24,48 @@
            }
         </ul>
       </div>
+
+      <div class="info-grid">
+        <h2>Information</h2>
+        <ul class="info-grid-list">
+          <li class="info-grid-item">
+            <p class="info-grid-item-title">
+              SALE ID:
+              <b class="info-grid-item-description">
+                @saleId
+              </b>
+            </p>
+          </li>
+          <li class="info-grid-item">
+            <p class="info-grid-item-title">
+              POI ID:
+              <b class="info-grid-item-description">
+                @if (string.IsNullOrWhiteSpace(poiId))
+                {
+                    poiId = "No POI Id is configured, see AdyenOptions class.";
+                }
+                @poiId
+              </b>
+            </p>
+          </li>
+        </ul>
+        <p id="current-selection">Select a table</p>
+        <form id="payment-request-form" method="post">
+            <input type="text" id="amount" name="amount">
+            <input type="text" id="currency" name="currency" hidden>
+            <button type="submit" class="payment-request-button">Send Payment Request</button>
+        </form>
+
+        <!-- TODO
+        <form name="payment-reversal-request-form" method="post">
+            <input type="text" id="saleReferencId" hidden">
+            <input type="text" id="reversalAmount" hidden>
+            <button type="submit" class="payment-reversal-request-button">Send Reversal Request</button>
+        </form>
+        -->
+       </div>
     </section>
   </div>
-
-  <section class="info-grid-section">
-    <div class="info-grid">
-      <p class="info-actions">Current selection:</p>
-      <p id="current-selection">No table selected</p>
-      <form id="payment-request-form" method="post">
-        <input type="text" id="amount" name="amount">
-        <input type="text" id="currency" name="currency" hidden>
-        <button type="submit" class="payment-request-button">Send Payment Request</button>
-      </form>
-
-      <!-- TODO: Bind the reversal button in a different receipt? screen, so you can reverse a payment
-      <form name="sendPaymentReversalForm" method="post">
-        <input type="text" id="saleReferencId" hidden">
-        <input type="text" id="reversalAmount" hidden>
-        <button type="submit" class="payment-request-button">Send Reversal Request</button>
-      </form>
-      -->
-    </div>   
-  </section>
-  
-  <ul class="info-grid-list">
-    <li class="info-grid-item">
-      <p class="info-grid-item-title">
-        POI ID - The unique ID <em class="em-highlight">[device model]-[serial number]</em> of the payment terminal:
-      </p>
-      <p class="info-grid-item-description">
-        @if (string.IsNullOrWhiteSpace(poiId))
-        {
-            poiId = "No POI Id is configured in the AdyenOptions class. Please specify the POI Id in your environmental variables.";
-        }
-        @poiId
-      </p>
-    </li>
-    <li class="info-grid-item">
-      <p class="info-grid-item-title">
-        SALE ID - The unique ID of this cash register:
-      </p>
-      <p class="info-grid-item-description">
-        @saleId
-      </p>
-    </li>
-  </ul>
 </div>
 
 <!-- Binds all buttons for the `api/send-payment-request` and `api/send-payment-reversal-request` endpoints -->

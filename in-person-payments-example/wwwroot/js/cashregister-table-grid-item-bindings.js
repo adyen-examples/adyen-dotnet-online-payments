@@ -16,7 +16,6 @@ async function sendPostRequest(url, data) {
 // Send payment request
 async function sendPaymentRequest(amount, currency) {
     try {
-        console.log("Sending payment request... " + currency + " " + amount);
         const response = await sendPostRequest("/api/create-payment", { amount: amount, currency: currency });
         console.log(response);
         switch (response.result) {

@@ -5,5 +5,6 @@
         public string Name { get; set; }
         public string Currency { get; set; }
         public decimal Amount { get; set; }
+        public bool IsPaid { get; set; }
     }
 }

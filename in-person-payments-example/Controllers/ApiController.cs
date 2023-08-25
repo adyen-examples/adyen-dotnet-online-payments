@@ -33,7 +33,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
         }
 
         [HttpPost("api/create-payment")]
-        public async Task<ActionResult<SaleToPOIResponse>> SendPaymentRequest([FromBody] CreatePaymentRequest request, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<CreatePaymentResponse>> CreatePayment([FromBody] CreatePaymentRequest request, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -94,7 +94,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
         }
 
         [HttpPost("api/create-payment-reversal")] // TODO response 
-        public async Task<ActionResult<SaleToPOIResponse>> SendPaymentReversalRequest([FromBody] CreatePaymentReversalRequest request, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<SaleToPOIResponse>> CreatePaymentReversal([FromBody] CreatePaymentReversalRequest request, CancellationToken cancellationToken = default)
         {
             try
             {
