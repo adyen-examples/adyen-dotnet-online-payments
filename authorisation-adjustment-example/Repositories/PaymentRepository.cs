@@ -12,21 +12,21 @@ namespace adyen_dotnet_authorisation_adjustment_example.Repositories
     public interface IPaymentRepository
     {
         /// <summary>
-        /// Dictionary of all payments for the hotel bookings by <see cref="PaymentDetailsModel.MerchantReference"/>.
-        /// Key: <see cref="PaymentDetailsModel.MerchantReference"/>  |  
+        /// Dictionary of all payments for the hotel bookings by <see cref="PaymentModel.MerchantReference"/>.
+        /// Key: <see cref="PaymentModel.MerchantReference"/>  |  
         /// Value: <see cref="PaymentModel"/> which contains the initial pre-authorisation and a history of the payment details.
         /// </summary>
         public Dictionary<string, PaymentModel> Payments { get; }
 
         /// <summary>
-        /// Insert a new <see cref="PaymentModel"/> into the <see cref="Payments"/> dictionary with the <see cref="PaymentDetailsModel.PspReference"/> as its key.
+        /// Insert a new <see cref="PaymentModel"/> into the <see cref="Payments"/> dictionary with the <see cref="PaymentModel.MerchantReference"/> as its key.
         /// </summary>
         /// <param name="response">The <see cref="PaymentResponse"/> from the <see cref="Controllers.ApiController.PreAuthorisation(Adyen.Model.Checkout.PaymentRequest, System.Threading.CancellationToken)"/> call.</param>
         /// <returns>True if inserted.</returns>
         bool InsertPayment(PaymentResponse response);
         
         /// <summary>
-        /// Upserts <see cref="PaymentDetailsModel"/> into the <see cref="PaymentModel.PaymentsHistory"/> <see cref="Payments"/> dictionary.
+        /// Upserts <see cref="PaymentDetailsModel"/> into the <see cref="PaymentModel.PaymentsHistory"/> list.
         /// This is used to keep track of the payment details history.
         /// </summary>
         /// <param name="paymentDetails"><see cref="PaymentDetailsModel"/>.</param>
