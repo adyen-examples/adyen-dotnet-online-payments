@@ -26,7 +26,11 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
         /// See validity: https://docs.adyen.com/online-payments/adjust-authorisation/#validity.
         /// </summary>
         public DateTimeOffset ExpiryDate { get; set; }
-        
+
+        /// <summary>
+        /// The date time of when this payment was last updated/modified.
+        /// When a new webhook in <see cref="Controllers.WebhookController.Webhooks(Adyen.Model.Notification.NotificationRequest)"/> arrives, we update this value when upserting <inheritdoc/><see cref="Repositories.PaymentRepository.UpsertPaymentDetails(PaymentDetailsModel)"/>.
+        /// </summary>
         public DateTimeOffset LastUpdated { get; set; }
 
         /// <summary>
@@ -43,14 +47,14 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
         /// The payment method brand (e.g. "mc", "visa" ) used to create the pre-authorisation.
         /// </summary>
         public string PaymentMethodBrand { get; set; }
-        
+
         /// <summary>
-        /// List of <see cref="PaymentDetailsModel"/>s, this is populated through the initial pre-authorisation and the following webhook events.
+        /// List of <see cref="PaymentDetailsModel"/>s, this is populated through the initial pre-authorisation <see cref="Controllers.ApiController.PreAuthorisation(Adyen.Model.Checkout.PaymentRequest, System.Threading.CancellationToken)"/> and the subsequent webhook events in <see cref="Controllers.WebhookController.Webhooks(Adyen.Model.Notification.NotificationRequest)"/>.
         /// </summary>
         public List<PaymentDetailsModel> PaymentsHistory { get; set; }
 
         /// <summary>
-        /// Gets the payment status by checking the <see cref="PaymentsHistory"/>.
+        /// Retrieves the current payment status by checking the <see cref="PaymentsHistory"/>.
         /// Check if the payment has been successfully reversed (cancelled or refunded).
         /// Check if the payment has been successfully captured.
         /// Check if the latest authorised/authorisation adjusted payment is successful.
@@ -60,9 +64,11 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
         /// <returns><see cref="PaymentStatus"/>.</returns>
         public PaymentStatus GetPaymentStatus()
         {
-            List<PaymentDetailsModel> orderedPayments = PaymentsHistory.OrderBy(paymentDetails => paymentDetails.DateTime).ToList();
+            List<PaymentDetailsModel> orderedPayments = PaymentsHistory?
+                .OrderBy(paymentDetails => paymentDetails.DateTime)?
+                .ToList();
 
-            PaymentDetailsModel reversedPayment = orderedPayments
+            PaymentDetailsModel reversedPayment = orderedPayments?
                 .Where(paymentDetails => paymentDetails.IsReversed())?
                 .FirstOrDefault(paymentDetails => paymentDetails.IsSuccess());
             
@@ -71,7 +77,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
                 return PaymentStatus.Reversed;
             }
             
-            PaymentDetailsModel capturedPayment = orderedPayments
+            PaymentDetailsModel capturedPayment = orderedPayments?
                 .Where(paymentDetails => paymentDetails.IsCaptured())?
                 .FirstOrDefault(paymentDetails => paymentDetails.IsSuccess());
             
@@ -80,7 +86,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
                 return PaymentStatus.Captured;
             }
             
-            PaymentDetailsModel authorisedPayment = orderedPayments
+            PaymentDetailsModel authorisedPayment = orderedPayments?
                 .Where(paymentDetails => (paymentDetails.IsAuthorisedAdjusted() || paymentDetails.IsAuthorised()) 
                     && paymentDetails.IsSuccess())?
                 .LastOrDefault();
