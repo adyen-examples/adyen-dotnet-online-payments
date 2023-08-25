@@ -51,13 +51,10 @@
                                     <b>Payment Amount: &nbsp;</b> @payment.Currency @amount
                                 </li>
                             }
-
-                            @if (!string.IsNullOrWhiteSpace(payment.PaymentMethodBrand))
-                            {
-                                <li>
-                                    <b>Payment Method Brand: &nbsp;</b> @payment.PaymentMethodBrand
-                                </li>
-                            }
+                            
+                            <li>
+                                <b>Payment Method Brand: &nbsp;</b> @payment.PaymentMethodBrand
+                            </li>
 
                             <li><b>DateTime: &nbsp;</b> @payment.DateTime.ToLocalTime()</li>
                         </ul>

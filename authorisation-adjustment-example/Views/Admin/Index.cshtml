@@ -63,12 +63,9 @@
                         </li>
                     }
                     
-                    @if (!string.IsNullOrWhiteSpace(payment.PaymentMethodBrand))
-                    {
-                        <li>
-                            <b>Payment Method Brand: &nbsp;</b> @payment.PaymentMethodBrand
-                        </li>
-                    }
+                    <li>
+                        <b>Payment Method Brand: &nbsp;</b> @payment.PaymentMethodBrand
+                    </li>
                         
                     <li><b>Booking Date: &nbsp;</b> @payment.BookingDate.ToLocalTime()</li> 
                     

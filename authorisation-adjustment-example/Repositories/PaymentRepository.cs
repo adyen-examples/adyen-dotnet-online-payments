@@ -97,7 +97,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Repositories
             }
 
             // Check if the `PspReference` already exists.
-            PaymentDetailsModel existingPayment = payment.PaymentsHistory.FirstOrDefault(paymentDetails => paymentDetails.PspReference == payment.PspReference);
+            PaymentDetailsModel existingPayment = payment.PaymentsHistory.FirstOrDefault(details => details.PspReference == payment.PspReference);
 
             // If the values are exactly the same (in the case of receiving a webhook multiple times).
             // We consider it a duplicate, and don't add anything.
