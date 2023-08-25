@@ -35,7 +35,8 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
         public string Currency { get; set; }
 
         /// <summary>
-        /// Result code, e.g. 'authorised', 'capture' etc.
+        /// Result codes from the pre-authorisation API response: ['Authorised', 'Refused'] etc. See: https://docs.adyen.com/development-resources/refusal-reasons/
+        /// Result codes from the webhook: 'AUTHORISATION', 'AUTHORISATION_ADJUSTMENT', 'CAPTURE', 'CAPTURE_FAILED', 'CANCEL_OR_REFUND', 'REFUNDED_REVERSED', 'REFUND_FAILED' etc.
         /// </summary>
         public string ResultCode { get; set; }
         
