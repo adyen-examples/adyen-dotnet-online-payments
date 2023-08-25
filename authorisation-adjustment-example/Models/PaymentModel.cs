@@ -55,13 +55,14 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
         /// Check if the payment has been successfully captured.
         /// Check if the latest authorised/authorisation adjusted payment is successful.
         /// Otherwise return refused.
+        /// This function is used to show or hide the "Capture", "Adjust", "Extend" and "Reversal" buttons on the frontend.
         /// </summary>
         /// <returns><see cref="PaymentStatus"/>.</returns>
         public PaymentStatus GetPaymentStatus()
         {
             List<PaymentDetailsModel> orderedPayments = PaymentsHistory.OrderBy(paymentDetails => paymentDetails.DateTime).ToList();
 
-            PaymentDetailsModel? reversedPayment = orderedPayments
+            PaymentDetailsModel reversedPayment = orderedPayments
                 .Where(paymentDetails => paymentDetails.IsReversed())?
                 .FirstOrDefault(paymentDetails => paymentDetails.IsSuccess());
             
@@ -70,7 +71,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
                 return PaymentStatus.Reversed;
             }
             
-            PaymentDetailsModel? capturedPayment = orderedPayments
+            PaymentDetailsModel capturedPayment = orderedPayments
                 .Where(paymentDetails => paymentDetails.IsCaptured())?
                 .FirstOrDefault(paymentDetails => paymentDetails.IsSuccess());
             
@@ -79,7 +80,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Models
                 return PaymentStatus.Captured;
             }
             
-            PaymentDetailsModel? authorisedPayment = orderedPayments
+            PaymentDetailsModel authorisedPayment = orderedPayments
                 .Where(paymentDetails => (paymentDetails.IsAuthorisedAdjusted() || paymentDetails.IsAuthorised()) 
                     && paymentDetails.IsSuccess())?
                 .LastOrDefault();

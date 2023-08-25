@@ -167,7 +167,7 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                     .ToList();
 
                 // Take latest amount that has been successfully authorisation adjusted.
-                PaymentDetailsModel? latestAuthorisedPayment = orderedPayments
+                PaymentDetailsModel latestAuthorisedPayment = orderedPayments
                     .Where(paymentDetails => paymentDetails.IsAuthorisedAdjusted() && paymentDetails.IsSuccess())?
                     .LastOrDefault();
 
