@@ -16,10 +16,12 @@ body {
 a,
 u {
   text-decoration: none;
+  color: #0abf53;
 }
 
 a:hover {
   text-decoration: none;
+  color: #00903a;
 }
 
 .hidden {
@@ -60,7 +62,7 @@ a:hover {
 }
 
 .button:hover {
-  background: #0abf53;
+  background: #00230e;
   box-shadow: 0 3px 4px rgba(0, 15, 45, 0.2);
 }
 
@@ -131,8 +133,6 @@ a:hover {
 .integration-list-item-title {
   margin: 0;
   text-align: center;
-  color: #00112c;
-  font-size: 1em;
   font-weight: 700;
 }
 
@@ -408,7 +408,8 @@ payment-request-button[disabled=disabled] {
 .status .status-image {
   display: block;
   height: 100px;
-  margin: 16px auto 0;
+  margin: 32px auto 32px auto;
+  padding: 8px;
 }
 
 .status .status-image-thank-you {

@@ -7,6 +7,7 @@ namespace adyen_dotnet_in_person_payments_example.Services
     {
         List<TableModel> Tables { get; }
 
+        // TODO
         //void SettleBill();
 
         //void PrintReceipt();

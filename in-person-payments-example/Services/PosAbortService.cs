@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace adyen_dotnet_in_person_payments_example.Services
 {
-    public interface IPosPaymentTransactionStatusService
+    public interface IPosAbortService
     {
         /// <summary>
         /// Sends a terminal-api transaction status request
@@ -17,46 +17,47 @@ namespace adyen_dotnet_in_person_payments_example.Services
         /// <param name="saleId">Your unique ID for the POS system (cash register) to send this request from.</param>
         /// <param name="cancellationToken"><see cref="CancellationToken"/>.</param>
         /// <returns><see cref="SaleToPOIResponse"/>.</returns>
-        Task<SaleToPOIResponse> SendTransactionStatusRequestAsync(string serviceId, string poiId, string saleId, CancellationToken cancellationToken = default);
+        Task<SaleToPOIResponse> SendReversalRequestAsync(string serviceId, string poiId, string saleId, CancellationToken cancellationToken = default);
     }
 
-    public class PosTransactionStatusService : IPosPaymentTransactionStatusService
+    public class PosAbortService : IPosAbortService
     {
         private readonly IPosPaymentCloudApi _posPaymentCloudApi;
 
-        public PosTransactionStatusService(IPosPaymentCloudApi posPaymentCloudApi)
+        public PosAbortService(IPosPaymentCloudApi posPaymentCloudApi)
         {
             _posPaymentCloudApi = posPaymentCloudApi;
         }
 
-        public Task<SaleToPOIResponse> SendTransactionStatusRequestAsync(string serviceId, string poiId, string saleId, CancellationToken cancellationToken)
+        public Task<SaleToPOIResponse> SendReversalRequestAsync(string serviceId, string poiId, string saleId, CancellationToken cancellationToken)
         {
-            SaleToPOIRequest request = GetTransactionStatusRequest(serviceId, poiId, saleId);
+            SaleToPOIRequest request = GetAbortRequest(serviceId, poiId, saleId);
             return _posPaymentCloudApi.TerminalApiCloudSynchronousAsync(request); // Missing cancellationToken here & naming here is kinda confusing for devs.
         }
 
-        private SaleToPOIRequest GetTransactionStatusRequest(string serviceId, string poiId, string saleId)
+        private SaleToPOIRequest GetAbortRequest(string serviceId, string poiId, string saleId)
         {
             SaleToPOIRequest request = new SaleToPOIRequest()
             {
                 MessageHeader = new MessageHeader()
                 {
-                    MessageCategory = MessageCategoryType.TransactionStatus,
+                    MessageCategory = MessageCategoryType.Abort,
                     MessageClass = MessageClassType.Service,
                     MessageType = MessageType.Request,
                     POIID = poiId,
                     SaleID = saleId,
-                    ServiceID = IdUtility.GetRandomAlphanumericId(10), 
+                    ServiceID = IdUtility.GetRandomAlphanumericId(10)
                 },
-                MessagePayload = new TransactionStatusRequest()
-                {
+                MessagePayload = new AbortRequest()
+                { 
                     MessageReference = new MessageReference()
                     {
                         MessageCategory = MessageCategoryType.Abort,
                         ServiceID = serviceId,
-                        POIID = poiId,
+                        POIID = poiId, 
                         SaleID = saleId
-                    }
+                    },
+                    AbortReason = "Cancel requested manually"
                 }
             };
 

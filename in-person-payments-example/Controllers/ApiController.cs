@@ -17,12 +17,12 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
     {
         private readonly ILogger<ApiController> _logger;
         private readonly IPosPaymentService _posPaymentService;
-        private readonly IPosPaymentReversalService _posPaymentReversalService;
+        private readonly IPosReversalService _posPaymentReversalService;
 
         private readonly string _saleId;
         private readonly string _poiId;
 
-        public ApiController(ILogger<ApiController> logger, IPosPaymentService posPaymentService, IPosPaymentReversalService posPaymentReversalService, IOptions<AdyenOptions> options)
+        public ApiController(ILogger<ApiController> logger, IPosPaymentService posPaymentService, IPosReversalService posPaymentReversalService, IOptions<AdyenOptions> options)
         {
             _logger = logger;
             _posPaymentService = posPaymentService;

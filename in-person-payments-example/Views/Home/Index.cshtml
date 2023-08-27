@@ -1,16 +1,50 @@
 ﻿@{
-    ViewData["Title"] = "Adyen Checkout Home";
+    ViewData["Title"] = "Adyen In-person Payment Demo";
 }
 <div class="main-container">
   <div class="info">
-    <h1>Select a demo</h1>
-    <p>Click to view an interactive example of a PCI-compliant UI integration for online payments.</p>
+    <h1>Adyen In-person Payment Demo</h1>
     <p>
-      Make sure the payment method you want to use are enabled for your account.
-      Refer to <a href="https://docs.adyen.com/payment-methods#add-payment-methods-to-your-account">the documentation</a> to add missing
-      payment methods.
+      This demo shows developers how to use the Adyen Terminal API <em>/terminal-api/sync</em> to make requests to your connected terminal.
     </p>
-    <p>To learn more about client-side integration solutions, check out <a href="https://docs.adyen.com/checkout">Online payments.</a></p>
+    <p>
+      This demo showcases four functionalities: 
+      <ul>
+        <li> 
+          <a href="https://docs.adyen.com/point-of-sale/design-your-integration/terminal-api/terminal-api-reference/#comadyennexopaymentrequest">
+            Payment requests
+          </a> 
+        </li>
+        <li> 
+          <a href="https://docs.adyen.com/point-of-sale/design-your-integration/terminal-api/terminal-api-reference/#comadyennexoreversalrequest">
+            Payment reversals requests
+          </a> 
+        </li>
+        <li> 
+          <a href="https://docs.adyen.com/point-of-sale/design-your-integration/terminal-api/terminal-api-reference/#comadyennexotransactionstatusrequest">
+            Transaction status requests
+          </a> 
+        </li>
+        <li> 
+          <a href="https://docs.adyen.com/point-of-sale/design-your-integration/terminal-api/terminal-api-reference/#comadyennexoabortrequest">
+            Abort requests
+          </a>
+        </li>
+        <li> 
+          <a href="https://docs.adyen.com/point-of-sale/design-your-integration/terminal-api/terminal-api-reference/#comadyennexoabortrequest">
+            Abort requests
+          </a>
+        </li>
+      </ul>
+    </p>
+    <p>
+      Make sure the payment method (see brand on the TEST card) you want to use are enabled in your Customer Area.
+      Refer to <a href="https://docs.adyen.com/payment-methods#add-payment-methods-to-your-account">the documentation</a> to add the missing payment method.
+    </p>
+     <p>
+       To learn more about our <a href="https://docs.adyen.com/point-of-sale/">in-person payment</a> integrations, 
+       check out our <a href="https://docs.adyen.com/point-of-sale/get-started/tapi-checklist/">Terminal API integration checklist.</a>
+    </p>
   </div>
 
   <ul class="integration-list">
