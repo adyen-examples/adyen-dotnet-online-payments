@@ -100,14 +100,14 @@ a:hover {
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 3px solid black;
+  border: 2px solid black;
   margin: 32px 0px 16px 0px;
 }
 
 .integration-list-item:hover {
   box-shadow: 0 16px 24px 0 #e5eaef;
   text-decoration: none;
-  border: 3px solid #0abf53;
+  border: 2px solid #0abf53;
   transform: scale(1.005);
 }
 
@@ -160,9 +160,16 @@ a:hover {
 
 
 /* Tables-grid start */
+
 .tables-section {
   text-align: center;
   display: flex;
+  transition: opacity 0.4s ease-in;
+}
+
+.tables-section.disabled {
+  opacity: 0.2; /* Reduce opacity */
+  pointer-events: none; /* Disable pointer events on elements */
 }
 
 .tables-grid-list {
@@ -232,6 +239,7 @@ a:hover {
   margin: 0px;
   padding: 16px 0px 0px 0px;
 }
+
 /* Tables-grid end */
 
 /* Info-grid start */
@@ -267,6 +275,7 @@ a:hover {
 
 /* Info-grid end */
 
+
 /* `Payment request` button start */
 
 #payment-request-form {
@@ -277,26 +286,30 @@ a:hover {
   background-color: #0abf53;
   color: white;
   padding: 6px 16px 6px 16px;
-  margin: 8px 0px 8px 0px;
-  border: none;
+  margin: 16px 0px 16px 0px;
   cursor: pointer;
   font-weight: bold;
-  border: 1px solid #0abf53;
   border-radius: 8px;
+  border: none;
+  transition: transform 0.1s ease-in-out;
 }
 
 .payment-request-button:hover {
   background-color: #0abf53;
-  border: 1px solid #005623;
-  border-radius: 8px;
-  transition: border-color 0.3s ease-in-out;
+  border: none;
+  transform: scale(1.04);
 }
+
+.payment-request-butto:focus {
+  outline: none;
+}
+
 
 .payment-request-button:disabled,
 payment-request-button[disabled=disabled] {
-  border: 2px solid #cccccc;
   background-color: #cccccc;
   color: #999999;
+  border: none;
   pointer-events: none;
 }
 
@@ -417,3 +430,158 @@ payment-request-button[disabled=disabled] {
 }
 
 /* end Status page */
+
+
+/* Loading grid start */
+
+.loading-grid {
+  text-align: center;
+  display: block;
+  padding: 16px 8px 8px 8px;
+  background: #fff7ea;
+  border-radius: 8px;
+  margin: 10px 0px 16px 0px;
+  transition: opacity 0.4s ease-in;
+}
+
+.loading-grid.disabled {
+  opacity: 0;  /* Reduce opacity */
+  pointer-events: none; /* Disable pointer events on elements */
+}
+
+.loading-description {
+  font-weight: 700;
+  color: #0abf53;
+  margin: 8px 0px 8px 0px;
+}
+
+/* Loading grid end */
+
+/* Cancel operation button start */
+.cancel-operation-button {
+  background-color: #0abf53;
+  color: white;
+  padding: 6px 16px 6px 16px;
+  margin: 8px 0px 8px 0px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  border: 1px solid #0abf53;
+  border-radius: 16px;
+  transition: background-color 0.3s, transform 0.15s;
+}
+
+.cancel-operation-button:hover {
+  background-color: #00bb4b;
+  transform: scale(1.04);
+  border-radius: 16px;
+}
+
+/* Cancel operation button end */
+
+/* Loading animation start */
+
+.loading-animation {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.loading-animation div {
+  animation: loading-animation 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  transform-origin: 40px 40px;
+}
+
+.loading-animation div:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #0abf53;
+  margin: -4px 0 0 -4px;
+}
+
+.loading-animation div:nth-child(1) {
+  animation-delay: -0.036s;
+}
+
+.loading-animation div:nth-child(1):after {
+  top: 63px;
+  left: 63px;
+}
+
+.loading-animation div:nth-child(2) {
+  animation-delay: -0.072s;
+}
+
+.loading-animation div:nth-child(2):after {
+  top: 68px;
+  left: 56px;
+}
+
+.loading-animation div:nth-child(3) {
+  animation-delay: -0.108s;
+}
+
+.loading-animation div:nth-child(3):after {
+  top: 71px;
+  left: 48px;
+}
+
+.loading-animation div:nth-child(4) {
+  animation-delay: -0.144s;
+}
+
+.loading-animation div:nth-child(4):after {
+  top: 72px;
+  left: 40px;
+}
+
+.loading-animation div:nth-child(5) {
+  animation-delay: -0.18s;
+}
+
+.loading-animation div:nth-child(5):after {
+  top: 71px;
+  left: 32px;
+}
+
+.loading-animation div:nth-child(6) {
+  animation-delay: -0.216s;
+}
+
+.loading-animation div:nth-child(6):after {
+  top: 68px;
+  left: 24px;
+}
+
+.loading-animation div:nth-child(7) {
+  animation-delay: -0.252s;
+}
+
+.loading-animation div:nth-child(7):after {
+  top: 63px;
+  left: 17px;
+}
+
+.loading-animation div:nth-child(8) {
+  animation-delay: -0.288s;
+}
+
+.loading-animation div:nth-child(8):after {
+  top: 56px;
+  left: 12px;
+}
+
+@keyframes loading-animation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+/* Loading bar end */

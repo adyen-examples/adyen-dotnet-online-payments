@@ -17,9 +17,8 @@ namespace adyen_dotnet_in_person_payments_example.Services
         /// <param name="saleId">Your unique ID for the POS system (cash register) to send this request from.</param>
         /// <param name="currency">Your <see cref="AmountsReq.Currency"/> (example: "EUR", "USD").</param>
         /// <param name="amount">Your <see cref="AmountsReq.RequestedAmount"/> in DECIMAL units (example: 42.99), the terminal API does not use minor units.</param>
-        /// <param name="cancellationToken"><see cref="CancellationToken"/>.</param>
         /// <returns><see cref="SaleToPOIResponse"/>.</returns>
-        Task<SaleToPOIResponse> SendPaymentRequestAsync(string poiId, string saleId, string currency, decimal? amount, CancellationToken cancellationToken = default);
+        Task<SaleToPOIResponse> SendPaymentRequestAsync(string poiId, string saleId, string currency, decimal? amount);
     }
 
     public class PosPaymentService : IPosPaymentService
@@ -31,7 +30,7 @@ namespace adyen_dotnet_in_person_payments_example.Services
             _posPaymentCloudApi = posPaymentCloudApi;
         }
 
-        public Task<SaleToPOIResponse> SendPaymentRequestAsync(string poiId, string saleId, string currency, decimal? amount, CancellationToken cancellationToken)
+        public Task<SaleToPOIResponse> SendPaymentRequestAsync(string poiId, string saleId, string currency, decimal? amount)
         {
             SaleToPOIRequest request = GetPaymentRequest(poiId, saleId, currency, amount);
             return _posPaymentCloudApi.TerminalApiCloudSynchronousAsync(request);

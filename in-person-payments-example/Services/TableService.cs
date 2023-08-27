@@ -23,12 +23,13 @@ namespace adyen_dotnet_in_person_payments_example.Services
             Tables = new List<TableModel>();
 
             // Add 16 dummy values.
-            for (int i = 1; i < 17; i++)
+            for (int i = 0; i < 16; i++)
             {
+                int tableNumber = i + 1;
                 Tables.Add(new TableModel()
                 {
-                    Name = "Table " + i,
-                    Amount = 11.11M * i,
+                    Name = "Table " + tableNumber,
+                    Amount = 11.11M * tableNumber,
                     Currency = "EUR",
                     IsPaid = false
                 });

@@ -37,7 +37,8 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
         {
             try
             {
-                var response = await _posPaymentService.SendPaymentRequestAsync(_poiId, _saleId, request.Currency, request.Amount, cancellationToken);
+                // TODO: CancellationToken.
+                var response = await _posPaymentService.SendPaymentRequestAsync(_poiId, _saleId, request.Currency, request.Amount);
 
                 PaymentResponse paymentResponse = response?.MessagePayload as PaymentResponse;
                 if (response == null)

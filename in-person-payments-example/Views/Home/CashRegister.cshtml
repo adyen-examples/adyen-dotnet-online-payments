@@ -9,7 +9,7 @@
 <div class="main-container">
   <div class="info">
     <h2>Cash Register</h2>
-    <section class="tables-section">
+    <section id="tables-section" class="tables-section">
       <div class="tables-grid">
         <ul class="tables-grid-list">
            @foreach(TableModel table in list)
@@ -24,7 +24,6 @@
            }
         </ul>
       </div>
-
       <div class="info-grid">
         <h2>Information</h2>
         <ul class="info-grid-list">
@@ -50,10 +49,10 @@
           </li>
         </ul>
         <p id="current-selection">Select a table</p>
-        <form id="payment-request-form" method="post">
-            <input type="text" id="amount" name="amount">
-            <input type="text" id="currency" name="currency" hidden>
-            <button type="submit" class="payment-request-button">Send Payment Request</button>
+        <form id="payment-request-form" method="post" disabled>
+          <input type="text" id="amount" name="amount">
+          <input type="text" id="currency" name="currency" hidden>
+          <button type="submit" class="payment-request-button">Send Payment Request</button>
         </form>
 
         <!-- TODO
@@ -65,8 +64,15 @@
         -->
        </div>
     </section>
+    <div id="loading-grid" class="loading-grid disabled">
+      <!-- Loading animation start -->
+      <div class="loading-animation"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+      <!-- Loading animation end -->
+      <div class="loading-description">Waiting for terminal response ...</div>
+      <input  type="button" id="cancel-operation-button"class="cancel-operation-button" value="Cancel"/>
+    </div>
   </div>
 </div>
 
-<!-- Binds all buttons for the `api/send-payment-request` and `api/send-payment-reversal-request` endpoints -->
-<script src="~/js/cashregister-table-grid-item-bindings.js" asp-append-version="true"></script>
+<!-- Binds all buttons for table selection and the `api/send-payment-request`/`api/send-payment-reversal-request` endpoints -->
+<script src="~/js/cashregister-bindings.js" asp-append-version="true"></script>
