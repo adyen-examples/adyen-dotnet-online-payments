@@ -17,22 +17,6 @@ async function sendPostRequest(url, data) {
     return await res.json();
 }
 
-// Send payment reversal request // TODO
-async function sendPaymentReversalRequest(amount, saleReferenceId) {
-    const response = await sendPostRequest("/api/create-payment-reversal", { amount: amount, saleReferenceId: saleReferenceId });
-    console.log(response);
-    switch (response.result) {
-        case "success":
-            window.location.href = "result/success";
-            break;
-        case "failure":
-            window.location.href = "result/failure/" + response.refusalReason;
-            break;
-        default:
-            throw Error('Unknown response result');
-    }
-}
-
 // Shows loading animation component and deactivates the table selection
 function showLoadingComponent() {
     // Show loading animation component
@@ -74,6 +58,45 @@ function bindButtons() {
 
                 // Send payment request
                 var response = await sendPostRequest("/api/create-payment", { amount: amount, currency: currency });
+                console.log(response);
+
+                // Handle response
+                switch (response.result) {
+                    case "success":
+                        window.location.href = "result/success";
+                        break;
+                    case "failure":
+                        window.location.href = "result/failure/" + response.refusalReason;
+                        break;
+                    default:
+                        throw Error('Unknown response result');
+                }
+            }
+            catch (error) {
+                console.error(error);
+
+                // Hides loading animation component and allow user to select tables again
+                hideLoadingComponent();
+            }
+        }
+    });
+
+    // Bind `reversal-request-form` submit-button
+    const reversalForm = document.getElementById('reversal-request-form');
+    reversalForm.addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        var formData = new FormData(event.target);
+        var poiTransactionId = formData.get('poiTransactionId');
+        var saleReferenceId = formData.get('saleReferenceId');
+        
+        if (poiTransactionId != null && saleReferenceId != null) {
+            try {
+                // Show loading animation component and don't allow user to select any tables
+                showLoadingComponent();
+
+                // Send reversal request
+                var response = await sendPostRequest("/api/create-reversal", { poiTransactionId: poiTransactionId, saleReferenceId: saleReferenceId });
                 console.log(response);
 
                 // Handle response

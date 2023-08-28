@@ -32,7 +32,9 @@ namespace adyen_dotnet_in_person_payments_example.Services
                     Name = "Table " + tableNumber,
                     Amount = 11.11M * tableNumber,
                     Currency = "EUR",
-                    IsPaid = false
+                    TableStatus = i % 2 == 0 ?TableStatus.Paid : TableStatus.NotPaid, // TODO, remove 
+                    PoiTransactionId = null, 
+                    SaleReferenceId = null
                 });
             }
         }

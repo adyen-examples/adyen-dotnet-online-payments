@@ -56,6 +56,8 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                         return Ok(new CreatePaymentResponse()
                         {
                             Result = "success",
+                            //Amount = paymentResponse.PaymentResult.AmountsResp.AuthorizedAmount,
+                            //Currency = paymentResponse.PaymentResult.AmountsResp.Currency,
                             PoiTransactionId = paymentResponse.POIData.POITransactionID.TransactionID,
                             PoiTransactionDateTime = paymentResponse.POIData.POITransactionID.TimeStamp,
 
@@ -76,7 +78,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                     case ResultType.Partial:
                         throw new NotImplementedException(nameof(ResultType.Partial));
                     default:
-                        return NotFound(new CreatePaymentResponse()
+                        return BadRequest(new CreatePaymentResponse()
                         {
                             Result = "failure",
                             RefusalReason = _poiId == null ? "Could not reach payment terminal - POI ID was not set." : $"Could not reach payment terminal with POI ID {_poiId}."
@@ -85,7 +87,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogInformation(e.ToString());
+                _logger.LogError(e.ToString());
                 return StatusCode(500, new CreatePaymentResponse()
                 {
                     Result = "failure",
@@ -94,15 +96,15 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
             }
         }
 
-        [HttpPost("api/create-payment-reversal")] // TODO response 
-        public async Task<ActionResult<SaleToPOIResponse>> CreatePaymentReversal([FromBody] CreatePaymentReversalRequest request, CancellationToken cancellationToken = default)
+        [HttpPost("api/create-reversal")]
+        public async Task<ActionResult<CreateReversalResponse>> CreateReversal([FromBody] CreateReversalRequest request, CancellationToken cancellationToken = default)
         {
             try
             {
-                var response = await _posPaymentReversalService.SendReversalRequestAsync(ReversalReasonType.CustCancel, request.SaleReferenceId, _poiId, _saleId, request.Amount, cancellationToken);
+                var response = await _posPaymentReversalService.SendReversalRequestAsync(ReversalReasonType.CustCancel, "6abcb27d-9082-40d9-969d-1c7f283ebd52", "CmI6001693237705007.TG6DVRZ3HVTFWR82", _poiId, _saleId, cancellationToken);
 
                 ReversalResponse reversalResponse = response?.MessagePayload as ReversalResponse;
-                if (response == null)
+                if (reversalResponse == null)
                 {
                     return BadRequest();
                 }
@@ -110,21 +112,34 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                 switch (reversalResponse.Response.Result)
                 {
                     case ResultType.Success:
-                        break;
+                        return Ok(new CreateReversalResponse()
+                        {
+                            Result = "success"
+                        });
                     case ResultType.Failure:
-                        break;
+                        return Ok(new CreateReversalResponse()
+                        {
+                            Result = "failure",
+                            RefusalReason = "Payment terminal responded with: " + reversalResponse.Response.AdditionalResponse
+                        });
                     case ResultType.Partial:
-                        break;
+                        throw new NotImplementedException(nameof(ResultType.Partial));
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(reversalResponse.Response.Result));
+                        return BadRequest(new CreateReversalResponse()
+                        {
+                            Result = "failure",
+                            RefusalReason = _poiId == null ? "Could not reach payment terminal - POI ID was not set." : $"Could not reach payment terminal with POI ID {_poiId}."
+                        });
                 }
-
-                return Ok(reversalResponse);
             }
             catch (Exception e)
             {
-                _logger.LogInformation(e.ToString());
-                throw;
+                _logger.LogError(e.ToString());
+                return StatusCode(500, new CreatePaymentResponse()
+                {
+                    Result = "failure",
+                    RefusalReason = e.Message
+                });
             }
         }
     }
