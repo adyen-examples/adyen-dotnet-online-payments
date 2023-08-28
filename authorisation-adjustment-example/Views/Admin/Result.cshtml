@@ -5,9 +5,9 @@
 <div class="status-container">
   <div class="status">
     @{ 
-          var SvgImg = ViewBag.Img + ".svg";
+          var svgImg = ViewBag.Img + ".svg";
     }
-    <img src="~/images/@SvgImg" class="status-image" alt="@ViewBag.Img" />
+    <img src="~/images/@svgImg" class="status-image" alt="@ViewBag.Img" />
 
     <p class="status-message">@ViewBag.Msg</p>
     @if (ViewBag.Status == "error")

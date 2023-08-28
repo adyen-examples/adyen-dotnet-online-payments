@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -98,11 +99,11 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 return Task.CompletedTask;
             }
 
-            var payment = new PaymentModel()
+            var details = new PaymentDetailsModel()
             {
                 PspReference = notification.PspReference,
                 OriginalReference = notification.OriginalReference,
-                Reference = notification.MerchantReference,
+                MerchantReference = notification.MerchantReference,
                 Amount = notification.Amount?.Value,
                 Currency = notification.Amount?.Currency,
                 DateTime = DateTimeOffset.Parse(notification.EventDate),
@@ -111,9 +112,10 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 PaymentMethodBrand = notification.PaymentMethod
             };
 
-            if (!_repository.Insert(payment))
+            // Upsert details in history.
+            if (!_repository.UpsertPaymentDetails(details))
             {
-                _logger.LogInformation($"Could not insert {notification.PspReference}");
+                _logger.LogInformation($"Skipped insertion because {notification.MerchantReference} was not present when the application started or because it already exists.");
                 return Task.CompletedTask;
             }
 
@@ -136,11 +138,11 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 _logger.LogInformation("BookingDate: " + dateTime);
             }
 
-            var payment = new PaymentModel()
+            var details = new PaymentDetailsModel()
             {
                 PspReference = notification.PspReference,
                 OriginalReference = notification.OriginalReference,
-                Reference = notification.MerchantReference,
+                MerchantReference = notification.MerchantReference,
                 Amount = notification.Amount?.Value,
                 Currency = notification.Amount?.Currency,
                 DateTime = DateTimeOffset.Parse(notification.EventDate),
@@ -149,12 +151,36 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 PaymentMethodBrand = notification.PaymentMethod
             };
 
-            if (!_repository.Insert(payment))
+            // Upsert details in history.
+            if (!_repository.UpsertPaymentDetails(details))
             {
-                _logger.LogInformation($"Could not insert {notification.PspReference}");
+                _logger.LogInformation($"Skipped insertion because {notification.MerchantReference} was not present when the application started or because it already exists.");
                 return Task.CompletedTask;
             }
 
+            // Update payment amount to latest.
+            if (details.IsSuccess())
+            {
+                PaymentModel payment = _repository.GetPayment(notification.MerchantReference);
+                List<PaymentDetailsModel> orderedPayments = payment
+                    .PaymentsHistory.OrderBy(paymentDetails => paymentDetails.DateTime)
+                    .ToList();
+
+                // Take latest amount that has been successfully authorisation adjusted.
+                PaymentDetailsModel latestAuthorisedPayment = orderedPayments
+                    .Where(paymentDetails => paymentDetails.IsAuthorisedAdjusted() && paymentDetails.IsSuccess())?
+                    .LastOrDefault();
+
+                if (latestAuthorisedPayment is not null)
+                {
+                    // Update amount.
+                    payment.Amount = latestAuthorisedPayment.Amount;
+
+                    // Update expiry date.
+                    payment.ExpiryDate = latestAuthorisedPayment.DateTime.AddDays(28); // The value of '28' varies per scheme, see https://docs.adyen.com/online-payments/adjust-authorisation/#validity.
+                }
+            }
+            
             _logger.LogInformation($"Received {(notification.Success ? "successful" : "unsuccessful")} {notification.EventCode} webhook::\n" +
                                    $"Merchant Reference ::{notification.MerchantReference} \n" +
                                    $"PSP Reference ::{notification.PspReference} \n" +
@@ -175,11 +201,11 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 _logger.LogInformation("BookingDate: " + dateTime);
             }
 
-            var payment = new PaymentModel()
+            var details = new PaymentDetailsModel()
             {
                 PspReference = notification.PspReference,
                 OriginalReference = notification.OriginalReference,
-                Reference = notification.MerchantReference,
+                MerchantReference = notification.MerchantReference,
                 Amount = notification.Amount?.Value,
                 Currency = notification.Amount?.Currency,
                 DateTime = DateTimeOffset.Parse(notification.EventDate),
@@ -188,9 +214,10 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 PaymentMethodBrand = notification.PaymentMethod
             };
 
-            if (!_repository.Insert(payment))
+            // Upsert details in history.
+            if (!_repository.UpsertPaymentDetails(details))
             {
-                _logger.LogInformation($"Could not insert {notification.PspReference}");
+                _logger.LogInformation($"Skipped insertion because {notification.MerchantReference} was not present when the application started or because it already exists.");
                 return Task.CompletedTask;
             }
 
@@ -214,11 +241,11 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 _logger.LogInformation("BookingDate: " + dateTime);
             }
 
-            var payment = new PaymentModel()
+            var details = new PaymentDetailsModel()
             {
                 PspReference = notification.PspReference,
                 OriginalReference = notification.OriginalReference,
-                Reference = notification.MerchantReference,
+                MerchantReference = notification.MerchantReference,
                 Amount = notification.Amount?.Value,
                 Currency = notification.Amount?.Currency,
                 DateTime = DateTimeOffset.Parse(notification.EventDate),
@@ -227,9 +254,10 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 PaymentMethodBrand = notification.PaymentMethod
             };
 
-            if (!_repository.Insert(payment))
+            // Upsert details in history.
+            if (!_repository.UpsertPaymentDetails(details))
             {
-                _logger.LogInformation($"Could not insert {notification.PspReference}");
+                _logger.LogInformation($"Skipped insertion because {notification.MerchantReference} was not present when the application started or because it already exists.");
                 return Task.CompletedTask;
             }
 
@@ -271,11 +299,11 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 _logger.LogInformation("BookingDate: " + dateTime);
             }
 
-            var payment = new PaymentModel()
+            var details = new PaymentDetailsModel()
             {
                 PspReference = notification.PspReference,
                 OriginalReference = notification.OriginalReference,
-                Reference = notification.MerchantReference,
+                MerchantReference = notification.MerchantReference,
                 Amount = notification.Amount?.Value,
                 Currency = notification.Amount?.Currency,
                 DateTime = DateTimeOffset.Parse(notification.EventDate),
@@ -284,9 +312,10 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 PaymentMethodBrand = notification.PaymentMethod
             };
 
-            if (!_repository.Insert(payment))
+            // Upsert details in history.
+            if (!_repository.UpsertPaymentDetails(details))
             {
-                _logger.LogInformation($"Could not insert {notification.PspReference}");
+                _logger.LogInformation($"Skipped insertion because {notification.MerchantReference} was not present when the application started or because it already exists.");
                 return Task.CompletedTask;
             }
 
@@ -310,22 +339,23 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 _logger.LogInformation("BookingDate: " + dateTime);
             }
 
-            var payment = new PaymentModel()
+            var details = new PaymentDetailsModel()
             {
                 PspReference = notification.PspReference,
                 OriginalReference = notification.OriginalReference,
-                Reference = notification.MerchantReference,
+                MerchantReference = notification.MerchantReference,
                 Amount = notification.Amount?.Value,
                 Currency = notification.Amount?.Currency,
                 DateTime = DateTimeOffset.Parse(notification.EventDate),
                 ResultCode = notification.EventCode,
-                RefusalReason = notification.Success ? null : notification.Reason,
+                RefusalReason = notification.Success ? notification.Reason : null, // A successful notification, success = true. Populate the refusal reason.
                 PaymentMethodBrand = notification.PaymentMethod
             };
 
-            if (!_repository.Insert(payment))
+            // Upsert details in history.
+            if (!_repository.UpsertPaymentDetails(details))
             {
-                _logger.LogInformation($"Could not insert {notification.PspReference}");
+                _logger.LogInformation($"Skipped insertion because {notification.MerchantReference} was not present when the application started or because it already exists.");
                 return Task.CompletedTask;
             }
 
@@ -350,22 +380,23 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
                 _logger.LogInformation("BookingDate: " + dateTime);
             }
 
-            var payment = new PaymentModel()
+            var details = new PaymentDetailsModel()
             {
                 PspReference = notification.PspReference,
                 OriginalReference = notification.OriginalReference,
-                Reference = notification.MerchantReference,
+                MerchantReference = notification.MerchantReference,
                 Amount = notification.Amount?.Value,
                 Currency = notification.Amount?.Currency,
                 DateTime = DateTimeOffset.Parse(notification.EventDate),
                 ResultCode = notification.EventCode,
-                RefusalReason = notification.Success ? null : notification.Reason,
+                RefusalReason = notification.Success ? notification.Reason : null, // A successful notification, success = true. Populate the refusal reason.
                 PaymentMethodBrand = notification.PaymentMethod
             };
 
-            if (!_repository.Insert(payment))
+            // Upsert details in history.
+            if (!_repository.UpsertPaymentDetails(details))
             {
-                _logger.LogInformation($"Could not insert {notification.PspReference}");
+                _logger.LogInformation($"Skipped insertion because {notification.MerchantReference} was not present when the application started or because it already exists.");
                 return Task.CompletedTask;
             }
 
