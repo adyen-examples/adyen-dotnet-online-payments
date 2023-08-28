@@ -101,7 +101,9 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
         {
             try
             {
-                var response = await _posPaymentReversalService.SendReversalRequestAsync(ReversalReasonType.CustCancel, "6abcb27d-9082-40d9-969d-1c7f283ebd52", "CmI6001693237705007.TG6DVRZ3HVTFWR82", _poiId, _saleId, cancellationToken);
+                // "CmI6001693237705007.TG6DVRZ3HVTFWR82" // Example
+                // "6abcb27d-9082-40d9-969d-1c7f283ebd52" (MerchantReference / SalesReferenceId example)
+                var response = await _posPaymentReversalService.SendReversalRequestAsync(ReversalReasonType.CustCancel, request.SaleReferenceId, request.PoiTransactionId, _poiId, _saleId, cancellationToken);
 
                 ReversalResponse reversalResponse = response?.MessagePayload as ReversalResponse;
                 if (reversalResponse == null)

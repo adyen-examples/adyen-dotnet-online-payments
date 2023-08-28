@@ -14,7 +14,7 @@ namespace adyen_dotnet_in_person_payments_example.Services
         /// Sends a terminal-api payment reversal request for the specified <paramref name="saleReferenceId"/>, <paramref name="poiId"/> and <paramref name="saleId"/>.
         /// </summary>
         /// <param name="reversalReasonType"><see cref="ReversalReasonType"/>.</param>
-        /// <param name="saleReferenceId">Identification of a Sale global transaction for a sequence of related POI transactions: https://docs.adyen.com/point-of-sale/design-your-integration/terminal-api/terminal-api-reference/#comadyennexosaledata. Appears as MerchantReference in your Customer Area.</param> // TODO
+        /// <param name="saleReferenceId">Unique Id of a sale global transaction. Appears as MerchantReference in your Customer Area.</param>
         /// <param name="poiTransactionId">Unique Id of a POI transaction.</param>
         /// <param name="poiId">The unique ID of the terminal to send this request to. Format: [device model]-[serial number].</param>
         /// <param name="saleId">Your unique ID for the POS system (cash register) to send this request from.</param>
