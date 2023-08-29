@@ -205,15 +205,15 @@ a:hover {
 }
 
 .tables-grid-item.active {
-  background-color: #007bff;
+  background-color: #0abf53 !important;
   transform: scale(1.07);
   font-weight: 600;
   color: white;
+  border: 1px solid #00bb4b;
 }
 
 .tables-grid-item.paid {
-  opacity: 0.7;
-  background-color: #0abf53;
+  background-color: #8fd19e;
 }
 
 .tables-grid-item.refund {
@@ -231,7 +231,10 @@ a:hover {
 }
 
 .tables-grid-item-status {
-  font-size: 0.7rem;
+  font-weight: 800;
+  border: 2px dashed #000000;
+  padding: 4px 8px 4px 8px;
+  opacity: 0.7;
   color: #000000;
 }
 
