@@ -205,14 +205,19 @@ a:hover {
 }
 
 .tables-grid-item.active {
-  background-color: #0abf53;
+  background-color: #007bff;
   transform: scale(1.07);
   font-weight: 600;
   color: white;
 }
 
-.tables-grid-item.disabled {
-  opacity: 0.3;
+.tables-grid-item.paid {
+  opacity: 0.7;
+  background-color: #0abf53;
+}
+
+.tables-grid-item.refund {
+  opacity: 0.2;
   background-color: #95999c;
   pointer-events: none;
 }
@@ -223,6 +228,11 @@ a:hover {
   margin-top: 10px;
   font-size: 1.2rem;
   color: black;
+}
+
+.tables-grid-item-status {
+  font-size: 0.7rem;
+  color: #000000;
 }
 
 .tables-grid-item-amount {
@@ -327,7 +337,7 @@ a:hover {
 .reversal-request-button {
   background-color: #0abf53;
   color: white;
-  padding: 8px 32px 8px 32px;
+  padding: 8px 64px 8px 64px;
   cursor: pointer;
   font-weight: bold;
   border-radius: 8px;

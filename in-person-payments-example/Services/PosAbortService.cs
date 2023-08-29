@@ -10,7 +10,8 @@ namespace adyen_dotnet_in_person_payments_example.Services
     public interface IPosAbortService
     {
         /// <summary>
-        /// Sends a terminal-api abort request.
+        /// Sends a terminal-api abort request which cancels an in-progress transaction.
+        /// https://docs.adyen.com/point-of-sale/basic-tapi-integration/cancel-a-transaction/
         /// </summary>
         /// <param name="serviceId">The unique ID of a message pair, which processes a transaction. The length of the string must be greater than or equal to 1 and less than or equal to 10.</param>
         /// <param name="poiId">The unique ID of the terminal to send this request to. Format: [device model]-[serial number].</param>
@@ -52,12 +53,12 @@ namespace adyen_dotnet_in_person_payments_example.Services
                 { 
                     MessageReference = new MessageReference()
                     {
-                        MessageCategory = MessageCategoryType.Abort,
+                        MessageCategory = MessageCategoryType.Payment,
                         ServiceID = serviceId,
                         POIID = poiId, 
                         SaleID = saleId
                     },
-                    AbortReason = "Cancel requested manually"
+                    AbortReason = "MerchantAbort"
                 }
             };
 

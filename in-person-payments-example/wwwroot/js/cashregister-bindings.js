@@ -39,7 +39,6 @@ function hideLoadingComponent() {
     tablesSection.classList.remove('disabled');
 }
 
-
 // Bind table selection buttons and the `send payment request` submit-button
 function bindButtons() {
     // Bind `payment-request-form` submit-button
@@ -50,14 +49,15 @@ function bindButtons() {
         var formData = new FormData(event.target);
         var amount = formData.get('amount');
         var currency = formData.get('currency');
+        var tableName = formData.get('tableName');
 
-        if (amount != null && currency != null) { 
+        if (amount && currency && tableName) { 
             try {
                 // Show loading animation component and don't allow user to select any tables
                 showLoadingComponent();           
 
                 // Send payment request
-                var response = await sendPostRequest("/api/create-payment", { amount: amount, currency: currency });
+                var response = await sendPostRequest("/api/create-payment", { tableName: tableName, amount: amount, currency: currency });
                 console.log(response);
 
                 // Handle response
@@ -87,16 +87,15 @@ function bindButtons() {
         event.preventDefault();
 
         var formData = new FormData(event.target);
-        var poiTransactionId = formData.get('poiTransactionId');
-        var saleReferenceId = formData.get('saleReferenceId');
+        var reversalTableName = formData.get('reversalTableName');
         
-        if (poiTransactionId != null && saleReferenceId != null) {
+        if (reversalTableName) {
             try {
                 // Show loading animation component and don't allow user to select any tables
                 showLoadingComponent();
 
                 // Send reversal request
-                var response = await sendPostRequest("/api/create-reversal", { poiTransactionId: poiTransactionId, saleReferenceId: saleReferenceId });
+                var response = await sendPostRequest("/api/create-reversal", { tableName: reversalTableName });
                 console.log(response);
 
                 // Handle response
@@ -137,18 +136,25 @@ function bindButtons() {
             // Add the 'active' class to tables-grid-item
             table.classList.add('active');
 
-            // Copies 'amount' value to the form
+            // Copies 'amount' value to the `payment-request-form`
             const amountElement = document.getElementById('amount');
             amountElement.value = table.querySelector('.tables-grid-item-amount').textContent;
 
-            // Copies 'currency' value to the form
+            // Copies 'currency' value to the `payment-request-form`
             const currencyElement = document.getElementById('currency');
             currencyElement.value = table.querySelector('.tables-grid-item-currency').textContent;
 
-            // Copies 'table name' value to display 
+            // Copies 'table name' value to the `payment-request-form`
+            const tableNameElement = document.getElementById('tableName');
+            tableNameElement.value = table.querySelector('.tables-grid-item-title').textContent;
+
+            // Copies 'table name' value to the `reversal-request-form`
+            const reversalTableNameElement = document.getElementById('reversalTableName');
+            reversalTableNameElement.value = table.querySelector('.tables-grid-item-title').textContent;
+            
+            // Copies 'table name' textContent to information display on the right
             const currentSelectionElement = document.getElementById('current-selection');
             currentSelectionElement.textContent = table.querySelector('.tables-grid-item-title').textContent;
-
         });
     });
 }

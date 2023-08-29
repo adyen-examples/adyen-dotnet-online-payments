@@ -12,16 +12,17 @@
     <section id="tables-section" class="tables-section">
       <div class="tables-grid">
         <ul class="tables-grid-list">
-           @foreach(TableModel table in list)
-           {
-             <li class="tables-grid-item @(table.TableStatus == TableStatus.Paid ? "disabled" : "")">
-               <p class="tables-grid-item-title">@(table.TableStatus == TableStatus.NotPaid ? @table.Name : @table.TableStatus)</p>
-               <div class="tables-grid-item-currency-amount">
-                 <p class="tables-grid-item-currency">@table.Currency</p>
-                 <p class="tables-grid-item-amount">@table.Amount</p>
-               </div>
-             </li>
-           }
+          @foreach (TableModel table in list)
+          {
+            <li class="tables-grid-item @(table.TableStatus is TableStatus.Refunded or TableStatus.RefundFailed or TableStatus.RefundedReversed ? "refund" : (table.TableStatus == TableStatus.Paid ? "paid" : ""))">
+              <p class="tables-grid-item-title">@table.TableName</p>
+              <p class="tables-grid-item-status">@table.TableStatus</p>
+              <div class="tables-grid-item-currency-amount">
+                <p class="tables-grid-item-currency">@table.Currency</p>
+                <p class="tables-grid-item-amount">@table.Amount</p>
+              </div>
+            </li>
+          }
         </ul>
       </div>
       <div class="info-grid">
@@ -45,15 +46,15 @@
           </li>
         </ul>
         <p id="current-selection">Select a table</p>
-        <form id="payment-request-form" method="post" disabled>
+        <form id="payment-request-form" method="post">
+          <input type="text" id="tableName" name="tableName" hidden>
           <input type="text" id="amount" name="amount" hidden>
           <input type="text" id="currency" name="currency" hidden>
           <button type="submit" class="payment-request-button">Settle bill</button>
         </form>
 
         <form id="reversal-request-form" method="post">
-          <input type="text" id="saleReferenceId" name="saleReferenceId" hidden>
-          <input type="text" id="poiTransactionId" name="poiTransactionId" hidden>
+          <input type="text" id="reversalTableName" name="reversalTableName" hidden>
           <button type="submit" class="reversal-request-button">Reversal</button>
         </form>
       </div>

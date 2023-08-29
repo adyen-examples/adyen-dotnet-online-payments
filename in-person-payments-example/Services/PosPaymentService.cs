@@ -69,7 +69,9 @@ namespace adyen_dotnet_in_person_payments_example.Services
                             TransactionID = Guid.NewGuid().ToString(),
                             TimeStamp = DateTime.UtcNow
                         },
-                        // You can add additional details to a payment: https://docs.adyen.com/point-of-sale/add-data/
+                        // A basic Terminal API payment request includes the amount, currency, TransactionID, and timestamp of the transaction.
+                        // If you want to add information that you want Adyen to apply to your request and save on the Adyen payments platform.
+                        // Set the SaleToAcquirerData, see: https://docs.adyen.com/point-of-sale/add-data/
                         // Example with SaleToAcquirerData: https://docs.adyen.com/point-of-sale/add-data/sale-to-acquirer-data/.
                         //SaleToAcquirerData = new Adyen.Model.Terminal.SaleToAcquirerData()
                         //{

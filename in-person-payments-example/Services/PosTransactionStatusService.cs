@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace adyen_dotnet_in_person_payments_example.Services
 {
-    public interface IPosPaymentTransactionStatusService
+    public interface IPosTransactionStatusService
     {
         /// <summary>
         /// Sends a terminal-api transaction status request
@@ -20,7 +20,7 @@ namespace adyen_dotnet_in_person_payments_example.Services
         Task<SaleToPOIResponse> SendTransactionStatusRequestAsync(string serviceId, string poiId, string saleId, CancellationToken cancellationToken = default);
     }
 
-    public class PosTransactionStatusService : IPosPaymentTransactionStatusService
+    public class PosTransactionStatusService : IPosTransactionStatusService
     {
         private readonly IPosPaymentCloudApi _posPaymentCloudApi;
 
@@ -50,12 +50,18 @@ namespace adyen_dotnet_in_person_payments_example.Services
                 },
                 MessagePayload = new TransactionStatusRequest()
                 {
+                    // See: https://docs.adyen.com/point-of-sale/basic-tapi-integration/verify-transaction-status/#request-status.
                     MessageReference = new MessageReference()
                     {
-                        MessageCategory = MessageCategoryType.Abort,
+                        MessageCategory = MessageCategoryType.Payment,
                         ServiceID = serviceId,
-                        POIID = poiId,
-                        SaleID = saleId
+                        SaleID = saleId, 
+                    }, 
+                    ReceiptReprintFlag = true,
+                    DocumentQualifier = new DocumentQualifierType[]
+                    {
+                        DocumentQualifierType.CashierReceipt,
+                        DocumentQualifierType.CustomerReceipt
                     }
                 }
             };

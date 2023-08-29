@@ -2,6 +2,7 @@
 {
     public class CreatePaymentRequest
     {
+        public string TableName { get; init; }
         public decimal Amount { get; init; }
         public string Currency { get; init; }
     }

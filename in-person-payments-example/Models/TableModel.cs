@@ -1,4 +1,6 @@
-﻿namespace adyen_dotnet_in_person_payments_example.Models
+﻿using System;
+
+namespace adyen_dotnet_in_person_payments_example.Models
 {
     public class TableModel
     {
@@ -15,7 +17,7 @@
         /// <summary>
         /// Name of the table, used to uniquely identify the table.
         /// </summary>
-        public string Name { get; set; }
+        public string TableName { get; set; }
         
         /// <summary>
         /// Status of the table, used to check if the table has paid.
@@ -24,12 +26,19 @@
 
         /// <summary>
         /// The Poi Transaction Id, populated when a <see cref="TableStatus"/> is set to <see cref="Models.TableStatus.Paid"/>.
+        /// Example value: CmI6001693237705007.TG6DVRZ3HVTFWR82.
         /// </summary>
         public string PoiTransactionId { get; set; } = null;
 
         /// <summary>
         /// The Sale Reference Id, populated when a <see cref="TableStatus"/> is set to <see cref="Models.TableStatus.Paid"/>.
+        /// Example value: 6abcb27d-9082-40d9-969d-1c7f283ebd52.
         /// </summary>
         public string SaleReferenceId { get; set; } = null;
+
+        /// <summary>
+        /// Date of the transaction.
+        /// </summary>
+        public DateTime TransactionDateTime { get; set; }
     }
 }

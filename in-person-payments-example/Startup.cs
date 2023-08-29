@@ -77,6 +77,8 @@ namespace adyen_dotnet_in_person_payments_example
             // Register application services.
             services.AddSingleton<IPosPaymentService, PosPaymentService>();
             services.AddSingleton<IPosReversalService, PosReversalService>();
+            services.AddSingleton<IPosTransactionStatusService, PosTransactionStatusService>();
+            services.AddSingleton<IPosAbortService, PosAbortService>();
             services.AddSingleton<ITableService, TableService>();
         }
 

@@ -2,7 +2,6 @@
 {
     public class CreateReversalRequest
     {
-        public string PoiTransactionId { get; init; }
-        public string SaleReferenceId { get; init; }
+        public string TableName { get; init; }
     }
 }
