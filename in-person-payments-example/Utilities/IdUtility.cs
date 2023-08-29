@@ -20,7 +20,7 @@ namespace adyen_dotnet_in_person_payments_example.Extensions
 
             for (int i = 0; i < length; i++)
             {
-                sb.Append(AlphanumericCharacters[Random.Next(length)]);
+                sb.Append(AlphanumericCharacters[Random.Next(AlphanumericCharacters.Length)]);
             }
 
             return sb.ToString();

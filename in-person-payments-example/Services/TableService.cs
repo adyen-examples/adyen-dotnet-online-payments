@@ -7,12 +7,12 @@ namespace adyen_dotnet_in_person_payments_example.Services
     {
         List<TableModel> Tables { get; }
 
-        // TODO
-        //void SettleBill();
+        // TODO Move logic from controller layer to here:
+        //void Pay();
 
-        //void PrintReceipt();
+        //void Abort();
 
-        //void Reverse();
+        //void Reversal();
     }
 
     public class TableService : ITableService
@@ -32,7 +32,7 @@ namespace adyen_dotnet_in_person_payments_example.Services
                     TableName = "Table " + tableNumber,
                     Amount = 11.11M * tableNumber,
                     Currency = "EUR",
-                    TableStatus = i % 2 == 0 ? TableStatus.Paid : (i % 3 == 0 ? TableStatus.NotPaid : TableStatus.Refunded), // TODO, remove 
+                    TableStatus = i % 3 == 0 ? TableStatus.Paid : (i % 5 == 0 ? TableStatus.Refunded : TableStatus.NotPaid), // TODO, remove 
                     PoiTransactionId = null,
                     SaleReferenceId = null
                 });

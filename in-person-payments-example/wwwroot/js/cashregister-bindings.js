@@ -39,6 +39,17 @@ function hideLoadingComponent() {
     tablesSection.classList.remove('disabled');
 }
 
+// Sends abort request to cancel a transaction
+async function sendAbortRequest() {
+    try {
+        var response = await sendPostRequest("/api/abort/");
+        console.log(response);
+    }
+    catch(error) {
+        console.warn(error);
+    }
+}
+
 // Bind table selection buttons and the `send payment request` submit-button
 function bindButtons() {
     // Bind `payment-request-form` submit-button
@@ -73,8 +84,11 @@ function bindButtons() {
                 }
             }
             catch (error) {
-                console.error(error);
+                console.warn(error);
 
+                // Sends an abort request to the terminal
+                await sendAbortRequest();
+                
                 // Hides loading animation component and allow user to select tables again
                 hideLoadingComponent();
             }
@@ -111,7 +125,7 @@ function bindButtons() {
                 }
             }
             catch (error) {
-                console.error(error);
+                console.warn(error);
 
                 // Hides loading animation component and allow user to select tables again
                 hideLoadingComponent();

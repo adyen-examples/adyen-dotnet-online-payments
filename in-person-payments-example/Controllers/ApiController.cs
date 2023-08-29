@@ -1,4 +1,5 @@
 using Adyen.Model.Nexo;
+using adyen_dotnet_in_person_payments_example.Models;
 using adyen_dotnet_in_person_payments_example.Models.Requests;
 using adyen_dotnet_in_person_payments_example.Models.Responses;
 using adyen_dotnet_in_person_payments_example.Options;
@@ -10,7 +11,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using adyen_dotnet_in_person_payments_example.Models;
+using System.Web;
 
 namespace adyen_dotnet_in_person_payments_example.Controllers
 {
@@ -20,6 +21,8 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
         private readonly ILogger<ApiController> _logger;
         private readonly IPosPaymentService _posPaymentService;
         private readonly IPosReversalService _posPaymentReversalService;
+        private readonly IPosAbortService _posAbortService;
+        private readonly IPosTransactionStatusService _posTransactionStatusService;
         private readonly ITableService _tableService;
 
         private readonly string _saleId;
@@ -36,7 +39,10 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
             _logger = logger;
             _posPaymentService = posPaymentService;
             _posPaymentReversalService = posPaymentReversalService;
+            _posAbortService = posAbortService;
+            _posTransactionStatusService = posTransactionStatusService;
             _tableService = tableService;
+            
             _poiId = options.Value.ADYEN_POS_POI_ID;
             _saleId = options.Value.ADYEN_POS_SALE_ID;
         }
@@ -57,7 +63,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
             
             try
             {
-                var response = await _posPaymentService.SendPaymentRequestAsync(_poiId, _saleId, request.Currency, request.Amount);
+                SaleToPOIResponse response = await _posPaymentService.SendPaymentRequestAsync(_poiId, _saleId, request.Currency, request.Amount, cancellationToken);
 
                 PaymentResponse paymentResponse = response?.MessagePayload as PaymentResponse;
                 if (response == null)
@@ -135,12 +141,16 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
             
             try
             {
-                var response = await _posPaymentReversalService.SendReversalRequestAsync(ReversalReasonType.MerchantCancel, table.SaleReferenceId, table.PoiTransactionId, _poiId, _saleId, cancellationToken);
+                SaleToPOIResponse response = await _posPaymentReversalService.SendReversalRequestAsync(ReversalReasonType.MerchantCancel, table.SaleReferenceId, table.PoiTransactionId, _poiId, _saleId, cancellationToken);
 
                 ReversalResponse reversalResponse = response?.MessagePayload as ReversalResponse;
                 if (reversalResponse == null)
                 {
-                    return BadRequest();
+                    return BadRequest(new CreateReversalResponse()
+                    {
+                        Result = "failure",
+                        RefusalReason = $"Empty reversal response"
+                    });
                 }
 
                 switch (reversalResponse.Response.Result)
@@ -156,7 +166,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                         return Ok(new CreateReversalResponse()
                         {
                             Result = "failure",
-                            RefusalReason = "Payment terminal responded with: " + reversalResponse.Response.AdditionalResponse
+                            RefusalReason = "Payment terminal responded with: " + HttpUtility.UrlDecode(reversalResponse.Response.AdditionalResponse)
                         });
                     case ResultType.Partial:
                         throw new NotImplementedException(nameof(ResultType.Partial));
@@ -171,7 +181,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e.ToString());
-                return StatusCode(500, new CreatePaymentResponse()
+                return StatusCode(500, new CreateReversalResponse()
                 {
                     Result = "failure",
                     RefusalReason = e.Message
@@ -179,10 +189,53 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
             }
         }
 
-        [Route("api/get-transaction-status")]
-        public async Task<ActionResult> Test(CancellationToken cancellationToken = default)
+        [HttpPost("api/abort/{serviceId?}")]
+        public async Task<ActionResult<SaleToPOIResponse>> Abort(string serviceId = null, CancellationToken cancellationToken = default)
         {
-            return Ok();
+            try
+            {
+                // TODO: Revise abort and transactionstatus, you can queue up multiple payments on the terminal
+                if (string.IsNullOrWhiteSpace(serviceId))
+                {
+                    // In case of a communication or technical issue or when you do not have the ServiceID,
+                    // You can get the ServiceID of the original request by sending a transaction status request with an empty TransactionStatusRequest object.
+                    // See: https://docs.adyen.com/point-of-sale/basic-tapi-integration/cancel-a-transaction/#get-service-id
+                    SaleToPOIResponse response = await _posTransactionStatusService.SendTransactionStatusRequestAsync(null, _poiId, _saleId, cancellationToken);
+
+                    TransactionStatusResponse transactionStatusResponse = response?.MessagePayload as TransactionStatusResponse;
+
+                    if (transactionStatusResponse == null)
+                    {
+                        return BadRequest();
+                    }
+
+                    serviceId = transactionStatusResponse.MessageReference.ServiceID;
+                }
+
+                SaleToPOIResponse abortResponse = await _posAbortService.SendAbortRequestAsync(serviceId, _poiId, _saleId, cancellationToken);
+
+                return Ok(abortResponse);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.ToString());
+                throw;
+            }
+        }
+
+        [HttpGet("api/get-transaction-status/{serviceId?}")]
+        public async Task<ActionResult<SaleToPOIResponse>> GetTransactionStatus(string serviceId = null, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                SaleToPOIResponse response = await _posTransactionStatusService.SendTransactionStatusRequestAsync(serviceId, _poiId, _saleId, cancellationToken);
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.ToString());
+                throw;
+            }
         }
     }
 }

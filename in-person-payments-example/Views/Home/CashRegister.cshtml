@@ -15,7 +15,8 @@
           @foreach (TableModel table in list)
           {
             <li class="tables-grid-item @(table.TableStatus is TableStatus.Refunded or TableStatus.RefundFailed or TableStatus.RefundedReversed ? "refund" : (table.TableStatus == TableStatus.Paid ? "paid" : ""))">
-              <p class="tables-grid-item-title">@table.TableName <b class="tables-grid-item-status">@table.TableStatus</b></p>
+              <p class="tables-grid-item-title">@table.TableName</p>
+              <p class="tables-grid-item-status">@table.TableStatus</p>
               <div class="tables-grid-item-currency-amount">
                 <p class="tables-grid-item-currency">@table.Currency</p>
                 <p class="tables-grid-item-amount">@table.Amount</p>
@@ -63,7 +64,7 @@
       <div class="loading-animation"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
       <!-- Loading animation end -->
       <div class="loading-description">Waiting for terminal response ...</div>
-      <input  type="button" id="cancel-operation-button" class="cancel-operation-button" value="Cancel"/>
+      <input type="button" id="cancel-operation-button" class="cancel-operation-button" value="Cancel"/>
     </div>
   </div>
 </div>
