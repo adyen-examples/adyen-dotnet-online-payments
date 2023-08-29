@@ -13,7 +13,13 @@ namespace adyen_dotnet_in_person_payments_example.Options
         /// See https://docs.adyen.com/account/account-structure.
         /// </summary>
         public string ADYEN_MERCHANT_ACCOUNT { get; set; }
-
+        
+        /// <summary>
+        /// HMAC Key used to validate your webhook signatures.
+        /// See https://docs.adyen.com/development-resources/webhooks/verify-hmac-signatures.
+        /// </summary>
+        public string ADYEN_HMAC_KEY { get; set; }
+        
         /// <summary>
         /// The unique ID of your payment terminal for the NEXO Sale to POI protocol.
         /// Format: [device model]-[serial number].

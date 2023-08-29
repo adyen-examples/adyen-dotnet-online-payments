@@ -33,6 +33,7 @@ namespace adyen_dotnet_in_person_payments_example
                 {
                     options.ADYEN_API_KEY = Configuration[nameof(AdyenOptions.ADYEN_API_KEY)];
                     options.ADYEN_MERCHANT_ACCOUNT = Configuration[nameof(AdyenOptions.ADYEN_MERCHANT_ACCOUNT)];
+                    options.ADYEN_HMAC_KEY = Configuration[nameof(AdyenOptions.ADYEN_HMAC_KEY)];
                     options.ADYEN_POS_POI_ID = Configuration[nameof(AdyenOptions.ADYEN_POS_POI_ID)] ?? throw new ArgumentNullException();
                     options.ADYEN_POS_SALE_ID = "SALE_ID_POS_42";
                 }
@@ -56,7 +57,7 @@ namespace adyen_dotnet_in_person_payments_example
                         XApiKey = options.Value.ADYEN_API_KEY,
                         // Test environment.
                         Environment = Adyen.Model.Environment.Test,
-                        Timeout = 150,
+                        Timeout = 180,
                     },
                     provider.GetRequiredService<IHttpClientFactory>(),
                     httpClientName
@@ -82,7 +83,6 @@ namespace adyen_dotnet_in_person_payments_example
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //var response = app.ApplicationServices.GetRequiredService<InPersonPaymentService>().SendSaleToPOIRequest("EUR", 50).GetAwaiter().GetResult();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

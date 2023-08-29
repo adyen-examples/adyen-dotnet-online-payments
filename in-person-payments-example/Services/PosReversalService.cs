@@ -11,7 +11,8 @@ namespace adyen_dotnet_in_person_payments_example.Services
     public interface IPosReversalService
     {
         /// <summary>
-        /// Sends a terminal-api payment reversal request for the specified <paramref name="saleReferenceId"/>, <paramref name="poiId"/> and <paramref name="saleId"/>.
+        /// Issue a referenced refund by sending a terminal-api payment reversal request.
+        /// https://docs.adyen.com/point-of-sale/basic-tapi-integration/refund-payment/referenced/?tab=full_refund_1#referenced-request
         /// </summary>
         /// <param name="reversalReasonType"><see cref="ReversalReasonType"/>.</param>
         /// <param name="saleReferenceId">Unique Id of a sale global transaction. Appears as MerchantReference in your Customer Area.</param>
@@ -35,7 +36,7 @@ namespace adyen_dotnet_in_person_payments_example.Services
         public Task<SaleToPOIResponse> SendReversalRequestAsync(ReversalReasonType reversalReasonType, string saleReferenceId, string poiTransactionId, string poiId, string saleId, CancellationToken cancellationToken)
         {
             SaleToPOIRequest request = GetReversalRequest(reversalReasonType, saleReferenceId, poiTransactionId, poiId, saleId);
-            return _posPaymentCloudApi.TerminalApiCloudSynchronousAsync(request); // Missing cancellationToken here & naming here is kinda confusing for devs.
+            return _posPaymentCloudApi.TerminalApiCloudSynchronousAsync(request);
         }
 
         private SaleToPOIRequest GetReversalRequest(ReversalReasonType reversalReasonType, string saleReferenceId, string poiTransactionId, string poiId, string saleId)

@@ -9,7 +9,7 @@ async function sendPostRequest(url, data) {
         headers: {
             "Content-Type": "application/json",
             "Connection": "keep-alive",
-            "Keep-Alive": "timeout=150, max=180"
+            "Keep-Alive": "timeout=180, max=180"
         },
         signal: abortController.signal
     });
