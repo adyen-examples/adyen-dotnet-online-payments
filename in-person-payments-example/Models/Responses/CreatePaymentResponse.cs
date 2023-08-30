@@ -7,7 +7,7 @@ namespace adyen_dotnet_in_person_payments_example.Models.Responses
         public string Result { get; set; }
         public string RefusalReason { get; set; }
 
-        public string SaleTransactionId { get; set; }
+        public string SaleTransactionId { get; set; } // == SaleReferenceId
         public DateTime? SaleTransactionDateTime { get; set; }
 
         public string PoiTransactionId { get; set; }

@@ -8,19 +8,34 @@
 
 <div class="main-container">
   <div class="info">
-    <h2>Cash Register</h2>
-    <section id="tables-section" class="tables-section">
+    <h2>Cash Register Demo</h2>
+    <div id="tables-section" class="tables-section">
       <div class="tables-grid">
         <ul class="tables-grid-list">
           @foreach (TableModel table in list)
           {
-            <li class="tables-grid-item @(table.TableStatus is TableStatus.Refunded or TableStatus.RefundFailed or TableStatus.RefundedReversed ? "refund" : (table.TableStatus == TableStatus.Paid ? "paid" : ""))">
+            string paymentStatus = table.PaymentStatus switch
+            {
+                PaymentStatus.NotPaid => "not-paid",
+                PaymentStatus.PaymentInProgress => "disabled",
+                PaymentStatus.Paid => "paid",
+                PaymentStatus.RefundInProgress => "disabled",
+                PaymentStatus.Refunded => "disabled",
+                PaymentStatus.RefundFailed => "refund-failed",
+                PaymentStatus.RefundedReversed => "disabled",
+                _ => ""
+            };
+
+            // Adds a css-class that sets pointer-events to none if it's disabled
+            string disableButtonCssName = @paymentStatus == "disabled" ? "disabled" : "";
+
+            <li class="tables-grid-item @disableButtonCssName">
               <p class="tables-grid-item-title">@table.TableName</p>
-              <p class="tables-grid-item-status">@table.TableStatus</p>
               <div class="tables-grid-item-currency-amount">
                 <p class="tables-grid-item-currency">@table.Currency</p>
                 <p class="tables-grid-item-amount">@table.Amount</p>
               </div>
+              <p class="tables-grid-item-status @paymentStatus">@table.PaymentStatus</p>
             </li>
           }
         </ul>
@@ -45,20 +60,19 @@
             </p>
           </li>
         </ul>
-        <p id="current-selection">Select a table</p>
         <form id="payment-request-form" method="post">
           <input type="text" id="tableName" name="tableName" hidden>
           <input type="text" id="amount" name="amount" hidden>
           <input type="text" id="currency" name="currency" hidden>
-          <button type="submit" class="payment-request-button">Pay</button>
+          <button type="submit" id="payment-request-button" class="payment-request-button disabled">Pay</button>
         </form>
 
         <form id="reversal-request-form" method="post">
           <input type="text" id="reversalTableName" name="reversalTableName" hidden>
-          <button type="submit" class="reversal-request-button">Reversal</button>
+          <button type="submit" id="reversal-request-button" class="reversal-request-button disabled">Reversal</button>
         </form>
       </div>
-    </section>
+    </div>
     <div id="loading-grid" class="loading-grid disabled">
       <!-- Loading animation start -->
       <div class="loading-animation"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>

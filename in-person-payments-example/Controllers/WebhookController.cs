@@ -106,7 +106,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                 _logger.LogInformation("BookingDate: " + dateTime);
             }
 
-            TableModel table = _tableService.Tables.FirstOrDefault(t => t.SaleReferenceId == notification.MerchantReference);
+            TableModel table = _tableService.Tables.FirstOrDefault(t => t.PaymentStatusDetails.SaleTransactionId == notification.MerchantReference);
             
             if (table == null)
             {
@@ -115,11 +115,11 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
 
             if (!notification.Success)
             {
-                table.TableStatus = TableStatus.Refunded;
+                table.PaymentStatus = PaymentStatus.Refunded;
             }
             else
             {
-                table.TableStatus = TableStatus.RefundFailed;
+                table.PaymentStatus = PaymentStatus.RefundFailed;
             }
 
             _logger.LogInformation($"Received {(notification.Success ? "successful" : "unsuccessful")} {notification.EventCode} webhook::\n" +
@@ -142,7 +142,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                 _logger.LogInformation("BookingDate: " + dateTime);
             }
 
-            TableModel table = _tableService.Tables.FirstOrDefault(t => t.SaleReferenceId == notification.MerchantReference);
+            TableModel table = _tableService.Tables.FirstOrDefault(t => t.PaymentStatusDetails.SaleTransactionId == notification.MerchantReference);
             
             if (table == null)
             {
@@ -151,7 +151,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
 
             if (notification.Success)
             {
-                table.TableStatus = TableStatus.RefundFailed;
+                table.PaymentStatus = PaymentStatus.RefundFailed;
             }
 
             _logger.LogInformation($"Received {(notification.Success ? "successful" : "unsuccessful")} {notification.EventCode} webhook::\n" +
@@ -175,7 +175,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                 _logger.LogInformation("BookingDate: " + dateTime);
             }
 
-            TableModel table = _tableService.Tables.FirstOrDefault(t => t.SaleReferenceId == notification.MerchantReference);
+            TableModel table = _tableService.Tables.FirstOrDefault(t => t.PaymentStatusDetails.SaleTransactionId == notification.MerchantReference);
             
             if (table == null)
             {
@@ -184,7 +184,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
 
             if (notification.Success)
             {
-                table.TableStatus = TableStatus.RefundedReversed;
+                table.PaymentStatus = PaymentStatus.RefundedReversed;
             }
 
             _logger.LogInformation($"Received {(notification.Success ? "successful" : "unsuccessful")} {notification.EventCode} webhook::\n" +

@@ -39,10 +39,10 @@ function hideLoadingComponent() {
     tablesSection.classList.remove('disabled');
 }
 
-// Sends abort request to cancel a transaction
-async function sendAbortRequest() {
+// Sends abort request to cancel an on-going transaction
+async function sendAbortRequest(tableName) {
     try {
-        var response = await sendPostRequest("/api/abort/");
+        var response = await sendPostRequest("/api/abort/" + tableName);
         console.log(response);
     }
     catch(error) {
@@ -50,7 +50,7 @@ async function sendAbortRequest() {
     }
 }
 
-// Bind table selection buttons and the `send payment request` submit-button
+// Bind table selection buttons and the `pay/reversal` submit-buttons
 function bindButtons() {
     // Bind `payment-request-form` submit-button
     const paymentRequestForm = document.getElementById('payment-request-form');
@@ -87,7 +87,7 @@ function bindButtons() {
                 console.warn(error);
 
                 // Sends an abort request to the terminal
-                await sendAbortRequest();
+                await sendAbortRequest(tableName);
                 
                 // Hides loading animation component and allow user to select tables again
                 hideLoadingComponent();
@@ -136,19 +136,22 @@ function bindButtons() {
     // Bind `cancel-operation-button`
     const cancelOperationButton = document.getElementById('cancel-operation-button');
     cancelOperationButton.addEventListener('click', () => {
-        abortController.abort(); // Abort sending post request
-        hideLoadingComponent(); // Hide loading component
+        // Abort sending post request
+        abortController.abort(); 
+
+        // Hide loading component
+        hideLoadingComponent();
     });
 
     // Allows user to select a table by binding all tables to a click event
     const tables = document.querySelectorAll('.tables-grid-item');
     tables.forEach(table => {
         table.addEventListener('click', function() {
-            // Remove the 'active' class from all table-grid-items
-            tables.forEach(item => item.classList.remove('active'));
+            // Remove the 'current-selection' class from all `table-grid-items`
+            tables.forEach(item => item.classList.remove('current-selection'));
 
-            // Add the 'active' class to tables-grid-item
-            table.classList.add('active');
+            // Add the 'current-selection' class to the currently selected `tables-grid-item`
+            table.classList.add('current-selection');
 
             // Copies 'amount' value to the `payment-request-form`
             const amountElement = document.getElementById('amount');
@@ -165,12 +168,58 @@ function bindButtons() {
             // Copies 'table name' value to the `reversal-request-form`
             const reversalTableNameElement = document.getElementById('reversalTableName');
             reversalTableNameElement.value = table.querySelector('.tables-grid-item-title').textContent;
-            
-            // Copies 'table name' textContent to information display on the right
-            const currentSelectionElement = document.getElementById('current-selection');
-            currentSelectionElement.textContent = table.querySelector('.tables-grid-item-title').textContent;
+
+            // Enables the `payment-request-button` and `reversal-request-button` according to the `PaymentStatus`` of currently selected table.
+            const currentActiveTable = document.getElementsByClassName('current-selection')[0];
+            var statusValue = currentActiveTable.querySelector('.tables-grid-item-status').textContent;
+            switch (statusValue) {
+                 case 'NotPaid':
+                    enablePaymentRequestButton();
+                    disableReversalRequestButton();
+                    break;
+                case 'Paid':
+                    disablePaymentRequestButton();
+                    enableReversalRequestButton();
+                    break;
+                case 'RefundFailed':
+                    disablePaymentRequestButton();
+                    enableReversalRequestButton();
+                    break;
+                case 'PaymentInProgress':
+                case 'RefundInProgress':
+                case 'Refunded':
+                case 'RefundedReversed':
+                default:
+                    disablePaymentRequestButton();
+                    disableReversalRequestButton();
+                    break;
+            }
         });
     });
+}
+
+// Enable `payment-request-button`
+function enablePaymentRequestButton() {
+   const button = document.getElementById('payment-request-button');
+   button.classList.remove('disabled');
+}
+
+// Disable `payment-request-button`
+function disablePaymentRequestButton() {
+   const button = document.getElementById('payment-request-button');
+   button.classList.add('disabled');
+}
+
+// Enable `reversal-request-button`
+function enableReversalRequestButton() {
+    const button = document.getElementById('reversal-request-button');
+    button.classList.remove('disabled');
+}
+
+// Disable `reversal-request-button`
+function disableReversalRequestButton() {
+    const button = document.getElementById('reversal-request-button');
+    button.classList.add('disabled');
 }
 
 bindButtons();

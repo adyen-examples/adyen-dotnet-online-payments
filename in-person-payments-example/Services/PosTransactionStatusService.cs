@@ -1,7 +1,7 @@
 ﻿using Adyen.Model.Nexo;
 using Adyen.Model.Nexo.Message;
 using Adyen.Service;
-using adyen_dotnet_in_person_payments_example.Extensions;
+using adyen_dotnet_in_person_payments_example.Utilities;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,11 +10,12 @@ namespace adyen_dotnet_in_person_payments_example.Services
     public interface IPosTransactionStatusService
     {
         /// <summary>
-        /// Sends a terminal-api transaction status request
+        /// Sends a terminal-api transaction status request to verify the transaction status.
+        /// See: https://docs.adyen.com/point-of-sale/basic-tapi-integration/verify-transaction-status/#request-status.
         /// </summary>
-        /// <param name="serviceId">The unique ID of a message pair, which processes a transaction. The length of the string must be greater than or equal to 1 and less than or equal to 10.</param>
-        /// <param name="poiId">The unique ID of the terminal to send this request to. Format: [device model]-[serial number].</param>
-        /// <param name="saleId">Your unique ID for the POS system (cash register) to send this request from.</param>
+        /// <param name="serviceId">Your unique ID for this request, consisting of 1-10 alphanumeric characters. Must be unique within the last 48 hours for the terminal (POIID) being used. Generated using <see cref="Utilities.IdUtility.GetRandomAlphanumericId(int0)"/>.</param>
+        /// <param name="poiId">Your unique ID of the terminal to send this request to. Format: [device model]-[serial number]. Seealso <seealso cref="Options.AdyenOptions.ADYEN_POS_POI_ID"/></param>
+        /// <param name="saleId">Your unique ID for the POS system (cash register) to send this request from. Seealso <see cref="Options.AdyenOptions.ADYEN_POS_SALE_ID"/>.</param>
         /// <param name="cancellationToken"><see cref="CancellationToken"/>.</param>
         /// <returns><see cref="SaleToPOIResponse"/>.</returns>
         Task<SaleToPOIResponse> SendTransactionStatusRequestAsync(string serviceId, string poiId, string saleId, CancellationToken cancellationToken = default);
@@ -50,7 +51,6 @@ namespace adyen_dotnet_in_person_payments_example.Services
                 },
                 MessagePayload = new TransactionStatusRequest()
                 {
-                    // See: https://docs.adyen.com/point-of-sale/basic-tapi-integration/verify-transaction-status/#request-status.
                     MessageReference = new MessageReference()
                     {
                         MessageCategory = MessageCategoryType.Payment,

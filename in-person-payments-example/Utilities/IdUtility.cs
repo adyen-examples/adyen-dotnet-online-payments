@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace adyen_dotnet_in_person_payments_example.Extensions
+namespace adyen_dotnet_in_person_payments_example.Utilities
 {
     public static class IdUtility
     {
@@ -14,7 +14,7 @@ namespace adyen_dotnet_in_person_payments_example.Extensions
         /// </summary>
         /// <param name="length">Length of the generated id.</param>
         /// <returns>Alphanumeric Id.</returns>
-        public static string GetRandomAlphanumericId(int length)
+        public static string GetRandomAlphanumericId(int length = 10)
         {
             StringBuilder sb = new StringBuilder();
 

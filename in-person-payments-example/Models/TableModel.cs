@@ -1,44 +1,30 @@
-﻿using System;
-
-namespace adyen_dotnet_in_person_payments_example.Models
+﻿namespace adyen_dotnet_in_person_payments_example.Models
 {
     public class TableModel
     {
         /// <summary>
         /// Currency used for the <see cref="Amount"/> (e.g. "EUR", "USD).
         /// </summary>
-        public string Currency { get; set; }
+        public string Currency { get; init; }
         
         /// <summary>
-        /// The total amount in DECIMAL units (example: 42.99), the terminal API does not use minor units.
+        /// The table amount to-be-paid, in DECIMAL units (example: 42.99), the terminal API does not use minor units.
         /// </summary>
-        public decimal Amount { get; set; }
+        public decimal Amount { get; init; }
 
         /// <summary>
         /// Name of the table, used to uniquely identify the table.
         /// </summary>
-        public string TableName { get; set; }
-        
+        public string TableName { get; init; }
+
         /// <summary>
         /// Status of the table, used to check if the table has paid.
         /// </summary>
-        public TableStatus TableStatus { get; set; } = TableStatus.NotPaid;
+        public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.NotPaid;
 
         /// <summary>
-        /// The Poi Transaction Id, populated when a <see cref="TableStatus"/> is set to <see cref="Models.TableStatus.Paid"/>.
-        /// Example value: CmI6001693237705007.TG6DVRZ3HVTFWR82.
+        /// Object that populated with information when payment process is started.
         /// </summary>
-        public string PoiTransactionId { get; set; } = null;
-
-        /// <summary>
-        /// The Sale Reference Id, populated when a <see cref="TableStatus"/> is set to <see cref="Models.TableStatus.Paid"/>.
-        /// Example value: 6abcb27d-9082-40d9-969d-1c7f283ebd52.
-        /// </summary>
-        public string SaleReferenceId { get; set; } = null;
-
-        /// <summary>
-        /// Date of the transaction.
-        /// </summary>
-        public DateTime TransactionDateTime { get; set; }
+        public PaymentStatusDetails PaymentStatusDetails { get; init; } = new PaymentStatusDetails();
     }
 }
