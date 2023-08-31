@@ -66,6 +66,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
 
             table.PaymentStatusDetails.ServiceId = serviceId;
             table.PaymentStatus = PaymentStatus.PaymentInProgress;
+            
             try
             {
                 SaleToPOIResponse response = await _posPaymentService.SendPaymentRequestAsync(serviceId, _poiId, _saleId, request.Currency, request.Amount, cancellationToken);
@@ -73,6 +74,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                 PaymentResponse paymentResponse = response?.MessagePayload as PaymentResponse;
                 if (response == null)
                 {
+                    table.PaymentStatus = PaymentStatus.NotPaid;
                     return BadRequest(new CreatePaymentResponse()
                     {
                         Result = "failure",
@@ -84,10 +86,11 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
 
                 if (result == null)
                 {
+                    table.PaymentStatus = PaymentStatus.NotPaid;
                     return BadRequest(new CreatePaymentResponse()
                     {
                         Result = "failure",
-                        RefusalReason = _poiId == null ? "Could not reach payment terminal - POI ID was not set." : $"Could not reach payment terminal with POI ID {_poiId}."
+                        RefusalReason = _poiId == null ? "Could not reach payment terminal - POI ID is not set." : $"Could not reach payment terminal with POI ID {_poiId}."
                     });
                 }
 
@@ -174,7 +177,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                         return BadRequest(new CreateReversalResponse()
                         {
                             Result = "failure",
-                            RefusalReason = _poiId == null ? "Could not reach payment terminal - POI ID was not set." : $"Could not reach payment terminal with POI ID {_poiId}."
+                            RefusalReason = _poiId == null ? "Could not reach payment terminal - POI ID is not set." : $"Could not reach payment terminal with POI ID {_poiId}."
                         });
                 }
             }
