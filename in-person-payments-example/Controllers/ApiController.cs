@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using Adyen.HttpClient;
 
 namespace adyen_dotnet_in_person_payments_example.Controllers
 {
@@ -66,10 +67,11 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
 
             table.PaymentStatusDetails.ServiceId = serviceId;
             table.PaymentStatus = PaymentStatus.PaymentInProgress;
-            
+
             try
             {
-                SaleToPOIResponse response = await _posPaymentService.SendPaymentRequestAsync(serviceId, _poiId, _saleId, request.Currency, request.Amount, cancellationToken);
+                SaleToPOIResponse response = await _posPaymentService.SendPaymentRequestAsync(serviceId, _poiId,
+                    _saleId, request.Currency, request.Amount, cancellationToken);
 
                 PaymentResponse paymentResponse = response?.MessagePayload as PaymentResponse;
                 if (response == null)
@@ -90,7 +92,9 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                     return BadRequest(new CreatePaymentResponse()
                     {
                         Result = "failure",
-                        RefusalReason = _poiId == null ? "Could not reach payment terminal - POI ID is not set." : $"Could not reach payment terminal with POI ID {_poiId}."
+                        RefusalReason = _poiId == null
+                            ? "Could not reach payment terminal - POI ID is not set"
+                            : $"Could not reach payment terminal with POI ID {_poiId}"
                     });
                 }
 
@@ -116,15 +120,20 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                     SaleTransactionDateTime = result.PaymentStatusDetails.SaleTransactionTimeStamp,
                 });
             }
-            catch (Exception e)
+            catch (HttpClientException e)
             {
                 _logger.LogError(e.ToString());
                 table.PaymentStatus = PaymentStatus.NotPaid;
-                return StatusCode(500, new CreatePaymentResponse()
+                return StatusCode(e.Code, new CreatePaymentResponse()
                 {
                     Result = "failure",
-                    RefusalReason = e.Message
+                    RefusalReason = $"ErrorCode: {e.Code}, see logs"
                 });
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.ToString());
+                throw;
             }
         }
 
@@ -177,18 +186,24 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                         return BadRequest(new CreateReversalResponse()
                         {
                             Result = "failure",
-                            RefusalReason = _poiId == null ? "Could not reach payment terminal - POI ID is not set." : $"Could not reach payment terminal with POI ID {_poiId}."
+                            RefusalReason = _poiId == null ? "Could not reach payment terminal - POI ID is not set" : $"Could not reach payment terminal with POI ID {_poiId}"
                         });
                 }
+            }
+            catch (HttpClientException e)
+            {
+                _logger.LogError(e.ToString());
+                table.PaymentStatus = PaymentStatus.NotPaid;
+                return StatusCode(e.Code, new CreateReversalResponse()
+                {
+                    Result = "failure",
+                    RefusalReason = $"ErrorCode: {e.Code}, see logs"
+                });
             }
             catch (Exception e)
             {
                 _logger.LogError(e.ToString());
-                return StatusCode(500, new CreateReversalResponse()
-                {
-                    Result = "failure",
-                    RefusalReason = e.Message
-                });
+                throw;
             }
         }
 
@@ -207,6 +222,15 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                 SaleToPOIResponse abortResponse = await _posAbortService.SendAbortRequestAsync(table.PaymentStatusDetails.ServiceId, _poiId, _saleId, cancellationToken);
                 table.PaymentStatus = PaymentStatus.NotPaid;
                 return Ok(abortResponse);
+            }
+            catch (HttpClientException e)
+            {
+                _logger.LogError(e.ToString());
+                return StatusCode(e.Code, new CreateReversalResponse()
+                {
+                    Result = "failure",
+                    RefusalReason = $"ErrorCode: {e.Code}, see logs"
+                });
             }
             catch (Exception e)
             {
@@ -229,6 +253,15 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
 
                 SaleToPOIResponse response = await _posTransactionStatusService.SendTransactionStatusRequestAsync(table.PaymentStatusDetails.ServiceId, _poiId, _saleId, cancellationToken);
                 return Ok(response);
+            }
+            catch (HttpClientException e)
+            {
+                _logger.LogError(e.ToString());
+                return StatusCode(e.Code, new CreateReversalResponse()
+                {
+                    Result = "failure",
+                    RefusalReason = $"ErrorCode: {e.Code}, see logs"
+                });
             }
             catch (Exception e)
             {

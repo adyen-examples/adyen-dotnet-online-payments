@@ -101,11 +101,6 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                 return Task.CompletedTask;
             }
 
-            if (notification.AdditionalData.TryGetValue("bookingDate", out string dateTime))
-            {
-                _logger.LogInformation("BookingDate: " + dateTime);
-            }
-
             TableModel table = _tableService.Tables.FirstOrDefault(t => t.PaymentStatusDetails.SaleTransactionId == notification.MerchantReference);
             
             if (table == null)
@@ -136,12 +131,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
             {
                 return Task.CompletedTask;
             }
-
-            if (notification.AdditionalData.TryGetValue("bookingDate", out string dateTime))
-            {
-                _logger.LogInformation("BookingDate: " + dateTime);
-            }
-
+            
             TableModel table = _tableService.Tables.FirstOrDefault(t => t.PaymentStatusDetails.SaleTransactionId == notification.MerchantReference);
             
             if (table == null)
@@ -169,12 +159,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
             {
                 return Task.CompletedTask;
             }
-
-            if (notification.AdditionalData.TryGetValue("bookingDate", out string dateTime))
-            {
-                _logger.LogInformation("BookingDate: " + dateTime);
-            }
-
+            
             TableModel table = _tableService.Tables.FirstOrDefault(t => t.PaymentStatusDetails.SaleTransactionId == notification.MerchantReference);
             
             if (table == null)
