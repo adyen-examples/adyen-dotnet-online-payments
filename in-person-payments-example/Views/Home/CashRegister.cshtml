@@ -9,6 +9,13 @@
 <div class="main-container">
   <div class="info">
     <h2>Cash Register Demo</h2>
+    <div id="loading-grid" class="loading-grid disabled">
+      <!-- Loading animation start -->
+      <div class="loading-animation"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+      <!-- Loading animation end -->
+      <div class="loading-description">Waiting for terminal response ...</div>
+      <input type="button" id="cancel-operation-button" class="cancel-operation-button" value="Cancel"/>
+    </div>
     <div id="tables-section" class="tables-section">
       <div class="tables-grid">
         <ul class="tables-grid-list">
@@ -72,13 +79,6 @@
           <button type="submit" id="reversal-request-button" class="reversal-request-button disabled">Reversal</button>
         </form>
       </div>
-    </div>
-    <div id="loading-grid" class="loading-grid disabled">
-      <!-- Loading animation start -->
-      <div class="loading-animation"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
-      <!-- Loading animation end -->
-      <div class="loading-description">Waiting for terminal response ...</div>
-      <input type="button" id="cancel-operation-button" class="cancel-operation-button" value="Cancel"/>
     </div>
   </div>
 </div>

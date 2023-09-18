@@ -49,8 +49,8 @@ namespace adyen_dotnet_in_person_payments_example.Services
 
             Tables = new List<TableModel>();
 
-            // Add 16 random dummy values.
-            for (int i = 0; i < 16; i++)
+            // Add tables.
+            for (int i = 0; i < 12; i++)
             {
                 int tableNumber = i + 1;
                 Tables.Add(new TableModel()

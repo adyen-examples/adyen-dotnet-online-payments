@@ -52,6 +52,11 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                     return BadRequest("[not accepted invalid hmac key]");
                 }
 
+                // Process AUTHORISATION notification asynchronously.
+                // Use this to get payment information that you'd want to persist in your own backend/database.
+                // Documentation: https://docs.adyen.com/point-of-sale/design-your-integration/notifications/standard-notifications/#example-standard-webhook
+                await ProcessAuthorisationNotificationAsync(container.NotificationItem);
+
                 // Process CANCEL_OR_REFUND notification asynchronously (also known as: `reversals`).
                 // Documentation: https://docs.adyen.com/point-of-sale/basic-tapi-integration/refund-payment/refund-webhooks/#cancel-or-refund-webhook
                 await ProcessCancelOrRefundNotificationAsync(container.NotificationItem);
@@ -74,7 +79,28 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
             }
         }
 
+        private Task ProcessAuthorisationNotificationAsync(NotificationRequestItem notification)
+        {
+            // Regardless of a success or not, you would probably want to update your backend/database or (preferably) send the event to a queue.
+            if (!notification.Success)
+            {
+                // Perform your business logic here, you would probably want to process the success:false event to update your backend. We log it for now.
+                _logger.LogInformation($"Webhook unsuccessful: {notification.Reason} \n" +
+                                       $"EventCode: {notification.EventCode} \n" +
+                                       $"Merchant Reference ::{notification.MerchantReference} \n" +
+                                       $"PSP Reference ::{notification.PspReference} \n");
 
+                return Task.CompletedTask;
+            }
+
+            // Perform your business logic here, you would probably want to process the success:true event to update your backend. We log it for now.
+            _logger.LogInformation($"Received successful webhook with event::\n" +
+                                   $"Merchant Reference ::{notification.MerchantReference} \n" +
+                                   $"PSP Reference ::{notification.PspReference} \n");
+
+            return Task.CompletedTask;
+        }
+        
         // Webhook: https://docs.adyen.com/online-payments/reversal/#cancel-or-refund-webhook
         // >> True: Adyen's validations were successful and we sent the refund request to the card scheme.
         // This usually means that the refund will be processed successfully. However, in rare cases the refund can be rejected by the card scheme, or reversed.

@@ -173,7 +173,7 @@ a:hover {
 
 .tables-grid-list {
   display: grid;
-  grid-template-columns: repeat(4, minmax(240px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 16px;
   padding: 16px;
   background: #e6e9eb;
@@ -508,12 +508,14 @@ a:hover {
   border-radius: 8px;
   margin: 10px 0px 16px 0px;
   transition: opacity 0.4s ease-in;
-  width: 115%;
+  width: 87%;
+  height: 100%;
 }
 
 .loading-grid.disabled {
   opacity: 0;  /* Reduce opacity */
   pointer-events: none; /* Disable pointer events on elements */
+  height: 0;
 }
 
 .loading-description {
@@ -530,7 +532,6 @@ a:hover {
   color: white;
   padding: 6px 16px 6px 16px;
   margin: 8px 0px 8px 0px;
-  border: none;
   cursor: pointer;
   font-weight: bold;
   border: 1px solid #0abf53;
