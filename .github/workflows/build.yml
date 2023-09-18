@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths-ignore:
       - '**/readme.md'
+      - readme.md
       - .gitignore
       - .gitpod.yml
       - LICENSE
@@ -12,6 +13,7 @@ on:
     branches: [ main ]
     paths-ignore:
       - '**/readme.md'
+      - readme.md
       - .gitignore
       - .gitpod.yml
       - LICENSE
