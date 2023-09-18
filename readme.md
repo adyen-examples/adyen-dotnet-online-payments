@@ -53,7 +53,7 @@ The [`authorisation adjustment example`](authorisation-adjustment-example) repos
 
 [First time with Gitpod?](https://github.com/adyen-examples/.github/blob/main/pages/gitpod-get-started.md)
 
-The [in-person payments example](in-person-payments-example) features an in-person payment [cloud terminal API integration](https://docs.adyen.com/point-of-sale/design-your-integration/choose-your-architecture/cloud/) integration. Within this demo app, you can make in-person payments using a terminal, initiate reversals (refunds) and check transaction statuses.
+The [in-person payments example](in-person-payments-example) features an in-person payment [cloud terminal API](https://docs.adyen.com/point-of-sale/design-your-integration/choose-your-architecture/cloud/) integration. Within this demo app, you can make in-person payments using a terminal, initiate reversals (refunds) and check transaction statuses.
 
 ![Card Checkout Demo](checkout-example-advanced/wwwroot/images/cardcheckout.gif)
 
