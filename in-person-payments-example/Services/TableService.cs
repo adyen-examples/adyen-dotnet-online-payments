@@ -58,7 +58,7 @@ namespace adyen_dotnet_in_person_payments_example.Services
                     TableName = "Table " + tableNumber,
                     Amount = 11.11M * tableNumber,
                     Currency = "EUR",
-                    PaymentStatus = PaymentStatus.NotPaid //(PaymentStatus)(i % 7) + 1
+                    PaymentStatus = PaymentStatus.NotPaid
                 });
             }
             _logger = logger;

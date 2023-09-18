@@ -28,11 +28,12 @@ You can find the [Terminal API documentation](https://docs.adyen.com/point-of-sa
     - [`ADYEN_MERCHANT_ACCOUNT`](https://docs.adyen.com/account/account-structure)
 
 
-2. Go to [Gitpod Environmental Variables](https://gitpod.io/variables) and set the following variables: [`ADYEN_API_KEY`](https://docs.adyen.com/user-management/how-to-get-the-api-key), and [`ADYEN_MERCHANT_ACCOUNT`](https://docs.adyen.com/account/account-structure) with a scope of `*/*`
+2. Go to [Gitpod environment variables](https://gitpod.io/variables) and set the following variables with a scope of `*/*`:
+   - [`ADYEN_API_KEY`](https://docs.adyen.com/user-management/how-to-get-the-api-key) - Your Adyen API Key.
+   - [`ADYEN_MERCHANT_ACCOUNT`](https://docs.adyen.com/account/account-structure) - Merchant account that the terminal is assigned to.
+   - `ADYEN_POS_POI_ID` - This is the **case-sensitive** unique ID (e.g. `V400m-123456789`) of your payment terminal for the NEXO Sale to POI protocol. 
 
-
-3. Set the [`ADYEN_POS_POI_ID`] as variable, which is the unique ID of your payment terminal for the NEXO Sale to POI protocol. **Format:** `[device model]-[serial number]`.
-
+> **Note**: If you'd like to check the connection of your terminal, you can do so in the Customer Area → `In-person payments` → `Terminals`.
 
 This demo provides a simple webhook integration for receiving refund/reversal updates at `/api/webhooks/notifications`. For it to work, you need to provide a way for Adyen's servers to reach your running application on Gitpod and add a standard webhook in the Customer Area.
 
@@ -104,12 +105,12 @@ If you use a tunneling service like ngrok, the webhook URL will be the generated
     - In the Customer Area go to `Developers` → `Webhooks` and add a new `Standard notification webhook`
     - Define username and password (Basic Authentication) to [protect your endpoint](https://docs.adyen.com/development-resources/webhooks/best-practices#security) - Basic authentication only guarantees that the notification was sent by Adyen, not that it wasn't modified during transmission
     - Generate the [HMAC Key](https://docs.adyen.com/development-resources/webhooks/verify-hmac-signatures) - This key is used to [verify](https://docs.adyen.com/development-resources/webhooks/best-practices#security) whether the HMAC signature that is included in the notification, was sent by Adyen and not modified during transmission
-    - See script below that allows you to easily set your environmental variables
+    - See script below that allows you to easily set your environment variables
     - For the URL, enter `https://ngrok.io` for now - We will need to update this webhook URL in step 10
     - Make sure the webhook is **enabled** to send notifications
 
     
-7. Set the following environment variables in your terminal environment: `ADYEN_API_KEY`, `ADYEN_CLIENT_KEY`, `ADYEN_MERCHANT_ACCOUNT` and `ADYEN_HMAC_KEY`. Note that some IDEs will have to be restarted for environmental variables to be injected properly.
+7. Set the following environment variables in your terminal environment: `ADYEN_API_KEY`, `ADYEN_CLIENT_KEY`, `ADYEN_MERCHANT_ACCOUNT` and `ADYEN_HMAC_KEY`. Note that some IDEs will have to be restarted for environment variables to be injected properly.
 
 ```shell
 export ADYEN_API_KEY=yourAdyenApiKey
