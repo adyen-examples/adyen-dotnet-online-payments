@@ -133,6 +133,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e.ToString());
+                table.PaymentStatus = PaymentStatus.NotPaid;
                 throw;
             }
         }
@@ -193,7 +194,6 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
             catch (HttpClientException e)
             {
                 _logger.LogError(e.ToString());
-                table.PaymentStatus = PaymentStatus.NotPaid;
                 return StatusCode(e.Code, new CreateReversalResponse()
                 {
                     Result = "failure",
