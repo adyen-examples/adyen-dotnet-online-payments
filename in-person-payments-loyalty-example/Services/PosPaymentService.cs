@@ -9,6 +9,19 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services
 {
     public interface IPosPaymentService
     {
+        /// <summary>
+        /// Sends a terminal-api payment request for the specified <paramref name="amount"/> and <paramref name="currency"/>.
+        /// See: https://docs.adyen.com/point-of-sale/basic-tapi-integration/make-a-payment/.
+        /// </summary>
+        /// <param name="serviceId">Your unique ID for this request, consisting of 1-10 alphanumeric characters. Must be unique within the last 48 hours for the terminal (POIID) being used. Generated using <see cref="Utilities.IdUtility.GetRandomAlphanumericId(int0)"/>.</param>
+        /// <param name="poiId">Your unique ID of the terminal to send this request to. Format: [device model]-[serial number]. Seealso <seealso cref="Options.AdyenOptions.ADYEN_POS_POI_ID"/></param>
+        /// <param name="saleId">Your unique ID for the POS system (cash register) to send this request from. Seealso <see cref="Options.AdyenOptions.ADYEN_POS_SALE_ID"/>.</param>
+        /// <param name="currency">Your <see cref="AmountsReq.Currency"/> (example: "EUR", "USD").</param>
+        /// <param name="amount">Your <see cref="AmountsReq.RequestedAmount"/> in DECIMAL units (example: 42.99), the terminal API does not use minor units.</param>
+        /// <param name="cardAcquisitionTimeStamp">The timestamp from the card acquisition, seealso <see cref="PosCardAcquisition.SendCardAcquisitionRequest(string, string, string, decimal?, CancellationToken)"/>.</param>
+        /// <param name="cardAcquisitionTransactionId">The transaction ID from the card acquisition response, seealso <seealso cref="PosCardAcquisition.SendCardAcquisitionRequest(string, string, string, decimal?, CancellationToken)"/>.</param>
+        /// <param name="cancellationToken"><see cref="CancellationToken"/>.</param>
+        /// <returns><see cref="SaleToPOIResponse"/>.</returns>
         Task<SaleToPOIResponse> SendPaymentRequestExistingCustomerAsync(string serviceId, string poiId, string saleId, string currency, decimal? amount, DateTime cardAcquisitionTimeStamp, string cardAcquisitionTransactionId, CancellationToken cancellationToken);
 
         /// <summary>
