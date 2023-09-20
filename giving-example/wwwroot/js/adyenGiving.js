@@ -74,7 +74,8 @@ async function startGiving() {
     },
     onCancel: (result, component) => {
       console.log("Donation cancelled");
-      document.getElementById( 'donation-container' ).style.display = 'none';
+      console.log(result);
+      document.getElementById('donation-container').style.display = 'none';
     }
   };
 
