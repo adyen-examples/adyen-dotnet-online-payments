@@ -27,6 +27,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "authorisation-adjustment-ex
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "adyen-dotnet-authorisation-adjustment-example", "authorisation-adjustment-example\adyen-dotnet-authorisation-adjustment-example.csproj", "{EC4006F7-EC06-4DBC-A9F7-2273AE677AC2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "giving-example", "giving-example", "{1552682B-E1EA-4324-9564-B9683056ACDB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "adyen-dotnet-giving-example", "giving-example\adyen-dotnet-giving-example.csproj", "{10B87E36-1604-4129-93F5-EAB4009D220B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +61,10 @@ Global
 		{EC4006F7-EC06-4DBC-A9F7-2273AE677AC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC4006F7-EC06-4DBC-A9F7-2273AE677AC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC4006F7-EC06-4DBC-A9F7-2273AE677AC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10B87E36-1604-4129-93F5-EAB4009D220B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10B87E36-1604-4129-93F5-EAB4009D220B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10B87E36-1604-4129-93F5-EAB4009D220B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10B87E36-1604-4129-93F5-EAB4009D220B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -68,6 +76,7 @@ Global
 		{A4303B5C-301E-432F-B8AC-571096DF5273} = {F3A61AF3-5126-417B-9AB2-A0F99B119325}
 		{26D67844-2033-4C06-A55A-5B50CFDEB0BC} = {B2582A34-631C-4130-B35D-838FA98297EA}
 		{EC4006F7-EC06-4DBC-A9F7-2273AE677AC2} = {61BDBE25-C448-4640-A4C7-E6744FA2D44F}
+		{10B87E36-1604-4129-93F5-EAB4009D220B} = {1552682B-E1EA-4324-9564-B9683056ACDB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {777409BD-281D-419E-9F9B-BE609D4B6971}

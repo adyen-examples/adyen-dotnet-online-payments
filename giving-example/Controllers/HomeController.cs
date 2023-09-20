@@ -1,10 +1,8 @@
-﻿using Adyen.Model.Checkout;
-using adyen_dotnet_checkout_example_advanced.Options;
+﻿using adyen_dotnet_giving_example.Options;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System.Threading;
 
-namespace adyen_dotnet_checkout_example_advanced.Controllers
+namespace adyen_dotnet_giving_example.Controllers
 {
     public class HomeController : Controller
     {
@@ -38,10 +36,19 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
         [HttpGet("result/{status}")]
         public IActionResult Result(string status, [FromQuery(Name = "reason")] string refusalReason)
         {
+            ViewBag.ClientKey = _clientKey;
             string msg;
             string img;
             switch (status)
             {
+                case "donated":
+                    msg = "Thank you for your donation!";
+                    img = "success";
+                    break;
+                case "success":
+                    msg = "Your order has been successfully placed.";
+                    img = "success";
+                    break;
                 case "pending":
                     msg = "Your order has been received! Payment completion pending.";
                     img = "success";
@@ -55,8 +62,8 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
                     img = "failed";
                     break;
                 default:
-                    msg = "Your order has been successfully placed.";
-                    img = "success";
+                    msg = $"Unhandled {status} status-response";
+                    img = "error";
                     break;
             }
             ViewBag.Status = status;

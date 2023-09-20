@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "Adyen Checkout Home";
+}
+<div class="main-container">
+  <div class="info">
+    <h1>Adyen Giving - Donations demo</h1>
+    <div class="giving-view-container">
+    <p>
+        This is a sample designed to demonstrate the <a href="https://docs.adyen.com/online-payments/donations/web-component">Adyen Giving</a> donations workflow.
+    </p>
+    <p>
+        First make a test payment using one of our <a href="https://docs.adyen.com/development-resources/test-cards/test-card-numbers">test card numbers</a>, so you can see the donation screen appear.
+    </p>
+    <p>
+        To learn more about Adyen's giving feature, check out <a href="https://docs.adyen.com/online-payments/donations/">donations.</a>
+    </p>
+      </div>
+  </div>
+
+  <ul class="integration-list">
+    <li class="integration-list-item">
+      <a asp-area="" asp-controller="Home" asp-action="Preview" asp-route-id="card" class="integration-list-item-link">
+        <div class="title-container">
+          <p class="integration-list-item-title">Card</p>
+        </div>
+      </a>
+    </li>
+  </ul>
+</div>
