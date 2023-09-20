@@ -1,8 +1,6 @@
-﻿using Adyen.Model.Checkout;
-using adyen_dotnet_checkout_example_advanced.Options;
+﻿using adyen_dotnet_checkout_example_advanced.Options;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System.Threading;
 
 namespace adyen_dotnet_checkout_example_advanced.Controllers
 {

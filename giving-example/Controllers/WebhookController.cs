@@ -27,6 +27,7 @@ namespace adyen_dotnet_giving_example.Controllers
         [HttpPost("api/webhooks/notifications")]
         public async Task<ActionResult<string>> Webhooks(NotificationRequest notificationRequest)
         {
+            // Process the payment (AUTHORISATION) webhook.
             _logger.LogInformation($"Webhook received::\n{notificationRequest.ToJson()}");
 
             try
@@ -61,10 +62,36 @@ namespace adyen_dotnet_giving_example.Controllers
         }
 
 
+        private Task ProcessNotificationAsync(NotificationRequestItem notification)
+        {
+            // Regardless of a success or not, you'd probably want to update your backend/database or (preferably) send the event to a queue for further processing.
+
+            if (!notification.Success)
+            {
+                // Perform your business logic here, process the success:false event to update your backend. We log it for now.
+                _logger.LogInformation($"Webhook unsuccessful: {notification.Reason} \n" +
+                    $"EventCode: {notification.EventCode} \n" +
+                    $"Merchant Reference ::{notification.MerchantReference} \n" +
+                    $"PSP Reference ::{notification.PspReference} \n");
+
+                return Task.CompletedTask;
+            }
+
+            // Perform your business logic here, process the success:true event to update your backend. We log it for now.
+            _logger.LogInformation($"Received successful Webhook with event::\n" +
+                                   $"EventCode: {notification.EventCode} \n" +
+                                   $"Merchant Reference ::{notification.MerchantReference} \n" +
+                                   $"PSP Reference ::{notification.PspReference} \n");
+
+            return Task.CompletedTask;
+        }
 
         [HttpPost("api/webhooks/giving")]
         public async Task<ActionResult<string>> GivingWebhooks(NotificationRequest notificationRequest)
         {
+            /// You need to enable the "DONATION" (eventCode) webhook: https://docs.adyen.com/online-payments/donations/web-component/#get-the-donation-outcome.
+            /// Use the originalReference to associate the donation to the shopper's original transaction.
+            /// See other eventCodes for webhooks here: https://docs.adyen.com/development-resources/webhooks/webhook-types/#other-webhooks.
             _logger.LogInformation($"Giving Webhook received::\n{notificationRequest.ToJson()}");
 
             try
@@ -78,16 +105,8 @@ namespace adyen_dotnet_giving_example.Controllers
                     return BadRequest("Container has no notification items.");
                 }
 
-                // We always recommend to activate HMAC validation in the webhooks for security reasons.
-                // Read more here: https://docs.adyen.com/development-resources/webhooks/verify-hmac-signatures & https://docs.adyen.com/development-resources/webhooks#accept-notifications.
-                if (!_hmacValidator.IsValidHmac(container.NotificationItem, _hmacKey))
-                {
-                    _logger.LogError($"Error while validating HMAC Key");
-                    return BadRequest("[not accepted invalid hmac key]");
-                }
-
                 // Process notification asynchronously.
-                await ProcessNotificationAsync(container.NotificationItem);
+                await ProcessGivingNotificationAsync(container.NotificationItem);
 
                 return Ok("[accepted]");
             }
@@ -98,13 +117,14 @@ namespace adyen_dotnet_giving_example.Controllers
             }
         }
 
-        private Task ProcessNotificationAsync(NotificationRequestItem notification)
+        private Task ProcessGivingNotificationAsync(NotificationRequestItem notification)
         {
-            // Regardless of a success or not, you would probably want to update your backend/database or (preferably) send the event to a queue.
+            // Regardless of a success or not, you'd probably want to update your backend/database or (preferably) send the event to a queue for further processing.
+
             if (!notification.Success)
             {
-                // Perform your business logic here, you would probably want to process the success:false event to update your backend. We log it for now.
-                _logger.LogInformation($"Webhook unsuccessful: {notification.Reason} \n" +
+                // Perform your business logic here, process the success:false event to update your backend. We log it for now.
+                _logger.LogInformation($"Giving Webhook unsuccessful: {notification.Reason} \n" +
                     $"EventCode: {notification.EventCode} \n" +
                     $"Merchant Reference ::{notification.MerchantReference} \n" +
                     $"PSP Reference ::{notification.PspReference} \n");
@@ -112,12 +132,14 @@ namespace adyen_dotnet_giving_example.Controllers
                 return Task.CompletedTask;
             }
 
-            // Perform your business logic here, you would probably want to process the success:true event to update your backend. We log it for now.
-            _logger.LogInformation($"Received successful webhook with event::\n" +
+            // Perform your business logic here, process the success:true event to update your backend. We log it for now.
+            _logger.LogInformation($"Received successful Giving Webhook with event::\n" +
+                                   $"EventCode: {notification.EventCode} \n" +
                                    $"Merchant Reference ::{notification.MerchantReference} \n" +
                                    $"PSP Reference ::{notification.PspReference} \n");
 
             return Task.CompletedTask;
         }
+
     }
 }
