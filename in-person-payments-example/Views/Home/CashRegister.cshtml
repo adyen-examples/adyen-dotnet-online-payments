@@ -8,7 +8,7 @@
 
 <div class="main-container">
   <div class="info">
-    <h2>Cash Register Demo</h2>
+    <h2>In-Person Payments Demo</h2>
     <div id="loading-grid" class="loading-grid disabled">
       <!-- Loading animation start -->
       <div class="loading-animation"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
@@ -42,13 +42,33 @@
                 <p class="tables-grid-item-currency">@table.Currency</p>
                 <p class="tables-grid-item-amount">@table.Amount</p>
               </div>
+              
+              @if (!string.IsNullOrWhiteSpace(table.PaymentStatusDetails.SaleTransactionId))
+              {
+                  <p class="tables-grid-item-other"><b>Sale Transaction ID: </b> <br/> @table.PaymentStatusDetails.SaleTransactionId</p>
+              }
+              
+              @if (table.PaymentStatusDetails.SaleTransactionTimeStamp != null)
+              {
+                  <p class="tables-grid-item-other"><b>Sale Transaction Timestamp: </b> <br/> @table.PaymentStatusDetails.SaleTransactionTimeStamp</p>
+              }
+              
+              @if (!string.IsNullOrWhiteSpace(table.PaymentStatusDetails.PoiTransactionId))
+              {
+                  <p class="tables-grid-item-other"><b>POI Transaction ID: </b> <br/> @table.PaymentStatusDetails.PoiTransactionId</p>
+              }
+              
+              @if (table.PaymentStatusDetails.PoiTransactionTimeStamp != null)
+              {
+                  <p class="tables-grid-item-other"><b>POI Transaction Timestamp: </b> <br/> @table.PaymentStatusDetails.PoiTransactionTimeStamp</p>
+              }
               <p class="tables-grid-item-status @paymentStatus">@table.PaymentStatus</p>
             </li>
           }
         </ul>
       </div>
       <div class="info-grid">
-        <h2>Information</h2>
+        <h2>Cash Register</h2>
         <ul class="info-grid-list">
           <li class="info-grid-item">
             <p class="info-grid-item-title">

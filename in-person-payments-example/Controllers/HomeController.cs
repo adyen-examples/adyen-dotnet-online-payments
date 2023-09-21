@@ -1,7 +1,8 @@
-﻿using adyen_dotnet_in_person_payments_example.Models;
+﻿using Adyen.Model.Nexo;
+using adyen_dotnet_in_person_payments_example.Models;
 using adyen_dotnet_in_person_payments_example.Options;
+using adyen_dotnet_in_person_payments_example.Repositories;
 using adyen_dotnet_in_person_payments_example.Services;
-using Adyen.Model.Nexo;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -17,10 +18,10 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
         private readonly string _poiId;
         private readonly string _saleId;
         private readonly ILogger<HomeController> _logger;
-        private readonly ITableService _tableService;
+        private readonly ITableRepository _tableService;
         private readonly IPosTransactionStatusService _posTransactionStatusService;
 
-        public HomeController(ILogger<HomeController> logger, IOptions<AdyenOptions> optionsAccessor, ITableService tableService, IPosTransactionStatusService posTransactionStatusService)
+        public HomeController(ILogger<HomeController> logger, IOptions<AdyenOptions> optionsAccessor, ITableRepository tableService, IPosTransactionStatusService posTransactionStatusService)
         {
             _poiId = optionsAccessor.Value.ADYEN_POS_POI_ID;
             _saleId = optionsAccessor.Value.ADYEN_POS_SALE_ID;

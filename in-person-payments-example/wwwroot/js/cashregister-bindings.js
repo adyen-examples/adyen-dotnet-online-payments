@@ -35,7 +35,6 @@ async function sendGetRequest(url) {
 async function sendAbortRequest(tableName) {
     try {
         var response = await sendGetRequest("/api/abort/" + tableName);
-        console.log(response);
     }
     catch(error) {
         console.warn(error);

@@ -2,7 +2,7 @@
 
 html,
 body {
-  width: 100%;
+  width: auto;
   margin: 0;
   font-family: "Fakt", sans-serif, Helvetica, Arial;
 }
@@ -173,7 +173,7 @@ a:hover {
 
 .tables-grid-list {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, minmax(376px, 1fr));
   gap: 16px;
   padding: 16px;
   background: #e6e9eb;
@@ -196,17 +196,18 @@ a:hover {
   cursor: pointer;
   transition: background-color 0.3s, transform 0.2s;
   width: 100%;
+  min-height: 320px;
 }
 
 .tables-grid-item:hover {
   background-color: #e0e0e0;
-  transform: scale(1.05);
+  transform: scale(1.03);
   border-radius: 8px;
 }
 
 .tables-grid-item.current-selection {
-  background-color: #0abf53 !important;
-  transform: scale(1.06);
+  background-color: #fff8cd !important;
+  transform: scale(1.03);
   font-weight: 600;
   color: white;
   border-radius: 16px;
@@ -252,17 +253,28 @@ a:hover {
 }
 
 .tables-grid-item-amount {
-  font-size: 1rem;
+  font-size: 1.2rem;
   margin-left: 4px;
 }
 
 .tables-grid-item-currency {
+  font-size: 1.2rem;
+}
+
+.tables-grid-item-other {
+  font-weight: 400 !important;
   font-size: 1rem;
+  color: black;
 }
 
 .tables-grid-item-currency-amount {
   display: flex;
   align-items: center;
+  border-radius: 16px;
+  border: 2px dotted black;
+  padding: 16px 24px 0px 24px;
+  margin: 0px 8px 8px 8px;
+  color: black;
 }
 
 /* Tables-grid end */
@@ -439,55 +451,6 @@ a:hover {
   margin: 8px 0;
 }
 
-/* Adyen Components */
-.payment {
-  width: 100%;
-  padding-top: 0px !important;
-  padding-left: 20px;
-  padding-right: 20px;
-}
-
-@media screen and (max-width: 1076px) {
-  #payment-page .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .payment {
-    align-self: center;
-    max-width: 610px;
-  }
-}
-
-.payment-container {
-  display: flex;
-  justify-content: center;
-  background: #f7f8f9;
-  border: 1px solid #e6e9eb;
-  border-radius: 12px;
-  padding-top: 18px;
-  padding-bottom: 18px;
-  width: 100%;
-  height: 100%;
-}
-
-/* end Payments page */
-
-/* Dropin page */
-
-#dropin {
-  width: 100%;
-}
-
-@media screen and (max-width: 1076px) {
-  #dropin {
-    width: 100%;
-  }
-}
-
-/* end Dropin page */
-
 
 /* Status page */
 
@@ -541,8 +504,8 @@ a:hover {
   border-radius: 8px;
   margin: 10px 0px 16px 0px;
   transition: opacity 0.4s ease-in;
-  width: 96%;
   height: 100%;
+  width: auto;
 }
 
 .loading-grid.disabled {
