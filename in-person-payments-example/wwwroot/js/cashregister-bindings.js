@@ -31,28 +31,6 @@ async function sendGetRequest(url) {
     return await res.json();
 }
 
-// Shows loading animation component and deactivates the table selection
-function showLoadingComponent() {
-    // Show loading animation component
-    const loadingGrid = document.getElementById('loading-grid');
-    loadingGrid.classList.remove('disabled');
-    
-    // Deactivate tables selection section
-    const tablesSection = document.getElementById('tables-section');
-    tablesSection.classList.add('disabled');
-}
-
-// Activates the table selection and hides loading animation component
-function hideLoadingComponent() {
-    // Hides loading animation component
-    const loadingGrid = document.getElementById('loading-grid');
-    loadingGrid.classList.add('disabled');
-    
-    // Show tables selection section
-    const tablesSection = document.getElementById('tables-section');
-    tablesSection.classList.remove('disabled');
-}
-
 // Sends abort request to cancel an on-going transaction for the table
 async function sendAbortRequest(tableName) {
     try {
@@ -62,6 +40,18 @@ async function sendAbortRequest(tableName) {
     catch(error) {
         console.warn(error);
     }
+}
+
+// Shows loading animation component and deactivates the table selection
+function showLoadingComponent() {
+    document.getElementById('loading-grid').classList.remove('disabled');
+    document.getElementById('tables-section').classList.add('disabled');
+}
+
+// Hides loading animation component and shows table selection selection
+function hideLoadingComponent() {
+    document.getElementById('loading-grid').classList.add('disabled');
+    document.getElementById('tables-section').classList.remove('disabled');
 }
 
 // Bind table selection buttons and the `pay/reversal/transaction-status` submit-buttons
@@ -78,7 +68,7 @@ function bindButtons() {
 
         if (amount && currency && tableName) { 
             try {
-                // Show loading animation component and don't allow user to select any tables
+                // Show loading animation component which doesn't allow users to select any tables
                 showLoadingComponent();           
 
                 // Send payment request
@@ -153,7 +143,7 @@ function bindButtons() {
         // Abort sending post request
         abortController.abort(); 
 
-        // Hide loading component
+        // Hide loading animation component
         hideLoadingComponent();
     });
     
@@ -195,7 +185,7 @@ function bindButtons() {
             const reversalTableNameElement = document.getElementById('reversalTableName');
             reversalTableNameElement.value = table.querySelector('.tables-grid-item-title').textContent;
 
-            // Enables the `payment-request-button` and `reversal-request-button` according to the `PaymentStatus`` of currently selected table.
+            // Show/hides the `payment-request-button` and `reversal-request-button` according to the `PaymentStatus` of currently selected table
             const currentActiveTable = document.getElementsByClassName('current-selection')[0];
             var statusValue = currentActiveTable.querySelector('.tables-grid-item-status').textContent;
             switch (statusValue) {
@@ -230,38 +220,32 @@ function bindButtons() {
 
 // Enable `payment-request-button`
 function enablePaymentRequestButton() {
-   const button = document.getElementById('payment-request-button');
-   button.classList.remove('disabled');
+   document.getElementById('payment-request-button').classList.remove('disabled');
 }
 
 // Disable `payment-request-button`
 function disablePaymentRequestButton() {
-   const button = document.getElementById('payment-request-button');
-   button.classList.add('disabled');
+   document.getElementById('payment-request-button').classList.add('disabled');
 }
 
 // Enable `reversal-request-button`
 function enableReversalRequestButton() {
-    const button = document.getElementById('reversal-request-button');
-    button.classList.remove('disabled');
+    document.getElementById('reversal-request-button').classList.remove('disabled');
 }
 
 // Disable `reversal-request-button`
 function disableReversalRequestButton() {
-    const button = document.getElementById('reversal-request-button');
-    button.classList.add('disabled');
+    document.getElementById('reversal-request-button').classList.add('disabled');
 }
 
 // Enable `transaction-status-button`
 function enableTransactionStatusButton() {
-    const button = document.getElementById('transaction-status-button');
-    button.classList.remove('disabled');
+    document.getElementById('transaction-status-button').classList.remove('disabled');
 }
 
 // Disable `transaction-status-button`
 function disableTransactionStatusButton() {
-    const button = document.getElementById('transaction-status-button');
-    button.classList.add('disabled');
+    document.getElementById('transaction-status-button').classList.add('disabled');
 }
 
 bindButtons();

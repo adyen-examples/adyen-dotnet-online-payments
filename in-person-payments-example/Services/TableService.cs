@@ -77,7 +77,9 @@ namespace adyen_dotnet_in_person_payments_example.Services
 
                     TransactionStatusResponse transactionStatusResponse = response?.MessagePayload as TransactionStatusResponse;
 
-                    /// See: https://docs.adyen.com/point-of-sale/error-scenarios/#error-conditions
+                    /// In this case we update the payment status. Handle your business logic accordingly here.
+                    /// You probably won't need most of them, but we've listed all cases below.
+                    /// See: https://docs.adyen.com/point-of-sale/error-scenarios/#error-conditions.
                     switch (transactionStatusResponse?.Response?.ErrorCondition)
                     {
                         case ErrorConditionType.Aborted:
