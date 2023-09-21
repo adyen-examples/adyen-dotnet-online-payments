@@ -92,15 +92,7 @@ namespace adyen_dotnet_giving_example.Controllers
                 
                 // Required for 3DS2 redirect flow.
                 ReturnUrl = $"{_urlService.GetHostUrl()}/api/handleShopperRedirect?orderRef={orderRef}",
-
-                // Used for klarna, klarna is not supported everywhere, hence why we've defaulted to countryCode "NL" as it supports the following payment methods below:
-                // "Pay now", "Pay later" and "Pay over time", see docs for more info: https://docs.adyen.com/payment-methods/klarna#supported-countries.
-                CountryCode = "NL",
-                LineItems = new List<LineItem>()
-                {
-                    new LineItem(quantity: 1, amountIncludingTax: 5000, description: "Sunglasses"),
-                    new LineItem(quantity: 1, amountIncludingTax: 5000, description: "Headphones")
-                },
+                
                 AdditionalData = new Dictionary<string, string>() { {  "allow3DS2", "true" } },
                 Origin = _urlService.GetHostUrl(),
                 BrowserInfo = new BrowserInfo() { UserAgent = HttpContext.Request.Headers["user-agent"] }, // Add more browser info here. 
