@@ -17,6 +17,20 @@ async function sendPostRequest(url, data) {
     return await res.json();
 }
 
+// Sends GET request to URL
+async function sendGetRequest(url) {
+    const res = await fetch(url, {
+        method: "Get",
+        headers: {
+            "Content-Type": "application/json",
+            "Connection": "keep-alive",
+            "Keep-Alive": "timeout=180, max=180"
+        }
+    });
+
+    return await res.json();
+}
+
 // Shows loading animation component and deactivates the table selection
 function showLoadingComponent() {
     // Show loading animation component
@@ -39,10 +53,10 @@ function hideLoadingComponent() {
     tablesSection.classList.remove('disabled');
 }
 
-// Sends abort request to cancel an on-going transaction
+// Sends abort request to cancel an on-going transaction for the table
 async function sendAbortRequest(tableName) {
     try {
-        var response = await sendPostRequest("/api/abort/" + tableName);
+        var response = await sendGetRequest("/api/abort/" + tableName);
         console.log(response);
     }
     catch(error) {
@@ -142,7 +156,19 @@ function bindButtons() {
         // Hide loading component
         hideLoadingComponent();
     });
+    
+    // Bind `transaction-status-button`
+    const transactionStatusButton = document.getElementById('transaction-status-button');
+    transactionStatusButton.addEventListener('click', async () => {
+        const tableNameElement = document.getElementById('tableName');
+        if (!tableNameElement.value) {
+            return;
+        }
 
+        // Go to transaction status page for the given tableNameElement.value 
+        window.location.href = "transaction-status/" + tableNameElement.value;
+    });
+    
     // Allows user to select a table by binding all tables to a click event
     const tables = document.querySelectorAll('.tables-grid-item');
     tables.forEach(table => {
@@ -176,14 +202,17 @@ function bindButtons() {
                  case 'NotPaid':
                     enablePaymentRequestButton();
                     disableReversalRequestButton();
+                    disableTransactionStatusButton();
                     break;
                 case 'Paid':
                     disablePaymentRequestButton();
                     enableReversalRequestButton();
+                    enableTransactionStatusButton();
                     break;
                 case 'RefundFailed':
                     disablePaymentRequestButton();
                     enableReversalRequestButton();
+                    enableTransactionStatusButton();
                     break;
                 case 'PaymentInProgress':
                 case 'RefundInProgress':
@@ -192,6 +221,7 @@ function bindButtons() {
                 default:
                     disablePaymentRequestButton();
                     disableReversalRequestButton();
+                    disableTransactionStatusButton();
                     break;
             }
         });
@@ -219,6 +249,18 @@ function enableReversalRequestButton() {
 // Disable `reversal-request-button`
 function disableReversalRequestButton() {
     const button = document.getElementById('reversal-request-button');
+    button.classList.add('disabled');
+}
+
+// Enable `transaction-status-button`
+function enableTransactionStatusButton() {
+    const button = document.getElementById('transaction-status-button');
+    button.classList.remove('disabled');
+}
+
+// Disable `transaction-status-button`
+function disableTransactionStatusButton() {
+    const button = document.getElementById('transaction-status-button');
     button.classList.add('disabled');
 }
 

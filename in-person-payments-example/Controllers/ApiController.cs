@@ -24,7 +24,6 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
         private readonly IPosPaymentService _posPaymentService;
         private readonly IPosReversalService _posPaymentReversalService;
         private readonly IPosAbortService _posAbortService;
-        private readonly IPosTransactionStatusService _posTransactionStatusService;
         private readonly ITableService _tableService;
 
         private readonly string _saleId;
@@ -34,7 +33,6 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
             IPosPaymentService posPaymentService, 
             IPosReversalService posPaymentReversalService, 
             IPosAbortService posAbortService,
-            IPosTransactionStatusService posTransactionStatusService,
             ITableService tableService, 
             IOptions<AdyenOptions> options)
         {
@@ -42,7 +40,6 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
             _posPaymentService = posPaymentService;
             _posPaymentReversalService = posPaymentReversalService;
             _posAbortService = posAbortService;
-            _posTransactionStatusService = posTransactionStatusService;
             _tableService = tableService;
             
             _poiId = options.Value.ADYEN_POS_POI_ID;
@@ -207,7 +204,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
             }
         }
 
-        [HttpPost("api/abort/{tableName}")]
+        [HttpGet("api/abort/{tableName}")]
         public async Task<ActionResult<SaleToPOIResponse>> Abort(string tableName, CancellationToken cancellationToken = default)
         {
             try
@@ -220,39 +217,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                 }
 
                 SaleToPOIResponse abortResponse = await _posAbortService.SendAbortRequestAsync(table.PaymentStatusDetails.ServiceId, _poiId, _saleId, cancellationToken);
-                table.PaymentStatus = PaymentStatus.NotPaid;
                 return Ok(abortResponse);
-            }
-            catch (HttpClientException e)
-            {
-                _logger.LogError(e.ToString());
-                return StatusCode(e.Code, new CreateReversalResponse()
-                {
-                    Result = "failure",
-                    RefusalReason = $"ErrorCode: {e.Code}, see logs"
-                });
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.ToString());
-                throw;
-            }
-        }
-
-        [HttpGet("api/get-transaction-status/{tableName}")]
-        public async Task<ActionResult<SaleToPOIResponse>> GetTransactionStatus(string tableName, CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                TableModel table = _tableService.Tables.FirstOrDefault(t => t.TableName == tableName);
-
-                if (table?.PaymentStatusDetails?.ServiceId == null)
-                {
-                    return NotFound();
-                }
-
-                SaleToPOIResponse response = await _posTransactionStatusService.SendTransactionStatusRequestAsync(table.PaymentStatusDetails.ServiceId, _poiId, _saleId, cancellationToken);
-                return Ok(response);
             }
             catch (HttpClientException e)
             {

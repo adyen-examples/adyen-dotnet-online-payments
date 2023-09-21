@@ -1,0 +1,32 @@
+﻿@using Adyen.Model.Nexo
+@using Newtonsoft.Json
+@{
+    ViewData["Title"] = "Adyen Terminal Transaction Status";
+    TransactionStatusResponse transactionStatusResponse = ViewBag.TransactionStatusResponse;
+    string errorMessage = ViewBag.ErrorMessage;
+    string tableName = ViewBag.TableName;
+    string serviceId = ViewBag.ServiceId;
+}
+
+
+<div class="status-container">
+  <div class="status">
+    <h2>Transaction Status for @tableName</h2>
+    @if (string.IsNullOrWhiteSpace(errorMessage))
+    {
+        <p>
+            <b>ServiceId:&nbsp;</b> @serviceId
+        </p>
+        <p>
+            <b>Result:&nbsp;</b> ...
+        </p>
+    }
+    else
+    {
+        <p>
+            @errorMessage
+        </p>
+    }
+    <a class="button" href="/cashregister" to="#/">Return</a>
+  </div>
+</div>
