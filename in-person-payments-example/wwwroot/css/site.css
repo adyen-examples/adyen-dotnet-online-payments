@@ -209,7 +209,6 @@ a:hover {
   transform: scale(1.06);
   font-weight: 600;
   color: white;
-  border: 1px solid rgb(9, 40, 0);
   border-radius: 16px;
   transition: transform 0.3s ease, background-color 0.5s ease;
 }
@@ -542,7 +541,7 @@ a:hover {
   border-radius: 8px;
   margin: 10px 0px 16px 0px;
   transition: opacity 0.4s ease-in;
-  width: 93%;
+  width: 96%;
   height: 100%;
 }
 

@@ -100,32 +100,23 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                     return View();
                 }
                 
-                ViewBag.ServiceId = table.PaymentStatusDetails.ServiceId;
                 
                 PaymentResponse paymentResponse = transactionStatusResponse.RepeatedMessageResponse.RepeatedResponseMessageBody.MessagePayload as PaymentResponse;
                 if (paymentResponse != null)
                 {
-                    return View();
+                    ViewBag.PaymentResponse = paymentResponse;
                 }
-                
-                ReversalResponse reversalResponse = transactionStatusResponse.RepeatedMessageResponse.RepeatedResponseMessageBody.MessagePayload as ReversalResponse;
-                if (reversalResponse != null)
-                {
-                    return View();
-                }
-                
-                // Pass on the parameters to show on the frontend.
-                ViewBag.TransactionStatusResponse = transactionStatusResponse;
-                
-                
+
+                ViewBag.ServiceId = table.PaymentStatusDetails.ServiceId;
+
+                return View();
             }
             catch (Exception e)
             {
                 _logger.LogError(e.ToString());
                 ViewBag.ErrorMessage = e.ToString();
+                return View();
             }
-            
-            return View();
         }
     }
 }

@@ -2,7 +2,7 @@
 @using Newtonsoft.Json
 @{
     ViewData["Title"] = "Adyen Terminal Transaction Status";
-    TransactionStatusResponse transactionStatusResponse = ViewBag.TransactionStatusResponse;
+    PaymentResponse paymentResponse = ViewBag.PaymentResponse;
     string errorMessage = ViewBag.ErrorMessage;
     string tableName = ViewBag.TableName;
     string serviceId = ViewBag.ServiceId;
@@ -17,9 +17,20 @@
         <p>
             <b>ServiceId:&nbsp;</b> @serviceId
         </p>
-        <p>
-            <b>Result:&nbsp;</b> ...
-        </p>
+
+        if (paymentResponse != null)
+        {
+            <p>
+                <b>Payment Response Result:&nbsp;</b> @paymentResponse.Response.Result
+            </p>
+            <p>
+                <b>POI Transaction ID:</b>&nbsp; @paymentResponse.POIData?.POITransactionID?.TransactionID <br/>
+                <b>POI Transaction TimeStamp:</b>&nbsp; @paymentResponse.POIData?.POITransactionID?.TimeStamp <br/>
+                <b>Sale Transaction ID:</b>&nbsp; @paymentResponse.SaleData?.SaleTransactionID?.TransactionID <br/>
+                <b>Sale Transaction TimeStamp:</b>&nbsp; @paymentResponse.SaleData?.SaleTransactionID?.TimeStamp <br/>
+                <b>Authorized amount:</b>&nbsp;  @paymentResponse.PaymentResult?.AmountsResp?.Currency @paymentResponse.PaymentResult?.AmountsResp?.AuthorizedAmount <br/>
+            </p>
+        }
     }
     else
     {

@@ -64,7 +64,7 @@ async function sendAbortRequest(tableName) {
     }
 }
 
-// Bind table selection buttons and the `pay/reversal` submit-buttons
+// Bind table selection buttons and the `pay/reversal/transaction-status` submit-buttons
 function bindButtons() {
     // Bind `payment-request-form` submit-button
     const paymentRequestForm = document.getElementById('payment-request-form');
@@ -214,14 +214,14 @@ function bindButtons() {
                     enableReversalRequestButton();
                     enableTransactionStatusButton();
                     break;
-                case 'PaymentInProgress':
                 case 'RefundInProgress':
+                case 'PaymentInProgress':
                 case 'Refunded':
                 case 'RefundedReversed':
                 default:
                     disablePaymentRequestButton();
                     disableReversalRequestButton();
-                    disableTransactionStatusButton();
+                    enableTransactionStatusButton();
                     break;
             }
         });
