@@ -150,31 +150,9 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             {
                 var response = await _paymentsService.PaymentsAsync(paymentRequest, cancellationToken: cancellationToken);
                 _logger.LogInformation($"Response for Payments:\n{response}\n");
-
-                var payment = new PaymentModel()
-                {
-                    PspReference = response.PspReference,
-                    OriginalReference = null,
-                    Reference = response.MerchantReference,
-                    Amount = response.Amount?.Value,
-                    Currency = response.Amount?.Currency,
-                    DateTime = DateTimeOffset.UtcNow,
-                    ResultCode = response.ResultCode.ToString(),
-                    RefusalReason = response.RefusalReason,
-                    PaymentMethodBrand = response.PaymentMethod?.Brand,
-                };
-
-                if (!_repository.Payments.TryGetValue(payment.Reference, out var list))
-                {
-                    // Reference does not exist, let's add it.
-                    _repository.Payments.TryAdd(
-                        payment.Reference, /// Key: Reference.
-                        new List<PaymentModel>() {
-                        {
-                            payment        /// Value: <see cref="PaymentModel"/>.
-                        }
-                    });
-                }
+                
+                // Insert our pre-authorised payment.
+                _repository.InsertPayment(response);
 
                 return Ok(response);
             }

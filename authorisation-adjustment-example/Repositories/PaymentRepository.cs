@@ -1,4 +1,5 @@
-﻿using adyen_dotnet_authorisation_adjustment_example.Models;
+﻿using Adyen.Model.Checkout;
+using adyen_dotnet_authorisation_adjustment_example.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,115 +7,119 @@ using System.Linq;
 namespace adyen_dotnet_authorisation_adjustment_example.Repositories
 {
     /// <summary>
-    /// Acts as a local (in-memory) repository to store <see cref="PaymentModel"/>s by <see cref="PaymentModel.PspReference"/>.
+    /// Acts as a local (in-memory) repository to store <see cref="PaymentModel"/>s by <see cref="PaymentModel.MerchantReference"/>.
     /// </summary>
     public interface IPaymentRepository
     {
         /// <summary>
-        /// Dictionary of all payments for the hotel bookings by <see cref="PaymentModel.Reference"/>.
-        /// Key: <see cref="PaymentModel.Reference"/>  |  
-        /// Value: <see cref="List{string, PaymentModel}"/>.
+        /// Dictionary of all payments for the hotel bookings by <see cref="PaymentModel.MerchantReference"/>.
+        /// Key: <see cref="PaymentModel.MerchantReference"/>  |  
+        /// Value: <see cref="PaymentModel"/> which contains the initial pre-authorisation and a history of the payment details.
         /// </summary>
-        public Dictionary<string, List<PaymentModel>> Payments { get; }
+        public Dictionary<string, PaymentModel> Payments { get; }
 
         /// <summary>
-        /// Insert <see cref="PaymentModel"/> into the <see cref="Payments"/> dictionary with the <see cref="PaymentModel.PspReference"/> as its key.
+        /// Insert a new <see cref="PaymentModel"/> into the <see cref="Payments"/> dictionary with the <see cref="PaymentModel.MerchantReference"/> as its key.
         /// </summary>
-        /// <param name="payment"><see cref="PaymentModel"/>.</param>
+        /// <param name="response">The <see cref="PaymentResponse"/> from the <see cref="Controllers.ApiController.PreAuthorisation(Adyen.Model.Checkout.PaymentRequest, System.Threading.CancellationToken)"/> call.</param>
         /// <returns>True if inserted.</returns>
-        bool Insert(PaymentModel payment);
-
+        bool InsertPayment(PaymentResponse response);
+        
         /// <summary>
-        /// Gets <see cref="PaymentModel"/>s by <see cref="PaymentModel.Reference"/>.
+        /// Upserts <see cref="PaymentDetailsModel"/> into the <see cref="PaymentModel.PaymentsHistory"/> list.
+        /// This is used to keep track of the payment details history.
         /// </summary>
-        /// <param name="reference"><see cref="PaymentModel.Reference"/>.</param>
-        /// <returns><see cref="IEnumerable{PaymentModel}"/>.</returns>
-        IEnumerable<PaymentModel> FindByReference(string reference);
-
+        /// <param name="paymentDetails"><see cref="PaymentDetailsModel"/>.</param>
+        /// <returns>True if inserted.</returns>
+        bool UpsertPaymentDetails(PaymentDetailsModel paymentDetails);
+        
         /// <summary>
-        /// Gets latest version of <see cref="PaymentModel"/> by <see cref="PaymentModel.Reference"/>.
+        /// Retrieves <see cref="PaymentModel"/> by <see cref="PaymentModel.MerchantReference"/>.
         /// </summary>
-        /// <param name="reference"><see cref="PaymentModel.Reference"/>.</param>
+        /// <param name="merchantReference"><see cref="PaymentModel.MerchantReference"/>.</param>
         /// <returns><see cref="PaymentModel"/>.</returns>
-        PaymentModel FindLatestPaymentByReference(string reference);
-
-        /// <summary>
-        /// Finds the initial preauthorisation <see cref="PaymentModel"/>.
-        /// </summary>
-        /// <param name="reference"><see cref="PaymentModel.Reference"/>.</param>
-        /// <returns><see cref="PaymentModel"/>.</returns>
-        PaymentModel FindPreAuthorisedPayment(string reference);
+        PaymentModel GetPayment(string merchantReference);
     }
 
     public class PaymentRepository : IPaymentRepository
     {
-        public Dictionary<string, List<PaymentModel>> Payments { get; }
+        public Dictionary<string, PaymentModel> Payments { get; }
 
         public PaymentRepository()
         {
-            Payments = new Dictionary<string, List<PaymentModel>>();
+            Payments = new Dictionary<string, PaymentModel>();
         }
 
-        public bool Insert(PaymentModel payment)
+        public bool InsertPayment(PaymentResponse response)
         {
-            // If `Reference` is not specified, throw an ArgumentNullException.
-            if (string.IsNullOrWhiteSpace(payment.Reference))
+            var payment = new PaymentModel()
             {
-                throw new ArgumentNullException(nameof(payment.Reference));
-            }    
+                MerchantReference = response.MerchantReference,
+                PspReference = response.PspReference,
+                Amount = response.Amount?.Value,
+                Currency = response.Amount?.Currency,
+                BookingDate = DateTimeOffset.UtcNow,
+                LastUpdated = DateTimeOffset.UtcNow,
+                ExpiryDate = DateTimeOffset.UtcNow.AddDays(28), // The value of '28' varies per scheme, see https://docs.adyen.com/online-payments/adjust-authorisation/#validity.
+                PaymentMethodBrand = response.PaymentMethod?.Brand,
+                PaymentsHistory = new List<PaymentDetailsModel>()
+                {
+                    new PaymentDetailsModel()
+                    {
+                        PspReference = response.PspReference,
+                        OriginalReference = null,
+                        MerchantReference = response.MerchantReference,
+                        Amount = response.Amount?.Value,
+                        Currency = response.Amount?.Currency,
+                        DateTime = DateTimeOffset.UtcNow,
+                        ResultCode = response.ResultCode.ToString(),
+                        RefusalReason = response.RefusalReason,
+                        PaymentMethodBrand = response.PaymentMethod?.Brand,
+                    }
+                }
+            };
 
-            // Check if `Reference` is in the list, do nothing if we've never saved the reference.
-            if (!Payments.TryGetValue(payment.Reference, out var list))
+            return Payments.TryAdd(payment.MerchantReference, payment);
+        }
+
+        public bool UpsertPaymentDetails(PaymentDetailsModel paymentDetails)
+        {
+            // If the `Merchant Reference` is not specified, throw an ArgumentNullException.
+            if (string.IsNullOrWhiteSpace(paymentDetails.MerchantReference))
+            {
+                throw new ArgumentNullException();
+            }
+
+            // Check if the `Merchant Reference` is in the list, do nothing if we've never saved the reference.
+            if (!Payments.TryGetValue(paymentDetails.MerchantReference, out var payment))
             {
                 return false;
             }
 
-            // Check if `PspReference` already exists.
-            var existingPayment = list.FirstOrDefault(x => x.PspReference == payment.PspReference);
-            if (existingPayment is null)
-            {
-                // If it doesn't exists, we add it.
-                list.Add(payment);
-                return true;
-            }
+            // Check if the `PspReference` already exists.
+            PaymentDetailsModel existingPayment = payment.PaymentsHistory.FirstOrDefault(details => details.PspReference == payment.PspReference);
 
-            // If the values are exactly the same (f.e. when we receive the webhook twice).
-            // Consider it a duplicate, and do not add anything to the list.
-            if (payment.IsEqual(existingPayment))
+            // If the values are exactly the same (in the case of receiving a webhook multiple times).
+            // We consider it a duplicate, and don't add anything.
+            if (paymentDetails.IsEqual(existingPayment))
             {
                 return false;
             }
 
-            // Add the payment.
-            list.Add(payment);
+            // If it doesn't exists, we add it.
+            payment.PaymentsHistory.Add(paymentDetails);
+            payment.LastUpdated = DateTimeOffset.UtcNow;
             return true;
         }
 
-        public IEnumerable<PaymentModel> FindByReference(string reference)
+        public PaymentModel GetPayment(string merchantReference)
         {
-            if (!Payments.TryGetValue(reference, out List<PaymentModel> result))
-                return Enumerable.Empty<PaymentModel>();
+            if (!Payments.TryGetValue(merchantReference, out PaymentModel result))
+            {
+                return null;
+            }
 
             return result;
-        }
-
-        public PaymentModel FindLatestPaymentByReference(string reference)
-        {
-            List<PaymentModel> result = FindByReference(reference)
-                .OrderBy(x => x.DateTime)
-                .ToList();
-
-            // Returns the last entry in the list. Note that this can also return results that have failed.
-            return result.LastOrDefault();
-        }
-
-        public PaymentModel FindPreAuthorisedPayment(string reference)
-        {
-            if (!Payments.TryGetValue(reference, out List<PaymentModel> result))
-                return null;
-
-            // Returns the first entry in our list (the result from the API call).
-            return result.FirstOrDefault();
         }
     }
 }

@@ -19,7 +19,7 @@ namespace adyen_dotnet_in_person_payments_example.Models
         
         /// <summary>
         /// A refund is set to <see cref="RefundInProgress"/> when the merchant has initiated the referenced refund process.
-        /// Referenced refunds are processed asynchronously.
+        /// Referenced refunds are processed asynchronously and are updated through webhooks, seealso <seealso cref="Controllers.WebhookController.ProcessCancelOrRefundNotificationAsync(Adyen.Model.Notification.NotificationRequestItem)"/>.
         /// https://docs.adyen.com/point-of-sale/basic-tapi-integration/refund-payment/referenced/
         /// </summary>
         RefundInProgress = 4,  

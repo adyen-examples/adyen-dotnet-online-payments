@@ -2,7 +2,7 @@
 
 html,
 body {
-  width: 100%;
+  width: auto;
   margin: 0;
   font-family: "Fakt", sans-serif, Helvetica, Arial;
 }
@@ -96,21 +96,21 @@ a:hover {
 }
 
 .integration-list-item {
-  background: #fcfcfc;
+  background: #f0f0f0;
   border-radius: 8px;
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 2px solid black;
   margin: 32px 0px 16px 0px;
+  transition: transform 0.15s ease-in-out, background 0.15s ease-in-out, border 0.15s ease-in-out;
 }
 
 .integration-list-item:hover {
-  box-shadow: 0 16px 24px 0 #e5eaef;
   text-decoration: none;
-  border: 2px solid #0abf53;
-  transform: scale(1.005);
+  background: #f2f2f2;
+  transform: scale(1.02);
+  border: 1px dashed #0abf53;
 }
 
 .integration-list-item-link {
@@ -134,6 +134,7 @@ a:hover {
   margin: 0;
   text-align: center;
   font-weight: 700;
+  color: black;
 }
 
 @media (min-width: 768px) {
@@ -173,7 +174,7 @@ a:hover {
 
 .tables-grid-list {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, minmax(376px, 1fr));
   gap: 16px;
   padding: 16px;
   background: #e6e9eb;
@@ -196,20 +197,20 @@ a:hover {
   cursor: pointer;
   transition: background-color 0.3s, transform 0.2s;
   width: 100%;
+  min-height: 320px;
 }
 
 .tables-grid-item:hover {
   background-color: #e0e0e0;
-  transform: scale(1.05);
+  transform: scale(1.03);
   border-radius: 8px;
 }
 
 .tables-grid-item.current-selection {
-  background-color: #0abf53 !important;
-  transform: scale(1.06);
+  background-color: #fff8cd !important;
+  transform: scale(1.03);
   font-weight: 600;
   color: white;
-  border: 1px solid rgb(9, 40, 0);
   border-radius: 16px;
   transition: transform 0.3s ease, background-color 0.5s ease;
 }
@@ -253,17 +254,28 @@ a:hover {
 }
 
 .tables-grid-item-amount {
-  font-size: 1rem;
+  font-size: 1.2rem;
   margin-left: 4px;
 }
 
 .tables-grid-item-currency {
+  font-size: 1.2rem;
+}
+
+.tables-grid-item-other {
+  font-weight: 400 !important;
   font-size: 1rem;
+  color: black;
 }
 
 .tables-grid-item-currency-amount {
   display: flex;
   align-items: center;
+  border-radius: 16px;
+  border: 2px dotted black;
+  padding: 16px 24px 0px 24px;
+  margin: 0px 8px 8px 8px;
+  color: black;
 }
 
 /* Tables-grid end */
@@ -380,6 +392,40 @@ a:hover {
 
 /* Reversal request button end */
 
+/* Transaction Status button start */
+.transaction-status-button {
+  background-color: #0abf53;
+  color: white;
+  padding: 8px 64px 8px 64px;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 8px;
+  border: none;
+  transition: transform 0.15s ease-in-out, background-color 0.3s ease-in-out;
+  width: 100%;
+  height: 50%;
+}
+
+.transaction-status-button:hover {
+  background-color: #0abf53;
+  border: none;
+  transform: scale(1.04);
+}
+
+.transaction-status-button:focus {
+  outline: none;
+}
+
+.transaction-status-button:disabled,
+.transaction-status-button[disabled=disabled],
+.transaction-status-button.disabled {
+  background-color: #cccccc;
+  color: #999999;
+  pointer-events: none;
+}
+
+/* Transaction Status button end */
+
 /* Payment page */
 
 #payment-page {
@@ -405,55 +451,6 @@ a:hover {
   border-radius: 12px;
   margin: 8px 0;
 }
-
-/* Adyen Components */
-.payment {
-  width: 100%;
-  padding-top: 0px !important;
-  padding-left: 20px;
-  padding-right: 20px;
-}
-
-@media screen and (max-width: 1076px) {
-  #payment-page .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .payment {
-    align-self: center;
-    max-width: 610px;
-  }
-}
-
-.payment-container {
-  display: flex;
-  justify-content: center;
-  background: #f7f8f9;
-  border: 1px solid #e6e9eb;
-  border-radius: 12px;
-  padding-top: 18px;
-  padding-bottom: 18px;
-  width: 100%;
-  height: 100%;
-}
-
-/* end Payments page */
-
-/* Dropin page */
-
-#dropin {
-  width: 100%;
-}
-
-@media screen and (max-width: 1076px) {
-  #dropin {
-    width: 100%;
-  }
-}
-
-/* end Dropin page */
 
 
 /* Status page */
@@ -508,8 +505,8 @@ a:hover {
   border-radius: 8px;
   margin: 10px 0px 16px 0px;
   transition: opacity 0.4s ease-in;
-  width: 87%;
   height: 100%;
+  width: auto;
 }
 
 .loading-grid.disabled {

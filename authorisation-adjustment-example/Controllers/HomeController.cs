@@ -26,10 +26,9 @@ namespace adyen_dotnet_authorisation_adjustment_example.Controllers
             return View();
         }
         
-        [Route("booking/{id}")]
-        public IActionResult Booking(string id)
+        [Route("booking")]
+        public IActionResult Booking()
         {
-            ViewBag.PaymentMethod = id;
             ViewBag.ClientKey = _clientKey;
             return View();
         }

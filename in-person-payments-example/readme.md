@@ -17,7 +17,7 @@ https://docs.adyen.com/point-of-sale/design-your-integration/terminal-api/termin
 - An Adyen account, learn how an Adyen account is structured in [our documentation](https://docs.adyen.com/point-of-sale/design-your-integration/determine-account-structure/)
 
 
-![In-person Payment Demo](wwwroot/images/cardinpersonpayment.gif)
+![In-person Payments Demo](wwwroot/images/cardinpersonpayments.gif)
 
 This demo leverages Adyen's API Library for .NET ([GitHub](https://github.com/Adyen/adyen-dotnet-api-library) | [Docs](https://docs.adyen.com/development-resources/libraries?tab=c__5#csharp)).
 You can find the [Terminal API documentation](https://docs.adyen.com/point-of-sale/design-your-integration/terminal-api/terminal-api-reference/) here.

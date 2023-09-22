@@ -149,4 +149,3 @@ The `EXTEND` operation in this sample is used to extend the expiry date manually
 When CAPTURE is executed, it will perform the operation on the latest amount. You'll have to wait for the `AUTHORISATION_ADJUSTMENT` response, before making the capture once it's final.
 
 3. Make sure to have your webhooks configured and wait for a while to confirm that the changes have been received by your application (f.e. a [CAPTURE_FAILED](https://docs.adyen.com/online-payments/capture/#testing-failed-captures) event can take several hours to process).
-

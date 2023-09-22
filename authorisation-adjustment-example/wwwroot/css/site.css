@@ -38,10 +38,6 @@ a:hover {
 
 #header {
   border-bottom: 1px solid #e6e9eb;
-  height: 44px;
-  left: 0;
-  margin-bottom: 24px;
-  padding: 14px 26px;
   text-align: center;
   top: 0;
   width: 100%;
@@ -91,7 +87,7 @@ a:hover {
 /* Index page */
 
 .main-container {
-  max-width: 1048px;
+  margin-top: -7%;
   flex-direction: column;
 }
 
@@ -224,7 +220,6 @@ a:hover {
 }
 .cart {
   text-align: center;
-  margin-top: 154px;
 }
 .cart-footer {
   font-weight: 700;
@@ -441,6 +436,7 @@ a:hover {
   border: 2px solid #0e0e0e;
   border-radius: 8px;
   margin-right: 12px;
+  font-size: 0.7rem;
 }
 
 .adminList li {
@@ -536,7 +532,7 @@ submitButton[disabled=disabled]{
 
 .details-panel-payment-container {
   background-color: #fafff3;
-  padding: 64px 4px 16px 4px;
+  padding: 4px 4px 16px 4px;
 }
 
 .detailsList {

@@ -2,6 +2,7 @@ using Adyen;
 using Adyen.Service;
 using Adyen.Util;
 using adyen_dotnet_in_person_payments_example.Options;
+using adyen_dotnet_in_person_payments_example.Repositories;
 using adyen_dotnet_in_person_payments_example.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -74,12 +75,13 @@ namespace adyen_dotnet_in_person_payments_example
             services.AddSingleton<IPosPaymentCloudApi, PosPaymentCloudApi>();
             services.AddSingleton<HmacValidator>();
 
+            services.AddSingleton<ITableRepository, TableRepository>();
+
             // Register application services.
             services.AddSingleton<IPosPaymentService, PosPaymentService>();
             services.AddSingleton<IPosReversalService, PosReversalService>();
             services.AddSingleton<IPosTransactionStatusService, PosTransactionStatusService>();
             services.AddSingleton<IPosAbortService, PosAbortService>();
-            services.AddSingleton<ITableService, TableService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

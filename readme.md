@@ -55,7 +55,7 @@ The [`authorisation adjustment example`](authorisation-adjustment-example) repos
 
 The [in-person payments example](in-person-payments-example) features an in-person payment [cloud terminal API](https://docs.adyen.com/point-of-sale/design-your-integration/choose-your-architecture/cloud/) integration. Within this demo app, you can make in-person payments using a terminal, initiate reversals (refunds) and check transaction statuses.
 
-![Card Checkout Demo](checkout-example-advanced/wwwroot/images/cardcheckout.gif)
+![Card In-person Payments Demo](in-person-payments-example/wwwroot/images/cardinpersonpayments.gif)
 
 ## [Gift Card Example](giftcard-example)
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/giftcard-example)
