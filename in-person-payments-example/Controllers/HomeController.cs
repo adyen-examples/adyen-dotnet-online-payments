@@ -57,7 +57,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                     img = "failed";
                     break;
                 case "success":
-                    msg = $"Your transaction has been successfully processed.";
+                    msg = $"Your request has been successfully processed.";
                     img = "success";
                     break;
                 default:
