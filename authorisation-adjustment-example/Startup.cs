@@ -1,5 +1,4 @@
 using Adyen;
-using Adyen.Model;
 using Adyen.Service.Checkout;
 using Adyen.Util;
 using adyen_dotnet_authorisation_adjustment_example.Options;
@@ -11,9 +10,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using System;
 using System.Net.Http;
 using System.Threading;
-using System;
 
 namespace adyen_dotnet_authorisation_adjustment_example
 {
@@ -30,31 +29,24 @@ namespace adyen_dotnet_authorisation_adjustment_example
         public void ConfigureServices(IServiceCollection services)
         {
             // Configure your keys using the Options pattern.
-            // This will auto-retrieve/configure your keys from your environmental variables (ADYEN_CLIENT_KEY, ADYEN_API_KEY, ADYEN_MERCHANT_ACCOUNT, ADYEN_HMAC_KEY).
+            // This will auto-retrieve/configure your keys from your environmental variables (ADYEN_API_KEY, ADYEN_CLIENT_KEY, ADYEN_MERCHANT_ACCOUNT, ADYEN_HMAC_KEY).
             services.Configure<AdyenOptions>(
                 options =>
                 {
-                    // Public key used for client-side authentication: https://docs.adyen.com/development-resources/client-side-authentication.
-                    options.ADYEN_CLIENT_KEY = Configuration[nameof(AdyenOptions.ADYEN_CLIENT_KEY)];
-
-                    // Your secret API Key: https://docs.adyen.com/development-resources/api-credentials#generate-your-api-key.
                     options.ADYEN_API_KEY = Configuration[nameof(AdyenOptions.ADYEN_API_KEY)];
-
-                    // Your Merchant Account name: https://docs.adyen.com/account/account-structure.
+                    options.ADYEN_CLIENT_KEY = Configuration[nameof(AdyenOptions.ADYEN_CLIENT_KEY)];
                     options.ADYEN_MERCHANT_ACCOUNT = Configuration[nameof(AdyenOptions.ADYEN_MERCHANT_ACCOUNT)];
-
-                    // HMAC Key used to validate your webhook signatures: https://docs.adyen.com/development-resources/webhooks/verify-hmac-signatures.
                     options.ADYEN_HMAC_KEY = Configuration[nameof(AdyenOptions.ADYEN_HMAC_KEY)];
                 }
             );
 
-            // Register your controllers.
+            // Register controllers.
             services.AddControllersWithViews();
             services.AddControllers().AddNewtonsoftJson();
             services.AddHttpContextAccessor()
                 .AddTransient<IUrlService, UrlService>();
 
-            // Register Adyen.Client as singleton.
+            // Register Adyen Client.
             string httpClientName = "HttpClientName";
 
             services.AddSingleton((IServiceProvider provider) =>
@@ -80,10 +72,12 @@ namespace adyen_dotnet_authorisation_adjustment_example
                 };
             }).SetHandlerLifetime(Timeout.InfiniteTimeSpan);
 
+            // Register Adyen services and utilities.
             services.AddSingleton<IPaymentsService, PaymentsService>(); // Used to be called "Checkout.cs" in Adyen .NET 9.x.x and below, see https://github.com/Adyen/adyen-dotnet-api-library/blob/9.2.1/Adyen/Service/Checkout.cs.
             services.AddSingleton<IModificationsService, ModificationsService>();
             services.AddSingleton<HmacValidator>();
 
+            // Register application services.
             services.AddSingleton<IPaymentRepository, PaymentRepository>();
         }
 

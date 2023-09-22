@@ -40,7 +40,7 @@ namespace adyen_dotnet_paybylink_example.Services
         {
             var createPayByLinkRequest = new PaymentLinkRequest(
                 merchantAccount: _merchantAccount,          // Required.
-                amount: new Amount("EUR", amount),  // Required, value in minor units.
+                amount: new Amount("EUR", amount),          // Required, value in minor units.
                 reference: reference,                       // Required, use for example: new Guid().
                 reusable: isReusable,                       // Optional, if set to true, the link can be used multiple times for a payment.
                 returnUrl: $"{_urlService.GetHostUrl()}"    // To direct the customer to your page after completing a Pay by Link payment, include a returnUrl in your /paymentLinks request.
@@ -77,7 +77,7 @@ namespace adyen_dotnet_paybylink_example.Services
                 {
                     PaymentLinkResponse response = await _paymentLinksService.GetPaymentLinkAsync(kvp.Value.Id, cancellationToken: cancellationToken);
                     
-                    // Update each individual link.
+                    // Update each individual payment link.
                     _paymentLinkRepository.Upsert(
                         id: response.Id,
                         reference: response.Reference, response.Url,
