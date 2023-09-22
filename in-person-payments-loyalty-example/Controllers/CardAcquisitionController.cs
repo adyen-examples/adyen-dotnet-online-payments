@@ -74,6 +74,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
             try
             {
                 SaleToPOIResponse response = await _posCardAcquisitionService.SendCardAcquisitionRequest(serviceId, _poiId, _saleId, cancellationToken: cancellationToken);
+                return Ok(response);
             }
             catch (Exception e)
             {
