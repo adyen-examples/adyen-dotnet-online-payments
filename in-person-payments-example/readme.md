@@ -124,7 +124,7 @@ If you use a tunneling service like ngrok, the webhook URL will be the generated
 export ADYEN_API_KEY=yourAdyenApiKey
 export ADYEN_MERCHANT_ACCOUNT=yourAdyenMerchantAccount
 export ADYEN_HMAC_KEY=yourAdyenHmacKey
-export ADYEN_POS_POI_ID=v400m-123456789
+export ADYEN_POS_POI_ID=V400m-123456789
 ```
 
 On Windows CMD you can use this command instead.
@@ -133,7 +133,7 @@ On Windows CMD you can use this command instead.
 set ADYEN_API_KEY=yourAdyenApiKey
 set ADYEN_MERCHANT_ACCOUNT=yourAdyenMerchantAccount
 set ADYEN_HMAC_KEY=yourAdyenHmacKey
-set ADYEN_POS_POI_ID=v400m-123456789
+set ADYEN_POS_POI_ID=V400m-123456789
 ```
 
 8. Start the application and visit localhost.
