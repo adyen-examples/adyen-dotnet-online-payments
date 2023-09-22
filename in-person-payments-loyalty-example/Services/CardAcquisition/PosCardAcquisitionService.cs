@@ -9,7 +9,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisiti
 {
     public interface IPosCardAcquisitionService
     {
-        Task<SaleToPOIResponse> SendCardAcquisitionRequest(string serviceId, string poiId, string saleId, decimal? amount = 0.0M, CancellationToken cancellationToken = default);
+        Task<SaleToPOIResponse> SendCardAcquisitionRequestAsync(string serviceId, string poiId, string saleId, decimal? amount = 0.0M, CancellationToken cancellationToken = default);
     }
 
     public class PosCardAcquisitionService : IPosCardAcquisitionService
@@ -21,7 +21,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisiti
             _posPaymentCloudApi = posPaymentCloudApi;
         }
 
-        public Task<SaleToPOIResponse> SendCardAcquisitionRequest(string serviceId, string poiId, string saleId, decimal? amount = 0.0M, CancellationToken cancellationToken = default)
+        public Task<SaleToPOIResponse> SendCardAcquisitionRequestAsync(string serviceId, string poiId, string saleId, decimal? amount = 0.0M, CancellationToken cancellationToken = default)
         {
             SaleToPOIRequest request = GetCardAcquisitionRequest(serviceId, poiId, saleId, amount);
             return _posPaymentCloudApi.TerminalApiCloudSynchronousAsync(request);

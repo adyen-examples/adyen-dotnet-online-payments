@@ -1,13 +1,5 @@
 using Adyen.HttpClient;
 using Adyen.Model.Nexo;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Web;
 using adyen_dotnet_in_person_payments_loyalty_example.Models;
 using adyen_dotnet_in_person_payments_loyalty_example.Models.Requests;
 using adyen_dotnet_in_person_payments_loyalty_example.Models.Responses;
@@ -16,7 +8,15 @@ using adyen_dotnet_in_person_payments_loyalty_example.Repositories;
 using adyen_dotnet_in_person_payments_loyalty_example.Services;
 using adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisition;
 using adyen_dotnet_in_person_payments_loyalty_example.Utilities;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Web;
 
 namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
 {
@@ -29,6 +29,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
         private readonly IPosAbortService _posAbortService;
         private readonly IPosCardAcquisitionService _posCardAcquisitionService;
         private readonly IPosCardAcquisitionPaymentService _posCardAcquisitionPaymentService;
+        private readonly IPosCardAcquisitionAbortService _posCardAcquisitionAbortService;
         private readonly ITableRepository _tableService;
 
         private readonly string _saleId;
@@ -40,6 +41,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
             IPosAbortService posAbortService,
             IPosCardAcquisitionService posCardAcquisitionService,
             IPosCardAcquisitionPaymentService posCardAcquisitionPaymentService,
+            IPosCardAcquisitionAbortService posCardAcquisitionAbortService,
             ITableRepository tableService, 
             IOptions<AdyenOptions> options)
         {
@@ -49,6 +51,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
             _posAbortService = posAbortService;
             _posCardAcquisitionService = posCardAcquisitionService;
             _posCardAcquisitionPaymentService = posCardAcquisitionPaymentService;
+            _posCardAcquisitionAbortService = posCardAcquisitionAbortService;
             _tableService = tableService;
             
             _poiId = options.Value.ADYEN_POS_POI_ID;
@@ -70,11 +73,11 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                 });
             }*/
 
-            string serviceId = IdUtility.GetRandomAlphanumericId(10);
 
             try
             {
-                SaleToPOIResponse response = await _posCardAcquisitionService.SendCardAcquisitionRequest(serviceId,
+                string serviceId = IdUtility.GetRandomAlphanumericId(10);
+                SaleToPOIResponse response = await _posCardAcquisitionService.SendCardAcquisitionRequestAsync(serviceId,
                     _poiId, _saleId, cancellationToken: cancellationToken);
                 CardAcquisitionResponse cardAcquisitionResponse = response.MessagePayload as CardAcquisitionResponse;
 
@@ -89,7 +92,9 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                         Convert.FromBase64String(cardAcquisitionResponse.Response.AdditionalResponse));
 
                 CardAcquisitionRoot json = JsonConvert.DeserializeObject<CardAcquisitionRoot>(decodedUTF8JsonString);
-                
+
+                SaleToPOIResponse abortRequest = await _posCardAcquisitionAbortService.SendAbortRequestAsync(IdUtility.GetRandomAlphanumericId(10), _poiId, _saleId, cancellationToken: cancellationToken);
+
                 return Ok(new CreateCardAcquisitionResponse()
                 {
                     // If you are going to continue with a payment, keep the TimeStamp and TransactionID, because you need these card acquisition details in your payment request.
@@ -185,7 +190,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
             }
         }
 
-        [HttpGet("api/abort/{tableName}")]
+        [HttpGet("card-acquisition/abort/{tableName}")]
         public async Task<ActionResult<SaleToPOIResponse>> Abort(string tableName, CancellationToken cancellationToken = default)
         {
             try
@@ -197,7 +202,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                     return NotFound();
                 }
 
-                SaleToPOIResponse abortResponse = await _posAbortService.SendAbortRequestAsync(table.PaymentStatusDetails.ServiceId, _poiId, _saleId, cancellationToken);
+                SaleToPOIResponse abortResponse = await _posAbortService.SendAbortRequestAsync(MessageCategoryType.CardAcquisition, table.PaymentStatusDetails.ServiceId, _poiId, _saleId, cancellationToken);
                 return Ok(abortResponse);
             }
             catch (HttpClientException e)
