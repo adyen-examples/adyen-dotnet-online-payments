@@ -16,6 +16,7 @@ using adyen_dotnet_in_person_payments_loyalty_example.Repositories;
 using adyen_dotnet_in_person_payments_loyalty_example.Services;
 using adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisition;
 using adyen_dotnet_in_person_payments_loyalty_example.Utilities;
+using Newtonsoft.Json;
 
 namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
 {
@@ -73,8 +74,38 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
 
             try
             {
-                SaleToPOIResponse response = await _posCardAcquisitionService.SendCardAcquisitionRequest(serviceId, _poiId, _saleId, cancellationToken: cancellationToken);
-                return Ok(response);
+                SaleToPOIResponse response = await _posCardAcquisitionService.SendCardAcquisitionRequest(serviceId,
+                    _poiId, _saleId, cancellationToken: cancellationToken);
+                CardAcquisitionResponse cardAcquisitionResponse = response.MessagePayload as CardAcquisitionResponse;
+
+                if (cardAcquisitionResponse == null)
+                {
+                    return NotFound();
+                }
+
+                // Decode the base64 encoded string.
+                string decodedUTF8JsonString =
+                    System.Text.Encoding.UTF8.GetString(
+                        Convert.FromBase64String(cardAcquisitionResponse.Response.AdditionalResponse));
+
+                CardAcquisitionRoot json = JsonConvert.DeserializeObject<CardAcquisitionRoot>(decodedUTF8JsonString);
+                
+                return Ok(new CreateCardAcquisitionResponse()
+                {
+                    // If you are going to continue with a payment, keep the TimeStamp and TransactionID, because you need these card acquisition details in your payment request.
+                    PoiTransactionTimeStamp = cardAcquisitionResponse.POIData.POITransactionID.TimeStamp,
+                    PoiTransactionId = cardAcquisitionResponse.POIData.POITransactionID.TransactionID,
+
+                    CardCountryCode = cardAcquisitionResponse.PaymentInstrumentData.CardData.CardCountryCode,
+                    PaymentToken = cardAcquisitionResponse.PaymentInstrumentData.CardData.PaymentToken.TokenValue,
+
+                    Alias = json.AdditionalData.Alias,
+                    PaymentAccountReference = json.AdditionalData.PaymentAccountReference,
+                    CardBin = json.AdditionalData.CardBin,
+                    IssuerCountry = json.AdditionalData.IssuerCountry,
+                    ShopperEmail = json.AdditionalData.ShopperEmail,
+                    ShopperReference = json.AdditionalData.ShopperReference
+                });
             }
             catch (Exception e)
             {
