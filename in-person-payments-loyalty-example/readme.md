@@ -1,10 +1,11 @@
-﻿# Adyen [In-person Payment Demo](https://docs.adyen.com/point-of-sale/) Integration Demo
+﻿# Adyen [In-person Payment Loyalty Demo](https://docs.adyen.com/point-of-sale/) Integration Demo
 
 This repository features an in-person payments [cloud terminal API integration](https://docs.adyen.com/point-of-sale/design-your-integration/choose-your-architecture/cloud/) example for making
 - [Payment requests](https://docs.adyen.com/point-of-sale/basic-tapi-integration/make-a-payment/)
 - [Unreferenced refund requests](https://docs.adyen.com/point-of-sale/basic-tapi-integration/refund-payment/referenced/)
 - [Cancel/abort requests](https://docs.adyen.com/point-of-sale/basic-tapi-integration/cancel-a-transaction/)
 - [Transaction status requests](https://docs.adyen.com/point-of-sale/basic-tapi-integration/verify-transaction-status/)
+- [Card Acquisition requests](https://docs.adyen.com/point-of-sale/card-acquisition/)
 
 To decide what type of integration is best, use the following [page](https://docs.adyen.com/point-of-sale/design-your-integration/choose-your-architecture/#choosing-between-cloud-and-local).
 
@@ -17,7 +18,7 @@ https://docs.adyen.com/point-of-sale/design-your-integration/terminal-api/termin
 - An Adyen account, learn how an Adyen account is structured in [our documentation](https://docs.adyen.com/point-of-sale/design-your-integration/determine-account-structure/)
 
 
-![In-person Payment Demo](wwwroot/images/cardinpersonpayment.gif)
+![In-person Payments Demo](wwwroot/images/cardinpersonpayments.gif)
 
 This demo leverages Adyen's API Library for .NET ([GitHub](https://github.com/Adyen/adyen-dotnet-api-library) | [Docs](https://docs.adyen.com/development-resources/libraries?tab=c__5#csharp)).
 You can find the [Terminal API documentation](https://docs.adyen.com/point-of-sale/design-your-integration/terminal-api/terminal-api-reference/) here.

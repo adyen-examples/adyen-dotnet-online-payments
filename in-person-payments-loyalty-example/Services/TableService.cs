@@ -1,6 +1,4 @@
 ﻿using Adyen.Model.Nexo;
-using adyen_dotnet_in_person_payments_loyalty_example.Models;
-using adyen_dotnet_in_person_payments_loyalty_example.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -8,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using adyen_dotnet_in_person_payments_loyalty_example.Models;
+using adyen_dotnet_in_person_payments_loyalty_example.Options;
 
 namespace adyen_dotnet_in_person_payments_loyalty_example.Services
 {

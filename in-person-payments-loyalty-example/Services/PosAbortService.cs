@@ -1,9 +1,9 @@
 ﻿using Adyen.Model.Nexo;
 using Adyen.Model.Nexo.Message;
 using Adyen.Service;
-using adyen_dotnet_in_person_payments_loyalty_example.Utilities;
 using System.Threading;
 using System.Threading.Tasks;
+using adyen_dotnet_in_person_payments_loyalty_example.Utilities;
 
 namespace adyen_dotnet_in_person_payments_loyalty_example.Services
 {

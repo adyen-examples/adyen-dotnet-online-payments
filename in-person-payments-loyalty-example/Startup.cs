@@ -1,8 +1,6 @@
 using Adyen;
 using Adyen.Service;
 using Adyen.Util;
-using adyen_dotnet_in_person_payments_loyalty_example.Options;
-using adyen_dotnet_in_person_payments_loyalty_example.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -11,6 +9,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using System;
 using System.Net.Http;
+using adyen_dotnet_in_person_payments_loyalty_example.Options;
+using adyen_dotnet_in_person_payments_loyalty_example.Repositories;
+using adyen_dotnet_in_person_payments_loyalty_example.Services;
+using adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisition;
 
 namespace adyen_dotnet_in_person_payments_loyalty_example
 {
@@ -74,12 +76,15 @@ namespace adyen_dotnet_in_person_payments_loyalty_example
             services.AddSingleton<IPosPaymentCloudApi, PosPaymentCloudApi>();
             services.AddSingleton<HmacValidator>();
 
+            services.AddSingleton<ITableRepository, TableRepository>();
+
             // Register application services.
             services.AddSingleton<IPosPaymentService, PosPaymentService>();
             services.AddSingleton<IPosReversalService, PosReversalService>();
             services.AddSingleton<IPosTransactionStatusService, PosTransactionStatusService>();
             services.AddSingleton<IPosAbortService, PosAbortService>();
-            services.AddSingleton<ITableService, TableService>();
+            services.AddSingleton<IPosCardAcquisitionService, PosCardAcquisitionService>();
+            services.AddSingleton<IPosCardAcquisitionPaymentService, PosCardAcquisitionPaymentService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

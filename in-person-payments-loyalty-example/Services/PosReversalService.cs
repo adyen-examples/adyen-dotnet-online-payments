@@ -1,10 +1,10 @@
-﻿using System;
-using Adyen.Model.Nexo;
+﻿using Adyen.Model.Nexo;
 using Adyen.Model.Nexo.Message;
 using Adyen.Service;
-using adyen_dotnet_in_person_payments_loyalty_example.Utilities;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
+using adyen_dotnet_in_person_payments_loyalty_example.Utilities;
 
 namespace adyen_dotnet_in_person_payments_loyalty_example.Services
 {
@@ -13,6 +13,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services
         /// <summary>
         /// Issue a referenced refund by sending a terminal-api payment reversal request.
         /// See: https://docs.adyen.com/point-of-sale/basic-tapi-integration/refund-payment/referenced/?tab=full_refund_1#referenced-request.
+        /// For error-scenarios, see: https://docs.adyen.com/point-of-sale/error-scenarios/#error-conditions.
         /// </summary>
         /// <param name="reversalReasonType"><see cref="ReversalReasonType"/>.</param>
         /// <param name="saleReferenceId">Unique Id of a sale global transaction. Appears as MerchantReference in your Customer Area.</param>

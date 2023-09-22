@@ -5,18 +5,18 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace adyen_dotnet_in_person_payments_loyalty_example.Services
+namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisition
 {
-    public interface IPosCardAcquisition
+    public interface IPosCardAcquisitionService
     {
         Task<SaleToPOIResponse> SendCardAcquisitionRequest(string serviceId, string poiId, string saleId, decimal? amount = 0.0M, CancellationToken cancellationToken = default);
     }
 
-    public class PosCardAcquisition : IPosCardAcquisition
+    public class PosCardAcquisitionService : IPosCardAcquisitionService
     {
         private readonly IPosPaymentCloudApi _posPaymentCloudApi;
 
-        public PosCardAcquisition(IPosPaymentCloudApi posPaymentCloudApi)
+        public PosCardAcquisitionService(IPosPaymentCloudApi posPaymentCloudApi)
         {
             _posPaymentCloudApi = posPaymentCloudApi;
         }

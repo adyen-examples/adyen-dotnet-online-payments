@@ -1,14 +1,14 @@
 using Adyen.Model.Notification;
 using Adyen.Util;
-using adyen_dotnet_in_person_payments_loyalty_example.Models;
-using adyen_dotnet_in_person_payments_loyalty_example.Options;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using adyen_dotnet_in_person_payments_loyalty_example.Services;
+using adyen_dotnet_in_person_payments_loyalty_example.Models;
+using adyen_dotnet_in_person_payments_loyalty_example.Options;
+using adyen_dotnet_in_person_payments_loyalty_example.Repositories;
 
 namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
 {
@@ -16,11 +16,11 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
     public class WebhookController : ControllerBase
     {
         private readonly ILogger<WebhookController> _logger;
-        private readonly ITableService _tableService;
+        private readonly ITableRepository _tableService;
         private readonly HmacValidator _hmacValidator;
         private readonly string _hmacKey;
 
-        public WebhookController(ILogger<WebhookController> logger, IOptions<AdyenOptions> options, ITableService tableService, HmacValidator hmacValidator)
+        public WebhookController(ILogger<WebhookController> logger, IOptions<AdyenOptions> options, ITableRepository tableService, HmacValidator hmacValidator)
         {
             _logger = logger;
             _tableService = tableService;

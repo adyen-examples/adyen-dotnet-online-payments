@@ -18,28 +18,9 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services
         /// <param name="saleId">Your unique ID for the POS system (cash register) to send this request from. Seealso <see cref="Options.AdyenOptions.ADYEN_POS_SALE_ID"/>.</param>
         /// <param name="currency">Your <see cref="AmountsReq.Currency"/> (example: "EUR", "USD").</param>
         /// <param name="amount">Your <see cref="AmountsReq.RequestedAmount"/> in DECIMAL units (example: 42.99), the terminal API does not use minor units.</param>
-        /// <param name="cardAcquisitionTimeStamp">The timestamp from the card acquisition, seealso <see cref="PosCardAcquisition.SendCardAcquisitionRequest(string, string, string, decimal?, CancellationToken)"/>.</param>
-        /// <param name="cardAcquisitionTransactionId">The transaction ID from the card acquisition response, seealso <seealso cref="PosCardAcquisition.SendCardAcquisitionRequest(string, string, string, decimal?, CancellationToken)"/>.</param>
         /// <param name="cancellationToken"><see cref="CancellationToken"/>.</param>
         /// <returns><see cref="SaleToPOIResponse"/>.</returns>
-        Task<SaleToPOIResponse> SendPaymentRequestExistingCustomerAsync(string serviceId, string poiId, string saleId, string currency, decimal? amount, DateTime cardAcquisitionTimeStamp, string cardAcquisitionTransactionId, CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Sends a terminal-api payment request for the specified <paramref name="amount"/> and <paramref name="currency"/>.
-        /// See: https://docs.adyen.com/point-of-sale/basic-tapi-integration/make-a-payment/.
-        /// </summary>
-        /// <param name="serviceId">Your unique ID for this request, consisting of 1-10 alphanumeric characters. Must be unique within the last 48 hours for the terminal (POIID) being used. Generated using <see cref="Utilities.IdUtility.GetRandomAlphanumericId(int0)"/>.</param>
-        /// <param name="poiId">Your unique ID of the terminal to send this request to. Format: [device model]-[serial number]. Seealso <seealso cref="Options.AdyenOptions.ADYEN_POS_POI_ID"/></param>
-        /// <param name="saleId">Your unique ID for the POS system (cash register) to send this request from. Seealso <see cref="Options.AdyenOptions.ADYEN_POS_SALE_ID"/>.</param>
-        /// <param name="currency">Your <see cref="AmountsReq.Currency"/> (example: "EUR", "USD").</param>
-        /// <param name="amount">Your <see cref="AmountsReq.RequestedAmount"/> in DECIMAL units (example: 42.99), the terminal API does not use minor units.</param>
-        /// <param name="shopperEmail">The email of your shopper, used for card acquisition loyalty points.</param>
-        /// <param name="shopperReference">The unique (ID) reference for your shopper, used for card acquisition loyalty points.</param>
-        /// <param name="cardAcquisitionTimeStamp">The timestamp from the card acquisition, seealso <see cref="PosCardAcquisition.SendCardAcquisitionRequest(string, string, string, decimal?, CancellationToken)"/>.</param>
-        /// <param name="cardAcquisitionTransactionId">The transaction ID from the card acquisition response, seealso <seealso cref="PosCardAcquisition.SendCardAcquisitionRequest(string, string, string, decimal?, CancellationToken)"/>.</param>
-        /// <param name="cancellationToken"><see cref="CancellationToken"/>.</param>
-        /// <returns><see cref="SaleToPOIResponse"/>.</returns>
-        Task<SaleToPOIResponse> SendPaymentRequestNewCustomerAsync(string serviceId, string poiId, string saleId, string currency, decimal? amount, string shopperEmail, string shopperReference, DateTime cardAcquisitionTimeStamp, string cardAcquisitionTransactionId, CancellationToken cancellationToken = default);
+        Task<SaleToPOIResponse> SendPaymentRequestAsync(string serviceId, string poiId, string saleId, string currency, decimal? amount, CancellationToken cancellationToken = default);
     }
 
     public class PosPaymentService : IPosPaymentService
@@ -51,13 +32,13 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services
             _posPaymentCloudApi = posPaymentCloudApi;
         }
 
-        public Task<SaleToPOIResponse> SendPaymentRequestNewCustomerAsync(string serviceId, string poiId, string saleId, string currency, decimal? amount, string shopperEmail, string shopperReference, DateTime cardAcquisitionTimeStamp, string cardAcquisitionTransactionId, CancellationToken cancellationToken)
+        public Task<SaleToPOIResponse> SendPaymentRequestAsync(string serviceId, string poiId, string saleId, string currency, decimal? amount, CancellationToken cancellationToken)
         {
-            SaleToPOIRequest request = GetPaymentNewCustomerRequest(serviceId, poiId, saleId, currency, amount, shopperEmail, shopperReference, cardAcquisitionTimeStamp, cardAcquisitionTransactionId);
+            SaleToPOIRequest request = GetPaymentRequest(serviceId, poiId, saleId, currency, amount);
             return _posPaymentCloudApi.TerminalApiCloudSynchronousAsync(request);
         }
 
-        private SaleToPOIRequest GetPaymentNewCustomerRequest(string serviceId, string poiId, string saleId, string currency, decimal? amount, string shopperEmail, string shopperReference, DateTime cardAcquisitionTimeStamp, string cardAcquisitionTransactionId)
+        private SaleToPOIRequest GetPaymentRequest(string serviceId, string poiId, string saleId, string currency, decimal? amount)
         {
             SaleToPOIRequest request = new SaleToPOIRequest()
             {
@@ -85,14 +66,15 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services
                             // In your Customer Area and Adyen reports, this will show as the merchant reference for the transaction.
                             TransactionID = Guid.NewGuid().ToString(),
                             TimeStamp = DateTime.UtcNow
-                        }, 
-                        SaleToAcquirerData = new Adyen.Model.Terminal.SaleToAcquirerData()
-                        {
-                            ShopperEmail = shopperEmail,
-                            ShopperReference = shopperReference,
-                            RecurringContract = "ONECLICK"
                         },
-                        TokenRequestedType = TokenRequestedType.Customer
+                        // A basic Terminal API payment request includes the amount, currency, TransactionID, and timestamp of the transaction.
+                        // If you want to add information that you want Adyen to apply to your request and save on the Adyen payments platform.
+                        // Set the SaleToAcquirerData, see: https://docs.adyen.com/point-of-sale/add-data/
+                        // Example with SaleToAcquirerData: https://docs.adyen.com/point-of-sale/add-data/sale-to-acquirer-data/.
+                        //SaleToAcquirerData = new Adyen.Model.Terminal.SaleToAcquirerData()
+                        //{
+
+                        //}
                     },
                     PaymentTransaction = new PaymentTransaction()
                     {
@@ -100,73 +82,6 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services
                         {
                             Currency = currency,
                             RequestedAmount = amount
-                        }
-                    }, 
-                    PaymentData = new PaymentData()
-                    {
-                        CardAcquisitionReference = new TransactionIdentification()
-                        {
-                            TimeStamp = cardAcquisitionTimeStamp,
-                            TransactionID = cardAcquisitionTransactionId
-                        }
-                    }
-                }
-            };
-
-            return request;
-        }
-
-        public Task<SaleToPOIResponse> SendPaymentRequestExistingCustomerAsync(string serviceId, string poiId, string saleId, string currency, decimal? amount, DateTime cardAcquisitionTimeStamp, string cardAcquisitionTransactionId, CancellationToken cancellationToken)
-        {
-            SaleToPOIRequest request = GetPaymentExistingCustomerRequest(serviceId, poiId, saleId, currency, amount, cardAcquisitionTimeStamp, cardAcquisitionTransactionId);
-            return _posPaymentCloudApi.TerminalApiCloudSynchronousAsync(request);
-        }
-
-        private SaleToPOIRequest GetPaymentExistingCustomerRequest(string serviceId, string poiId, string saleId, string currency, decimal? amount, DateTime cardAcquisitionTimeStamp, string cardAcquisitionTransactionId)
-        {
-            SaleToPOIRequest request = new SaleToPOIRequest()
-            {
-                MessageHeader = new MessageHeader()
-                {
-                    // Not applicable in this case - Optionally, used for Identification of a device message pair. 
-                    // Required if MessageClass is Device. The length of the string must be greater than or equal to 1 and less than or equal to 10.
-                    // See: https://docs.adyen.com/point-of-sale/design-your-integration/terminal-api/terminal-api-reference/#comadyennexomessageheader.
-                    //DeviceID = "YourUnique",
-
-                    MessageCategory = MessageCategoryType.Payment,
-                    MessageClass = MessageClassType.Service,
-                    MessageType = MessageType.Request,
-                    POIID = poiId,
-                    SaleID = saleId,
-                    ServiceID = serviceId,
-                },
-                MessagePayload = new PaymentRequest()
-                {
-                    SaleData = new SaleData()
-                    {
-                        SaleTransactionID = new TransactionIdentification()
-                        {
-                            // Your reference to identify a payment. We recommend using a unique value per payment.
-                            // In your Customer Area and Adyen reports, this will show as the merchant reference for the transaction.
-                            TransactionID = Guid.NewGuid().ToString(),
-                            TimeStamp = DateTime.UtcNow
-                        },
-                        TokenRequestedType = TokenRequestedType.Customer
-                    },
-                    PaymentTransaction = new PaymentTransaction()
-                    {
-                        AmountsReq = new AmountsReq()
-                        {
-                            Currency = currency,
-                            RequestedAmount = amount
-                        }
-                    },
-                    PaymentData = new PaymentData()
-                    {
-                        CardAcquisitionReference = new TransactionIdentification()
-                        {
-                            TimeStamp = cardAcquisitionTimeStamp,
-                            TransactionID = cardAcquisitionTransactionId
                         }
                     }
                 }
