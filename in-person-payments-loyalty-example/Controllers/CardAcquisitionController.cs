@@ -36,14 +36,14 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
         private readonly string _saleId;
         private readonly string _poiId;
 
-        public CardAcquisitionController(ILogger<CardAcquisitionController> logger, 
-            IPosPaymentService posPaymentService, 
-            IPosReversalService posPaymentReversalService, 
+        public CardAcquisitionController(ILogger<CardAcquisitionController> logger,
+            IPosPaymentService posPaymentService,
+            IPosReversalService posPaymentReversalService,
             IPosAbortService posAbortService,
             IPosCardAcquisitionService posCardAcquisitionService,
             IPosCardAcquisitionPaymentService posCardAcquisitionPaymentService,
             IPosCardAcquisitionAbortService posCardAcquisitionAbortService,
-            ITableRepository tableService, 
+            ITableRepository tableService,
             ICardAcquisitionRepository cardAcquisitionRepository,
             IOptions<AdyenOptions> options)
         {
@@ -64,7 +64,10 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
         [Route("card-acquisitions")]
         public ActionResult CardAcquisitions(CancellationToken cancellationToken = default)
         {
-            return Ok(_cardAcquisitionRepository.CardAcquisitions.Select(x => JsonConvert.SerializeObject(x.ToJson(), Formatting.Indented)));
+            var cardAcquisitions = _cardAcquisitionRepository.CardAcquisitions.Select(x => x.ToJson()).ToList();
+            var jsonString = JsonConvert.SerializeObject(cardAcquisitions, Formatting.Indented);
+
+            return Ok(jsonString);
         }
 
         [Route("card-acquisition/create/{amount}")]
@@ -82,7 +85,6 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                 });
             }*/
 
-
             try
             {
                 SaleToPOIResponse response = await _posCardAcquisitionService.SendCardAcquisitionRequestAsync(IdUtility.GetRandomAlphanumericId(10), _poiId, _saleId, cancellationToken: cancellationToken);
@@ -94,7 +96,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                 }
 
                 // Decode the base64 encoded string.
-                string decodedUTF8JsonString =System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(cardAcquisitionResponse.Response.AdditionalResponse));
+                string decodedUTF8JsonString = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(cardAcquisitionResponse.Response.AdditionalResponse));
 
                 CardAcquisitionRoot json = JsonConvert.DeserializeObject<CardAcquisitionRoot>(decodedUTF8JsonString);
 
@@ -103,8 +105,24 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                     return BadRequest(); // This is a giftcard. Can't attach a giftcard to this.
                 }
 
+                bool customerExists = _cardAcquisitionRepository.Get(cardAcquisitionResponse.PaymentInstrumentData?.CardData?.PaymentToken?.TokenValue) != null;
+
                 SaleToPOIResponse paymentRequest;
-                if (string.IsNullOrWhiteSpace(json.AdditionalData.ShopperReference) || string.IsNullOrWhiteSpace(json.AdditionalData.ShopperEmail))
+                if (customerExists)
+                {
+                    // Existing Customer.
+                    paymentRequest = await _posCardAcquisitionPaymentService.SendPaymentRequestExistingCustomerAsync(
+                        serviceId: IdUtility.GetRandomAlphanumericId(10),
+                        poiId: _poiId,
+                        saleId: _saleId,
+                        currency: "EUR",
+                        amount: amount,
+                        cardAcquisitionTimeStamp: cardAcquisitionResponse.POIData.POITransactionID.TimeStamp,
+                        cardAcquisitionTransactionId: cardAcquisitionResponse.POIData.POITransactionID.TransactionID,
+                        cancellationToken: cancellationToken
+                    );
+                }
+                else
                 {
                     // New Customer.
                     paymentRequest = await _posCardAcquisitionPaymentService.SendPaymentRequestNewCustomerAsync(
@@ -118,22 +136,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                         cardAcquisitionTimeStamp: cardAcquisitionResponse.POIData.POITransactionID.TimeStamp,
                         cardAcquisitionTransactionId: cardAcquisitionResponse.POIData.POITransactionID.TransactionID,
                         cancellationToken: cancellationToken
-                    ); ;
-                }
-                else
-                {
-                    // Existing Customer.
-                    paymentRequest = await _posCardAcquisitionPaymentService.SendPaymentRequestExistingCustomerAsync(
-                        serviceId: IdUtility.GetRandomAlphanumericId(10),
-                        poiId: _poiId,
-                        saleId: _saleId,
-                        currency: "EUR",
-                        amount: amount,
-                        cardAcquisitionTimeStamp: cardAcquisitionResponse.POIData.POITransactionID.TimeStamp,
-                        cardAcquisitionTransactionId: cardAcquisitionResponse.POIData.POITransactionID.TransactionID,
-                        cancellationToken: cancellationToken
                     );
-
                 }
 
                 //SaleToPOIResponse abortRequest = await _posCardAcquisitionAbortService.SendAbortRequestAsync(IdUtility.GetRandomAlphanumericId(10), _poiId, _saleId, cancellationToken: cancellationToken);
@@ -188,7 +191,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                     RefusalReason = $"Table {request.TableName} not found"
                 });
             }
-            
+
             try
             {
                 SaleToPOIResponse response = await _posPaymentReversalService.SendReversalRequestAsync(ReversalReasonType.MerchantCancel, table.PaymentStatusDetails.SaleTransactionId, table.PaymentStatusDetails.PoiTransactionId, _poiId, _saleId, cancellationToken);
@@ -224,8 +227,8 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                         return BadRequest(new CreateReversalResponse()
                         {
                             Result = "failure",
-                            RefusalReason = _poiId == null 
-                                ? "Could not reach payment terminal - POI ID is not set" 
+                            RefusalReason = _poiId == null
+                                ? "Could not reach payment terminal - POI ID is not set"
                                 : $"Could not reach payment terminal with POI ID {_poiId}"
                         });
                 }

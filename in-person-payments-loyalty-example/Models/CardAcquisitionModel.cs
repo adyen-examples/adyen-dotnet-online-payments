@@ -22,7 +22,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Models
         public string SaleTransactionId { get; set; }
         public DateTime? SaleTransactionTimeStamp { get; set; }
 
-        public string Alias { get; set; }
+        public string Alias { get; set; } // The card alias, to recognize the customer based on their card. Should be same as PaymentToken above when TokenRequestedType == Customer
         public string PaymentAccountReference { get; set; }
 
         // For tax-free shopping:
