@@ -76,7 +76,9 @@ namespace adyen_dotnet_in_person_payments_loyalty_example
             services.AddSingleton<IPosPaymentCloudApi, PosPaymentCloudApi>();
             services.AddSingleton<HmacValidator>();
 
+            // Register repositores that saves data in-memory.
             services.AddSingleton<ITableRepository, TableRepository>();
+            services.AddSingleton<ICardAcquisitionRepository, CardAcquisitionRepository>();
 
             // Register application services.
             services.AddSingleton<IPosPaymentService, PosPaymentService>();

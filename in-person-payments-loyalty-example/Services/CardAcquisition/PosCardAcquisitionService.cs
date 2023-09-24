@@ -60,7 +60,8 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisiti
                     },
                     CardAcquisitionTransaction = new CardAcquisitionTransaction()
                     {
-                        TotalAmount = amount
+                        TotalAmount = amount, 
+                        LoyaltyHandling = LoyaltyHandlingType.Allowed
                     }
                 }
             };

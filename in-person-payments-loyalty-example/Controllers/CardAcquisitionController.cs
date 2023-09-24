@@ -23,7 +23,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
     [ApiController]
     public class CardAcquisitionController : ControllerBase
     {
-        private readonly ILogger<ApiController> _logger;
+        private readonly ILogger<CardAcquisitionController> _logger;
         private readonly IPosPaymentService _posPaymentService;
         private readonly IPosReversalService _posPaymentReversalService;
         private readonly IPosAbortService _posAbortService;
@@ -31,11 +31,12 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
         private readonly IPosCardAcquisitionPaymentService _posCardAcquisitionPaymentService;
         private readonly IPosCardAcquisitionAbortService _posCardAcquisitionAbortService;
         private readonly ITableRepository _tableService;
+        private readonly ICardAcquisitionRepository _cardAcquisitionRepository;
 
         private readonly string _saleId;
         private readonly string _poiId;
 
-        public CardAcquisitionController(ILogger<ApiController> logger, 
+        public CardAcquisitionController(ILogger<CardAcquisitionController> logger, 
             IPosPaymentService posPaymentService, 
             IPosReversalService posPaymentReversalService, 
             IPosAbortService posAbortService,
@@ -43,6 +44,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
             IPosCardAcquisitionPaymentService posCardAcquisitionPaymentService,
             IPosCardAcquisitionAbortService posCardAcquisitionAbortService,
             ITableRepository tableService, 
+            ICardAcquisitionRepository cardAcquisitionRepository,
             IOptions<AdyenOptions> options)
         {
             _logger = logger;
@@ -53,13 +55,20 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
             _posCardAcquisitionPaymentService = posCardAcquisitionPaymentService;
             _posCardAcquisitionAbortService = posCardAcquisitionAbortService;
             _tableService = tableService;
-            
+            _cardAcquisitionRepository = cardAcquisitionRepository;
             _poiId = options.Value.ADYEN_POS_POI_ID;
             _saleId = options.Value.ADYEN_POS_SALE_ID;
         }
 
-        [Route("card-acquisition/create")]
-        public async Task<ActionResult> CreateCardAcquisition(CancellationToken cancellationToken = default)
+
+        [Route("card-acquisitions")]
+        public ActionResult CardAcquisitions(CancellationToken cancellationToken = default)
+        {
+            return Ok(_cardAcquisitionRepository.CardAcquisitions.Select(x => JsonConvert.SerializeObject(x.ToJson(), Formatting.Indented)));
+        }
+
+        [Route("card-acquisition/create/{amount}")]
+        public async Task<ActionResult> CreateCardAcquisition(decimal? amount, CancellationToken cancellationToken = default)
         {
             /*
             var table = _tableService.Tables.FirstOrDefault(t => t.TableName == request.TableName);
@@ -76,9 +85,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
 
             try
             {
-                string serviceId = IdUtility.GetRandomAlphanumericId(10);
-                SaleToPOIResponse response = await _posCardAcquisitionService.SendCardAcquisitionRequestAsync(serviceId,
-                    _poiId, _saleId, cancellationToken: cancellationToken);
+                SaleToPOIResponse response = await _posCardAcquisitionService.SendCardAcquisitionRequestAsync(IdUtility.GetRandomAlphanumericId(10), _poiId, _saleId, cancellationToken: cancellationToken);
                 CardAcquisitionResponse cardAcquisitionResponse = response.MessagePayload as CardAcquisitionResponse;
 
                 if (cardAcquisitionResponse == null)
@@ -87,30 +94,79 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                 }
 
                 // Decode the base64 encoded string.
-                string decodedUTF8JsonString =
-                    System.Text.Encoding.UTF8.GetString(
-                        Convert.FromBase64String(cardAcquisitionResponse.Response.AdditionalResponse));
+                string decodedUTF8JsonString =System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(cardAcquisitionResponse.Response.AdditionalResponse));
 
                 CardAcquisitionRoot json = JsonConvert.DeserializeObject<CardAcquisitionRoot>(decodedUTF8JsonString);
 
-                SaleToPOIResponse abortRequest = await _posCardAcquisitionAbortService.SendAbortRequestAsync(IdUtility.GetRandomAlphanumericId(10), _poiId, _saleId, cancellationToken: cancellationToken);
+                if (json.AdditionalData.GiftcardIndicator)
+                {
+                    return BadRequest(); // This is a giftcard. Can't attach a giftcard to this.
+                }
 
-                return Ok(new CreateCardAcquisitionResponse()
+                SaleToPOIResponse paymentRequest;
+                if (string.IsNullOrWhiteSpace(json.AdditionalData.ShopperReference) || string.IsNullOrWhiteSpace(json.AdditionalData.ShopperEmail))
+                {
+                    // New Customer.
+                    paymentRequest = await _posCardAcquisitionPaymentService.SendPaymentRequestNewCustomerAsync(
+                        serviceId: IdUtility.GetRandomAlphanumericId(10),
+                        poiId: _poiId,
+                        saleId: _saleId,
+                        currency: "EUR",
+                        amount: amount,
+                        shopperEmail: Identifiers.ShopperEmail,
+                        shopperReference: Identifiers.ShopperReference,
+                        cardAcquisitionTimeStamp: cardAcquisitionResponse.POIData.POITransactionID.TimeStamp,
+                        cardAcquisitionTransactionId: cardAcquisitionResponse.POIData.POITransactionID.TransactionID,
+                        cancellationToken: cancellationToken
+                    ); ;
+                }
+                else
+                {
+                    // Existing Customer.
+                    paymentRequest = await _posCardAcquisitionPaymentService.SendPaymentRequestExistingCustomerAsync(
+                        serviceId: IdUtility.GetRandomAlphanumericId(10),
+                        poiId: _poiId,
+                        saleId: _saleId,
+                        currency: "EUR",
+                        amount: amount,
+                        cardAcquisitionTimeStamp: cardAcquisitionResponse.POIData.POITransactionID.TimeStamp,
+                        cardAcquisitionTransactionId: cardAcquisitionResponse.POIData.POITransactionID.TransactionID,
+                        cancellationToken: cancellationToken
+                    );
+
+                }
+
+                //SaleToPOIResponse abortRequest = await _posCardAcquisitionAbortService.SendAbortRequestAsync(IdUtility.GetRandomAlphanumericId(10), _poiId, _saleId, cancellationToken: cancellationToken);
+                var model = new CardAcquisitionModel()
                 {
                     // If you are going to continue with a payment, keep the TimeStamp and TransactionID, because you need these card acquisition details in your payment request.
+                    POIReconciliationID = cardAcquisitionResponse.POIData.POIReconciliationID,
                     PoiTransactionTimeStamp = cardAcquisitionResponse.POIData.POITransactionID.TimeStamp,
                     PoiTransactionId = cardAcquisitionResponse.POIData.POITransactionID.TransactionID,
 
                     CardCountryCode = cardAcquisitionResponse.PaymentInstrumentData.CardData.CardCountryCode,
-                    PaymentToken = cardAcquisitionResponse.PaymentInstrumentData.CardData.PaymentToken.TokenValue,
+                    MaskedPAN = cardAcquisitionResponse.PaymentInstrumentData.CardData.MaskedPAN,
+                    PaymentBrand = cardAcquisitionResponse.PaymentInstrumentData.CardData.PaymentBrand,
+                    PaymentToken = cardAcquisitionResponse.PaymentInstrumentData.CardData.PaymentToken.TokenValue, // Provided if the TokenRequestedType == Customer
+                    ExpiryDate = cardAcquisitionResponse.PaymentInstrumentData.CardData.SensitiveCardData.ExpiryDate,
+                    PaymentInstrumentType = cardAcquisitionResponse.PaymentInstrumentData.PaymentInstrumentType,
 
                     Alias = json.AdditionalData.Alias,
                     PaymentAccountReference = json.AdditionalData.PaymentAccountReference,
                     CardBin = json.AdditionalData.CardBin,
                     IssuerCountry = json.AdditionalData.IssuerCountry,
                     ShopperEmail = json.AdditionalData.ShopperEmail,
-                    ShopperReference = json.AdditionalData.ShopperReference
-                });
+                    ShopperReference = json.AdditionalData.ShopperReference,
+
+                    GiftCardIndicator = json.AdditionalData.GiftcardIndicator,
+
+                    SaleTransactionId = cardAcquisitionResponse.SaleData.SaleTransactionID.TransactionID,
+                    SaleTransactionTimeStamp = cardAcquisitionResponse.SaleData.SaleTransactionID.TimeStamp
+                };
+
+                _cardAcquisitionRepository.CardAcquisitions.Add(model);
+
+                return Ok(model);
             }
             catch (Exception e)
             {

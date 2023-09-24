@@ -1,5 +1,6 @@
 ﻿using Adyen.Model.Nexo;
 using Adyen.Model.Nexo.Message;
+using Adyen.Model.Terminal;
 using Adyen.Service;
 using System;
 using System.Threading;
@@ -86,7 +87,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisiti
                             TransactionID = Guid.NewGuid().ToString(),
                             TimeStamp = DateTime.UtcNow
                         }, 
-                        SaleToAcquirerData = new Adyen.Model.Terminal.SaleToAcquirerData()
+                        SaleToAcquirerData = new SaleToAcquirerData()
                         {
                             ShopperEmail = shopperEmail,
                             ShopperReference = shopperReference,

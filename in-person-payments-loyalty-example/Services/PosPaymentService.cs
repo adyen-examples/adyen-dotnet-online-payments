@@ -54,7 +54,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services
                     MessageType = MessageType.Request,
                     POIID = poiId,
                     SaleID = saleId,
-                    ServiceID = serviceId, 
+                    ServiceID = serviceId
                 },
                 MessagePayload = new PaymentRequest()
                 {
