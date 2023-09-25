@@ -20,17 +20,38 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Repositories
             Tables = new List<TableModel>();
 
             // Add tables.
-            for (int i = 0; i < 4; i++)
+            Tables.Add(new TableModel()
             {
-                int tableNumber = i + 1;
-                Tables.Add(new TableModel()
-                {
-                    TableName = "Table " + tableNumber,
-                    Amount = 22.22M * tableNumber,
-                    Currency = "EUR",
-                    PaymentStatus = PaymentStatus.NotPaid
-                });
-            }
+                TableName = "Pizza 1",
+                Amount = 11.99M,
+                Currency = "EUR",
+                PaymentStatus = PaymentStatus.NotPaid
+            });
+
+            Tables.Add(new TableModel()
+            {
+                TableName = "Pizza 2",
+                Amount = 19.99M,
+                Currency = "EUR",
+                PaymentStatus = PaymentStatus.NotPaid
+            });
+
+            Tables.Add(new TableModel()
+            {
+                TableName = "Pizza 3",
+                Amount = 9.99M,
+                Currency = "EUR",
+                PaymentStatus = PaymentStatus.NotPaid
+            });
+
+
+            Tables.Add(new TableModel()
+            {
+                TableName = "Pizza 4",
+                Amount = 14.99M,
+                Currency = "EUR",
+                PaymentStatus = PaymentStatus.NotPaid
+            });
         }
     }
 }

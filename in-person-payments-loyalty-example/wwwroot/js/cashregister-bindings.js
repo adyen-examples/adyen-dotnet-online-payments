@@ -62,16 +62,15 @@ function bindButtons() {
 
         var formData = new FormData(event.target);
         var amount = formData.get('amount');
-        var currency = formData.get('currency');
         var tableName = formData.get('tableName');
 
-        if (amount && currency && tableName) { 
+        if (amount && tableName) { 
             try {
                 // Show loading animation component which doesn't allow users to select any tables
                 showLoadingComponent();           
 
                 // Send payment request
-                var response = await sendPostRequest("/api/create-payment", { tableName: tableName, amount: amount, currency: currency });
+                var response = await sendPostRequest("/api/create-payment", { tableName: tableName, amount: amount, currency: "EUR" });
                 console.log(response);
 
                 // Handle response
@@ -91,6 +90,48 @@ function bindButtons() {
 
                 // Sends an abort request to the terminal
                 await sendAbortRequest(tableName);
+                
+                // Hides loading animation component and allow user to select tables again
+                hideLoadingComponent();
+            }
+        }
+    });
+
+    // Bind `card-acquisition-request-form` submit-button
+    const cardAcquisitionRequestForm = document.getElementById('card-acquisition-request-form');
+    cardAcquisitionRequestForm.addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        var formData = new FormData(event.target);
+        var cardAcquisitionAmount = formData.get('cardAcquisitionAmount');
+        var cardAcquisitionTableName = formData.get('cardAcquisitionTableName');
+
+        if (amount && tableName) { 
+            try {
+                // Show loading animation component which doesn't allow users to select any tables
+                showLoadingComponent();           
+
+                // Send card acquisition payment request
+                var response = await sendGetRequest("/card-acquisition/create/" + cardAcquisitionTableName + "/" + cardAcquisitionAmount);
+                console.log(response);
+
+                // Handle response
+                switch (response.result) {
+                    case "success":
+                        window.location.href = "result/success";
+                        break;
+                    case "failure":
+                        window.location.href = "result/failure/" + response.refusalReason;
+                        break;
+                    default:
+                        throw Error('Unknown response result');
+                }
+            }
+            catch (error) {
+                console.warn(error);
+
+                // Sends an abort request to the terminal
+                await sendAbortRequest(tableName); // TODO, different abort!
                 
                 // Hides loading animation component and allow user to select tables again
                 hideLoadingComponent();
@@ -172,9 +213,9 @@ function bindButtons() {
             const amountElement = document.getElementById('amount');
             amountElement.value = table.querySelector('.tables-grid-item-amount').textContent;
 
-            // Copies 'currency' value to the `payment-request-form`
-            const currencyElement = document.getElementById('currency');
-            currencyElement.value = table.querySelector('.tables-grid-item-currency').textContent;
+            // Copies 'amount' value to the `card-acquisition-request-form`
+            const cardAcquisitionAmount = document.getElementById('cardAcquisitionAmount');
+            cardAcquisitionAmount.value = table.querySelector('.tables-grid-item-amount').textContent;
 
             // Copies 'table name' value to the `payment-request-form`
             const tableNameElement = document.getElementById('tableName');
@@ -184,32 +225,39 @@ function bindButtons() {
             const reversalTableNameElement = document.getElementById('reversalTableName');
             reversalTableNameElement.value = table.querySelector('.tables-grid-item-title').textContent;
 
+            // Copies 'table name' value to the `card-acquisition-request-form`
+            const cardAcquisitionTableNameElement = document.getElementById('cardAcquisitionTableName');
+            cardAcquisitionTableNameElement.value = table.querySelector('.tables-grid-item-title').textContent;
+
             // Show/hides the `payment-request-button` and `reversal-request-button` according to the `PaymentStatus` of currently selected table
             const currentActiveTable = document.getElementsByClassName('current-selection')[0];
             var statusValue = currentActiveTable.querySelector('.tables-grid-item-status').textContent;
             switch (statusValue) {
                  case 'NotPaid':
-                    enablePaymentRequestButton();
-                    disableReversalRequestButton();
-                    disableTransactionStatusButton();
-                    break;
+                    //enablePaymentRequestButton();
+                    //disableReversalRequestButton();
+                    //disableTransactionStatusButton();
+                    //break;
                 case 'Paid':
-                    disablePaymentRequestButton();
-                    enableReversalRequestButton();
-                    enableTransactionStatusButton();
-                    break;
+                    //disablePaymentRequestButton();
+                    //enableReversalRequestButton();
+                    //enableTransactionStatusButton();
+                    //break;
                 case 'RefundFailed':
-                    disablePaymentRequestButton();
-                    enableReversalRequestButton();
-                    enableTransactionStatusButton();
-                    break;
+                    //disablePaymentRequestButton();
+                    //enableReversalRequestButton();
+                    //enableTransactionStatusButton();
+                    //break;
                 case 'RefundInProgress':
                 case 'PaymentInProgress':
                 case 'Refunded':
                 case 'RefundedReversed':
                 default:
-                    disablePaymentRequestButton();
-                    disableReversalRequestButton();
+                    //disablePaymentRequestButton();
+                    //disableReversalRequestButton();
+                    //enableTransactionStatusButton();
+                    enablePaymentRequestButton();
+                    enableReversalRequestButton();
                     enableTransactionStatusButton();
                     break;
             }
@@ -218,13 +266,17 @@ function bindButtons() {
 }
 
 // Enable `payment-request-button`
+// Enable `card-acquisition-request-button`
 function enablePaymentRequestButton() {
    document.getElementById('payment-request-button').classList.remove('disabled');
+   document.getElementById('card-acquisition-request-button').classList.remove('disabled');
 }
 
 // Disable `payment-request-button`
+// Disable `card-acquisition-request-button`
 function disablePaymentRequestButton() {
    document.getElementById('payment-request-button').classList.add('disabled');
+   document.getElementById('card-acquisition-request-button').classList.add('disabled');
 }
 
 // Enable `reversal-request-button`

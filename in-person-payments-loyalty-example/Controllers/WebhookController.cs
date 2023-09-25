@@ -1,14 +1,14 @@
 using Adyen.Model.Notification;
 using Adyen.Util;
+using adyen_dotnet_in_person_payments_loyalty_example.Models;
+using adyen_dotnet_in_person_payments_loyalty_example.Options;
+using adyen_dotnet_in_person_payments_loyalty_example.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using adyen_dotnet_in_person_payments_loyalty_example.Models;
-using adyen_dotnet_in_person_payments_loyalty_example.Options;
-using adyen_dotnet_in_person_payments_loyalty_example.Repositories;
 
 namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
 {
