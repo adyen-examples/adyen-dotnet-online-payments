@@ -41,6 +41,10 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisiti
         /// <param name="cancellationToken"><see cref="CancellationToken"/>.</param>
         /// <returns><see cref="SaleToPOIResponse"/>.</returns>
         Task<SaleToPOIResponse> SendPaymentRequestNewCustomerAsync(string serviceId, string poiId, string saleId, string currency, decimal? amount, string shopperEmail, string shopperReference, DateTime cardAcquisitionTimeStamp, string cardAcquisitionTransactionId, CancellationToken cancellationToken = default);
+        
+        Task<SaleToPOIResponse> RegisterCustomerAsync(string serviceId, string poiId, string saleId, CancellationToken cancellationToken = default);
+        
+        Task<SaleToPOIResponse> EnterEmailAddressAsync(string serviceId, string poiId, string saleId, CancellationToken cancellationToken = default);
     }
 
     public class PosCardAcquisitionPaymentService : IPosCardAcquisitionPaymentService
@@ -55,6 +59,113 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisiti
         public Task<SaleToPOIResponse> SendPaymentRequestNewCustomerAsync(string serviceId, string poiId, string saleId, string currency, decimal? amount, string shopperEmail, string shopperReference, DateTime cardAcquisitionTimeStamp, string cardAcquisitionTransactionId, CancellationToken cancellationToken)
         {
             SaleToPOIRequest request = GetPaymentNewCustomerRequest(serviceId, poiId, saleId, currency, amount, shopperEmail, shopperReference, cardAcquisitionTimeStamp, cardAcquisitionTransactionId);
+            return _posPaymentCloudApi.TerminalApiCloudSynchronousAsync(request);
+        }
+
+        public Task<SaleToPOIResponse> RegisterCustomerAsync(string serviceId, string poiId, string saleId, CancellationToken cancellationToken = default)
+        {
+            SaleToPOIRequest request = new SaleToPOIRequest()
+            {
+                MessageHeader = new MessageHeader()
+                {
+                    MessageCategory = MessageCategoryType.Input,
+                    MessageClass = MessageClassType.Device,
+                    MessageType = MessageType.Request,
+                    POIID = poiId,
+                    SaleID = saleId,
+                    ServiceID = serviceId, 
+                },
+                MessagePayload = new InputRequest()
+                {
+                    DisplayOutput = new DisplayOutput()
+                    {
+                      Device  = DeviceType.CustomerDisplay,
+                      InfoQualify = InfoQualifyType.Display,
+                      OutputContent = new OutputContent()
+                      {
+                          OutputFormat = OutputFormatType.Text,
+                          PredefinedContent = new PredefinedContent()
+                          {
+                              ReferenceID = "GetConfirmation"
+                          },
+                          OutputText = new OutputText[]
+                          {
+                              new OutputText()
+                              {
+                                  Text = "Welcome!"
+                              },
+                              new OutputText()
+                              {
+                                  Text = "Would you like to join our loyalty program?"
+                              },
+                              new OutputText()
+                              {
+                                  Text = "No"
+                              },
+                              new OutputText()
+                              {
+                                  Text = "Yes"
+                              }
+                          }
+                      }
+                    },
+                    InputData = new InputData()
+                    {
+                        Device = DeviceType.CustomerInput,
+                        InfoQualify = InfoQualifyType.Input,
+                        InputCommand = InputCommandType.GetConfirmation,
+                        MaxInputTime = 30
+                    }
+                }
+            };
+            return _posPaymentCloudApi.TerminalApiCloudSynchronousAsync(request);
+        }
+
+        public Task<SaleToPOIResponse> EnterEmailAddressAsync(string serviceId, string poiId, string saleId, CancellationToken cancellationToken = default)
+        {
+            SaleToPOIRequest request = new SaleToPOIRequest()
+            {
+                MessageHeader = new MessageHeader()
+                {
+                    MessageCategory = MessageCategoryType.Input,
+                    MessageClass = MessageClassType.Device,
+                    MessageType = MessageType.Request,
+                    POIID = poiId,
+                    SaleID = saleId,
+                    ServiceID = serviceId, 
+                },
+                MessagePayload = new InputRequest()
+                {
+                    DisplayOutput = new DisplayOutput()
+                    {
+                      Device  = DeviceType.CustomerDisplay,
+                      InfoQualify = InfoQualifyType.Display,
+                      OutputContent = new OutputContent()
+                      {
+                          OutputFormat = OutputFormatType.Text,
+                          PredefinedContent = new PredefinedContent()
+                          {
+                              ReferenceID = "GetText"
+                          },
+                          OutputText = new OutputText[]
+                          {
+                              new OutputText()
+                              {
+                                  Text = "Enter your email address"
+                              }
+                          }
+                      }
+                    },
+                    InputData = new InputData()
+                    {
+                        Device = DeviceType.CustomerInput,
+                        InfoQualify = InfoQualifyType.Input,
+                        InputCommand = InputCommandType.TextString,
+                        MaxInputTime = 120,
+                        DefaultInputString = "youremail@domain.com"
+                    }
+                }
+            };
             return _posPaymentCloudApi.TerminalApiCloudSynchronousAsync(request);
         }
 
@@ -110,7 +221,29 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisiti
                             TimeStamp = cardAcquisitionTimeStamp,
                             TransactionID = cardAcquisitionTransactionId
                         }
-                    }
+                    }, /*
+                    LoyaltyData = new LoyaltyData[]
+                    {
+                        new LoyaltyData()
+                        {
+                            CardAcquisitionReference = new TransactionIdentification()
+                            {
+                                TimeStamp = cardAcquisitionTimeStamp,
+                                TransactionID = cardAcquisitionTransactionId
+                            }, 
+                            LoyaltyAmount = new LoyaltyAmount()
+                            {
+                                Value = 10.1M,
+                                LoyaltyUnit = LoyaltyUnitType.Monetary
+                            },
+                            LoyaltyAccountID = new LoyaltyAccountID()
+                            {
+                                LoyaltyID = "214124",
+                                EntryMode = new EntryModeType[] { EntryModeType.Manual },
+                                IdentificationType = IdentificationType.PAN
+                            }
+                        },
+                    }*/
                 }
             };
 
