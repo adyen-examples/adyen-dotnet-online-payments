@@ -35,6 +35,8 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Models
         public string ShopperEmail { get; set; }
 
         public bool GiftCardIndicator { get; set; }
+        
+        public int LoyaltyPoints { get; set; }
 
         public JObject ToJson()
         {
