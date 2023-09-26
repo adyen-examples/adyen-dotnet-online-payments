@@ -115,16 +115,21 @@ function bindButtons() {
                 var response = await sendGetRequest("/card-acquisition/create/" + cardAcquisitionTableName + "/" + cardAcquisitionAmount);
                 console.log(response);
 
-                // Handle response
-                switch (response.result) {
-                    case "success":
-                        window.location.href = "result/success";
-                        break;
-                    case "failure":
-                        window.location.href = "result/failure/" + response.refusalReason;
-                        break;
-                    default:
-                        throw Error('Unknown response result');
+                if (response.loyaltyPoints)
+                {
+                    // Hides loading animation component and allow user to select tables again
+                    hideLoadingComponent();
+
+                    // Show loyalty points
+                    document.getElementById('loyaltypoints-component').classList.remove('hidden');
+                    document.getElementById('loyaltypoints-value').textContent = response.loyaltyPoints;
+
+                    
+                    window.location.href = "result/success";
+                }
+                else
+                {
+                    window.location.href = "result/failure/" + "Transaction aborted.";
                 }
             }
             catch (error) {
@@ -155,6 +160,9 @@ function bindButtons() {
                 // Send reversal request
                 var response = await sendPostRequest("/api/create-reversal", { tableName: reversalTableName });
                 console.log(response);
+
+                // Hides loading animation component and allow user to select tables again
+                hideLoadingComponent();
 
                 // Handle response
                 switch (response.result) {
@@ -190,13 +198,33 @@ function bindButtons() {
     // Bind `transaction-status-button`
     const transactionStatusButton = document.getElementById('transaction-status-button');
     transactionStatusButton.addEventListener('click', async () => {
-        const tableNameElement = document.getElementById('tableName');
-        if (!tableNameElement.value) {
-            return;
-        }
+        try {
+            // Show loading animation component and don't allow user to select any tables
+            showLoadingComponent();
 
-        // Go to transaction status page for the given tableNameElement.value 
-        window.location.href = "transaction-status/" + tableNameElement.value;
+            // Send reversal request
+            var response = await sendPostRequest("/card-acquisition/check");
+            console.log(response);
+            
+            
+            // Hides loading animation component and allow user to select tables again
+            hideLoadingComponent();
+
+            if (response.loyaltyPoints)
+            {
+                // Show loyalty points
+                document.getElementById('loyaltypoints-component').classList.remove('hidden');
+                document.getElementById('loyaltypoints-value').textContent = response.loyaltyPoints;
+            }
+
+            window.location.href = "/cashregister";
+        }
+        catch (error) {
+            console.warn(error);
+
+            // Hides loading animation component and allow user to select tables again
+            hideLoadingComponent();
+        }
     });
     
     // Allows user to select a table by binding all tables to a click event

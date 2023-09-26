@@ -8,7 +8,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisiti
 {
     public interface IPosCardAcquisitionAbortService
     {
-        Task<SaleToPOIResponse> SendAbortRequestAsync(string serviceId, string poiId, string saleId, CancellationToken cancellationToken = default);
+        Task<SaleToPOIResponse> SendAbortRequestAsync(string serviceId, string poiId, string saleId, bool success, int loyaltyPoints = 0, CancellationToken cancellationToken = default);
     }
 
     public class PosCardAcquisitionAbortService : IPosCardAcquisitionAbortService
@@ -20,13 +20,13 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisiti
             _posPaymentCloudApi = posPaymentCloudApi;
         }
 
-        public Task<SaleToPOIResponse> SendAbortRequestAsync(string serviceId, string poiId, string saleId, CancellationToken cancellationToken = default)
+        public Task<SaleToPOIResponse> SendAbortRequestAsync(string serviceId, string poiId, string saleId, bool success, int loyaltyPoints = 0, CancellationToken cancellationToken = default)
         {
-            SaleToPOIRequest request = GetAbortRequest(serviceId, poiId, saleId);
+            SaleToPOIRequest request = GetAbortRequest(serviceId, poiId, saleId, success, loyaltyPoints);
             return _posPaymentCloudApi.TerminalApiCloudSynchronousAsync(request);
         }
 
-        private SaleToPOIRequest GetAbortRequest(string serviceId, string poiId, string saleId)
+        private SaleToPOIRequest GetAbortRequest(string serviceId, string poiId, string saleId, bool success, int loyaltyPoints)
         {
             SaleToPOIRequest request = new SaleToPOIRequest()
             {
@@ -37,7 +37,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisiti
                     MessageType = MessageType.Request,
                     POIID = poiId,
                     SaleID = saleId,
-                    ServiceID = serviceId, 
+                    ServiceID = serviceId,
                 },
                 MessagePayload = new EnableServiceRequest()
                 {
@@ -56,13 +56,13 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisiti
                                 /// "Declined": red cross.
                                 /// "DeclinedAnimated": animated red cross.
                                 /// "Idle": no icon.
-                                ReferenceID = "AcceptedAnimated"
+                                ReferenceID = success ? "AcceptedAnimated" : "Idle"
                             },
                             OutputFormat = OutputFormatType.Text,
                             OutputText = new OutputText[]
                             {
-                                new OutputText { Text = "Welcome!" },
-                                new OutputText { Text = "You've joined our savings program!" }
+                                new OutputText { Text = success ? "Welcome to our loyalty program!" : "Loyalty Program"},
+                                new OutputText { Text = success ? $"Get discount the next time you buy a pizza! Loyalty Points: {loyaltyPoints}" : "Feel free to sign-up for the program to get discounts." },
                             }
                         },
                         

@@ -32,5 +32,10 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Options
         /// </summary>
         public string ADYEN_POS_SALE_ID { get; set; } 
 
+        /// <summary>
+        /// Your client key.
+        /// </summary>
+        public string ADYEN_CLIENT_KEY { get; set; }
+
     }
 }

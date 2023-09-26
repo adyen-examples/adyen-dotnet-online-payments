@@ -1,5 +1,13 @@
 using Adyen.HttpClient;
 using Adyen.Model.Nexo;
+using Adyen.Service.Checkout;
+using adyen_dotnet_in_person_payments_loyalty_example.Models;
+using adyen_dotnet_in_person_payments_loyalty_example.Models.Requests;
+using adyen_dotnet_in_person_payments_loyalty_example.Models.Responses;
+using adyen_dotnet_in_person_payments_loyalty_example.Options;
+using adyen_dotnet_in_person_payments_loyalty_example.Repositories;
+using adyen_dotnet_in_person_payments_loyalty_example.Services;
+using adyen_dotnet_in_person_payments_loyalty_example.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -8,13 +16,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using adyen_dotnet_in_person_payments_loyalty_example.Models;
-using adyen_dotnet_in_person_payments_loyalty_example.Models.Requests;
-using adyen_dotnet_in_person_payments_loyalty_example.Models.Responses;
-using adyen_dotnet_in_person_payments_loyalty_example.Options;
-using adyen_dotnet_in_person_payments_loyalty_example.Repositories;
-using adyen_dotnet_in_person_payments_loyalty_example.Services;
-using adyen_dotnet_in_person_payments_loyalty_example.Utilities;
+
+using Checkout = Adyen.Model.Checkout;
 
 namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
 {
@@ -26,8 +29,11 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
         private readonly IPosReversalService _posPaymentReversalService;
         private readonly IPosAbortService _posAbortService;
         private readonly ITableRepository _tableService;
-
+        private readonly IPaymentsService _paymentsService;
+        private readonly IUrlService _urlService;
+        private readonly ICardAcquisitionRepository _repository;
         private readonly string _saleId;
+        private readonly string _merchantAccount;
         private readonly string _poiId;
 
         public ApiController(ILogger<ApiController> logger, 
@@ -35,16 +41,67 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
             IPosReversalService posPaymentReversalService, 
             IPosAbortService posAbortService,
             ITableRepository tableService, 
-            IOptions<AdyenOptions> options)
+            IOptions<AdyenOptions> options,
+            IPaymentsService paymentsService,
+            IUrlService urlService,
+            ICardAcquisitionRepository repository)
         {
             _logger = logger;
             _posPaymentService = posPaymentService;
             _posPaymentReversalService = posPaymentReversalService;
             _posAbortService = posAbortService;
             _tableService = tableService;
-            
+            _paymentsService = paymentsService;
+            _urlService = urlService;
+            _repository = repository;
             _poiId = options.Value.ADYEN_POS_POI_ID;
             _saleId = options.Value.ADYEN_POS_SALE_ID;
+            _merchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT;
+        }
+
+
+        [HttpPost("api/sessions")]
+        public async Task<ActionResult<Checkout.CreateCheckoutSessionResponse>> Sessions(CancellationToken cancellationToken = default)
+        {
+            long amount = 1999;
+            var existingCustomer = _repository.CardAcquisitions.FirstOrDefault(x => x.ShopperEmail == Identifiers.ShopperEmail);
+
+
+            if (existingCustomer != null)//json.AdditionalData.ShopperReference != null
+            {
+                if (existingCustomer.LoyaltyPoints >= 3000)
+                {
+                    amount = (long)(amount * 0.5M);
+                }
+                else if (existingCustomer.LoyaltyPoints >= 2000)
+                {
+                    amount = (long)(amount * 0.75M);
+                }
+            }
+
+            var orderRef = Guid.NewGuid();
+            var sessionsRequest = new Checkout.CreateCheckoutSessionRequest()
+            {
+                MerchantAccount = _merchantAccount,
+                Reference = email,
+                Channel = Checkout.CreateCheckoutSessionRequest.ChannelEnum.Web,
+                Amount = new Checkout.Amount("EUR", amount),
+
+                // Required for 3DS2 redirect flow.
+                ReturnUrl = $"{_urlService.GetHostUrl()}/redirect?orderRef={orderRef}",
+            };
+
+            try
+            {
+                var res = await _paymentsService.SessionsAsync(sessionsRequest, cancellationToken: cancellationToken);
+                _logger.LogInformation($"Response for Payments API:\n{res}\n");
+                return res;
+            }
+            catch (Adyen.HttpClient.HttpClientException e)
+            {
+                _logger.LogError($"Request for Payments failed:\n{e.ResponseBody}\n");
+                throw;
+            }
         }
 
         [HttpPost("api/create-payment")]
@@ -57,7 +114,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                 return NotFound(new CreatePaymentResponse()
                 {
                     Result = "failure",
-                    RefusalReason = $"Table {request.TableName} not found"
+                    RefusalReason = $"{request.TableName} not found"
                 });
             }
 

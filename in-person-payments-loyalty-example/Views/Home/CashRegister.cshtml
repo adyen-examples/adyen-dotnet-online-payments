@@ -25,10 +25,10 @@
                 PaymentStatus.NotPaid => "not-paid",
                 PaymentStatus.PaymentInProgress => "disabled",
                 PaymentStatus.Paid => "paid",
-                PaymentStatus.RefundInProgress => "disabled",
-                PaymentStatus.Refunded => "disabled",
-                PaymentStatus.RefundFailed => "refund-failed",
-                PaymentStatus.RefundedReversed => "disabled",
+                PaymentStatus.RefundInProgress => "not-paid",
+                PaymentStatus.Refunded => "not-paid",
+                PaymentStatus.RefundFailed => "not-paid",
+                PaymentStatus.RefundedReversed => "not-paid",
                 _ => ""
             };
 
@@ -37,7 +37,14 @@
 
             <li class="tables-grid-item @disableButtonCssName">
               <p class="tables-grid-item-title">@table.TableName</p>
-              <div class="tables-grid-item-currency-amount">
+                @if(table.IsDiscounted)
+                {
+                  <div class="tables-grid-item-original-currency-amount">
+                    <p class="tables-grid-item-currency">€</p>
+                    <p class="tables-grid-item-original-amount">@table.OriginalAmount</p>
+                  </div>
+                }
+                <div class="tables-grid-item-currency-amount">
                 <p class="tables-grid-item-currency">€</p>
                 <p class="tables-grid-item-amount">@table.Amount</p>
               </div>
@@ -47,8 +54,15 @@
         </ul>
       </div>
       <div class="info-grid">
-        <h2>Cash Register</h2>
         <ul class="info-grid-list">
+            <li class="info-grid-item">
+            <p id="loyaltypoints-component" class="info-grid-item-title hidden">
+              Loyalty points
+              <b id="loyaltypoints-value" class="info-grid-item-description">
+                
+              </b>
+            </p>
+          </li>
           <li class="info-grid-item">
             <p class="info-grid-item-title" hidden>
               SALE ID:
@@ -81,10 +95,10 @@
 
         <form id="reversal-request-form" method="post">
           <input type="text" id="reversalTableName" name="reversalTableName" hidden>
-          <button type="submit" id="reversal-request-button" class="reversal-request-button disabled">Refund</button>
+          <button type="submit" id="reversal-request-button" class="reversal-request-button disabled">Cancel</button>
         </form>
         
-        <input type="button" id="transaction-status-button" class="transaction-status-button disabled" value="Transaction Status"/>
+        <input type="button" id="transaction-status-button" class="transaction-status-button" value="I am a member"/>
       </div>
     </div>
   </div>

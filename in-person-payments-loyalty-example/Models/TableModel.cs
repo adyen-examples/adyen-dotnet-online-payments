@@ -10,7 +10,17 @@
         /// <summary>
         /// The table amount to-be-paid, in DECIMAL units (example: 42.99), the terminal API does not use minor units.
         /// </summary>
-        public decimal Amount { get; init; }
+        public decimal Amount { get; set; }
+
+        /// <summary>
+        /// Original amount.
+        /// </summary>
+        public decimal OriginalAmount { get; init; }
+
+        /// <summary>
+        /// Is Discounted flag.
+        /// </summary>
+        public bool IsDiscounted { get; init; }
 
         /// <summary>
         /// Name of the table, used to uniquely identify the table.
