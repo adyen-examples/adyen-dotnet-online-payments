@@ -62,7 +62,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                     img = "failed";
                     break;
                 case "success":
-                    msg = $"Your request has been successfully processed.";
+                    msg = $"Payment successful! We're putting your pizza in the oven.";
                     img = "success";
                     break;
                 default:
@@ -118,14 +118,14 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                     img = "failed";
                     break;
                 default:
-                    var existingCustomer = _repository.CardAcquisitions.FirstOrDefault(x => x.ShopperEmail == Identifiers.ShopperReference);
+                    var existingCustomer = _repository.CardAcquisitions.FirstOrDefault(x => x.ShopperEmail == Identifiers.ShopperEmail);
 
                     if (existingCustomer != null)
                     {
                         existingCustomer.LoyaltyPoints += 1000;
                     }
 
-                    msg = "Your order has been successfully placed.";
+                    msg = "Your pizza order has been successfully placed.";
                     img = "success";
                     break;
             }

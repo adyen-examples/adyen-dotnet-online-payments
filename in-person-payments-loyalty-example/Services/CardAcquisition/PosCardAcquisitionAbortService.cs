@@ -61,8 +61,8 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisiti
                             OutputFormat = OutputFormatType.Text,
                             OutputText = new OutputText[]
                             {
-                                new OutputText { Text = success ? "Welcome to our loyalty program!" : "Loyalty Program"},
-                                new OutputText { Text = success ? $"Get discount the next time you buy a pizza! Loyalty Points: {loyaltyPoints}" : "Feel free to sign-up for the program to get discounts." },
+                                new OutputText { Text = success ? "Welcome!" : "Loyalty Program"},
+                                new OutputText { Text = success ? $"You can get discounts {GetPercentage(loyaltyPoints)}when buying pizza now! Loyalty Points: {loyaltyPoints}" : "Feel free to sign-up for the program to get discounts." },
                             }
                         },
                         
@@ -71,6 +71,24 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisiti
             };
 
             return request;
+        }
+
+        private string GetPercentage(int loyaltyPoints)
+        {
+            if (loyaltyPoints >= 3000)
+            {
+                return "(-50%) ";
+            }
+            else if (loyaltyPoints >= 2000)
+            {
+                return "(-25%) ";
+            }
+            else if (loyaltyPoints >= 1000)
+            {
+                return "(-10%) ";
+            }
+
+            return "";
         }
     }
 }

@@ -83,7 +83,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
             var sessionsRequest = new Checkout.CreateCheckoutSessionRequest()
             {
                 MerchantAccount = _merchantAccount,
-                Reference = email,
+                Reference = Identifiers.ShopperEmail,
                 Channel = Checkout.CreateCheckoutSessionRequest.ChannelEnum.Web,
                 Amount = new Checkout.Amount("EUR", amount),
 

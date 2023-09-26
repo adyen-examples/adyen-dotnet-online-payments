@@ -134,7 +134,6 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                         cancellationToken: cancellationToken
                     );
                     
-                    
                     var pr = req.MessagePayload as PaymentResponse;
                     if (pr == null || pr.Response.Result != ResultType.Success)
                     {
@@ -304,7 +303,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
 
                     // Customer doesn't want to be part of the loyalty program.
                     if (noLoyaltyPaymentResponse.Response.Result == ResultType.Success)
-                        return Ok(new { loyaltyPoints = 0 });
+                        return Ok(new CardAcquisitionModel(){ LoyaltyPoints = 0});
                     return BadRequest();
                     // Abort case.
                     // SaleToPOIResponse abortRequest = await _posCardAcquisitionAbortService.SendAbortRequestAsync(IdUtility.GetRandomAlphanumericId(10), _poiId, _saleId, cancellationToken: cancellationToken);
