@@ -128,8 +128,16 @@ namespace adyen_dotnet_giving_example.Controllers
                 _logger.LogInformation($"Response for Payment:\n{res}\n");
                 
                 HttpContext.Session.SetString(PaymentOriginalPspReference, res.PspReference);
-                HttpContext.Session.SetString(DonationToken, res.DonationToken);
-                
+
+                if (string.IsNullOrWhiteSpace(res.DonationToken))
+                {
+                    _logger.LogError("The payments endpoint did not return a donationToken, please enable this in your Customer Area. See README.");
+                }
+                else
+                {
+                    HttpContext.Session.SetString(DonationToken, res.DonationToken);
+                }
+
                 return res;
             }
             catch (Adyen.HttpClient.HttpClientException e)

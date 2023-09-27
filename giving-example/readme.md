@@ -6,6 +6,8 @@ First make a test payment using one of our test card numbers, so you can see the
 
 ![Giving Demo](wwwroot/images/carddonations.gif)
 
+> **Note**: You need to have donations [enabled in your Customer Area](https://docs.adyen.com/online-payments/donations/testing/#step-1-enable-the-donation-token-in-your-api-response) in order to receive the `DonationToken`. 
+
 This demo leverages Adyen's API Library for .NET ([GitHub](https://github.com/Adyen/adyen-dotnet-api-library) | [Docs](https://docs.adyen.com/development-resources/libraries?tab=c__5#csharp)).
 
 ## Run integration on Gitpod
