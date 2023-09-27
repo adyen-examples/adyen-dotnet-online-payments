@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Build checkout-example image
         run: docker build -t checkout-example-image:latest checkout-example
       - name: Start checkout-example container
@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Advanced project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Build checkout-example-advanced image
         run: docker build -t checkout-example-advanced-image:latest checkout-example-advanced
       - name: Start checkout-example-advanced container
@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Subscription project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Build subscription-example image
         run: docker build -t subscription-example-image:latest subscription-example
       - name: Start subscription-example container
@@ -60,7 +60,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Gift card project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Build giftcard-example image
         run: docker build -t giftcard-example-image:latest giftcard-example
       - name: Start giftcard-example container
@@ -72,7 +72,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Pay By Link project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Build paybylink-example image
         run: docker build -t paybylink-example-image:latest paybylink-example
       - name: Start paybylink-example container
@@ -84,7 +84,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Authorisation Adjustment project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Build authorisation-adjustment-example image
         run: docker build -t authorisation-adjustment-example-image:latest authorisation-adjustment-example
       - name: Start authorisation-adjustment-example container
@@ -96,7 +96,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Giving project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Build giving-example image
         run: docker build -t giving-example-image:latest giving-example
       - name: Start giving-example container
