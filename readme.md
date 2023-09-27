@@ -14,6 +14,7 @@ Get started by navigating to one of the supported demos below.
 | [`Authorisation Adjustment Example`](authorisation-adjustment-example) | Pre-authorise a payment, adjust the authorised amount, capture or reverse the payment. | [See below](#authorisation-adjustment-example) | 
 | [`In-person Payments Example`](in-person-payments-example) | In-person payments using a POS terminal and the terminal-api/sync endpoint. | [See below](#in-person-payments-example) |
 | [`Gift Card Example`](giftcard-example) | Gift Cards checkout flow using partial orders. | [See below](#gift-card-example) | 
+| [`Giving Example`](giving-example) | Donation flow using Adyen Giving. | [See below](#giving-example) | 
 | [`Pay by Link Example`](paybylink-example) | Pay by Link flow. | [See below](#pay-by-link-example) | 
 | [`Subscription Example`](subscription-example) | Subscription flow using Adyen tokenization. | [See below](#subscription-example) | 
 
@@ -65,6 +66,16 @@ The [in-person payments example](in-person-payments-example) features an in-pers
 The [`gift card example`](giftcard-example) repository includes a gift card flow during checkout. Within this demo app, you'll find a simplified version of an e-commerce website. The shopper can choose to use gift cards to complete their purchase or use their preferred payment method to pay the remaining amount.
 
 ![Gift Card Demo](giftcard-example/wwwroot/images/cardgiftcard.gif)
+
+## [Giving Example](giving-example)
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/giving-example)  
+[First time with Gitpod?](https://github.com/adyen-examples/.github/blob/main/pages/gitpod-get-started.md)
+
+The [giving example](giving-example) repository includes a sample designed to demonstrate the Adyen Giving donations flow.
+After making a test payment using one of our test card numbers, the donation screen will appear.
+
+![Giving Demo](giving-example/wwwroot/images/carddonations.gif)
 
 ## [Pay by Link Example](paybylink-example)
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/paybylink-example)
