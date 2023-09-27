@@ -42,6 +42,14 @@ namespace adyen_dotnet_giving_example
             // Register your controllers.
             services.AddControllersWithViews();
             services.AddControllers().AddNewtonsoftJson();
+            
+            // Used to store the `PspReference` and `DonationToken` for Adyen Giving (donations).
+            services.AddSession(options =>
+            {
+                options.Cookie.Name = "Adyen.Giving.Session";
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.IsEssential = false;
+            });
 
             services.AddHttpContextAccessor()
                 .AddTransient<IUrlService, UrlService>();
@@ -92,6 +100,8 @@ namespace adyen_dotnet_giving_example
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

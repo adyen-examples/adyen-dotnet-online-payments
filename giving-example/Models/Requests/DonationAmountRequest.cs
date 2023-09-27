@@ -2,7 +2,7 @@
 {
     public class DonationAmountRequest
     {
-        public long Amount { get; init; }
+        public long Value { get; init; } // Amount.
         public string Currency { get; init; }
     }
 }

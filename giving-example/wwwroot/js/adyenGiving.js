@@ -12,9 +12,10 @@ async function callServer(url, data) {
   return await res.json();
 }
 
-async function handleDonation(donationToken, pspReference, amount) {
+async function handleDonation(amount) {
   try {
-    const res = await callServer(`/api/donations?donationToken=${encodeURIComponent(donationToken)}&pspReference=${pspReference}`, amount);
+    console.log(amount);
+    const res = await callServer(`/api/donations`, amount);
 
     switch (res.status) {
       case "completed":
@@ -31,13 +32,10 @@ async function handleDonation(donationToken, pspReference, amount) {
 }
 
 async function startGiving() {
-
-  const checkout= await AdyenCheckout(
-    {
-      clientKey,
-      environment: "test",
-    }
-  );
+  const checkout= await AdyenCheckout({
+    clientKey,
+    environment: "test",
+  });
 
   const donationConfig = {
     amounts: {
@@ -54,23 +52,12 @@ async function startGiving() {
       message: "By donating you agree to the %#terms%#",
       linkText: "terms and conditions",
       link: "https://www.adyen.com/legal/terms-and-conditions" // Replace with yours
-
-
     },
     onDonate: (state, component) => {
       if(state.isValid) {
         console.log("Initiating donation");
-        let donationToken = sessionStorage.getItem("donationToken");
-        let pspReference = sessionStorage.getItem("pspReference");
-
-        if(!donationToken || !pspReference) {
-          console.log("No token or pspReference found, can't donate");
-        }
-        else{
-          handleDonation(donationToken, pspReference, state.data.amount);
-        }
+        handleDonation(state.data.amount);
       }
-
     },
     onCancel: (result, component) => {
       console.log("Donation cancelled");
@@ -79,7 +66,11 @@ async function startGiving() {
     }
   };
 
-  checkout.create('donation', donationConfig).mount('#donation-container');
+  try {
+    checkout.create('donation', donationConfig).mount('#donation-container');
+  } catch (ex) {
+    console.warn(ex);
+  }
 }
 
 startGiving();

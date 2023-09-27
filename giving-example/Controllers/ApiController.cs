@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using PaymentRequest = Adyen.Model.Checkout.PaymentRequest;
 
 namespace adyen_dotnet_giving_example.Controllers
@@ -17,6 +18,9 @@ namespace adyen_dotnet_giving_example.Controllers
     [ApiController]
     public class ApiController : ControllerBase
     {
+        private const string DonationToken = "DonationToken";
+        private const string PaymentOriginalPspReference = "PaymentOriginalPspReference";
+        
         private readonly ILogger<ApiController> _logger;
         private readonly IUrlService _urlService;
         private readonly IPaymentsService _paymentsService;
@@ -31,13 +35,28 @@ namespace adyen_dotnet_giving_example.Controllers
         }
 
         [HttpPost("api/donations")]
-        public async Task<ActionResult<PaymentMethodsResponse>> Donations([FromQuery] string donationToken, [FromQuery] string pspReference, [FromBody] DonationAmountRequest amountRequest, CancellationToken cancellationToken = default)
+        public async Task<ActionResult<PaymentMethodsResponse>> Donations([FromBody] DonationAmountRequest amountRequest, CancellationToken cancellationToken = default)
         {
             try
             {
+                string pspReference = HttpContext.Session.GetString(PaymentOriginalPspReference);
+                string donationToken = HttpContext.Session.GetString(DonationToken);
+
+                if (string.IsNullOrWhiteSpace(pspReference))
+                {
+                    _logger.LogInformation("Could not find the PspReference in the stored session.");
+                    return NotFound();
+                }
+                
+                if (string.IsNullOrWhiteSpace(donationToken))
+                {
+                    _logger.LogInformation("Could not find the DonationToken in the stored session.");
+                    return NotFound();
+                }
+                
                 var response = await _paymentsService.DonationsAsync(new DonationPaymentRequest()
                 {
-                    Amount = new Amount(amountRequest.Currency, amountRequest.Amount),
+                    Amount = new Amount(amountRequest.Currency, amountRequest.Value),
                     Reference = Guid.NewGuid().ToString(),
                     PaymentMethod = new CheckoutPaymentMethod(new CardDetails()),
                     DonationToken = donationToken,
@@ -48,6 +67,9 @@ namespace adyen_dotnet_giving_example.Controllers
                     ShopperInteraction = DonationPaymentRequest.ShopperInteractionEnum.ContAuth
                 }, cancellationToken: cancellationToken);
 
+                HttpContext.Session.Remove(PaymentOriginalPspReference);
+                HttpContext.Session.Remove(DonationToken);
+                
                 return Ok(response);
             }
             catch(Adyen.HttpClient.HttpClientException e)
@@ -104,6 +126,10 @@ namespace adyen_dotnet_giving_example.Controllers
             {
                 var res = await _paymentsService.PaymentsAsync(paymentRequest, cancellationToken: cancellationToken);
                 _logger.LogInformation($"Response for Payment:\n{res}\n");
+                
+                HttpContext.Session.SetString(PaymentOriginalPspReference, res.PspReference);
+                HttpContext.Session.SetString(DonationToken, res.DonationToken);
+                
                 return res;
             }
             catch (Adyen.HttpClient.HttpClientException e)
