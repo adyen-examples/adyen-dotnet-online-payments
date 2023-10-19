@@ -1,4 +1,8 @@
-﻿using Adyen.Model.Nexo;
+﻿using adyen_dotnet_in_person_payments_loyalty_example.Models;
+using adyen_dotnet_in_person_payments_loyalty_example.Options;
+using adyen_dotnet_in_person_payments_loyalty_example.Repositories;
+using adyen_dotnet_in_person_payments_loyalty_example.Services;
+using Adyen.Model.Nexo;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -6,10 +10,6 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using adyen_dotnet_in_person_payments_loyalty_example.Models;
-using adyen_dotnet_in_person_payments_loyalty_example.Options;
-using adyen_dotnet_in_person_payments_loyalty_example.Repositories;
-using adyen_dotnet_in_person_payments_loyalty_example.Services;
 
 namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
 {
@@ -17,21 +17,17 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
     {
         private readonly string _poiId;
         private readonly string _saleId;
-        private readonly string _clientKey;
         private readonly ILogger<HomeController> _logger;
         private readonly ITableRepository _tableService;
         private readonly IPosTransactionStatusService _posTransactionStatusService;
-        private readonly ICardAcquisitionRepository _repository;
 
         public HomeController(ILogger<HomeController> logger, IOptions<AdyenOptions> optionsAccessor, ITableRepository tableService, IPosTransactionStatusService posTransactionStatusService, ICardAcquisitionRepository repository)
         {
             _poiId = optionsAccessor.Value.ADYEN_POS_POI_ID;
             _saleId = optionsAccessor.Value.ADYEN_POS_SALE_ID;
-            _clientKey = optionsAccessor.Value.ADYEN_CLIENT_KEY;
             _logger = logger;
             _tableService = tableService;
             _posTransactionStatusService = posTransactionStatusService;
-            _repository = repository;
         }
 
         [Route("/")]
@@ -74,68 +70,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
 
             return View();
         }
-
-
-        [Route("preview/{id}")]
-        public IActionResult Preview(string id)
-        {
-            ViewBag.PaymentMethod = id;
-            return View();
-        }
-
-        [Route("checkout/{id}")]
-        public IActionResult Checkout(string id)
-        {
-            ViewBag.PaymentMethod = id;
-            ViewBag.ClientKey = _clientKey;
-            return View();
-        }
-
-        [Route("redirect")]
-        public IActionResult Redirect()
-        {
-            ViewBag.ClientKey = _clientKey;
-            return View();
-        }
-
-        [HttpGet("resultview/{status}")]
-        public IActionResult ResultView(string status, [FromQuery(Name = "reason")] string refusalReason)
-        {
-            string msg;
-            string img;
-            switch (status)
-            {
-                case "pending":
-                    msg = "Your order has been received! Payment completion pending.";
-                    img = "success";
-                    break;
-                case "failed":
-                    msg = "The payment was refused. Please try a different payment method or card.";
-                    img = "failed";
-                    break;
-                case "error":
-                    msg = $"Error! Reason: {refusalReason}";
-                    img = "failed";
-                    break;
-                default:
-                    var existingCustomer = _repository.CardAcquisitions.FirstOrDefault(x => x.ShopperEmail == Identifiers.ShopperEmail);
-
-                    if (existingCustomer != null)
-                    {
-                        existingCustomer.LoyaltyPoints += 1000;
-                    }
-
-                    msg = "Your pizza order has been successfully placed.";
-                    img = "success";
-                    break;
-            }
-            ViewBag.Status = status;
-            ViewBag.Msg = msg;
-            ViewBag.Img = img;
-
-            return View();
-        }
-
+        
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         [Route("error")]
         public IActionResult Error()

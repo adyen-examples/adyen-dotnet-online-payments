@@ -113,7 +113,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                 
                 if (json.AdditionalData.GiftcardIndicator)
                 {
-                    return BadRequest(); // This is a giftcard. Can't attach a gift card to this.
+                    return BadRequest(); // This is a giftcard, handle gift card logic accordingly.
                 }
 
                 var existingCustomer = _cardAcquisitionRepository.Get(cardAcquisitionResponse.PaymentInstrumentData?.CardData?.PaymentToken?.TokenValue);
