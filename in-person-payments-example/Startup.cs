@@ -58,7 +58,7 @@ namespace adyen_dotnet_in_person_payments_example
                         XApiKey = options.Value.ADYEN_API_KEY,
                         // Test environment.
                         Environment = Adyen.Model.Environment.Test,
-                        Timeout = 180,
+                        Timeout = 180
                     },
                     provider.GetRequiredService<IHttpClientFactory>(),
                     httpClientName

@@ -22,8 +22,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
     public class CardAcquisitionController : ControllerBase
     {
         private readonly ILogger<CardAcquisitionController> _logger;
-        private readonly IPosPaymentService _posPaymentService;
-        private readonly IPosReversalService _posPaymentReversalService;
+        private readonly IPosPaymentService _posPaymentService; // TODO
         private readonly IPosAbortService _posAbortService;
         private readonly IPosCardAcquisitionService _posCardAcquisitionService;
         private readonly IPosCardAcquisitionPaymentService _posCardAcquisitionPaymentService;
@@ -36,7 +35,6 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
 
         public CardAcquisitionController(ILogger<CardAcquisitionController> logger,
             IPosPaymentService posPaymentService,
-            IPosReversalService posPaymentReversalService,
             IPosAbortService posAbortService,
             IPosCardAcquisitionService posCardAcquisitionService,
             IPosCardAcquisitionPaymentService posCardAcquisitionPaymentService,
@@ -47,7 +45,6 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
         {
             _logger = logger;
             _posPaymentService = posPaymentService;
-            _posPaymentReversalService = posPaymentReversalService;
             _posAbortService = posAbortService;
             _posCardAcquisitionService = posCardAcquisitionService;
             _posCardAcquisitionPaymentService = posCardAcquisitionPaymentService;

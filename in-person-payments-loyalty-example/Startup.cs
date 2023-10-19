@@ -29,12 +29,11 @@ namespace adyen_dotnet_in_person_payments_loyalty_example
         public void ConfigureServices(IServiceCollection services)
         {
             // Configure your keys using the Options pattern.
-            // This will auto-retrieve/configure your keys from your environmental variables (ADYEN_API_KEY, ADYEN_MERCHANT_ACCOUNT, ADYEN_HMAC_KEY, ADYEN_POS_POI_ID).
+            // This will auto-retrieve/configure your keys from your environmental variables (ADYEN_API_KEY, ADYEN_HMAC_KEY, ADYEN_POS_POI_ID).
             services.Configure<AdyenOptions>(
                 options =>
                 {
                     options.ADYEN_API_KEY = Configuration[nameof(AdyenOptions.ADYEN_API_KEY)];
-                    options.ADYEN_MERCHANT_ACCOUNT = Configuration[nameof(AdyenOptions.ADYEN_MERCHANT_ACCOUNT)];
                     options.ADYEN_HMAC_KEY = Configuration[nameof(AdyenOptions.ADYEN_HMAC_KEY)];
                     options.ADYEN_POS_POI_ID = Configuration[nameof(AdyenOptions.ADYEN_POS_POI_ID)];
                     options.ADYEN_POS_SALE_ID = "SALE_ID_POS_42";
@@ -76,13 +75,12 @@ namespace adyen_dotnet_in_person_payments_loyalty_example
             services.AddSingleton<IPosPaymentCloudApi, PosPaymentCloudApi>();
             services.AddSingleton<HmacValidator>();
 
-            // Register repositores that saves data in-memory.
+            // Register repositories that saves data in-memory.
             services.AddSingleton<ITableRepository, TableRepository>();
-            services.AddSingleton<ICardAcquisitionRepository, CardAcquisitionRepository>();
+            services.AddSingleton<ICardAcquisitionRepository, CardAcquisitionRepository>(); // TODO
 
             // Register application services.
             services.AddSingleton<IPosPaymentService, PosPaymentService>();
-            services.AddSingleton<IPosReversalService, PosReversalService>();
             services.AddSingleton<IPosTransactionStatusService, PosTransactionStatusService>();
             services.AddSingleton<IPosAbortService, PosAbortService>();
             services.AddSingleton<IPosCardAcquisitionService, PosCardAcquisitionService>();

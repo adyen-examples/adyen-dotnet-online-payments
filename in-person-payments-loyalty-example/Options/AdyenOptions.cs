@@ -9,12 +9,6 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Options
         public string ADYEN_API_KEY { get; set; }
 
         /// <summary>
-        /// Your Merchant Account name.
-        /// See https://docs.adyen.com/account/account-structure.
-        /// </summary>
-        public string ADYEN_MERCHANT_ACCOUNT { get; set; }
-        
-        /// <summary>
         /// HMAC Key used to validate your webhook signatures.
         /// See https://docs.adyen.com/development-resources/webhooks/verify-hmac-signatures.
         /// </summary>
