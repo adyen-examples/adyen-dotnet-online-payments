@@ -16,14 +16,12 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
     public class WebhookController : ControllerBase
     {
         private readonly ILogger<WebhookController> _logger;
-        private readonly ITableRepository _tableService;
         private readonly HmacValidator _hmacValidator;
         private readonly string _hmacKey;
 
-        public WebhookController(ILogger<WebhookController> logger, IOptions<AdyenOptions> options, ITableRepository tableService, HmacValidator hmacValidator)
+        public WebhookController(ILogger<WebhookController> logger, IOptions<AdyenOptions> options, HmacValidator hmacValidator)
         {
             _logger = logger;
-            _tableService = tableService;
             _hmacValidator = hmacValidator;
             _hmacKey = options.Value.ADYEN_HMAC_KEY;
         }

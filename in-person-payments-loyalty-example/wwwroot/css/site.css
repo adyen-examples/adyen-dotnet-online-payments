@@ -88,13 +88,11 @@ a:hover {
 .main-container {
   flex-direction: column;
   display: flex;
-  align-content: center;
 }
 
 .integration-list {
   display: flex;
   justify-content: center;
-  align-items: center;
 }
 
 .integration-list-item {
@@ -106,6 +104,7 @@ a:hover {
   justify-content: center;
   align-items: center;
   margin: 32px 16px;
+  padding: 32px;
   transition: transform 0.2s ease-in-out, background 0.2s ease-in-out;
 }
 
@@ -139,6 +138,14 @@ a:hover {
   color: white;
 }
 
+.integration-list-item-subtitle {
+  margin: 0;
+  padding: 12px 0px 0px 0px;
+  text-align: center;
+  font-weight: 400;
+  color: #0e0e0e;
+}
+
 @media (min-width: 768px) {
   .integration-list-item-title {
     font-size: 24px;
@@ -155,7 +162,6 @@ a:hover {
 
 .info {
   margin-top: 10%;
-  text-align: center;
   color: #00112c;
 }
 
@@ -569,7 +575,6 @@ a:hover {
 }
 
 /* end Status page */
-
 
 /* Loading grid start */
 
