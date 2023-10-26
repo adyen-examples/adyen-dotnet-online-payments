@@ -20,16 +20,12 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Repositories
     {
         public List<TableModel> Tables { get; }
 
-        string[] PizzaNames = {
+        private readonly string[] PizzaNames = {
             "Pepperoni",
             "Margherita",
-            "Hawai",
             "Vegetarian",
             "Supreme",
             "BBQ Chicken",
-            "Mushroom",
-            "Spicy Chicken",
-            "Pineapple",
             "Four Cheese",
             "Spinach",
             "Chicken",

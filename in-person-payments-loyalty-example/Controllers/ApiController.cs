@@ -40,7 +40,6 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
             _poiId = options.Value.ADYEN_POS_POI_ID;
             _saleId = options.Value.ADYEN_POS_SALE_ID;
         }
-        
 
         [HttpPost("api/create-payment")]
         public async Task<ActionResult<CreatePaymentResponse>> CreatePayment([FromBody] CreatePaymentRequest request, CancellationToken cancellationToken = default)

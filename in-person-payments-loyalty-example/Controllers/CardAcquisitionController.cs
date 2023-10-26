@@ -399,7 +399,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
             catch (HttpClientException e)
             {
                 _logger.LogError(e.ToString());
-                return StatusCode(e.Code, new CreateReversalResponse()
+                return StatusCode(e.Code, new CreatePaymentResponse() // TODO
                 {
                     Result = "failure",
                     RefusalReason = $"ErrorCode: {e.Code}, see logs"
