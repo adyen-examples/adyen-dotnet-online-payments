@@ -15,31 +15,6 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Models
         /// <summary>
         /// Indicates that the customer has paid for the table, e.g. successful payment request.
         /// </summary>
-        Paid = 3,
-        
-        /// <summary>
-        /// A refund is set to <see cref="RefundInProgress"/> when the merchant has initiated the referenced refund process.
-        /// Referenced refunds are processed asynchronously and are updated through webhooks, seealso <seealso cref="Controllers.WebhookController.ProcessCancelOrRefundNotificationAsync(Adyen.Model.Notification.NotificationRequestItem)"/>.
-        /// https://docs.adyen.com/point-of-sale/basic-tapi-integration/refund-payment/referenced/
-        /// </summary>
-        RefundInProgress = 4,  
-        
-        /// <summary>
-        /// A refund is set to to <see cref="Refunded"/> when the webhook CANCEL_OR_REFUND is successfully received.
-        /// https://docs.adyen.com/point-of-sale/basic-tapi-integration/refund-payment/refund-webhooks/#cancel-or-refund-webhook 
-        /// </summary>
-        Refunded = 5,
-
-        /// <summary>
-        /// A refund is set to to <see cref="RefundFailed"/> when the webhook REFUND_FAILED is successfully received.
-        /// https://docs.adyen.com/online-payments/refund#refund-failed 
-        /// </summary>
-        RefundFailed = 6,
-        
-        /// <summary>
-        /// A refund is set to to <see cref="RefundedReversed"/> when the webhook REFUNDED_REVERSED is successfully received.
-        /// https://docs.adyen.com/online-payments/refund/#refunded-reversed 
-        /// </summary>
-        RefundedReversed = 7
+        Paid = 3
     }
 }
