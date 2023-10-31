@@ -104,14 +104,13 @@ a:hover {
   justify-content: center;
   align-items: center;
   margin: 32px 16px;
-  padding: 32px;
-  transition: transform 0.2s ease-in-out, background 0.2s ease-in-out;
+  transition: transform 0.2s ease-in, background 0.2s ease-out;
 }
 
 .integration-list-item:hover {
-  background: #02ae00;
+  background: #00c110;
   text-decoration: none;
-  transform: scale(1.06);
+  transform: scale(1.04);
   font-weight: 800;
 }
 

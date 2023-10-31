@@ -79,7 +79,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
             {
                 return BadRequest();
             }
-            
+
             try
             {
                 SaleToPOIResponse response = await _posCardAcquisitionService.SendCardAcquisitionRequestAsync(IdUtility.GetRandomAlphanumericId(10), _poiId, _saleId, amount, cancellationToken: cancellationToken);
@@ -104,7 +104,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                 {
                     return BadRequest(); // Can't deserialize json into an object.
                 }
-                
+
                 if (json.AdditionalData.GiftcardIndicator)
                 {
                     return BadRequest(); // This is a gift card, handle gift card logic accordingly. For now, do not support card acquisition for gift cards.
@@ -127,7 +127,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                         transactionId: existingCustomer.ShopperEmail,
                         cancellationToken: cancellationToken
                     );
-                    
+
                     var pr = req.MessagePayload as PaymentResponse;
                     if (pr == null || pr.Response.Result != ResultType.Success)
                     {
@@ -164,7 +164,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
 
                         GiftCardIndicator = json.AdditionalData.GiftcardIndicator,
 
-                        LoyaltyPoints = existingCustomer.LoyaltyPoints, 
+                        LoyaltyPoints = existingCustomer.LoyaltyPoints,
                         SaleTransactionId = cardAcquisitionResponse.SaleData.SaleTransactionID.TransactionID,
                         SaleTransactionTimeStamp = cardAcquisitionResponse.SaleData.SaleTransactionID.TimeStamp
                     };
@@ -173,136 +173,134 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
 
                     return Ok(model);
                 }
-                else
+
+                var registerCustomerRequest = await _posCardAcquisitionPaymentService.ConfirmMembershipAsync(
+                    serviceId: IdUtility.GetRandomAlphanumericId(10),
+                    poiId: _poiId,
+                    saleId: _saleId,
+                    cancellationToken: cancellationToken);
+
+                var inputResponse = registerCustomerRequest.MessagePayload as InputResponse;
+
+                if (inputResponse == null || inputResponse.InputResult.Response.Result != ResultType.Success)
                 {
-                    var registerCustomerRequest = await _posCardAcquisitionPaymentService.ConfirmMembershipAsync(
+                    return BadRequest();
+                }
+
+                if (inputResponse.InputResult.Input.ConfirmedFlag.HasValue && inputResponse.InputResult.Input.ConfirmedFlag.Value)
+                {
+                    SaleToPOIResponse enterEmailAddressResponse = await _posCardAcquisitionPaymentService.EnterEmailAddressAsync(
                         serviceId: IdUtility.GetRandomAlphanumericId(10),
                         poiId: _poiId,
                         saleId: _saleId,
                         cancellationToken: cancellationToken);
 
-                    var inputResponse = registerCustomerRequest.MessagePayload as InputResponse;
-
-                    if (inputResponse == null || inputResponse.InputResult.Response.Result != ResultType.Success)
+                    var inputEmailResponse = enterEmailAddressResponse.MessagePayload as InputResponse;
+                    if (inputEmailResponse == null || inputEmailResponse.InputResult.Response.Result != ResultType.Success)
                     {
                         return BadRequest();
                     }
 
-                    if (inputResponse.InputResult.Input.ConfirmedFlag.HasValue && inputResponse.InputResult.Input.ConfirmedFlag.Value)
+                    _logger.LogInformation(inputEmailResponse.InputResult.Input.TextInput);
+
+                    string newEmail = inputEmailResponse.InputResult.Input.TextInput;
+
+                    if (string.IsNullOrWhiteSpace(newEmail))
                     {
-                        SaleToPOIResponse enterEmailAddressResponse = await _posCardAcquisitionPaymentService.EnterEmailAddressAsync(
-                            serviceId: IdUtility.GetRandomAlphanumericId(10),
-                            poiId: _poiId,
-                            saleId: _saleId,
-                            cancellationToken: cancellationToken);
-
-                        var inputEmailResponse = enterEmailAddressResponse.MessagePayload as InputResponse;
-                        if (inputEmailResponse == null || inputEmailResponse.InputResult.Response.Result != ResultType.Success)
-                        {
-                            return BadRequest();
-                        }
-                        
-                        _logger.LogInformation(inputEmailResponse.InputResult.Input.TextInput);
-
-                        string newEmail = inputEmailResponse.InputResult.Input.TextInput;
-
-                        if (string.IsNullOrWhiteSpace(newEmail))
-                        {
-                            return BadRequest("Invalid email");
-                        }
-
-                        // New Customer.
-                        req = await _posCardAcquisitionPaymentService.SendPaymentRequestNewCustomerAsync(
-                            serviceId: IdUtility.GetRandomAlphanumericId(10),
-                            poiId: _poiId,
-                            saleId: _saleId,
-                            currency: "EUR",
-                            amount: amount,
-                            shopperEmail: newEmail,
-                            shopperReference: Identifiers.ShopperReference,
-                            cardAcquisitionTimeStamp: cardAcquisitionResponse.POIData.POITransactionID.TimeStamp,
-                            cardAcquisitionTransactionId: cardAcquisitionResponse.POIData.POITransactionID.TransactionID,
-                            transactionId: newEmail,
-                            cancellationToken: cancellationToken
-                        );
-                        
-                        var pr = req.MessagePayload as PaymentResponse;
-                        if (pr == null || pr.Response.Result != ResultType.Success)
-                        {
-                            return BadRequest();
-                        }
-
-                        pizza.PaymentStatusDetails.PoiTransactionId = pr.POIData.POITransactionID.TransactionID;
-                        pizza.PaymentStatusDetails.PoiTransactionTimeStamp = pr.POIData.POITransactionID.TimeStamp;
-                        pizza.PaymentStatusDetails.SaleTransactionId = pr.SaleData.SaleTransactionID.TransactionID;
-                        pizza.PaymentStatusDetails.SaleTransactionTimeStamp = pr.SaleData.SaleTransactionID.TimeStamp;
-
-                        var model = new CardAcquisitionModel()
-                        {
-                            // If you are going to continue with a payment, keep the TimeStamp and TransactionID, because you need these card acquisition details in your payment request.
-                            POIReconciliationID = cardAcquisitionResponse.POIData.POIReconciliationID,
-                            PoiTransactionTimeStamp = cardAcquisitionResponse.POIData.POITransactionID.TimeStamp,
-                            PoiTransactionId = cardAcquisitionResponse.POIData.POITransactionID.TransactionID,
-
-                            CardCountryCode = cardAcquisitionResponse.PaymentInstrumentData.CardData.CardCountryCode,
-                            MaskedPAN = cardAcquisitionResponse.PaymentInstrumentData.CardData.MaskedPAN,
-                            PaymentBrand = cardAcquisitionResponse.PaymentInstrumentData.CardData.PaymentBrand,
-                            PaymentToken = cardAcquisitionResponse.PaymentInstrumentData.CardData.PaymentToken.TokenValue, // Provided if the TokenRequestedType == Customer
-                            ExpiryDate = cardAcquisitionResponse.PaymentInstrumentData.CardData.SensitiveCardData.ExpiryDate,
-                            PaymentInstrumentType = cardAcquisitionResponse.PaymentInstrumentData.PaymentInstrumentType,
-
-                            Alias = json.AdditionalData.Alias,
-                            PaymentAccountReference = json.AdditionalData.PaymentAccountReference,
-                            CardBin = json.AdditionalData.CardBin,
-                            IssuerCountry = json.AdditionalData.IssuerCountry,
-                            ShopperEmail = newEmail,
-                            ShopperReference = Identifiers.ShopperReference,
-
-                            GiftCardIndicator = json.AdditionalData.GiftcardIndicator,
-
-                            LoyaltyPoints = 1000, 
-                            SaleTransactionId = cardAcquisitionResponse.SaleData.SaleTransactionID.TransactionID,
-                            SaleTransactionTimeStamp = cardAcquisitionResponse.SaleData.SaleTransactionID.TimeStamp
-                        };
-
-                        _cardAcquisitionRepository.CardAcquisitions.Add(model);
-
-                        return Ok(model);
+                        return BadRequest("Invalid email");
                     }
 
+                    // New Customer.
                     req = await _posCardAcquisitionPaymentService.SendPaymentRequestNewCustomerAsync(
                         serviceId: IdUtility.GetRandomAlphanumericId(10),
                         poiId: _poiId,
                         saleId: _saleId,
                         currency: "EUR",
                         amount: amount,
-                        shopperEmail: null,
+                        shopperEmail: newEmail,
                         shopperReference: Identifiers.ShopperReference,
                         cardAcquisitionTimeStamp: cardAcquisitionResponse.POIData.POITransactionID.TimeStamp,
                         cardAcquisitionTransactionId: cardAcquisitionResponse.POIData.POITransactionID.TransactionID,
-                        transactionId: Guid.NewGuid().ToString(),
+                        transactionId: newEmail,
                         cancellationToken: cancellationToken
                     );
 
-                    var noLoyaltyPaymentResponse = req.MessagePayload as PaymentResponse;
-                    if (noLoyaltyPaymentResponse == null || noLoyaltyPaymentResponse.Response.Result != ResultType.Success)
+                    var pr = req.MessagePayload as PaymentResponse;
+                    if (pr == null || pr.Response.Result != ResultType.Success)
                     {
                         return BadRequest();
                     }
 
-                    pizza.PaymentStatusDetails.PoiTransactionId = noLoyaltyPaymentResponse.POIData.POITransactionID.TransactionID;
-                    pizza.PaymentStatusDetails.PoiTransactionTimeStamp = noLoyaltyPaymentResponse.POIData.POITransactionID.TimeStamp;
-                    pizza.PaymentStatusDetails.SaleTransactionId = noLoyaltyPaymentResponse.SaleData.SaleTransactionID.TransactionID;
-                    pizza.PaymentStatusDetails.SaleTransactionTimeStamp = noLoyaltyPaymentResponse.SaleData.SaleTransactionID.TimeStamp;
+                    pizza.PaymentStatusDetails.PoiTransactionId = pr.POIData.POITransactionID.TransactionID;
+                    pizza.PaymentStatusDetails.PoiTransactionTimeStamp = pr.POIData.POITransactionID.TimeStamp;
+                    pizza.PaymentStatusDetails.SaleTransactionId = pr.SaleData.SaleTransactionID.TransactionID;
+                    pizza.PaymentStatusDetails.SaleTransactionTimeStamp = pr.SaleData.SaleTransactionID.TimeStamp;
 
-                    // Customer doesn't want to be part of the loyalty program.
-                    if (noLoyaltyPaymentResponse.Response.Result == ResultType.Success)
-                        return Ok(new CardAcquisitionModel(){ LoyaltyPoints = 0});
-                    return BadRequest();
-                    // Abort case.
-                    // SaleToPOIResponse abortRequest = await _posCardAcquisitionAbortService.SendAbortRequestAsync(IdUtility.GetRandomAlphanumericId(10), _poiId, _saleId, cancellationToken: cancellationToken);
-                    //return Ok(abortRequest);
+                    var model = new CardAcquisitionModel()
+                    {
+                        // If you are going to continue with a payment, keep the TimeStamp and TransactionID, because you need these card acquisition details in your payment request.
+                        POIReconciliationID = cardAcquisitionResponse.POIData.POIReconciliationID,
+                        PoiTransactionTimeStamp = cardAcquisitionResponse.POIData.POITransactionID.TimeStamp,
+                        PoiTransactionId = cardAcquisitionResponse.POIData.POITransactionID.TransactionID,
+
+                        CardCountryCode = cardAcquisitionResponse.PaymentInstrumentData.CardData.CardCountryCode,
+                        MaskedPAN = cardAcquisitionResponse.PaymentInstrumentData.CardData.MaskedPAN,
+                        PaymentBrand = cardAcquisitionResponse.PaymentInstrumentData.CardData.PaymentBrand,
+                        PaymentToken = cardAcquisitionResponse.PaymentInstrumentData.CardData.PaymentToken.TokenValue, // Provided if the TokenRequestedType == Customer
+                        ExpiryDate = cardAcquisitionResponse.PaymentInstrumentData.CardData.SensitiveCardData.ExpiryDate,
+                        PaymentInstrumentType = cardAcquisitionResponse.PaymentInstrumentData.PaymentInstrumentType,
+
+                        Alias = json.AdditionalData.Alias,
+                        PaymentAccountReference = json.AdditionalData.PaymentAccountReference,
+                        CardBin = json.AdditionalData.CardBin,
+                        IssuerCountry = json.AdditionalData.IssuerCountry,
+                        ShopperEmail = newEmail,
+                        ShopperReference = Identifiers.ShopperReference,
+
+                        GiftCardIndicator = json.AdditionalData.GiftcardIndicator,
+
+                        LoyaltyPoints = 1000,
+                        SaleTransactionId = cardAcquisitionResponse.SaleData.SaleTransactionID.TransactionID,
+                        SaleTransactionTimeStamp = cardAcquisitionResponse.SaleData.SaleTransactionID.TimeStamp
+                    };
+
+                    _cardAcquisitionRepository.CardAcquisitions.Add(model);
+
+                    return Ok(model);
                 }
+
+                req = await _posCardAcquisitionPaymentService.SendPaymentRequestNewCustomerAsync(
+                    serviceId: IdUtility.GetRandomAlphanumericId(10),
+                    poiId: _poiId,
+                    saleId: _saleId,
+                    currency: "EUR",
+                    amount: amount,
+                    shopperEmail: null,
+                    shopperReference: Identifiers.ShopperReference,
+                    cardAcquisitionTimeStamp: cardAcquisitionResponse.POIData.POITransactionID.TimeStamp,
+                    cardAcquisitionTransactionId: cardAcquisitionResponse.POIData.POITransactionID.TransactionID,
+                    transactionId: Guid.NewGuid().ToString(),
+                    cancellationToken: cancellationToken
+                );
+
+                var noLoyaltyPaymentResponse = req.MessagePayload as PaymentResponse;
+                if (noLoyaltyPaymentResponse == null || noLoyaltyPaymentResponse.Response.Result != ResultType.Success)
+                {
+                    return BadRequest();
+                }
+
+                pizza.PaymentStatusDetails.PoiTransactionId = noLoyaltyPaymentResponse.POIData.POITransactionID.TransactionID;
+                pizza.PaymentStatusDetails.PoiTransactionTimeStamp = noLoyaltyPaymentResponse.POIData.POITransactionID.TimeStamp;
+                pizza.PaymentStatusDetails.SaleTransactionId = noLoyaltyPaymentResponse.SaleData.SaleTransactionID.TransactionID;
+                pizza.PaymentStatusDetails.SaleTransactionTimeStamp = noLoyaltyPaymentResponse.SaleData.SaleTransactionID.TimeStamp;
+
+                // Customer doesn't want to be part of the loyalty program.
+                if (noLoyaltyPaymentResponse.Response.Result == ResultType.Success)
+                    return Ok(new CardAcquisitionModel() { LoyaltyPoints = 0 });
+                return BadRequest();
+                // Abort case.
+                // SaleToPOIResponse abortRequest = await _posCardAcquisitionAbortService.SendAbortRequestAsync(IdUtility.GetRandomAlphanumericId(10), _poiId, _saleId, cancellationToken: cancellationToken);
+                //return Ok(abortRequest);
             }
             catch (Exception e)
             {
