@@ -1,7 +1,7 @@
-﻿using System;
+﻿using adyen_dotnet_in_person_payments_loyalty_example.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using adyen_dotnet_in_person_payments_loyalty_example.Models;
 
 namespace adyen_dotnet_in_person_payments_loyalty_example.Repositories
 {
@@ -12,8 +12,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Repositories
         /// </summary>
         List<TableModel> Tables { get; }
 
-        void ApplyDiscount(decimal discount);
-        void Reset();
+        void ApplyDiscount(decimal discount); // TODO
     }
 
     public class TableRepository : ITableRepository
@@ -34,14 +33,6 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Repositories
         public TableRepository()
         {
             Tables = new List<TableModel>();
-            Reset();
-        }
-
-        public void Reset()
-        {
-            List<PaymentStatusDetails> details = Tables.Select(x => x.PaymentStatusDetails).ToList();
-            
-            Tables.Clear();
             for (int i = 0; i < PizzaNames.Length; i++)
             {
                 string pizzaName = PizzaNames[i];
@@ -52,8 +43,8 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Repositories
                     OriginalAmount = Math.Round((11 * (i + 1)) + 0.99M, 2),
                     Currency = "EUR",
                     PaymentStatus = PaymentStatus.NotPaid,
-                    IsDiscounted = false, 
-                    PaymentStatusDetails = details.Count == 0 ? new PaymentStatusDetails() : details[i]
+                    IsDiscounted = false,
+                    PaymentStatusDetails = new PaymentStatusDetails()
                 });
             }
         }

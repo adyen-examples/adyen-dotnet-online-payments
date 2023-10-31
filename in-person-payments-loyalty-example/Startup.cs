@@ -77,7 +77,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example
 
             // Register repositories that saves data in-memory.
             services.AddSingleton<ITableRepository, TableRepository>();
-            services.AddSingleton<ICardAcquisitionRepository, CardAcquisitionRepository>(); // TODO
+            services.AddSingleton<ICardAcquisitionRepository, CardAcquisitionRepository>();
 
             // Register application services.
             services.AddSingleton<IPosTransactionStatusService, PosTransactionStatusService>();

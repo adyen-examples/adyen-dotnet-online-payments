@@ -20,7 +20,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Repositories
 
         public CardAcquisitionRepository()
         {
-            CardAcquisitions = new List<CardAcquisitionModel>(); // TODO unused
+            CardAcquisitions = new List<CardAcquisitionModel>();
         }
 
         public CardAcquisitionModel Get(string paymentToken)
