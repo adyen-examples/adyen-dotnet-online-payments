@@ -53,7 +53,7 @@ function hideLoadingComponent() {
     document.getElementById('tables-section').classList.remove('disabled');
 }
 
-// Bind table selection buttons and the `pay/reversal/transaction-status` submit-buttons
+// Bind table selection buttons and the `pay/transaction-status` submit-buttons
 function bindButtons() {
     // Bind `payment-request-form` submit-button
     const paymentRequestForm = document.getElementById('payment-request-form');
@@ -143,47 +143,6 @@ function bindButtons() {
             }
         }
     });
-
-    // Bind `reversal-request-form` submit-button
-    const reversalForm = document.getElementById('reversal-request-form');
-    reversalForm.addEventListener('submit', async function(event) {
-        event.preventDefault();
-
-        var formData = new FormData(event.target);
-        var reversalTableName = formData.get('reversalTableName');
-        
-        if (reversalTableName) {
-            try {
-                // Show loading animation component and don't allow user to select any tables
-                showLoadingComponent();
-
-                // Send reversal request
-                var response = await sendPostRequest("/api/create-reversal", { tableName: reversalTableName });
-                console.log(response);
-
-                // Hides loading animation component and allow user to select tables again
-                hideLoadingComponent();
-
-                // Handle response
-                switch (response.result) {
-                    case "success":
-                        window.location.href = "result/success";
-                        break;
-                    case "failure":
-                        window.location.href = "result/failure/" + response.refusalReason;
-                        break;
-                    default:
-                        throw Error('Unknown response result');
-                }
-            }
-            catch (error) {
-                console.warn(error);
-
-                // Hides loading animation component and allow user to select tables again
-                hideLoadingComponent();
-            }
-        }
-    });
     
     // Bind `cancel-operation-button`
     const cancelOperationButton = document.getElementById('cancel-operation-button');
@@ -202,7 +161,7 @@ function bindButtons() {
             // Show loading animation component and don't allow user to select any tables
             showLoadingComponent();
 
-            // Send reversal request
+            // Send card acquisition check request
             var response = await sendPostRequest("/card-acquisition/check");
             console.log(response);
             
@@ -249,15 +208,11 @@ function bindButtons() {
             const tableNameElement = document.getElementById('tableName');
             tableNameElement.value = table.querySelector('.tables-grid-item-title').textContent;
 
-            // Copies 'table name' value to the `reversal-request-form`
-            const reversalTableNameElement = document.getElementById('reversalTableName');
-            reversalTableNameElement.value = table.querySelector('.tables-grid-item-title').textContent;
-
             // Copies 'table name' value to the `card-acquisition-request-form`
             const cardAcquisitionTableNameElement = document.getElementById('cardAcquisitionTableName');
             cardAcquisitionTableNameElement.value = table.querySelector('.tables-grid-item-title').textContent;
 
-            // Show/hides the `payment-request-button` and `reversal-request-button` according to the `PaymentStatus` of currently selected table
+            // Show/hides the `payment-request-button` according to the `PaymentStatus` of currently selected table
             const currentActiveTable = document.getElementsByClassName('current-selection')[0];
             var statusValue = currentActiveTable.querySelector('.tables-grid-item-status').textContent;
             switch (statusValue) {

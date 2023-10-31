@@ -22,7 +22,6 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
     public class CardAcquisitionController : ControllerBase
     {
         private readonly ILogger<CardAcquisitionController> _logger;
-        private readonly IPosPaymentService _posPaymentService; // TODO
         private readonly IPosAbortService _posAbortService;
         private readonly IPosCardAcquisitionService _posCardAcquisitionService;
         private readonly IPosCardAcquisitionPaymentService _posCardAcquisitionPaymentService;
@@ -34,7 +33,6 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
         private readonly string _poiId;
 
         public CardAcquisitionController(ILogger<CardAcquisitionController> logger,
-            IPosPaymentService posPaymentService,
             IPosAbortService posAbortService,
             IPosCardAcquisitionService posCardAcquisitionService,
             IPosCardAcquisitionPaymentService posCardAcquisitionPaymentService,
@@ -44,7 +42,6 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
             IOptions<AdyenOptions> options)
         {
             _logger = logger;
-            _posPaymentService = posPaymentService;
             _posAbortService = posAbortService;
             _posCardAcquisitionService = posCardAcquisitionService;
             _posCardAcquisitionPaymentService = posCardAcquisitionPaymentService;
@@ -178,7 +175,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                 }
                 else
                 {
-                    var registerCustomerRequest = await _posCardAcquisitionPaymentService.RegisterCustomerAsync(
+                    var registerCustomerRequest = await _posCardAcquisitionPaymentService.ConfirmMembershipAsync(
                         serviceId: IdUtility.GetRandomAlphanumericId(10),
                         poiId: _poiId,
                         saleId: _saleId,
@@ -351,32 +348,18 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
 
                 if (existingCustomer != null)
                 {
-
-                    if (existingCustomer.LoyaltyPoints >= 3000)
-                    {
-                        _tableService.ApplyDiscount(0.5M); // 50%
-                    }
-                    else if (existingCustomer.LoyaltyPoints >= 2000)
-                    {
-                        _tableService.ApplyDiscount(0.75M); // 25%
-                    }
-                    else if (existingCustomer.LoyaltyPoints >= 1000)
-                    {
-                        _tableService.ApplyDiscount(0.9M); // 10%
-                    }
-
-                    SaleToPOIResponse abortRequest = await _posCardAcquisitionAbortService.SendAbortRequestAsync(IdUtility.GetRandomAlphanumericId(10), _poiId, _saleId, success: true, loyaltyPoints: existingCustomer.LoyaltyPoints, cancellationToken: cancellationToken);
+                    SaleToPOIResponse abortRequest = await _posCardAcquisitionAbortService.SendAbortRequestAsync(IdUtility.GetRandomAlphanumericId(10), _poiId, _saleId, cancellationToken: cancellationToken);
                     
                     return Ok(existingCustomer);
                 }
 
-                SaleToPOIResponse ar = await _posCardAcquisitionAbortService.SendAbortRequestAsync(IdUtility.GetRandomAlphanumericId(10), _poiId, _saleId, success: false, cancellationToken: cancellationToken);
+                SaleToPOIResponse ar = await _posCardAcquisitionAbortService.SendAbortRequestAsync(IdUtility.GetRandomAlphanumericId(10), _poiId, _saleId, cancellationToken: cancellationToken);
                 return Ok() ;
             }
             catch (Exception e)
             {
                 _logger.LogError(e.ToString());
-                await _posCardAcquisitionAbortService.SendAbortRequestAsync(IdUtility.GetRandomAlphanumericId(10), _poiId, _saleId, success: false, cancellationToken: cancellationToken);
+                await _posCardAcquisitionAbortService.SendAbortRequestAsync(IdUtility.GetRandomAlphanumericId(10), _poiId, _saleId, cancellationToken: cancellationToken);
                 throw;
             }
         }

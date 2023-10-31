@@ -25,10 +25,6 @@
                 PaymentStatus.NotPaid => "not-paid",
                 PaymentStatus.PaymentInProgress => "disabled",
                 PaymentStatus.Paid => "paid",
-                PaymentStatus.RefundInProgress => "not-paid",
-                PaymentStatus.Refunded => "not-paid",
-                PaymentStatus.RefundFailed => "not-paid",
-                PaymentStatus.RefundedReversed => "not-paid",
                 _ => ""
             };
 
@@ -92,11 +88,6 @@
           <input type="text" id="cardAcquisitionAmount" name="cardAcquisitionAmount" hidden>
           <button type="submit" id="card-acquisition-request-button" class="card-acquisition-request-button disabled">Pay</button>
         </form>
-
-        <form id="reversal-request-form" method="post">
-          <input type="text" id="reversalTableName" name="reversalTableName" hidden>
-          <button type="submit" id="reversal-request-button" class="reversal-request-button disabled">Cancel</button>
-        </form>
         
         <input type="button" id="transaction-status-button" class="transaction-status-button" value="I am a member"/>
       </div>
@@ -104,5 +95,5 @@
   </div>
 </div>
 
-<!-- Binds all buttons for table selection and the `api/send-payment-request`/`api/send-payment-reversal-request` endpoints -->
+<!-- Binds all buttons for table selection -->
 <script src="~/js/cashregister-bindings.js" asp-append-version="true"></script>

@@ -80,7 +80,6 @@ namespace adyen_dotnet_in_person_payments_loyalty_example
             services.AddSingleton<ICardAcquisitionRepository, CardAcquisitionRepository>(); // TODO
 
             // Register application services.
-            services.AddSingleton<IPosPaymentService, PosPaymentService>();
             services.AddSingleton<IPosTransactionStatusService, PosTransactionStatusService>();
             services.AddSingleton<IPosAbortService, PosAbortService>();
             services.AddSingleton<IPosCardAcquisitionService, PosCardAcquisitionService>();

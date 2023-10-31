@@ -2,7 +2,6 @@
 
 This repository features an in-person payments [cloud terminal API integration](https://docs.adyen.com/point-of-sale/design-your-integration/choose-your-architecture/cloud/) example for making
 - [Payment requests](https://docs.adyen.com/point-of-sale/basic-tapi-integration/make-a-payment/)
-- [Unreferenced refund requests](https://docs.adyen.com/point-of-sale/basic-tapi-integration/refund-payment/referenced/)
 - [Cancel/abort requests](https://docs.adyen.com/point-of-sale/basic-tapi-integration/cancel-a-transaction/)
 - [Transaction status requests](https://docs.adyen.com/point-of-sale/basic-tapi-integration/verify-transaction-status/)
 - [Card Acquisition requests](https://docs.adyen.com/point-of-sale/card-acquisition/)
@@ -36,7 +35,7 @@ You can find the [Terminal API documentation](https://docs.adyen.com/point-of-sa
 
 > **Note**: If you'd like to check the connection of your terminal, you can do so in the Customer Area → `In-person payments` → `Terminals`.
 
-This demo provides a simple webhook integration for receiving refund/reversal updates at `/api/webhooks/notifications`. For it to work, you need to provide a way for Adyen's servers to reach your running application on Gitpod and add a standard webhook in the Customer Area.
+This demo provides a simple webhook integration for receiving refund updates at `/api/webhooks/notifications`. For it to work, you need to provide a way for Adyen's servers to reach your running application on Gitpod and add a standard webhook in the Customer Area.
 
 4. To receive notifications asynchronously, add a webhook: 
     - In the Customer Area go to `Developers` → `Webhooks` and add a new `Standard notification webhook`
@@ -77,7 +76,7 @@ git clone https://github.com/adyen-examples/adyen-dotnet-online-payments.git
 3. Set the [`ADYEN_POS_POI_ID`] as variable, which is the unique ID of your payment terminal for the NEXO Sale to POI protocol. **Format:** `[device model]-[serial number]`.
 
 
-This demo provides a simple webhook integration for receiving refund/reversal updates at `/api/webhooks/notifications`. For it to work, you need to provide a way for Adyen's servers to reach your running application and add a standard webhook in the Customer Area. 
+This demo provides a simple webhook integration for receiving refund updates at `/api/webhooks/notifications`. For it to work, you need to provide a way for Adyen's servers to reach your running application and add a standard webhook in the Customer Area. 
 To expose this endpoint locally, we have highlighted two options in step 4 or 5. Choose one or consider alternative tunneling software.
 
 4. Expose your localhost with Visual Studio using dev tunnels.
@@ -146,9 +145,5 @@ dotnet run --project in-person-payments-example
 
 
 ## Usage
-1. Select the cloud terminal api integration
-2. Select a table
-3. Select pay to perform a payment
-4. Complete the instructions on your terminal
-5. Select reversal to refund the payment
-6. If webhooks are set up, listen for the notifications to update the payment status
+
+1. // TODO
