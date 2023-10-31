@@ -8,29 +8,29 @@
       Adyen In-person Payments — Loyalty Demo
     </h1>
     <p>
-      This demo shows how developers can perform <b>synchronous</b> card acquisition requests to enroll shoppers into a loyalty program.
+      This demo shows how developers can perform <b>synchronous</b> card acquisition requests to enroll shoppers into a loyalty program. 
+      <b>Note:</b> The asynchronous flow is similar and can be found <a href="https://docs.adyen.com/point-of-sale/loyalty/#asynchronous-flow">here</a>.
     </p>
     <p>
       If you recognize a shopper based on the payment data, you can offer benefits like discounts, or make product recommendations based on their purchase history. 
       If you don't recognize a shopper, you can enroll them on the spot using the payment terminal.
     </p>
-    <p>To learn more about card acquisitions - loyalty, check out our <a href="https://docs.adyen.com/point-of-sale/loyalty/#synchronous-flow">documentation</a>.</p>
-    <p><b>Note:</b> The asynchronous flow is similar and can be found <a href="https://docs.adyen.com/point-of-sale/loyalty/#asynchronous-flow">here</a>.</p>
+    <p>To learn more about card acquisitions loyalty, check out our <a href="https://docs.adyen.com/point-of-sale/loyalty/#synchronous-flow">documentation</a>.</p>
     
     <ul class="integration-list">
       <li class="integration-list-item">
         <a asp-area="" asp-controller="Home" asp-action="CashRegister" class="integration-list-item-link">
           <div class="title-container">
             <p class="integration-list-item-title">Card Acquisition & Payment</p>
-            <p class="integration-list-item-subtitle">Explore a card acquisition with a payment request, allowing you to enroll a new shopper into your loyalty program after a payment.</p>
+            <p class="integration-list-item-subtitle">Enroll a new shopper into your loyalty program after a payment.</p>
           </div>
         </a>
       </li>
       <li class="integration-list-item">
-        <a asp-area="" asp-controller="Home" asp-action="CashRegister" class="integration-list-item-link"> <!-- TODO: Just register the member -->
+        <a asp-area="" asp-controller="Home" asp-action="CashRegister" class="integration-list-item-link">
           <div class="title-container">
             <p class="integration-list-item-title">Card Acquisition & Cancellation</p>
-            <p class="integration-list-item-subtitle">Explore a card acquisition followed by a cancellation to sign-up a new member for a loyalty program withou a payment.</p>
+            <p class="integration-list-item-subtitle">Sign-up a new member for a loyalty program without a payment.</p>
           </div>
         </a>
       </li>

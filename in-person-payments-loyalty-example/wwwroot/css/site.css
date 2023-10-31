@@ -104,14 +104,12 @@ a:hover {
   justify-content: center;
   align-items: center;
   margin: 32px 16px;
-  transition: transform 0.2s ease-in, background 0.2s ease-out;
+  transition: transform 0.2s ease-in-out, background 0.2s ease-in-out;
 }
 
 .integration-list-item:hover {
-  background: #00c110;
-  text-decoration: none;
+  background: #00a141;
   transform: scale(1.04);
-  font-weight: 800;
 }
 
 .integration-list-item-link {
@@ -131,32 +129,25 @@ a:hover {
 }
 
 .integration-list-item-title {
-  margin: 0;
   text-align: center;
   font-weight: 700;
   color: white;
+  margin: 0;
 }
 
 .integration-list-item-subtitle {
-  margin: 0;
-  padding: 12px 0px 0px 0px;
+  padding: 4px 12px;
+  font-size: 14px;
   text-align: center;
-  font-weight: 400;
+  font-weight: 500;
   color: #0e0e0e;
-}
-
-@media (min-width: 768px) {
-  .integration-list-item-title {
-    font-size: 24px;
-    margin-left: 0;
-    margin-right: 0;
-  }
+  margin: 0;
 }
 
 .title-container {
   display: flex;
-  flex-direction: column;
   align-items: center;
+  flex-direction: column;
 }
 
 .info {
@@ -289,9 +280,6 @@ a:hover {
   color: darkorange;
 }
 
-.pizzas-grid-item-currency {
-}
-
 .pizzas-grid-item-other {
   font-weight: 400 !important;
   font-size: 1rem;
@@ -395,7 +383,7 @@ a:hover {
 /* Card Acquisition request button end */
 
 /* Transaction Status button start */
-.transaction-status-button {
+.loyalty-button {
   background-color: #0abf53;
   color: white;
   padding: 8px 64px 8px 64px;
@@ -408,19 +396,19 @@ a:hover {
   height: 50%;
 }
 
-.transaction-status-button:hover {
+.loyalty-button:hover {
   background-color: #0abf53;
   border: none;
   transform: scale(1.04);
 }
 
-.transaction-status-button:focus {
+.loyalty-button:focus {
   outline: none;
 }
 
-.transaction-status-button:disabled,
-.transaction-status-button[disabled=disabled],
-.transaction-status-button.disabled {
+.loyalty-button:disabled,
+.loyalty-button[disabled=disabled],
+.loyalty-button.disabled {
   background-color: #cccccc;
   color: #999999;
   pointer-events: none;

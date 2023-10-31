@@ -1,15 +1,9 @@
-﻿using adyen_dotnet_in_person_payments_loyalty_example.Models;
-using adyen_dotnet_in_person_payments_loyalty_example.Options;
+﻿using adyen_dotnet_in_person_payments_loyalty_example.Options;
 using adyen_dotnet_in_person_payments_loyalty_example.Repositories;
-using adyen_dotnet_in_person_payments_loyalty_example.Services;
-using Adyen.Model.Nexo;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
 {
@@ -19,15 +13,13 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
         private readonly string _saleId;
         private readonly ILogger<HomeController> _logger;
         private readonly IPizzaRepository _pizzaRepository;
-        private readonly IPosTransactionStatusService _posTransactionStatusService;
 
-        public HomeController(ILogger<HomeController> logger, IOptions<AdyenOptions> optionsAccessor, IPizzaRepository pizzaRepository, IPosTransactionStatusService posTransactionStatusService, ICardAcquisitionRepository repository)
+        public HomeController(ILogger<HomeController> logger, IOptions<AdyenOptions> optionsAccessor, IPizzaRepository pizzaRepository, ICardAcquisitionRepository repository)
         {
             _poiId = optionsAccessor.Value.ADYEN_POS_POI_ID;
             _saleId = optionsAccessor.Value.ADYEN_POS_SALE_ID;
             _logger = logger;
             _pizzaRepository = pizzaRepository;
-            _posTransactionStatusService = posTransactionStatusService;
         }
 
         [Route("/")]
@@ -75,49 +67,6 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
         public IActionResult Error()
         {
             return View();
-        }
-
-        [HttpGet("transaction-status/{pizzaName}")]
-        public async Task<IActionResult> TransactionStatus(string pizzaName, CancellationToken cancellationToken = default)
-        {
-            PizzaModel pizza = _pizzaRepository.Pizzas.FirstOrDefault(t => t.PizzaName == pizzaName);
-
-            ViewBag.PizzaName = pizzaName;
-            
-            if (pizza?.PaymentStatusDetails?.ServiceId == null)
-            {
-                ViewBag.ErrorMessage = $"Could not find any transactions for {pizzaName}.";
-                return View();
-            }
-
-            try
-            {
-                SaleToPOIResponse response = await _posTransactionStatusService.SendTransactionStatusRequestAsync(pizza.PaymentStatusDetails.ServiceId, _poiId, _saleId, cancellationToken);
-                TransactionStatusResponse transactionStatusResponse = response.MessagePayload as TransactionStatusResponse;
-
-                if (transactionStatusResponse == null)
-                {
-                    ViewBag.ErrorMessage = "Could not parse the transaction status response.";
-                    return View();
-                }
-                
-                
-                PaymentResponse paymentResponse = transactionStatusResponse.RepeatedMessageResponse.RepeatedResponseMessageBody.MessagePayload as PaymentResponse;
-                if (paymentResponse != null)
-                {
-                    ViewBag.PaymentResponse = paymentResponse;
-                }
-
-                ViewBag.ServiceId = pizza.PaymentStatusDetails.ServiceId;
-
-                return View();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.ToString());
-                ViewBag.ErrorMessage = e.ToString();
-                return View();
-            }
         }
     }
 }

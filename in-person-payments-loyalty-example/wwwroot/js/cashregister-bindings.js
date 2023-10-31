@@ -107,9 +107,9 @@ function bindButtons() {
         hideLoadingComponent();
     });
     
-    // Bind `transaction-status-button`
-    const transactionStatusButton = document.getElementById('transaction-status-button');
-    transactionStatusButton.addEventListener('click', async () => {
+    // Bind `loyalty-button`
+    const loyaltyButton = document.getElementById('loyalty-button');
+    loyaltyButton.addEventListener('click', async () => {
         try {
             // Show loading animation component and don't allow user to select any tables
             showLoadingComponent();
@@ -124,7 +124,7 @@ function bindButtons() {
 
             if (response.loyaltyPoints)
             {
-                // Show loyalty points
+                // Show loyalty points // TODO
                 //document.getElementById('loyaltypoints-component').classList.remove('hidden');
                 //document.getElementById('loyaltypoints-value').textContent = response.loyaltyPoints;
             }
@@ -159,15 +159,12 @@ function bindButtons() {
             switch (statusValue) {
                  case 'NotPaid':
                     enablePaymentRequestButton();
-                    disableTransactionStatusButton();
                     break;
                 case 'Paid':
                     disablePaymentRequestButton();
-                    enableTransactionStatusButton();
                     break;
                 case 'PaymentInProgress':
                 default:
-                    disablePaymentRequestButton();
                     enableTransactionStatusButton();
                     break;
             }
@@ -183,16 +180,6 @@ function enablePaymentRequestButton() {
 // Disable `card-acquisition-request-button`
 function disablePaymentRequestButton() {
    document.getElementById('card-acquisition-request-button').classList.add('disabled');
-}
-
-// Enable `transaction-status-button`
-function enableTransactionStatusButton() {
-    document.getElementById('transaction-status-button').classList.remove('disabled');
-}
-
-// Disable `transaction-status-button`
-function disableTransactionStatusButton() {
-    document.getElementById('transaction-status-button').classList.add('disabled');
 }
 
 bindButtons();
