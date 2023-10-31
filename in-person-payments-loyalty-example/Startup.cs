@@ -76,7 +76,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example
             services.AddSingleton<HmacValidator>();
 
             // Register repositories that saves data in-memory.
-            services.AddSingleton<ITableRepository, TableRepository>();
+            services.AddSingleton<IPizzaRepository, PizzaRepository>();
             services.AddSingleton<ICardAcquisitionRepository, CardAcquisitionRepository>();
 
             // Register application services.

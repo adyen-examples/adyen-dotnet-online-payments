@@ -167,20 +167,20 @@ a:hover {
 /* end Index page */
 
 
-/* Tables-grid start */
+/* Pizzas-grid start */
 
-.tables-section {
+.pizzas-section {
   text-align: center;
   display: flex;
   transition: opacity 0.4s ease-in;
 }
 
-.tables-section.disabled {
+.pizzas-section.disabled {
   opacity: 0.2; /* Reduce opacity */
   pointer-events: none; /* Disable pointer events on elements */
 }
 
-.tables-grid-list {
+.pizzas-grid-list {
   display: grid;
   grid-template-columns: repeat(4, minmax(120px, 4fr));
   gap: 16px;
@@ -193,7 +193,7 @@ a:hover {
   border-right: 2px solid #0abf53;
 }
 
-.tables-grid-item {
+.pizzas-grid-item {
   border: 1px solid #e6e9eb;
   border-radius: 16px;
   background-color: #f7f7f7;
@@ -213,25 +213,25 @@ a:hover {
   background-position: center 16px;
 }
 
-.tables-grid-item:nth-child(2n) {
+.pizzas-grid-item:nth-child(2n) {
   background-color: #f5f5f5;
 }
 
-.tables-grid-item:nth-child(3n) {
+.pizzas-grid-item:nth-child(3n) {
   background-color: #f3f3f3;
 }
 
-.tables-grid-item:nth-child(4n) {
+.pizzas-grid-item:nth-child(4n) {
   background-color: #f1f1f1;
 }
 
-.tables-grid-item:hover {
+.pizzas-grid-item:hover {
   background-color: #fffcbf;
   transform: scale(1.05);
   border-radius: 20px;
 }
 
-.tables-grid-item.current-selection {
+.pizzas-grid-item.current-selection {
   background-color: #f8deaa !important;
   transform: scale(1.06);
   font-weight: 600;
@@ -240,13 +240,13 @@ a:hover {
   transition: transform 0.4s ease, background-color 0.5s ease;
 }
 
-.tables-grid-item.disabled {
+.pizzas-grid-item.disabled {
   opacity: 0.15;
   background-color: #95999c;
   pointer-events: none;
 }
 
-.tables-grid-item-title {
+.pizzas-grid-item-title {
   display: block;
   font-weight: 600;
   margin-top: 10px;
@@ -255,7 +255,7 @@ a:hover {
   padding: 12px;
 }
 
-.tables-grid-item-status {
+.pizzas-grid-item-status {
   font-weight: 800;
   border: 1px dashed #fff;
   padding: 4px 16px 4px 16px;
@@ -267,38 +267,38 @@ a:hover {
   transition: all 0.3s ease;
 }
 
-.tables-grid-item-status.not-paid {
+.pizzas-grid-item-status.not-paid {
   background-color: #ffe374 !important;
 }
 
-.tables-grid-item-status.paid {
+.pizzas-grid-item-status.paid {
   background-color: #00903a !important;
 }
 
-.tables-grid-item-status.refund-failed {
+.pizzas-grid-item-status.refund-failed {
   background-color: #ff0000 !important;
 }
 
-.tables-grid-item-amount {
+.pizzas-grid-item-amount {
   font-size: 1.2rem;
   margin-left: 4px;
 }
 
-.tables-grid-item-original-amount {
+.pizzas-grid-item-original-amount {
   margin-left: 4px;
   color: darkorange;
 }
 
-.tables-grid-item-currency {
+.pizzas-grid-item-currency {
 }
 
-.tables-grid-item-other {
+.pizzas-grid-item-other {
   font-weight: 400 !important;
   font-size: 1rem;
   color: black;
 }
 
-.tables-grid-item-original-currency-amount {
+.pizzas-grid-item-original-currency-amount {
   text-decoration: line-through;
   text-decoration-color: black;
   font-size: 0.8rem;
@@ -307,7 +307,7 @@ a:hover {
   color: darkorange;
 }
 
-.tables-grid-item-currency-amount {
+.pizzas-grid-item-currency-amount {
   display: flex;
   align-items: center;
   background-color: #ffeba9;
@@ -318,7 +318,7 @@ a:hover {
   color: black;
 }
 
-/* Tables-grid end */
+/* Pizzas-grid end */
 
 /* Info-grid start */
 .info-grid-list {

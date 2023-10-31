@@ -18,15 +18,15 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
         private readonly string _poiId;
         private readonly string _saleId;
         private readonly ILogger<HomeController> _logger;
-        private readonly ITableRepository _tableService;
+        private readonly IPizzaRepository _pizzaRepository;
         private readonly IPosTransactionStatusService _posTransactionStatusService;
 
-        public HomeController(ILogger<HomeController> logger, IOptions<AdyenOptions> optionsAccessor, ITableRepository tableService, IPosTransactionStatusService posTransactionStatusService, ICardAcquisitionRepository repository)
+        public HomeController(ILogger<HomeController> logger, IOptions<AdyenOptions> optionsAccessor, IPizzaRepository pizzaRepository, IPosTransactionStatusService posTransactionStatusService, ICardAcquisitionRepository repository)
         {
             _poiId = optionsAccessor.Value.ADYEN_POS_POI_ID;
             _saleId = optionsAccessor.Value.ADYEN_POS_SALE_ID;
             _logger = logger;
-            _tableService = tableService;
+            _pizzaRepository = pizzaRepository;
             _posTransactionStatusService = posTransactionStatusService;
         }
 
@@ -41,14 +41,13 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
         {
             ViewBag.PoiId = _poiId;
             ViewBag.SaleId = _saleId;
-            ViewBag.Tables = _tableService.Tables;
+            ViewBag.Pizzas = _pizzaRepository.Pizzas;
             return View();
         }
 
         [HttpGet("result/{status}/{refusalReason?}")]
         public IActionResult Result(string status, string refusalReason = null)
         {
-            _tableService.Reset();
             string msg;
             string img;
             switch (status)
@@ -78,22 +77,22 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
             return View();
         }
 
-        [HttpGet("transaction-status/{tableName}")]
-        public async Task<IActionResult> TransactionStatus(string tableName, CancellationToken cancellationToken = default)
+        [HttpGet("transaction-status/{pizzaName}")]
+        public async Task<IActionResult> TransactionStatus(string pizzaName, CancellationToken cancellationToken = default)
         {
-            TableModel table = _tableService.Tables.FirstOrDefault(t => t.TableName == tableName);
+            PizzaModel pizza = _pizzaRepository.Pizzas.FirstOrDefault(t => t.PizzaName == pizzaName);
 
-            ViewBag.TableName = tableName;
+            ViewBag.PizzaName = pizzaName;
             
-            if (table?.PaymentStatusDetails?.ServiceId == null)
+            if (pizza?.PaymentStatusDetails?.ServiceId == null)
             {
-                ViewBag.ErrorMessage = $"Could not find any transactions for {tableName}.";
+                ViewBag.ErrorMessage = $"Could not find any transactions for {pizzaName}.";
                 return View();
             }
 
             try
             {
-                SaleToPOIResponse response = await _posTransactionStatusService.SendTransactionStatusRequestAsync(table.PaymentStatusDetails.ServiceId, _poiId, _saleId, cancellationToken);
+                SaleToPOIResponse response = await _posTransactionStatusService.SendTransactionStatusRequestAsync(pizza.PaymentStatusDetails.ServiceId, _poiId, _saleId, cancellationToken);
                 TransactionStatusResponse transactionStatusResponse = response.MessagePayload as TransactionStatusResponse;
 
                 if (transactionStatusResponse == null)
@@ -109,7 +108,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                     ViewBag.PaymentResponse = paymentResponse;
                 }
 
-                ViewBag.ServiceId = table.PaymentStatusDetails.ServiceId;
+                ViewBag.ServiceId = pizza.PaymentStatusDetails.ServiceId;
 
                 return View();
             }

@@ -26,7 +26,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
         private readonly IPosCardAcquisitionService _posCardAcquisitionService;
         private readonly IPosCardAcquisitionPaymentService _posCardAcquisitionPaymentService;
         private readonly IPosCardAcquisitionAbortService _posCardAcquisitionAbortService;
-        private readonly ITableRepository _tableService;
+        private readonly IPizzaRepository _pizzaRepository;
         private readonly ICardAcquisitionRepository _cardAcquisitionRepository;
 
         private readonly string _saleId;
@@ -37,7 +37,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
             IPosCardAcquisitionService posCardAcquisitionService,
             IPosCardAcquisitionPaymentService posCardAcquisitionPaymentService,
             IPosCardAcquisitionAbortService posCardAcquisitionAbortService,
-            ITableRepository tableService,
+            IPizzaRepository pizzaRepository,
             ICardAcquisitionRepository cardAcquisitionRepository,
             IOptions<AdyenOptions> options)
         {
@@ -46,7 +46,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
             _posCardAcquisitionService = posCardAcquisitionService;
             _posCardAcquisitionPaymentService = posCardAcquisitionPaymentService;
             _posCardAcquisitionAbortService = posCardAcquisitionAbortService;
-            _tableService = tableService;
+            _pizzaRepository = pizzaRepository;
             _cardAcquisitionRepository = cardAcquisitionRepository;
             _poiId = options.Value.ADYEN_POS_POI_ID;
             _saleId = options.Value.ADYEN_POS_SALE_ID;
@@ -61,17 +61,17 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
             return Ok(jsonString);
         }
 
-        [Route("card-acquisition/create/{tableName}/{amount?}")]
-        public async Task<ActionResult> CreateCardAcquisition(string tableName, decimal? amount, CancellationToken cancellationToken = default)
+        [Route("card-acquisition/create/{pizzaName}/{amount?}")]
+        public async Task<ActionResult> CreateCardAcquisition(string pizzaName, decimal? amount, CancellationToken cancellationToken = default)
         {
-            var pizza = _tableService.Tables.FirstOrDefault(t => t.TableName == tableName);
+            var pizza = _pizzaRepository.Pizzas.FirstOrDefault(t => t.PizzaName == pizzaName);
 
             if (pizza == null)
             {
                 return NotFound(new CreatePaymentResponse()
                 {
                     Result = "failure",
-                    RefusalReason = $"Pizza {pizza.TableName} not found"
+                    RefusalReason = $"Pizza {pizza.PizzaName} not found"
                 });
             }
 
@@ -362,19 +362,19 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
             }
         }
 
-        [HttpGet("card-acquisition/abort/{tableName}")]
-        public async Task<ActionResult<SaleToPOIResponse>> Abort(string tableName, CancellationToken cancellationToken = default)
+        [HttpGet("card-acquisition/abort/{pizzaName}")]
+        public async Task<ActionResult<SaleToPOIResponse>> Abort(string pizzaName, CancellationToken cancellationToken = default)
         {
             try
             {
-                TableModel table = _tableService.Tables.FirstOrDefault(t => t.TableName == tableName);
+                PizzaModel pizza = _pizzaRepository.Pizzas.FirstOrDefault(t => t.PizzaName == pizzaName);
 
-                if (table?.PaymentStatusDetails?.ServiceId == null)
+                if (pizza?.PaymentStatusDetails?.ServiceId == null)
                 {
                     return NotFound();
                 }
 
-                SaleToPOIResponse abortResponse = await _posAbortService.SendAbortRequestAsync(MessageCategoryType.CardAcquisition, table.PaymentStatusDetails.ServiceId, _poiId, _saleId, cancellationToken);
+                SaleToPOIResponse abortResponse = await _posAbortService.SendAbortRequestAsync(MessageCategoryType.CardAcquisition, pizza.PaymentStatusDetails.ServiceId, _poiId, _saleId, cancellationToken);
                 return Ok(abortResponse);
             }
             catch (HttpClientException e)

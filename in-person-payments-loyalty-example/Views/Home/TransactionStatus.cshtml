@@ -4,14 +4,14 @@
     ViewData["Title"] = "Adyen Terminal Transaction Status";
     PaymentResponse paymentResponse = ViewBag.PaymentResponse;
     string errorMessage = ViewBag.ErrorMessage;
-    string tableName = ViewBag.TableName;
+    string pizzaName = ViewBag.PizzaName;
     string serviceId = ViewBag.ServiceId;
 }
 
 
 <div class="status-container">
   <div class="status">
-    <h2>Transaction Status for @tableName</h2>
+    <h2>Transaction Status for @pizzaName</h2>
     @if (string.IsNullOrWhiteSpace(errorMessage))
     {
         <p>

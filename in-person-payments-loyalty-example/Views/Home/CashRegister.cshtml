@@ -3,7 +3,7 @@
     ViewData["Title"] = "Adyen Cash Register View";
     string poiId = ViewBag.PoiId;
     string saleId = ViewBag.SaleId;
-    List<TableModel> list = ViewBag.Tables;
+    List<PizzaModel> list = ViewBag.Pizzas;
 }
 
 <div class="main-container">
@@ -15,12 +15,12 @@
       <div class="loading-description">Waiting for terminal response ...</div>
       <input type="button" id="cancel-operation-button" class="cancel-operation-button" value="Cancel"/>
     </div>
-    <div id="tables-section" class="tables-section">
-      <div class="tables-grid">
-        <ul class="tables-grid-list">
-          @foreach (TableModel table in list)
+    <div id="pizzas-section" class="pizzas-section">
+      <div class="pizzas-grid">
+        <ul class="pizzas-grid-list">
+          @foreach (PizzaModel pizza in list)
           {
-            string paymentStatus = table.PaymentStatus switch
+            string paymentStatus = pizza.PaymentStatus switch
             {
                 PaymentStatus.NotPaid => "not-paid",
                 PaymentStatus.PaymentInProgress => "disabled",
@@ -31,46 +31,38 @@
             // Adds a css-class that sets pointer-events to none if it's disabled
             string disableButtonCssName = @paymentStatus == "disabled" ? "disabled" : "";
 
-            <li class="tables-grid-item @disableButtonCssName">
-              <p class="tables-grid-item-title">@table.TableName</p>
-                @if(table.IsDiscounted)
+            <li class="pizzas-grid-item @disableButtonCssName">
+              <p class="pizzas-grid-item-title">@pizza.PizzaName</p>
+                @if(pizza.IsDiscounted)
                 {
-                  <div class="tables-grid-item-original-currency-amount">
-                    <p class="tables-grid-item-currency">€</p>
-                    <p class="tables-grid-item-original-amount">@table.OriginalAmount</p>
+                  <div class="pizzas-grid-item-original-currency-amount">
+                    <p class="pizzas-grid-item-currency">€</p>
+                    <p class="pizzas-grid-item-original-amount">@pizza.OriginalAmount</p>
                   </div>
                 }
-                <div class="tables-grid-item-currency-amount">
-                <p class="tables-grid-item-currency">€</p>
-                <p class="tables-grid-item-amount">@table.Amount</p>
+                <div class="pizzas-grid-item-currency-amount">
+                <p class="pizzas-grid-item-currency">€</p>
+                <p class="pizzas-grid-item-amount">@pizza.Amount</p>
               </div>
-              <p class="tables-grid-item-status @paymentStatus" hidden>@table.PaymentStatus</p>
+              <p class="pizzas-grid-item-status @paymentStatus" hidden>@pizza.PaymentStatus</p>
             </li>
           }
         </ul>
       </div>
       <div class="info-grid">
         <ul class="info-grid-list">
-            <li class="info-grid-item">
-            <p id="loyaltypoints-component" class="info-grid-item-title hidden">
-              Loyalty points
-              <b id="loyaltypoints-value" class="info-grid-item-description">
-                
-              </b>
-            </p>
-          </li>
           <li class="info-grid-item">
-            <p class="info-grid-item-title" hidden>
+            <p class="info-grid-item-title">
               SALE ID:
-              <b class="info-grid-item-description" hidden>
+              <b class="info-grid-item-description">
                 @saleId
               </b>
             </p>
           </li>
           <li class="info-grid-item">
-            <p class="info-grid-item-title" hidden>
+            <p class="info-grid-item-title">
               POI ID:
-              <b class="info-grid-item-description" hidden>
+              <b class="info-grid-item-description">
                 @poiId
               </b>
             </p>
@@ -78,13 +70,13 @@
         </ul>
 
         <form id="payment-request-form" method="post" hidden>
-          <input type="text" id="tableName" name="tableName" hidden>
+          <input type="text" id="pizzaName" name="pizzaName" hidden>
           <input type="text" id="amount" name="amount" hidden>
           <button type="submit" id="payment-request-button" class="payment-request-button disabled">Pay</button>
         </form>
 
         <form id="card-acquisition-request-form" method="post">
-          <input type="text" id="cardAcquisitionTableName" name="cardAcquisitionTableName" hidden>
+          <input type="text" id="cardAcquisitionPizzaName" name="cardAcquisitionPizzaName" hidden>
           <input type="text" id="cardAcquisitionAmount" name="cardAcquisitionAmount" hidden>
           <button type="submit" id="card-acquisition-request-button" class="card-acquisition-request-button disabled">Pay</button>
         </form>

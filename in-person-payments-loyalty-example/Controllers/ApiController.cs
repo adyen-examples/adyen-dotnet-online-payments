@@ -1,12 +1,9 @@
 using Adyen.HttpClient;
 using Adyen.Model.Nexo;
 using adyen_dotnet_in_person_payments_loyalty_example.Models;
-using adyen_dotnet_in_person_payments_loyalty_example.Models.Requests;
-using adyen_dotnet_in_person_payments_loyalty_example.Models.Responses;
 using adyen_dotnet_in_person_payments_loyalty_example.Options;
 using adyen_dotnet_in_person_payments_loyalty_example.Repositories;
 using adyen_dotnet_in_person_payments_loyalty_example.Services;
-using adyen_dotnet_in_person_payments_loyalty_example.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -22,35 +19,35 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
     {
         private readonly ILogger<ApiController> _logger;
         private readonly IPosAbortService _posAbortService;
-        private readonly ITableRepository _tableService;
+        private readonly IPizzaRepository _pizzaRepository;
         private readonly string _saleId;
         private readonly string _poiId;
 
         public ApiController(ILogger<ApiController> logger,
             IPosAbortService posAbortService,
-            ITableRepository tableService, 
+            IPizzaRepository pizzaRepository, 
             IOptions<AdyenOptions> options)
         {
             _logger = logger;
             _posAbortService = posAbortService;
-            _tableService = tableService;
+            _pizzaRepository = pizzaRepository;
             _poiId = options.Value.ADYEN_POS_POI_ID;
             _saleId = options.Value.ADYEN_POS_SALE_ID;
         }
 
-        [HttpGet("api/abort/{tableName}")]
-        public async Task<ActionResult<SaleToPOIResponse>> Abort(string tableName, CancellationToken cancellationToken = default)
+        [HttpGet("api/abort/{pizzaName}")] // TODO
+        public async Task<ActionResult<SaleToPOIResponse>> Abort(string pizzaName, CancellationToken cancellationToken = default)
         {
             try
             {
-                TableModel table = _tableService.Tables.FirstOrDefault(t => t.TableName == tableName);
+                PizzaModel pizza = _pizzaRepository.Pizzas.FirstOrDefault(t => t.PizzaName == pizzaName);
 
-                if (table?.PaymentStatusDetails?.ServiceId == null)
+                if (pizza?.PaymentStatusDetails?.ServiceId == null)
                 {
                     return NotFound();
                 }
 
-                SaleToPOIResponse abortResponse = await _posAbortService.SendAbortRequestAsync(MessageCategoryType.Payment, table.PaymentStatusDetails.ServiceId, _poiId, _saleId, cancellationToken);
+                SaleToPOIResponse abortResponse = await _posAbortService.SendAbortRequestAsync(MessageCategoryType.Payment, pizza.PaymentStatusDetails.ServiceId, _poiId, _saleId, cancellationToken);
                 return Ok(abortResponse);
             }
             catch (HttpClientException e)

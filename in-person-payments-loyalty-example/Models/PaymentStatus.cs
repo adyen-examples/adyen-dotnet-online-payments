@@ -13,7 +13,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Models
         PaymentInProgress = 2,
 
         /// <summary>
-        /// Indicates that the customer has paid for the table, e.g. successful payment request.
+        /// Indicates that the customer has paid, e.g. successful payment request.
         /// </summary>
         Paid = 3
     }
