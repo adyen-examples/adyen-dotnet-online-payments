@@ -217,30 +217,16 @@ function bindButtons() {
             var statusValue = currentActiveTable.querySelector('.tables-grid-item-status').textContent;
             switch (statusValue) {
                  case 'NotPaid':
-                    //enablePaymentRequestButton();
-                    //disableReversalRequestButton();
-                    //disableTransactionStatusButton();
-                    //break;
-                case 'Paid':
-                    //disablePaymentRequestButton();
-                    //enableReversalRequestButton();
-                    //enableTransactionStatusButton();
-                    //break;
-                case 'RefundFailed':
-                    //disablePaymentRequestButton();
-                    //enableReversalRequestButton();
-                    //enableTransactionStatusButton();
-                    //break;
-                case 'RefundInProgress':
-                case 'PaymentInProgress':
-                case 'Refunded':
-                case 'RefundedReversed':
-                default:
-                    //disablePaymentRequestButton();
-                    //disableReversalRequestButton();
-                    //enableTransactionStatusButton();
                     enablePaymentRequestButton();
-                    enableReversalRequestButton();
+                    disableTransactionStatusButton();
+                    break;
+                case 'Paid':
+                    disablePaymentRequestButton();
+                    enableTransactionStatusButton();
+                    break;
+                case 'PaymentInProgress':
+                default:
+                    disablePaymentRequestButton();
                     enableTransactionStatusButton();
                     break;
             }
@@ -260,16 +246,6 @@ function enablePaymentRequestButton() {
 function disablePaymentRequestButton() {
    document.getElementById('payment-request-button').classList.add('disabled');
    document.getElementById('card-acquisition-request-button').classList.add('disabled');
-}
-
-// Enable `reversal-request-button`
-function enableReversalRequestButton() {
-    document.getElementById('reversal-request-button').classList.remove('disabled');
-}
-
-// Disable `reversal-request-button`
-function disableReversalRequestButton() {
-    document.getElementById('reversal-request-button').classList.add('disabled');
 }
 
 // Enable `transaction-status-button`
