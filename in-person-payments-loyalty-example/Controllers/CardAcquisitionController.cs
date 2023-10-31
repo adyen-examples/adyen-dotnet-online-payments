@@ -61,8 +61,8 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
             return Ok(jsonString);
         }
 
-        [Route("card-acquisition/create/{pizzaName}/{amount?}")]
-        public async Task<ActionResult> CreateCardAcquisition(string pizzaName, decimal? amount, CancellationToken cancellationToken = default)
+        [Route("card-acquisition/create/{pizzaName}")]
+        public async Task<ActionResult> CreateCardAcquisition(string pizzaName, CancellationToken cancellationToken = default)
         {
             var pizza = _pizzaRepository.Pizzas.FirstOrDefault(t => t.PizzaName == pizzaName);
 
@@ -75,14 +75,9 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                 });
             }
 
-            if (amount == null || amount.Value <= 0)
-            {
-                return BadRequest();
-            }
-
             try
             {
-                SaleToPOIResponse response = await _posCardAcquisitionService.SendCardAcquisitionRequestAsync(IdUtility.GetRandomAlphanumericId(10), _poiId, _saleId, amount, cancellationToken: cancellationToken);
+                SaleToPOIResponse response = await _posCardAcquisitionService.SendCardAcquisitionRequestAsync(IdUtility.GetRandomAlphanumericId(10), _poiId, _saleId, pizza.Amount, cancellationToken: cancellationToken);
                 CardAcquisitionResponse cardAcquisitionResponse = response.MessagePayload as CardAcquisitionResponse;
 
                 if (cardAcquisitionResponse == null)
@@ -121,7 +116,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                         poiId: _poiId,
                         saleId: _saleId,
                         currency: "EUR",
-                        amount: amount,
+                        amount: pizza.Amount,
                         cardAcquisitionTimeStamp: cardAcquisitionResponse.POIData.POITransactionID.TimeStamp,
                         cardAcquisitionTransactionId: cardAcquisitionResponse.POIData.POITransactionID.TransactionID,
                         transactionId: existingCustomer.ShopperEmail,
@@ -216,7 +211,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                         poiId: _poiId,
                         saleId: _saleId,
                         currency: "EUR",
-                        amount: amount,
+                        amount: pizza.Amount,
                         shopperEmail: newEmail,
                         shopperReference: Identifiers.ShopperReference,
                         cardAcquisitionTimeStamp: cardAcquisitionResponse.POIData.POITransactionID.TimeStamp,
@@ -274,7 +269,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                     poiId: _poiId,
                     saleId: _saleId,
                     currency: "EUR",
-                    amount: amount,
+                    amount: pizza.Amount,
                     shopperEmail: null,
                     shopperReference: Identifiers.ShopperReference,
                     cardAcquisitionTimeStamp: cardAcquisitionResponse.POIData.POITransactionID.TimeStamp,

@@ -55,64 +55,21 @@ function hideLoadingComponent() {
 
 // Bind table selection buttons and the `pay/transaction-status` submit-buttons
 function bindButtons() {
-    // Bind `payment-request-form` submit-button
-    const paymentRequestForm = document.getElementById('payment-request-form');
-    paymentRequestForm.addEventListener('submit', async function(event) {
-        event.preventDefault();
-
-        var formData = new FormData(event.target);
-        var amount = formData.get('amount');
-        var pizzaName = formData.get('pizzaName');
-
-        if (amount && pizzaName) { 
-            try {
-                // Show loading animation component which doesn't allow users to select any tables
-                showLoadingComponent();           
-
-                // Send payment request
-                var response = await sendPostRequest("/api/create-payment", { pizzaName: pizzaName, amount: amount, currency: "EUR" });
-                console.log(response);
-
-                // Handle response
-                switch (response.result) {
-                    case "success":
-                        window.location.href = "result/success";
-                        break;
-                    case "failure":
-                        window.location.href = "result/failure/" + response.refusalReason;
-                        break;
-                    default:
-                        throw Error('Unknown response result');
-                }
-            }
-            catch (error) {
-                console.warn(error);
-
-                // Sends an abort request to the terminal
-                await sendAbortRequest(pizzaName);
-                
-                // Hides loading animation component and allow user to select tables again
-                hideLoadingComponent();
-            }
-        }
-    });
-
     // Bind `card-acquisition-request-form` submit-button
     const cardAcquisitionRequestForm = document.getElementById('card-acquisition-request-form');
     cardAcquisitionRequestForm.addEventListener('submit', async function(event) {
         event.preventDefault();
 
         var formData = new FormData(event.target);
-        var cardAcquisitionAmount = formData.get('cardAcquisitionAmount');
-        var cardAcquisitionPizzaName = formData.get('cardAcquisitionPizzaName');
+        var pizzaName = formData.get('pizzaName');
 
-        if (cardAcquisitionAmount && cardAcquisitionPizzaName) { 
+        if (pizzaName) { 
             try {
                 // Show loading animation component which doesn't allow users to select any tables
                 showLoadingComponent();           
 
                 // Send card acquisition payment request
-                var response = await sendGetRequest("/card-acquisition/create/" + cardAcquisitionPizzaName + "/" + cardAcquisitionAmount);
+                var response = await sendGetRequest("/card-acquisition/create/" + pizzaName);
                 console.log(response);
 
                 if (response.loyaltyPoints) // TODO handle success scenario
@@ -168,8 +125,8 @@ function bindButtons() {
             if (response.loyaltyPoints)
             {
                 // Show loyalty points
-                document.getElementById('loyaltypoints-component').classList.remove('hidden');
-                document.getElementById('loyaltypoints-value').textContent = response.loyaltyPoints;
+                //document.getElementById('loyaltypoints-component').classList.remove('hidden');
+                //document.getElementById('loyaltypoints-value').textContent = response.loyaltyPoints;
             }
 
             window.location.href = "/cashregister";
@@ -192,21 +149,9 @@ function bindButtons() {
             // Add the 'current-selection' class to the currently selected `pizzas-grid-item`
             table.classList.add('current-selection');
 
-            // Copies 'amount' value to the `payment-request-form`
-            const amountElement = document.getElementById('amount');
-            amountElement.value = table.querySelector('.pizzas-grid-item-amount').textContent;
-
-            // Copies 'amount' value to the `card-acquisition-request-form`
-            const cardAcquisitionAmount = document.getElementById('cardAcquisitionAmount');
-            cardAcquisitionAmount.value = table.querySelector('.pizzas-grid-item-amount').textContent;
-
-            // Copies 'pizza name' value to the `payment-request-form`
+            // Copies 'pizza name' value to the `card-acquisition-request-form`
             const pizzaNameElement = document.getElementById('pizzaName');
             pizzaNameElement.value = table.querySelector('.pizzas-grid-item-title').textContent;
-
-            // Copies 'table name' value to the `card-acquisition-request-form`
-            const cardAcquisitionPizzaNameElement = document.getElementById('cardAcquisitionPizzaName');
-            cardAcquisitionPizzaNameElement.value = table.querySelector('.pizzas-grid-item-title').textContent;
 
             // Show/hides the `payment-request-button` according to the `PaymentStatus` of currently selected table
             const currentActiveTable = document.getElementsByClassName('current-selection')[0];
@@ -230,17 +175,13 @@ function bindButtons() {
     });
 }
 
-// Enable `payment-request-button`
 // Enable `card-acquisition-request-button`
 function enablePaymentRequestButton() {
-   document.getElementById('payment-request-button').classList.remove('disabled');
    document.getElementById('card-acquisition-request-button').classList.remove('disabled');
 }
 
-// Disable `payment-request-button`
 // Disable `card-acquisition-request-button`
 function disablePaymentRequestButton() {
-   document.getElementById('payment-request-button').classList.add('disabled');
    document.getElementById('card-acquisition-request-button').classList.add('disabled');
 }
 
