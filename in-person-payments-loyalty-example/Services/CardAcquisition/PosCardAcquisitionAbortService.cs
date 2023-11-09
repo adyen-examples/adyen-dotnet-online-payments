@@ -44,19 +44,21 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisiti
                         {
                             PredefinedContent = new PredefinedContent()
                             {
-                                /// Possible icon values:
-                                /// "Accepted": green check mark.
-                                /// "AcceptedAnimated": animated green check mark.
-                                /// "Declined": red cross.
-                                /// "DeclinedAnimated": animated red cross.
-                                /// "Idle": no icon.
+                                // Possible icon values:
+                                // "Accepted": green check mark.
+                                // "AcceptedAnimated": animated green check mark.
+                                // "Declined": red cross.
+                                // "DeclinedAnimated": animated red cross.
+                                // "Idle": no icon.
                                 ReferenceID = "AcceptedAnimated"
                             },
                             OutputFormat = OutputFormatType.Text,
                             OutputText = new OutputText[]
                             {
+                                // We include a DisplayOutput object to show a message to the shopper that they have signed-up for the loyalty program.
+                                // Otherwise, if you omit the DisplayOutput with this AbortTransaction action, the terminal will show a red cross (e.g. 'Transaction canceled') and that can be confusing for the shopper.
                                 new OutputText { Text = "Welcome!" },
-                                new OutputText { Text = "You're a member now." },
+                                new OutputText { Text = "You're a member!" },
                             }
                         },
 

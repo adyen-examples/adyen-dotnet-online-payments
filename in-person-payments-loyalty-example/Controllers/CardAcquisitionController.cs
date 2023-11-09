@@ -87,7 +87,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                     poiId: _poiId,
                     saleId: _saleId,
                     transactionId: transactionId,
-                    amount: pizza.Amount,
+                    amount: 0,
                     cancellationToken: cancellationToken);
 
                 CardAcquisitionResponse cardAcquisitionResponse = response?.MessagePayload as CardAcquisitionResponse;
@@ -102,7 +102,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                     return BadRequest(new CreatePaymentResponse()
                     {
                         Result = "failure",
-                        RefusalReason = cardAcquisitionResponse.Response.AdditionalResponse
+                        RefusalReason = Encoding.UTF8.GetString(Convert.FromBase64String(cardAcquisitionResponse?.Response?.AdditionalResponse))
                     });
                 }
 
@@ -128,10 +128,11 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                         RefusalReason = "Card provided is a gift card"
                     }); // This is a gift card, handle gift card logic accordingly. For now, do not support card acquisition for gift cards.
                 }
-
+                
+                // Note that if you specified a TokenRequestedType of Customer in the request, the card alias is also provided in cardAcquisitionResponse.PaymentInstrumentData.CardData.PaymentToken.TokenValue.
                 string alias = json.AdditionalData.Alias;
-
-                var shopper = _shopperRepository.Get(alias);
+                
+                ShopperModel shopper = _shopperRepository.Get(alias);
 
                 if (!_shopperRepository.IsSignedUpForLoyaltyProgram(alias))
                 {
@@ -146,11 +147,11 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
 
                     if (enterLoyaltyProgramResponse == null || enterLoyaltyProgramResponse.Response.Result != ResultType.Success)
                     {
-                        _logger.LogError("Error sending request");
+                        _logger.LogError("Error sending loyalty program confirmation request");
                         return BadRequest(new CreatePaymentResponse()
                         {
                             Result = "failure",
-                            RefusalReason = enterLoyaltyProgramResponse?.Response?.AdditionalResponse
+                            RefusalReason =  Encoding.UTF8.GetString(Convert.FromBase64String(enterLoyaltyProgramResponse?.Response?.AdditionalResponse))
                         });
                     }
 
@@ -165,11 +166,14 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                             maxInputTime: 90,
                             cancellationToken: cancellationToken);
 
-                        if (enterEmailAddressResponse == null ||
-                            enterEmailAddressResponse.Response.Result != ResultType.Success)
+                        if (enterEmailAddressResponse == null || enterEmailAddressResponse.Response.Result != ResultType.Success)
                         {
-                            _logger.LogError("Error sending request");
-                            return BadRequest();
+                            _logger.LogError("Error sending email request");
+                            return BadRequest(new CreatePaymentResponse()
+                            {
+                                Result = "failure",
+                                RefusalReason = Encoding.UTF8.GetString(Convert.FromBase64String(enterEmailAddressResponse?.Response?.AdditionalResponse))
+                            });
                         }
 
                         string email = enterEmailAddressResponse.Input.TextInput;
@@ -201,8 +205,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                                 shopperEmail: shopper.ShopperEmail,
                                 shopperReference: shopper.ShopperReference,
                                 cardAcquisitionTimeStamp: cardAcquisitionResponse.POIData.POITransactionID.TimeStamp,
-                                cardAcquisitionTransactionId: cardAcquisitionResponse.POIData.POITransactionID
-                                    .TransactionID,
+                                cardAcquisitionTransactionId: cardAcquisitionResponse.POIData.POITransactionID.TransactionID,
                                 transactionId: transactionId,
                                 cancellationToken: cancellationToken
                             );
@@ -214,10 +217,12 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                             return BadRequest(new CreatePaymentResponse()
                             {
                                 Result = "failure",
-                                RefusalReason = newCustomerPaymentResponse?.Response?.AdditionalResponse
+                                RefusalReason = Encoding.UTF8.GetString(Convert.FromBase64String(newCustomerPaymentResponse?.Response?.AdditionalResponse))
                             });
                         }
 
+                        _logger.LogInformation(Encoding.UTF8.GetString(Convert.FromBase64String(newCustomerPaymentResponse.Response.AdditionalResponse)));
+                        
                         // Set some values to show on the frontend once a payment is completed.
                         pizza.PaymentStatusDetails.PoiTransactionId = newCustomerPaymentResponse.POIData.POITransactionID.TransactionID;
                         pizza.PaymentStatusDetails.PoiTransactionTimeStamp = newCustomerPaymentResponse.POIData.POITransactionID.TimeStamp;
@@ -320,7 +325,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                     return BadRequest(); // This is a giftcard. Can't attach a gift card to this.
                 }
 
-                var existingCustomer = _shopperRepository.Get(cardAcquisitionResponse.PaymentInstrumentData?.CardData?.PaymentToken?.TokenValue);
+                var existingCustomer = _shopperRepository.Get(json.AdditionalData.Alias);
 
                 if (existingCustomer != null)
                 {
