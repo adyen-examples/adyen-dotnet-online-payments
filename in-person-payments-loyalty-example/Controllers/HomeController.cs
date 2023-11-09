@@ -14,7 +14,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IPizzaRepository _pizzaRepository;
 
-        public HomeController(ILogger<HomeController> logger, IOptions<AdyenOptions> optionsAccessor, IPizzaRepository pizzaRepository, ICardAcquisitionRepository repository)
+        public HomeController(ILogger<HomeController> logger, IOptions<AdyenOptions> optionsAccessor, IPizzaRepository pizzaRepository)
         {
             _poiId = optionsAccessor.Value.ADYEN_POS_POI_ID;
             _saleId = optionsAccessor.Value.ADYEN_POS_SALE_ID;

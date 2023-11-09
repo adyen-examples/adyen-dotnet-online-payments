@@ -3,6 +3,7 @@ using Adyen.Model.Nexo.Message;
 using Adyen.Model.Terminal;
 using Adyen.Service;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -43,10 +44,6 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisiti
         /// <param name="cancellationToken"><see cref="CancellationToken"/>.</param>
         /// <returns><see cref="SaleToPOIResponse"/>.</returns>
         Task<SaleToPOIResponse> SendPaymentRequestNewCustomerAsync(string serviceId, string poiId, string saleId, string currency, decimal? amount, string shopperEmail, string shopperReference, DateTime cardAcquisitionTimeStamp, string cardAcquisitionTransactionId, string transactionId, CancellationToken cancellationToken = default);
-        
-        Task<SaleToPOIResponse> ConfirmMembershipAsync(string serviceId, string poiId, string saleId, CancellationToken cancellationToken = default);
-        
-        Task<SaleToPOIResponse> EnterEmailAddressAsync(string serviceId, string poiId, string saleId, CancellationToken cancellationToken = default);
     }
 
     public class PosCardAcquisitionPaymentService : IPosCardAcquisitionPaymentService
@@ -134,7 +131,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisiti
                             // Your reference to identify a payment. We recommend using a unique value per payment.
                             // In your Customer Area and Adyen reports, this will show as the merchant reference for the transaction.
                             TransactionID = transactionId,
-                            TimeStamp = DateTime.UtcNow
+                            TimeStamp = DateTime.UtcNow,
                         },
                         TokenRequestedType = TokenRequestedType.Customer
                     },
@@ -153,113 +150,6 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisiti
                             TimeStamp = cardAcquisitionTimeStamp,
                             TransactionID = cardAcquisitionTransactionId
                         }
-                    }
-                }
-            };
-            return _posPaymentCloudApi.TerminalApiCloudSynchronousAsync(request);
-        }
-
-        public Task<SaleToPOIResponse> ConfirmMembershipAsync(string serviceId, string poiId, string saleId, CancellationToken cancellationToken = default)
-        {
-            SaleToPOIRequest request = new SaleToPOIRequest()
-            {
-                MessageHeader = new MessageHeader()
-                {
-                    MessageCategory = MessageCategoryType.Input,
-                    MessageClass = MessageClassType.Device,
-                    MessageType = MessageType.Request,
-                    POIID = poiId,
-                    SaleID = saleId,
-                    ServiceID = serviceId, 
-                },
-                MessagePayload = new InputRequest()
-                {
-                    DisplayOutput = new DisplayOutput()
-                    {
-                      Device  = DeviceType.CustomerDisplay,
-                      InfoQualify = InfoQualifyType.Display,
-                      OutputContent = new OutputContent()
-                      {
-                          OutputFormat = OutputFormatType.Text,
-                          PredefinedContent = new PredefinedContent()
-                          {
-                              ReferenceID = "GetConfirmation"
-                          },
-                          OutputText = new OutputText[]
-                          {
-                              new OutputText()
-                              {
-                                  Text = "Welcome!"
-                              },
-                              new OutputText()
-                              {
-                                  Text = "Would you like to join our membership program?"
-                              },
-                              new OutputText()
-                              {
-                                  Text = "No"
-                              },
-                              new OutputText()
-                              {
-                                  Text = "Yes"
-                              }
-                          }
-                      }
-                    },
-                    InputData = new InputData()
-                    {
-                        Device = DeviceType.CustomerInput,
-                        InfoQualify = InfoQualifyType.Input,
-                        InputCommand = InputCommandType.GetConfirmation,
-                        MaxInputTime = 30
-                    }
-                }
-            };
-            return _posPaymentCloudApi.TerminalApiCloudSynchronousAsync(request);
-        }
-
-        public Task<SaleToPOIResponse> EnterEmailAddressAsync(string serviceId, string poiId, string saleId, CancellationToken cancellationToken = default)
-        {
-            SaleToPOIRequest request = new SaleToPOIRequest()
-            {
-                MessageHeader = new MessageHeader()
-                {
-                    MessageCategory = MessageCategoryType.Input,
-                    MessageClass = MessageClassType.Device,
-                    MessageType = MessageType.Request,
-                    POIID = poiId,
-                    SaleID = saleId,
-                    ServiceID = serviceId, 
-                },
-                MessagePayload = new InputRequest()
-                {
-                    DisplayOutput = new DisplayOutput()
-                    {
-                      Device  = DeviceType.CustomerDisplay,
-                      InfoQualify = InfoQualifyType.Display,
-                      OutputContent = new OutputContent()
-                      {
-                          OutputFormat = OutputFormatType.Text,
-                          PredefinedContent = new PredefinedContent()
-                          {
-                              ReferenceID = "GetText"
-                          },
-                          OutputText = new OutputText[]
-                          {
-                              new OutputText()
-                              {
-                                  Text = "Enter your email address"
-                              }
-                          }
-                      }
-                    },
-                    InputData = new InputData()
-                    {
-                        Device = DeviceType.CustomerInput,
-                        InfoQualify = InfoQualifyType.Input,
-                        InputCommand = InputCommandType.TextString,
-                        MaxInputTime = 120,
-                        DefaultInputString = "youremail@domain.com"
                     }
                 }
             };

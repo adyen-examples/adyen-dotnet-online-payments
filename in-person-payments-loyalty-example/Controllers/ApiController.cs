@@ -47,7 +47,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                     return NotFound();
                 }
 
-                SaleToPOIResponse abortResponse = await _posAbortService.SendAbortRequestAsync(MessageCategoryType.Payment, pizza.PaymentStatusDetails.ServiceId, _poiId, _saleId, cancellationToken);
+                SaleToPOIResponse abortResponse = await _posAbortService.SendAbortRequestAsync(messageCategoryType: MessageCategoryType.Payment, serviceId: pizza.PaymentStatusDetails.ServiceId, poiId: _poiId, saleId: _saleId, cancellationToken: cancellationToken);
                 return Ok(abortResponse);
             }
             catch (HttpClientException e)

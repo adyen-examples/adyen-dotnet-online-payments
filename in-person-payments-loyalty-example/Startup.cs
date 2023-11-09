@@ -35,7 +35,8 @@ namespace adyen_dotnet_in_person_payments_loyalty_example
                 {
                     options.ADYEN_API_KEY = Configuration[nameof(AdyenOptions.ADYEN_API_KEY)];
                     options.ADYEN_HMAC_KEY = Configuration[nameof(AdyenOptions.ADYEN_HMAC_KEY)];
-                    options.ADYEN_POS_POI_ID = Configuration[nameof(AdyenOptions.ADYEN_POS_POI_ID)];
+                    //options.ADYEN_POS_POI_ID = Configuration[nameof(AdyenOptions.ADYEN_POS_POI_ID)];
+                    options.ADYEN_POS_POI_ID = "S1F2-000158213602061";
                     options.ADYEN_POS_SALE_ID = "SALE_ID_POS_42";
                 }
             );
@@ -77,13 +78,15 @@ namespace adyen_dotnet_in_person_payments_loyalty_example
 
             // Register repositories that saves data in-memory.
             services.AddSingleton<IPizzaRepository, PizzaRepository>();
-            services.AddSingleton<ICardAcquisitionRepository, CardAcquisitionRepository>();
+            services.AddSingleton<IShopperRepository, ShopperRepository>();
 
             // Register application services.
             services.AddSingleton<IPosAbortService, PosAbortService>();
             services.AddSingleton<IPosCardAcquisitionService, PosCardAcquisitionService>();
             services.AddSingleton<IPosCardAcquisitionAbortService, PosCardAcquisitionAbortService>();
             services.AddSingleton<IPosCardAcquisitionPaymentService, PosCardAcquisitionPaymentService>();
+            
+            services.AddSingleton<IPosInputService, PosInputService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

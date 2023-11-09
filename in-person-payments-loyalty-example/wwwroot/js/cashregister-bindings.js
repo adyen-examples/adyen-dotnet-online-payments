@@ -72,17 +72,16 @@ function bindButtons() {
                 var response = await sendGetRequest("/card-acquisition/create/" + pizzaName);
                 console.log(response);
 
-                if (response.loyaltyPoints) // TODO handle success scenario
+                if (response.result == "success") // TODO handle success scenario
                 {
                     // Hides loading animation component and allow user to select tables again
                     hideLoadingComponent();
-
                     
                     window.location.href = "result/success";
                 }
                 else
                 {
-                    window.location.href = "result/failure/" + "Transaction aborted.";
+                    window.location.href = "result/failure/" + response.refusalReason;
                 }
             }
             catch (error) {
@@ -118,18 +117,20 @@ function bindButtons() {
             var response = await sendPostRequest("/card-acquisition/check");
             console.log(response);
             
-            
             // Hides loading animation component and allow user to select tables again
             hideLoadingComponent();
 
-            if (response.loyaltyPoints)
+            if (response.result == "success") // TODO handle success scenario
             {
-                // Show loyalty points // TODO
-                //document.getElementById('loyaltypoints-component').classList.remove('hidden');
-                //document.getElementById('loyaltypoints-value').textContent = response.loyaltyPoints;
+                // Hides loading animation component and allow user to select tables again
+                hideLoadingComponent();
+                window.location.href = "/cashregister";
+                //window.location.href = "result/success";
             }
-
-            window.location.href = "/cashregister";
+            else
+            {
+                window.location.href = "result/failure/" + response.refusalReason;
+            }
         }
         catch (error) {
             console.warn(error);
