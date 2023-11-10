@@ -1,8 +1,10 @@
-using Newtonsoft.Json.Linq;
-using System.Reflection;
+using System.Collections.Generic;
 
 namespace adyen_dotnet_in_person_payments_loyalty_example.Models
 {
+    /// <summary>
+    /// A representation of a unique shopper that is enrolled into the
+    /// </summary>
     public class ShopperModel
     {
         public string Alias { get; set; } 
@@ -10,20 +12,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Models
         public string ShopperReference { get; set; }
         public bool IsSignedUpForLoyaltyProgram { get; set; }
         public int LoyaltyPoints { get; set; }
-
-        public JObject ToJson()
-        {
-            PropertyInfo[] properties = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            JObject jsonResult = new JObject();
-
-            foreach (PropertyInfo property in properties)
-            {
-                string propertyName = property.Name;
-                object propertyValue = property.GetValue(this, null);
-                jsonResult.Add(propertyName, propertyValue != null ? new JValue(propertyValue) : null);
-            }
-
-            return jsonResult;
-        }
+        
+        public List<ShopperTransactionModel> TransactionHistory { get; set; }
     }
 }

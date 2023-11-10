@@ -14,20 +14,20 @@ using Newtonsoft.Json;
 using System;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
 {
     [ApiController]
+    [Route("card-acquisition")]
     public class CardAcquisitionController : ControllerBase
     {
         private readonly ILogger<CardAcquisitionController> _logger;
-        private readonly IPosAbortService _posAbortService;
         private readonly IPosCardAcquisitionService _posCardAcquisitionService;
         private readonly IPosCardAcquisitionPaymentService _posCardAcquisitionPaymentService;
         private readonly IPosCardAcquisitionAbortService _posCardAcquisitionAbortService;
+        private readonly IPosAbortService _posAbortService;
         private readonly IPosInputService _posInputService;
         private readonly IPizzaRepository _pizzaRepository;
         private readonly IShopperRepository _shopperRepository;
@@ -36,43 +36,35 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
         private readonly string _poiId;
 
         public CardAcquisitionController(ILogger<CardAcquisitionController> logger,
-            IPosAbortService posAbortService,
             IPosCardAcquisitionService posCardAcquisitionService,
             IPosCardAcquisitionPaymentService posCardAcquisitionPaymentService,
             IPosCardAcquisitionAbortService posCardAcquisitionAbortService,
+            IPosAbortService posAbortService,
             IPosInputService posInputService,
             IPizzaRepository pizzaRepository,
             IShopperRepository shopperRepository,
             IOptions<AdyenOptions> options)
         {
             _logger = logger;
-            _posAbortService = posAbortService;
             _posCardAcquisitionService = posCardAcquisitionService;
             _posCardAcquisitionPaymentService = posCardAcquisitionPaymentService;
             _posCardAcquisitionAbortService = posCardAcquisitionAbortService;
+            _posAbortService = posAbortService;
             _posInputService = posInputService;
             _pizzaRepository = pizzaRepository;
             _shopperRepository = shopperRepository;
             _poiId = options.Value.ADYEN_POS_POI_ID;
             _saleId = options.Value.ADYEN_POS_SALE_ID;
         }
-
-        [Route("shoppers")]
-        public ActionResult CardAcquisitions(CancellationToken cancellationToken = default)
-        {
-            var shoppers = _shopperRepository.Shoppers.Select(kvp => kvp.Value.ToJson()).ToList();
-            var jsonString = JsonConvert.SerializeObject(shoppers, Formatting.Indented);
-            return Ok(jsonString);
-        }
-
-        [Route("card-acquisition/create/{pizzaName}")]
+        
+        [Route("create/{pizzaName}")]
         public async Task<ActionResult> CreateCardAcquisition(string pizzaName, CancellationToken cancellationToken = default)
         {
             var pizza = _pizzaRepository.Pizzas.FirstOrDefault(t => t.PizzaName == pizzaName);
 
             if (pizza == null)
             {
-                return NotFound(new CreatePaymentResponse()
+                return NotFound(new CardAcquisitionApiResponse()
                 {
                     Result = "failure",
                     RefusalReason = $"Pizza {pizza.PizzaName} not found"
@@ -94,19 +86,21 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
 
                 if (cardAcquisitionResponse == null)
                 {
-                    return NotFound($"Device with POI ID {_poiId} not found, is the device turned on and up-to-date?");
+                    return NotFound(new CardAcquisitionApiResponse()
+                    {
+                        Result = "failure",
+                        RefusalReason = $"Cannot reach device with POI ID {_poiId}"
+                    });
                 }
 
                 if (cardAcquisitionResponse.Response.Result != ResultType.Success)
                 {
-                    return BadRequest(new CreatePaymentResponse()
+                    return BadRequest(new CardAcquisitionApiResponse()
                     {
                         Result = "failure",
                         RefusalReason = Encoding.UTF8.GetString(Convert.FromBase64String(cardAcquisitionResponse?.Response?.AdditionalResponse))
                     });
                 }
-
-                //string alias = cardAcquisitionResponse.PaymentInstrumentData?.CardData?.PaymentToken?.TokenValue;
 
                 // Decode the base64 encoded string.
                 string decodedUtf8JsonString = Encoding.UTF8.GetString(Convert.FromBase64String(cardAcquisitionResponse.Response.AdditionalResponse));
@@ -117,23 +111,27 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
 
                 if (json == null)
                 {
-                    return BadRequest(); // Can't deserialize json into an object.
+                    // Can't deserialize json into an object.
+                    return BadRequest(new CardAcquisitionApiResponse()
+                    {
+                        Result = "failure",
+                        RefusalReason = "Unable to deserialize json"
+                    }); 
                 }
 
+                // This is a gift card, handle gift card logic accordingly. For now, do not support card acquisition for gift cards.
                 if (json.AdditionalData.GiftcardIndicator)
                 {
-                    return BadRequest(new CreatePaymentResponse()
+                    return BadRequest(new CardAcquisitionApiResponse()
                     {
                         Result = "failure",
                         RefusalReason = "Card provided is a gift card"
-                    }); // This is a gift card, handle gift card logic accordingly. For now, do not support card acquisition for gift cards.
+                    }); 
                 }
                 
                 // Note that if you specified a TokenRequestedType of Customer in the request, the card alias is also provided in cardAcquisitionResponse.PaymentInstrumentData.CardData.PaymentToken.TokenValue.
                 string alias = json.AdditionalData.Alias;
                 
-                ShopperModel shopper = _shopperRepository.Get(alias);
-
                 if (!_shopperRepository.IsSignedUpForLoyaltyProgram(alias))
                 {
                     // User is not signed up for the loyalty program, let's collect their details if they consent
@@ -148,7 +146,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                     if (enterLoyaltyProgramResponse == null || enterLoyaltyProgramResponse.Response.Result != ResultType.Success)
                     {
                         _logger.LogError("Error sending loyalty program confirmation request");
-                        return BadRequest(new CreatePaymentResponse()
+                        return BadRequest(new CardAcquisitionApiResponse()
                         {
                             Result = "failure",
                             RefusalReason =  Encoding.UTF8.GetString(Convert.FromBase64String(enterLoyaltyProgramResponse?.Response?.AdditionalResponse))
@@ -169,7 +167,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                         if (enterEmailAddressResponse == null || enterEmailAddressResponse.Response.Result != ResultType.Success)
                         {
                             _logger.LogError("Error sending email request");
-                            return BadRequest(new CreatePaymentResponse()
+                            return BadRequest(new CardAcquisitionApiResponse()
                             {
                                 Result = "failure",
                                 RefusalReason = Encoding.UTF8.GetString(Convert.FromBase64String(enterEmailAddressResponse?.Response?.AdditionalResponse))
@@ -179,28 +177,28 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                         string email = enterEmailAddressResponse.Input.TextInput;
                         _logger.LogInformation("Your email: {email}", email);
 
-                        if (!StringUtility.IsValidEmail(email))
+                        // Perform email validation
+                        /*if (!StringUtility.IsValidEmail(email))
                         {
-                            return BadRequest(new CreatePaymentResponse()
+                            return BadRequest(new CardAcquisitionApiResponse()
                             {
                                 Result = "failure",
                                 RefusalReason = "Invalid email"
                             });
-                        }
-
-                        shopper = _shopperRepository.AddIfNotExists(
+                        }*/
+                        
+                        ShopperModel shopper = _shopperRepository.AddIfNotExists(
                             alias: alias,
                             shopperReference: Guid.NewGuid().ToString(),
                             shopperEmail: email,
                             isLoyaltyMember: true,
                             loyaltyPoints: 0);
 
-                        var newCustomerResponse =
-                            await _posCardAcquisitionPaymentService.SendPaymentRequestNewCustomerAsync(
+                        var newCustomerResponse = await _posCardAcquisitionPaymentService.SendPaymentRequestNewCustomerAsync(
                                 serviceId: IdUtility.GetRandomAlphanumericId(10),
                                 poiId: _poiId,
                                 saleId: _saleId,
-                                currency: "EUR",
+                                currency: pizza.Currency,
                                 amount: pizza.Amount,
                                 shopperEmail: shopper.ShopperEmail,
                                 shopperReference: shopper.ShopperReference,
@@ -214,7 +212,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                         var newCustomerPaymentResponse = newCustomerResponse.MessagePayload as PaymentResponse;
                         if (newCustomerPaymentResponse == null || newCustomerPaymentResponse.Response.Result != ResultType.Success)
                         {
-                            return BadRequest(new CreatePaymentResponse()
+                            return BadRequest(new CardAcquisitionApiResponse()
                             {
                                 Result = "failure",
                                 RefusalReason = Encoding.UTF8.GetString(Convert.FromBase64String(newCustomerPaymentResponse?.Response?.AdditionalResponse))
@@ -229,9 +227,10 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                         pizza.PaymentStatusDetails.SaleTransactionId = newCustomerPaymentResponse.SaleData.SaleTransactionID.TransactionID;
                         pizza.PaymentStatusDetails.SaleTransactionTimeStamp = newCustomerPaymentResponse.SaleData.SaleTransactionID.TimeStamp;
 
-                        _shopperRepository.AddLoyaltyPoints(shopper.ShopperReference, 1000);
+                        _shopperRepository.AddLoyaltyPoints(shopper.ShopperReference, 100);
+                        _shopperRepository.AddShopperTransaction(shopper.Alias, pizza.Amount, pizza.Currency, pizza.PizzaName);
 
-                        return Ok(new CreatePaymentResponse()
+                        return Ok(new CardAcquisitionApiResponse()
                         {
                             Result = "success"
                         });
@@ -244,11 +243,10 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                         serviceId: IdUtility.GetRandomAlphanumericId(10),
                         poiId: _poiId,
                         saleId: _saleId,
-                        currency: "EUR",
+                        currency: pizza.Currency,
                         amount: pizza.Amount,
                         cardAcquisitionTimeStamp: cardAcquisitionResponse.POIData.POITransactionID.TimeStamp,
-                        cardAcquisitionTransactionId: cardAcquisitionResponse.POIData.POITransactionID
-                            .TransactionID,
+                        cardAcquisitionTransactionId: cardAcquisitionResponse.POIData.POITransactionID.TransactionID,
                         transactionId: transactionId,
                         cancellationToken: cancellationToken
                     );
@@ -257,7 +255,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                 if (existingCustomerPaymentResponse == null ||
                     existingCustomerPaymentResponse.Response.Result != ResultType.Success)
                 {
-                    return BadRequest(new CreatePaymentResponse()
+                    return BadRequest(new CardAcquisitionApiResponse()
                     {
                         Result = "failure",
                         RefusalReason = existingCustomerPaymentResponse?.Response?.AdditionalResponse,
@@ -271,22 +269,36 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                 pizza.PaymentStatusDetails.SaleTransactionId = existingCustomerPaymentResponse.SaleData.SaleTransactionID.TransactionID;
                 pizza.PaymentStatusDetails.SaleTransactionTimeStamp = existingCustomerPaymentResponse.SaleData.SaleTransactionID.TimeStamp;
 
-                _shopperRepository.AddLoyaltyPoints(alias, 1000);
+                _shopperRepository.AddLoyaltyPoints(alias, 100);
+                _shopperRepository.AddShopperTransaction(alias, pizza.Amount, pizza.Currency, pizza.PizzaName);
 
-                return Ok(new CreatePaymentResponse()
+                return Ok(new CardAcquisitionApiResponse()
                 {
                     Result = "success"
+                });
+            }
+            catch (HttpClientException e)
+            {
+                _logger.LogError(e.ToString());
+                return StatusCode(e.Code, new CardAcquisitionApiResponse()
+                {
+                    Result = "failure",
+                    RefusalReason = $"ErrorCode: {e.Code}, see logs"
                 });
             }
             catch (Exception e)
             {
                 _logger.LogError(e.ToString());
+                await _posAbortService.SendAbortRequestAsync(
+                    poiId: _poiId, 
+                    saleId: _saleId, 
+                    cancellationToken: cancellationToken);
                 throw;
             }
         }
 
-        [Route("card-acquisition/check")]
-        public async Task<ActionResult> CheckPoints(CancellationToken cancellationToken = default)
+        [Route("apply-discount")]
+        public async Task<ActionResult> ApplyDiscount(CancellationToken cancellationToken = default)
         {
             try
             {
@@ -296,82 +308,128 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                     poiId: _poiId,
                     saleId: _saleId,
                     transactionId: transactionId,
+                    amount: 0,
                     cancellationToken: cancellationToken);
 
-                CardAcquisitionResponse cardAcquisitionResponse = response.MessagePayload as CardAcquisitionResponse;
+                CardAcquisitionResponse cardAcquisitionResponse = response?.MessagePayload as CardAcquisitionResponse;
 
                 if (cardAcquisitionResponse == null)
                 {
-                    return NotFound($"Device with POI ID {_poiId} found.");
+                    return NotFound(new CardAcquisitionApiResponse()
+                    {
+                        Result = "failure",
+                        RefusalReason = $"Cannot reach device with POI ID {_poiId}"
+                    });
                 }
 
                 if (cardAcquisitionResponse.Response.Result != ResultType.Success)
                 {
-                    return BadRequest(cardAcquisitionResponse); // Unsuccessful
+                    return BadRequest(new CardAcquisitionApiResponse()
+                    {
+                        Result = "failure",
+                        RefusalReason = Encoding.UTF8.GetString(Convert.FromBase64String(cardAcquisitionResponse?.Response?.AdditionalResponse))
+                    });
                 }
 
                 // Decode the base64 encoded string.
-                string decodedUtf8JsonString = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(cardAcquisitionResponse.Response.AdditionalResponse));
+                string decodedUtf8JsonString = Encoding.UTF8.GetString(Convert.FromBase64String(cardAcquisitionResponse.Response.AdditionalResponse));
+
+                _logger.LogInformation(decodedUtf8JsonString);
 
                 CardAcquisitionRoot json = JsonConvert.DeserializeObject<CardAcquisitionRoot>(decodedUtf8JsonString);
 
                 if (json == null)
                 {
-                    return BadRequest(); // Can't deserialize json into an object.
+                    // Can't deserialize json into an object.
+                    return BadRequest(new CardAcquisitionApiResponse()
+                    {
+                        Result = "failure",
+                        RefusalReason = "Unable to deserialize json"
+                    }); 
                 }
 
+                // This is a gift card, handle gift card logic accordingly. For now, do not support card acquisition for gift cards.
                 if (json.AdditionalData.GiftcardIndicator)
                 {
-                    return BadRequest(); // This is a giftcard. Can't attach a gift card to this.
+                    return BadRequest(new CardAcquisitionApiResponse()
+                    {
+                        Result = "failure",
+                        RefusalReason = "Card provided is a gift card"
+                    }); 
                 }
 
                 var existingCustomer = _shopperRepository.Get(json.AdditionalData.Alias);
 
+                // A signed-up loyal shopper
                 if (existingCustomer != null)
                 {
-                    SaleToPOIResponse abortRequest = await _posCardAcquisitionAbortService.SendAbortRequestAsync(
-                        serviceId: IdUtility.GetRandomAlphanumericId(10),
-                        poiId: _poiId,
-                        saleId: _saleId,
-                        cancellationToken: cancellationToken);
+                    if (existingCustomer.IsSignedUpForLoyaltyProgram)
+                    {
+                        if (existingCustomer.LoyaltyPoints >= 200)
+                        {
+                            _pizzaRepository.ApplyDiscount(20);
 
-                    return Ok(existingCustomer);
+                            await _posCardAcquisitionAbortService.SendAbortRequestAfterSignUpAsync(
+                                serviceId: IdUtility.GetRandomAlphanumericId(10),
+                                poiId: _poiId,
+                                saleId: _saleId,
+                                textTitle: "Welcome back!",
+                                textDescription: "We've discounted your pizza!",
+                                cancellationToken: cancellationToken);
+                        }
+                        else
+                        {
+                            await _posCardAcquisitionAbortService.SendAbortRequestAfterSignUpAsync(
+                                serviceId: IdUtility.GetRandomAlphanumericId(10),
+                                poiId: _poiId,
+                                saleId: _saleId,
+                                textTitle: "Welcome back!",
+                                textDescription: $"You need {200 - existingCustomer.LoyaltyPoints} loyalty points to get your next discount!",
+                                cancellationToken: cancellationToken);
+                        }
+                    }
                 }
-
-                SaleToPOIResponse ar = await _posCardAcquisitionAbortService.SendAbortRequestAsync(
+                
+                // Not a recognized loyal shopper 
+                await _posCardAcquisitionAbortService.SendAbortRequestAfterSignUpAsync(
                     serviceId: IdUtility.GetRandomAlphanumericId(10),
                     poiId: _poiId,
                     saleId: _saleId,
+                    textTitle: "Hello!",
+                    textDescription: "You've not signed-up for our loyalty program.",
                     cancellationToken: cancellationToken);
-                return Ok();
+
+                return Ok(new CardAcquisitionApiResponse()
+                {
+                    Result = "success"
+                });
+            }
+            catch (HttpClientException e)
+            {
+                _logger.LogError(e.ToString());
+                return StatusCode(e.Code, new CardAcquisitionApiResponse()
+                {
+                    Result = "failure",
+                    RefusalReason = $"ErrorCode: {e.Code}, see logs"
+                });
             }
             catch (Exception e)
             {
                 _logger.LogError(e.ToString());
-                await _posCardAcquisitionAbortService.SendAbortRequestAsync(
-                    serviceId: IdUtility.GetRandomAlphanumericId(10), 
+                await _posAbortService.SendAbortRequestAsync(
                     poiId: _poiId, 
                     saleId: _saleId, 
-                    cancellationToken: cancellationToken); // TODO: serviceId, top-level
+                    cancellationToken: cancellationToken);
                 throw;
             }
         }
 
-        [HttpGet("card-acquisition/abort/{pizzaName}")]
-        public async Task<ActionResult<SaleToPOIResponse>> Abort(string pizzaName, CancellationToken cancellationToken = default)
+        [Route("abort")]
+        public async Task<ActionResult<SaleToPOIResponse>> Abort(CancellationToken cancellationToken = default)
         {
             try
             {
-                PizzaModel pizza = _pizzaRepository.Pizzas.FirstOrDefault(t => t.PizzaName == pizzaName);
-
-                if (pizza?.PaymentStatusDetails?.ServiceId == null)
-                {
-                    return NotFound();
-                }
-
                 SaleToPOIResponse abortResponse = await _posAbortService.SendAbortRequestAsync(
-                    messageCategoryType: MessageCategoryType.CardAcquisition,
-                    serviceId: pizza.PaymentStatusDetails.ServiceId,
                     poiId: _poiId,
                     saleId: _saleId,
                     cancellationToken: cancellationToken);
@@ -380,7 +438,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
             catch (HttpClientException e)
             {
                 _logger.LogError(e.ToString());
-                return StatusCode(e.Code, new CreatePaymentResponse() // TODO
+                return StatusCode(e.Code, new CardAcquisitionApiResponse()
                 {
                     Result = "failure",
                     RefusalReason = $"ErrorCode: {e.Code}, see logs"

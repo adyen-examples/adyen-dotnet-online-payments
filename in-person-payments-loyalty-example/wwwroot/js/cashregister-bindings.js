@@ -19,6 +19,7 @@ async function sendPostRequest(url, data) {
 
 // Sends GET request to URL
 async function sendGetRequest(url) {
+    abortController = new AbortController(); // Used for cancelling the request
     const res = await fetch(url, {
         method: "Get",
         headers: {
@@ -32,9 +33,9 @@ async function sendGetRequest(url) {
 }
 
 // Sends abort request to cancel an on-going transaction for the table
-async function sendAbortRequest(pizzaName) {
+async function sendAbortRequest() {
     try {
-        var response = await sendGetRequest("/api/abort/" + pizzaName);
+        await sendGetRequest("/card-acquisition/abort/");
     }
     catch(error) {
         console.warn(error);
@@ -53,7 +54,7 @@ function hideLoadingComponent() {
     document.getElementById('pizzas-section').classList.remove('disabled');
 }
 
-// Bind table selection buttons and the `pay/transaction-status` submit-buttons
+// Bind table selection buttons and the submit-buttons
 function bindButtons() {
     // Bind `card-acquisition-request-form` submit-button
     const cardAcquisitionRequestForm = document.getElementById('card-acquisition-request-form');
@@ -63,45 +64,50 @@ function bindButtons() {
         var formData = new FormData(event.target);
         var pizzaName = formData.get('pizzaName');
 
-        if (pizzaName) { 
-            try {
-                // Show loading animation component which doesn't allow users to select any tables
-                showLoadingComponent();           
+        if (!pizzaName) {
+            alert("Please select a pizza first.");
+            return;
+        }
+        
+        try {
+            // Show loading animation component which doesn't allow users to select any tables
+            showLoadingComponent();           
 
-                // Send card acquisition payment request
-                var response = await sendGetRequest("/card-acquisition/create/" + pizzaName);
-                console.log(response);
+            // Send card acquisition payment request
+            var response = await sendGetRequest("/card-acquisition/create/" + pizzaName);
+            console.log(response);
 
-                if (response.result == "success") // TODO handle success scenario
-                {
-                    // Hides loading animation component and allow user to select tables again
-                    hideLoadingComponent();
-                    
-                    window.location.href = "result/success";
-                }
-                else
-                {
-                    window.location.href = "result/failure/" + response.refusalReason;
-                }
-            }
-            catch (error) {
-                console.warn(error);
-
-                // Sends an abort request to the terminal
-                await sendAbortRequest(pizzaName); // TODO, different abort!
-                
+            if (response.result === "success")
+            {
                 // Hides loading animation component and allow user to select tables again
                 hideLoadingComponent();
+                
+                window.location.href = "result/success";
             }
+            else
+            {
+                window.location.href = "result/failure/" + response.refusalReason;
+            }
+        }
+        catch (error) {
+            console.warn(error);
+
+            // Sends an abort request to the terminal
+            await sendAbortRequest(pizzaName);
+            
+            // Hides loading animation component and allow user to select tables again
+            hideLoadingComponent();
         }
     });
     
     // Bind `cancel-operation-button`
     const cancelOperationButton = document.getElementById('cancel-operation-button');
-    cancelOperationButton.addEventListener('click', () => {
+    cancelOperationButton.addEventListener('click', async () => {
         // Abort sending post request
         abortController.abort(); 
 
+        await sendAbortRequest();
+        
         // Hide loading animation component
         hideLoadingComponent();
     });
@@ -114,18 +120,17 @@ function bindButtons() {
             showLoadingComponent();
 
             // Send card acquisition check request
-            var response = await sendPostRequest("/card-acquisition/check");
+            var response = await sendPostRequest("/card-acquisition/apply-discount");
             console.log(response);
             
             // Hides loading animation component and allow user to select tables again
             hideLoadingComponent();
 
-            if (response.result == "success") // TODO handle success scenario
+            if (response.result == "success")
             {
                 // Hides loading animation component and allow user to select tables again
                 hideLoadingComponent();
                 window.location.href = "/cashregister";
-                //window.location.href = "result/success";
             }
             else
             {
@@ -153,34 +158,8 @@ function bindButtons() {
             // Copies 'pizza name' value to the `card-acquisition-request-form`
             const pizzaNameElement = document.getElementById('pizzaName');
             pizzaNameElement.value = table.querySelector('.pizzas-grid-item-title').textContent;
-
-            // Show/hides the `payment-request-button` according to the `PaymentStatus` of currently selected table
-            const currentActiveTable = document.getElementsByClassName('current-selection')[0];
-            var statusValue = currentActiveTable.querySelector('.pizzas-grid-item-status').textContent;
-            switch (statusValue) {
-                 case 'NotPaid':
-                    enablePaymentRequestButton();
-                    break;
-                case 'Paid':
-                    disablePaymentRequestButton();
-                    break;
-                case 'PaymentInProgress':
-                default:
-                    enableTransactionStatusButton();
-                    break;
-            }
         });
     });
-}
-
-// Enable `card-acquisition-request-button`
-function enablePaymentRequestButton() {
-   document.getElementById('card-acquisition-request-button').classList.remove('disabled');
-}
-
-// Disable `card-acquisition-request-button`
-function disablePaymentRequestButton() {
-   document.getElementById('card-acquisition-request-button').classList.add('disabled');
 }
 
 bindButtons();

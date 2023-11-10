@@ -1,9 +1,9 @@
 ﻿using adyen_dotnet_in_person_payments_loyalty_example.Options;
 using adyen_dotnet_in_person_payments_loyalty_example.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.Linq;
 
 namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
 {
@@ -11,15 +11,15 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
     {
         private readonly string _poiId;
         private readonly string _saleId;
-        private readonly ILogger<HomeController> _logger;
         private readonly IPizzaRepository _pizzaRepository;
+        private readonly IShopperRepository _shopperRepository;
 
-        public HomeController(ILogger<HomeController> logger, IOptions<AdyenOptions> optionsAccessor, IPizzaRepository pizzaRepository)
+        public HomeController(IOptions<AdyenOptions> optionsAccessor, IPizzaRepository pizzaRepository, IShopperRepository shopperRepository)
         {
             _poiId = optionsAccessor.Value.ADYEN_POS_POI_ID;
             _saleId = optionsAccessor.Value.ADYEN_POS_SALE_ID;
-            _logger = logger;
             _pizzaRepository = pizzaRepository;
+            _shopperRepository = shopperRepository;
         }
 
         [Route("/")]
@@ -40,6 +40,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
         [HttpGet("result/{status}/{refusalReason?}")]
         public IActionResult Result(string status, string refusalReason = null)
         {
+            _pizzaRepository.ClearDiscount();
             string msg;
             string img;
             switch (status)
@@ -68,5 +69,13 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
         {
             return View();
         }
+
+        [Route("shoppers")]
+        public IActionResult Shoppers()
+        {
+            ViewBag.Shoppers = _shopperRepository.Shoppers.Select(kvp => kvp.Value).ToList();
+            return View();
+        }
+
     }
 }

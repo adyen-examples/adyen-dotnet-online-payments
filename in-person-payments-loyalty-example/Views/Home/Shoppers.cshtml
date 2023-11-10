@@ -1,0 +1,39 @@
+﻿@using adyen_dotnet_in_person_payments_loyalty_example.Models
+@{
+    ViewData["Title"] = "Your loyal shoppers";
+    List<ShopperModel> shoppers = ViewBag.Shoppers;
+}
+
+
+<div class="main-container">
+    <div class="info">
+    <h2>List of loyal shoppers:</h2>
+    <p>You can find a list of shoppers who have signed-up for your loyalty program below.</p>
+        @foreach (var shopper in shoppers)
+        {
+            <p class="shopper-container">
+                <p>
+                    <b>Alias: @shopper.Alias </b> <br/>
+                    <b>Shopper Reference:</b>&nbsp; @shopper.ShopperReference <br/>
+                    <b>Shopper Email:</b>&nbsp; @shopper.ShopperEmail <br/>
+                    <b>Is signed up for loyalty program:</b>&nbsp; @shopper.IsSignedUpForLoyaltyProgram <br/>
+                    <b>Loyalty Points:</b>&nbsp; @shopper.LoyaltyPoints <br/>
+                    
+                    <p class="history-container">
+                        
+                        <b>History (total spending: @shopper.TransactionHistory.Sum(x=> x.Amount) EUR)</b> <br/>
+                        <ul>
+                            @foreach (var history in shopper.TransactionHistory)
+                            {
+                                <li>
+                                    @history.PizzaName (@history.Amount @history.Currency)
+                                </li>
+                            }
+                        </ul>
+                    </p>
+                </p>
+            </p>
+        }
+        <a class="button" href="/" to="#/">Return</a>
+    </div>
+</div>

@@ -20,18 +20,7 @@
         <ul class="pizzas-grid-list">
           @foreach (PizzaModel pizza in list)
           {
-            string paymentStatus = pizza.PaymentStatus switch
-            {
-                PaymentStatus.NotPaid => "not-paid",
-                PaymentStatus.PaymentInProgress => "disabled",
-                PaymentStatus.Paid => "paid",
-                _ => ""
-            };
-
-            // Adds a css-class that sets pointer-events to none if it's disabled
-            string disableButtonCssName = @paymentStatus == "disabled" ? "disabled" : "";
-
-            <li class="pizzas-grid-item @disableButtonCssName">
+            <li class="pizzas-grid-item">
               <p class="pizzas-grid-item-title">@pizza.PizzaName</p>
                 @if(pizza.IsDiscounted)
                 {
@@ -44,7 +33,6 @@
                 <p class="pizzas-grid-item-currency">€</p>
                 <p class="pizzas-grid-item-amount">@pizza.Amount</p>
               </div>
-              <p class="pizzas-grid-item-status @paymentStatus" hidden>@pizza.PaymentStatus</p>
             </li>
           }
         </ul>
@@ -71,7 +59,7 @@
 
         <form id="card-acquisition-request-form" method="post">
         <input type="text" id="pizzaName" name="pizzaName" hidden>
-        <button type="submit" id="card-acquisition-request-button" class="card-acquisition-request-button disabled">Pay</button>
+        <button type="submit" id="card-acquisition-request-button" class="card-acquisition-request-button">Pay</button>
         </form>
         
         <input type="button" id="loyalty-button" class="loyalty-button" value="Apply discount"/>

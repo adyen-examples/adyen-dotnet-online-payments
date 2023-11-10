@@ -28,11 +28,6 @@
         public string PizzaName { get; init; }
 
         /// <summary>
-        /// Status of the pizza, used to check if the pizza has paid for.
-        /// </summary>
-        public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.NotPaid;
-
-        /// <summary>
         /// Object that populated with information when payment process is started.
         /// </summary>
         public PaymentStatusDetails PaymentStatusDetails { get; init; } = new PaymentStatusDetails();

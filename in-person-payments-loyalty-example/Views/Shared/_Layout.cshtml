@@ -13,12 +13,19 @@
 </head>
 <body>
     <header id="header">
-      <a href="/">
-        <span class="material-symbols-outlined">
-            local_pizza
-        </span>
-        <img src="~/images/mystore-logo.svg" alt="logo" />
-      </a>
+        <a href="/">
+            <span class="material-symbols-outlined">
+                local_pizza
+            </span>
+            <img src="~/images/mystore-logo.svg" alt="logo" />
+        </a>
+        
+      <!-- start Navigation Menu -->
+      <nav class="navMenu">
+          <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+          <a asp-area="" asp-controller="Home" asp-action="Shoppers">Admin Panel</a>
+      </nav>
+      <!-- end Navigation Menu -->
     </header>
     <div class="container">
         <main role="main" class="pb-3">

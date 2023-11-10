@@ -12,10 +12,15 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Repositories
         List<PizzaModel> Pizzas { get; }
 
         /// <summary>
-        /// Discount percentage.
+        /// Applies discount percentage on every pizza.
         /// </summary>
         /// <param name="discountPercentage">Discount percentage from 0 to 100.</param>
         void ApplyDiscount(int discountPercentage);
+
+        /// <summary>
+        /// Removes discount from every pizza.
+        /// </summary>
+        void ClearDiscount();
     }
 
     public class PizzaRepository : IPizzaRepository
@@ -45,7 +50,6 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Repositories
                     Amount = amount,
                     OriginalAmount = amount,
                     Currency = "EUR",
-                    PaymentStatus = PaymentStatus.NotPaid,
                     PaymentStatusDetails = new PaymentStatusDetails()
                 });
             }
@@ -61,6 +65,14 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Repositories
             for (int i = 0; i < Pizzas.Count; i++)
             {
                 Pizzas[i].Amount = Math.Round(Pizzas[i].OriginalAmount * ((100 - discountPercentage) / 100M), 2);
+            }
+        }
+
+        public void ClearDiscount()
+        {
+            for (int i = 0; i < Pizzas.Count; i++)
+            {
+                Pizzas[i].Amount = Pizzas[i].OriginalAmount;
             }
         }
     }

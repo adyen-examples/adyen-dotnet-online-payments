@@ -1,4 +1,5 @@
-﻿using Adyen.Model.Nexo;
+﻿using adyen_dotnet_in_person_payments_loyalty_example.Utilities;
+using Adyen.Model.Nexo;
 using Adyen.Model.Nexo.Message;
 using Adyen.Service;
 using System.Threading;
@@ -8,7 +9,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisiti
 {
     public interface IPosCardAcquisitionAbortService
     {
-        Task<SaleToPOIResponse> SendAbortRequestAsync(string serviceId, string poiId, string saleId, CancellationToken cancellationToken = default);
+        Task<SaleToPOIResponse> SendAbortRequestAfterSignUpAsync(string serviceId, string poiId, string saleId, string textTitle, string textDescription, CancellationToken cancellationToken = default);
     }
 
     public class PosCardAcquisitionAbortService : IPosCardAcquisitionAbortService
@@ -20,7 +21,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisiti
             _posPaymentCloudApi = posPaymentCloudApi;
         }
 
-        public Task<SaleToPOIResponse> SendAbortRequestAsync(string serviceId, string poiId, string saleId, CancellationToken cancellationToken = default)
+        public Task<SaleToPOIResponse> SendAbortRequestAfterSignUpAsync(string serviceId, string poiId, string saleId, string textTitle, string textDescription, CancellationToken cancellationToken = default)
         {
             SaleToPOIRequest request = new SaleToPOIRequest()
             {
@@ -57,11 +58,10 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisiti
                             {
                                 // We include a DisplayOutput object to show a message to the shopper that they have signed-up for the loyalty program.
                                 // Otherwise, if you omit the DisplayOutput with this AbortTransaction action, the terminal will show a red cross (e.g. 'Transaction canceled') and that can be confusing for the shopper.
-                                new OutputText { Text = "Welcome!" },
-                                new OutputText { Text = "You're a member!" },
-                            }
-                        },
-
+                                new OutputText { Text = textTitle },
+                                new OutputText { Text = textDescription }
+                            },
+                        }
                     }
                 }
             };

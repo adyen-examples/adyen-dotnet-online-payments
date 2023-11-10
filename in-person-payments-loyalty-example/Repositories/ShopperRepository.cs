@@ -9,6 +9,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Repositories
         Dictionary<String, ShopperModel> Shoppers { get; }
         ShopperModel AddIfNotExists(string alias, string shopperReference, string shopperEmail, bool isLoyaltyMember, int loyaltyPoints);
         bool AddLoyaltyPoints(string alias, int loyaltyPoints);
+        bool AddShopperTransaction(string alias, decimal amount, string currency, string pizzaName);
         bool IsSignedUpForLoyaltyProgram(string alias);
         ShopperModel Get(string alias);
     }
@@ -35,11 +36,29 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Repositories
                 ShopperReference = shopperReference,
                 ShopperEmail = shopperEmail,
                 IsSignedUpForLoyaltyProgram = isLoyaltyMember,
-                LoyaltyPoints = loyaltyPoints
+                LoyaltyPoints = loyaltyPoints,
+                TransactionHistory = new List<ShopperTransactionModel>()
             };
             
             Shoppers.Add(alias, shopper);
             return shopper;
+        }
+
+        public bool AddShopperTransaction(string alias, decimal amount, string currency, string pizzaName)
+        {
+            if (!IsSignedUpForLoyaltyProgram(alias))
+            {
+                return false;
+            }
+
+            var shopper = Get(alias);
+            shopper.TransactionHistory.Add(new ShopperTransactionModel()
+            {
+                Amount = amount,
+                Currency = currency,
+                PizzaName = pizzaName
+            });
+            return true;
         }
 
         public bool AddLoyaltyPoints(string alias, int loyaltyPoints)

@@ -4,7 +4,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Models
 {
     public class PaymentStatusDetails
     {
-        /// PspReference: It is possible to get the PspReference from the Response.AdditionalData property:
+        /// PspReference: It is also possible to get the PspReference from the Response.AdditionalData property:
         /// https://docs.adyen.com/point-of-sale/basic-tapi-integration/verify-transaction-status/#id324618081
         /// public string PspReference { get; set; }
 
@@ -14,7 +14,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Models
         public string RefusalReason { get; set; } = null;
 
         /// <summary>
-        /// The POI Transaction Id, populated when a <see cref="PizzaModel.PaymentStatus"/> is set to <see cref="PaymentStatus.Paid"/>.
+        /// The POI Transaction Id (the PspReference is shown after the `.` if the payment request was sent, in this case: 'TG6DVRZ3HVTFWR82').
         /// Example value: CmI6001693237705007.TG6DVRZ3HVTFWR82.
         /// </summary>
         public string PoiTransactionId { get; set; } = null;
@@ -25,7 +25,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Models
         public DateTime? PoiTransactionTimeStamp { get; set; } = null;
 
         /// <summary>
-        /// The SaleTransactionId (SaleReferenceId), populated when a <see cref="PizzaModel.PaymentStatus"/> is set to <see cref="PaymentStatus.Paid"/>.
+        /// The SaleTransactionId (SaleReferenceId).
         /// Example value: 6abcb27d-9082-40d9-969d-1c7f283ebd52.
         /// </summary>
         public string SaleTransactionId { get; set; } = null;
