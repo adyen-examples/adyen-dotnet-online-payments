@@ -1,7 +1,7 @@
 ﻿# Adyen [In-person Payment Loyalty](https://docs.adyen.com/point-of-sale/) Integration Demo
 
 This repository features an in-person payments [cloud terminal API](https://docs.adyen.com/point-of-sale/design-your-integration/choose-your-architecture/cloud/) loyalty example. 
-This enables you to check card and cardholder details before applying discounts or sign-up a shopper to a loyalty program.
+This enables you to check cardholder details before applying discounts or sign-up a shopper to a loyalty program.
 - [Card Acquisition requests followed by a payment](https://docs.adyen.com/point-of-sale/card-acquisition/#continue-with-payment)
 - [Card Acquisition requests followed by a cancellation](https://docs.adyen.com/point-of-sale/card-acquisition/#cancel-completed)
 
