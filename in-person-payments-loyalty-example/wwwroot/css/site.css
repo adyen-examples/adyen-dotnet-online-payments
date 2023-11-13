@@ -381,7 +381,7 @@ a:hover {
 
 /* Card Acquisition request button end */
 
-/* Transaction Status button start */
+/* Loyalty Status button start */
 .loyalty-button {
   background-color: #0abf53;
   color: white;
@@ -413,7 +413,40 @@ a:hover {
   pointer-events: none;
 }
 
-/* Transaction Status button end */
+/* Loyalty Status button end */
+
+
+/* Signup-only-button start */
+.signup-only-button {
+  background-color: #0abf53;
+  color: white;
+  padding: 8px 64px 8px 64px;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 8px;
+  border: none;
+  transition: transform 0.15s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+.signup-only-button:hover {
+  background-color: #0abf53;
+  border: none;
+  transform: scale(1.02);
+}
+
+.signup-only-button:focus {
+  outline: none;
+}
+
+.signup-only-button:disabled,
+.signup-only-button[disabled=disabled],
+.signup-only-button.disabled {
+  background-color: #cccccc;
+  color: #999999;
+  pointer-events: none;
+}
+
+/* Signup-only-button end */
 
 /* Payment page */
 
@@ -469,6 +502,17 @@ a:hover {
 
 .status .status-message {
   margin: 8px 0 24px;
+  width: 1200px;
+  font-family: monospace;
+  text-align: left;
+  white-space: pre-wrap;
+  overflow: scroll;
+  padding: 16px;
+  border: 1px solid #ccc;
+}
+
+.status .status-message-generic {
+  margin: 16px 0 24px;
 }
 
 .status .button {
@@ -491,10 +535,9 @@ a:hover {
   padding: 16px 8px 8px 8px;
   background: #fff7ea;
   border-radius: 8px;
-  margin: 10px 0px 16px 0px;
   transition: opacity 0.4s ease-in;
   height: 100%;
-  width: 90%;
+  width: 100%;
 }
 
 .loading-grid.disabled {
@@ -639,7 +682,6 @@ a:hover {
 }
 /* Loading bar end */
 
-
 /* start Navigation bar menu */
 
 .navMenu {
@@ -667,3 +709,23 @@ a:hover {
 }
 
 /* end Navigation bar menu */
+
+/* Transaction Status button start */
+.transaction-status-button {
+  font-weight: 700;
+  border: 2px solid #0abf53;
+  border-radius: 8px;
+  padding: 6px 8px;
+  margin-left: 8px;
+}
+
+.transaction-status-button:hover {
+  border: 2px solid #00bf53;
+}
+
+/* Transaction Status button end */
+
+.highlight {
+  color: #0abf53;
+  margin-left: 32px;
+}

@@ -26,10 +26,5 @@
         /// Name of the pizza, used to uniquely identify the pizza.
         /// </summary>
         public string PizzaName { get; init; }
-
-        /// <summary>
-        /// Object that populated with information when payment process is started.
-        /// </summary>
-        public PaymentStatusDetails PaymentStatusDetails { get; init; } = new PaymentStatusDetails();
     }
 }

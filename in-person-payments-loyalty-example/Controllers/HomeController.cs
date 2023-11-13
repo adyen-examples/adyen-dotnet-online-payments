@@ -1,9 +1,14 @@
 ﻿using adyen_dotnet_in_person_payments_loyalty_example.Options;
 using adyen_dotnet_in_person_payments_loyalty_example.Repositories;
+using adyen_dotnet_in_person_payments_loyalty_example.Services;
+using Adyen.Model.Nexo;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Web;
 
 namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
 {
@@ -13,13 +18,15 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
         private readonly string _saleId;
         private readonly IPizzaRepository _pizzaRepository;
         private readonly IShopperRepository _shopperRepository;
+        private readonly IPosTransactionStatusService _posTransactionStatusService;
 
-        public HomeController(IOptions<AdyenOptions> optionsAccessor, IPizzaRepository pizzaRepository, IShopperRepository shopperRepository)
+        public HomeController(IOptions<AdyenOptions> optionsAccessor, IPizzaRepository pizzaRepository, IShopperRepository shopperRepository, IPosTransactionStatusService posTransactionStatusService)
         {
             _poiId = optionsAccessor.Value.ADYEN_POS_POI_ID;
             _saleId = optionsAccessor.Value.ADYEN_POS_SALE_ID;
             _pizzaRepository = pizzaRepository;
             _shopperRepository = shopperRepository;
+            _posTransactionStatusService = posTransactionStatusService;
         }
 
         [Route("/")]
@@ -28,12 +35,20 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
             return View();
         }
 
-        [Route("cashregister")]
+        [Route("cash-register")]
         public IActionResult CashRegister()
         {
             ViewBag.PoiId = _poiId;
             ViewBag.SaleId = _saleId;
             ViewBag.Pizzas = _pizzaRepository.Pizzas;
+            return View();
+        }
+        
+        [Route("signuponly")]
+        public IActionResult SignupOnly()
+        {
+            ViewBag.PoiId = _poiId;
+            ViewBag.SaleId = _saleId;
             return View();
         }
 
@@ -46,11 +61,11 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
             switch (status)
             {
                 case "failure":
-                    msg = $"{refusalReason}.";
+                    msg = refusalReason;
                     img = "failed";
                     break;
                 case "success":
-                    msg = $"Payment successful! We're putting your pizza in the oven.";
+                    msg = $"Success!";
                     img = "success";
                     break;
                 default:
@@ -74,6 +89,49 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
         public IActionResult Shoppers()
         {
             ViewBag.Shoppers = _shopperRepository.Shoppers.Select(kvp => kvp.Value).ToList();
+            return View();
+        }
+        
+        [Route("transactionstatus/{serviceId}")]
+        public async Task<IActionResult> TransactionStatus(string serviceId, CancellationToken cancellationToken = default)
+        {
+            var saleResponse = await _posTransactionStatusService.SendTransactionStatusRequestAsync(
+                serviceId: serviceId, 
+                poiId: _poiId, 
+                saleId: _saleId,
+                cancellationToken: cancellationToken);
+            
+            TransactionStatusResponse transactionStatusResponse = saleResponse?.MessagePayload as TransactionStatusResponse;
+
+            if (transactionStatusResponse == null)
+            {
+                ViewBag.ErrorMessage = $"Transaction status response is null for {@serviceId}";
+                return View();
+            }
+            
+            if (transactionStatusResponse.Response.Result != ResultType.Success)
+            {
+                ViewBag.ErrorMessage = HttpUtility.UrlDecode(transactionStatusResponse.Response.AdditionalResponse);
+                return View();
+            }
+            
+            PaymentResponse paymentResponse = transactionStatusResponse?.RepeatedMessageResponse?.RepeatedResponseMessageBody?.MessagePayload as PaymentResponse;
+
+            if (paymentResponse == null)
+            {
+                ViewBag.ErrorMessage = "PaymentResponse response is null.";
+                return View();
+            }
+            
+            if (paymentResponse.Response.Result != ResultType.Success)
+            {
+                ViewBag.ErrorMessage = HttpUtility.UrlDecode(paymentResponse.Response.AdditionalResponse);
+                return View();
+            }
+            
+            ViewBag.PaymentResponse = paymentResponse;
+            ViewBag.ServiceId = serviceId;
+
             return View();
         }
 

@@ -49,8 +49,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Repositories
                     PizzaName = PizzaNames[i],
                     Amount = amount,
                     OriginalAmount = amount,
-                    Currency = "EUR",
-                    PaymentStatusDetails = new PaymentStatusDetails()
+                    Currency = "EUR"
                 });
             }
         }

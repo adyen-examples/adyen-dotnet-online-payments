@@ -48,7 +48,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example
 
             // Register Adyen Client.
             string httpClientName = "YourCustomHttpClientName";
-            services.AddSingleton(provider =>
+            services.AddScoped(provider =>
             {
                 var options = provider.GetRequiredService<IOptions<AdyenOptions>>();
                 return new Client(
@@ -72,7 +72,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example
             });
 
             // Register Adyen services and utilities.
-            services.AddSingleton<IPosPaymentCloudApi, PosPaymentCloudApi>();
+            services.AddScoped<IPosPaymentCloudApi, PosPaymentCloudApi>();
             services.AddSingleton<HmacValidator>();
 
             // Register repositories that saves data in-memory.
@@ -83,6 +83,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example
             services.AddScoped<IPosCardAcquisitionService, PosCardAcquisitionService>();
             services.AddScoped<IPosCardAcquisitionAbortService, PosCardAcquisitionAbortService>();
             services.AddScoped<IPosCardAcquisitionPaymentService, PosCardAcquisitionPaymentService>();
+            services.AddScoped<IPosTransactionStatusService, PosTransactionStatusService>();
             services.AddScoped<IPosInputService, PosInputService>();
             services.AddScoped<IPosAbortService, PosAbortService>();
         }

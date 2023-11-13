@@ -8,5 +8,10 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Models
         public string PizzaName { get; set; }
         public decimal Amount { get; set; }
         public string Currency { get; set; }
+        
+        /// <summary>
+        /// The service id of the transaction, used to get the transaction status from the terminal.
+        /// </summary>
+        public string ServiceId { get; set; }
     }
 }

@@ -35,7 +35,7 @@ async function sendGetRequest(url) {
 // Sends abort request to cancel an on-going transaction for the table
 async function sendAbortRequest() {
     try {
-        await sendGetRequest("/card-acquisition/abort/");
+        await sendGetRequest("/cash-register/abort/");
     }
     catch(error) {
         console.warn(error);
@@ -74,7 +74,7 @@ function bindButtons() {
             showLoadingComponent();           
 
             // Send card acquisition payment request
-            var response = await sendGetRequest("/card-acquisition/create/" + pizzaName);
+            var response = await sendGetRequest("/cash-register/create/" + pizzaName);
             console.log(response);
 
             if (response.result === "success")
@@ -120,7 +120,7 @@ function bindButtons() {
             showLoadingComponent();
 
             // Send card acquisition check request
-            var response = await sendPostRequest("/card-acquisition/apply-discount");
+            var response = await sendPostRequest("/cash-register/apply-discount");
             console.log(response);
             
             // Hides loading animation component and allow user to select tables again

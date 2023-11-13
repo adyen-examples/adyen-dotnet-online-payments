@@ -1,39 +1,55 @@
 ﻿@{
     ViewData["Title"] = "Adyen In-person Payment Demo";
 }
-
-<div class="main-container">
-  <div class="info">
-    <h1>
-      Adyen In-person Payments — Loyalty Demo
-    </h1>
-    <p>
-      This demo shows how developers can perform <b>synchronous</b> card acquisition requests to enroll shoppers into a loyalty program. <br/> 
-      <b>Note:</b> The asynchronous flow is similar and can be found <a href="https://docs.adyen.com/point-of-sale/loyalty/#asynchronous-flow">here</a>.
-    </p>
-    <p>
-      If you recognize a shopper based on the payment data, you can offer benefits like discounts, or make product recommendations based on their purchase history. 
-      If you don't recognize a shopper, you can enroll them on the spot using the payment terminal.
-    </p>
-    <p>To learn more about card acquisitions loyalty, check out our <a href="https://docs.adyen.com/point-of-sale/loyalty/#synchronous-flow">documentation</a>.</p>
+<div class="container">
+  <main role="main" class="pb-3">
+         
+    <div class="main-container" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+      <div class="info">
+        <h1>
+          Adyen In-person Payments — Loyalty Demo
+        </h1>
+        <p>
+          This self-checout demo shows how developers can perform <b>synchronous</b> card acquisition requests using Adyen's Terminal Api to enroll shoppers into a loyalty program. We'll cover <b>two</b> main flows: <br/> 
+        </p>
+        <p>
+          <b class="highlight">1.</b> If you recognize a shopper based on the payment data, you can offer benefits like discounts, or make product recommendations based on their purchase history. 
+          In this demo, you can click the <i>apply discount</i>-button when performing the self-checkout, the pizzas will be discounted when you've made over 2 purchases in the past.
+        </p>
+        <p>
+          <b class="highlight">2.</b> If a shopper only wants to enroll into the loyalty program, you can do so without a payment by enrolling them on the spot using the payment terminal.
+        </p>
     
-    <ul class="integration-list">
-      <li class="integration-list-item">
-        <a asp-area="" asp-controller="Home" asp-action="CashRegister" class="integration-list-item-link">
-          <div class="title-container">
-            <p class="integration-list-item-title">Card Acquisition & Payment</p>
-            <p class="integration-list-item-subtitle">Enroll a new shopper into your loyalty program after a payment.</p>
-          </div>
-        </a>
-      </li>
-      <li class="integration-list-item">
-        <a asp-area="" asp-controller="Home" asp-action="CashRegister" class="integration-list-item-link">
-          <div class="title-container">
-            <p class="integration-list-item-title">Card Acquisition & Cancellation</p>
-            <p class="integration-list-item-subtitle">Sign-up a new member for a loyalty program without a payment.</p>
-          </div>
-        </a>
-      </li>
-    </ul>
-  </div>
+        <p>
+          You can find your enrolled shoppers in the <b>Admin Panel</b>-tab, it includes a simple transaction history.
+        </p>
+    
+        <p>
+          To learn more about card acquisitions loyalty, check out our <a href="https://docs.adyen.com/point-of-sale/loyalty/#synchronous-flow">documentation</a>. <br/>
+          <i>Note:</i> The asynchronous flow is similar and can be found <a href="https://docs.adyen.com/point-of-sale/loyalty/#asynchronous-flow">here</a>. In this flow, you can't apply discounts or other loyalty benefits on the spot before the payment.
+        </p>
+    
+        <ul class="integration-list">
+          <li class="integration-list-item">
+            <a asp-area="" asp-controller="Home" asp-action="CashRegister" class="integration-list-item-link">
+              <div class="title-container">
+                <p class="integration-list-item-title">1. Sign-up new member before payment</p>
+                <p class="integration-list-item-subtitle">Sign-up a new member for a loyalty program <b>before</b> a payment.</p>
+                <p class="integration-list-item-subtitle">This is done using a card acquisition request followed by a payment request.</p>
+              </div>
+            </a>
+          </li>
+          <li class="integration-list-item">
+            <a asp-area="" asp-controller="Home" asp-action="SignupOnly" class="integration-list-item-link">
+              <div class="title-container">
+                <p class="integration-list-item-title">2. Sign-up new member without payment</p>
+                <p class="integration-list-item-subtitle">Sign-up a new member for a loyalty program <b>without</b> a payment.</p>
+                <p class="integration-list-item-subtitle">This is done using a card acquisition request followed by a cancellation request.</p>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </main>
 </div>

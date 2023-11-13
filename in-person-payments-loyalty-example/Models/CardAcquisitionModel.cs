@@ -12,7 +12,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Models
         public bool GiftcardIndicator { get; set; }
     }
 
-    public class CardAcquisitionRoot
+    public class CardAcquisitionModel
     {
         public AdditionalData AdditionalData { get; set; }
         public string Message { get; set; }
