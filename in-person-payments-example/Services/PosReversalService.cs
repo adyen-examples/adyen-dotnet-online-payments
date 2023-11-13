@@ -16,13 +16,13 @@ namespace adyen_dotnet_in_person_payments_example.Services
         /// For error-scenarios, see: https://docs.adyen.com/point-of-sale/error-scenarios/#error-conditions.
         /// </summary>
         /// <param name="reversalReasonType"><see cref="ReversalReasonType"/>.</param>
-        /// <param name="saleReferenceId">Unique Id of a sale global transaction. Appears as MerchantReference in your Customer Area.</param>
+        /// <param name="saleTransactionId">Unique Id of a sale global transaction. Appears as MerchantReference in your Customer Area.</param>
         /// <param name="poiTransactionId">Unique Id of a POI transaction.</param>
         /// <param name="poiId">Your unique ID of the terminal to send this request to. Format: [device model]-[serial number]. Seealso <seealso cref="Options.AdyenOptions.ADYEN_POS_POI_ID"/></param>
         /// <param name="saleId">Your unique ID for the POS system (cash register) to send this request from. Seealso <see cref="Options.AdyenOptions.ADYEN_POS_SALE_ID"/>.</param>
         /// <param name="cancellationToken"><see cref="CancellationToken"/>.</param>
         /// <returns><see cref="SaleToPOIResponse"/>.</returns>
-        Task<SaleToPOIResponse> SendReversalRequestAsync(ReversalReasonType reversalReasonType, string saleReferenceId, string poiTransactionId, string poiId, string saleId, CancellationToken cancellationToken = default);
+        Task<SaleToPOIResponse> SendReversalRequestAsync(ReversalReasonType reversalReasonType, string saleTransactionId, string poiTransactionId, string poiId, string saleId, CancellationToken cancellationToken = default);
     }
 
     public class PosReversalService : IPosReversalService
@@ -34,13 +34,13 @@ namespace adyen_dotnet_in_person_payments_example.Services
             _posPaymentCloudApi = posPaymentCloudApi;
         }
 
-        public Task<SaleToPOIResponse> SendReversalRequestAsync(ReversalReasonType reversalReasonType, string saleReferenceId, string poiTransactionId, string poiId, string saleId, CancellationToken cancellationToken)
+        public Task<SaleToPOIResponse> SendReversalRequestAsync(ReversalReasonType reversalReasonType, string saleTransactionId, string poiTransactionId, string poiId, string saleId, CancellationToken cancellationToken)
         {
-            SaleToPOIRequest request = GetReversalRequest(reversalReasonType, saleReferenceId, poiTransactionId, poiId, saleId);
+            SaleToPOIRequest request = GetReversalRequest(reversalReasonType, saleTransactionId, poiTransactionId, poiId, saleId);
             return _posPaymentCloudApi.TerminalApiCloudSynchronousAsync(request);
         }
 
-        private SaleToPOIRequest GetReversalRequest(ReversalReasonType reversalReasonType, string saleReferenceId, string poiTransactionId, string poiId, string saleId)
+        private SaleToPOIRequest GetReversalRequest(ReversalReasonType reversalReasonType, string saleTransactionId, string poiTransactionId, string poiId, string saleId)
         {
             SaleToPOIRequest request = new SaleToPOIRequest()
             {
@@ -63,10 +63,17 @@ namespace adyen_dotnet_in_person_payments_example.Services
                         {
                             TimeStamp = DateTime.UtcNow, 
                             TransactionID = poiTransactionId
-                        } 
+                        },
                     },
-                    ReversalReason = reversalReasonType,
-                    SaleReferenceID = saleReferenceId
+                    SaleData = new SaleData()
+                    {
+                        SaleTransactionID = new TransactionIdentification()
+                        {
+                          TimeStamp = DateTime.UtcNow,
+                          TransactionID = saleTransactionId
+                        }
+                    },
+                    ReversalReason = reversalReasonType
                 }
             };
 

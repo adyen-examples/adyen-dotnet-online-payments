@@ -15,7 +15,9 @@ namespace adyen_dotnet_in_person_payments_example.Models
 
         /// <summary>
         /// The POI Transaction Id, populated when a <see cref="TableStatus"/> is set to <see cref="PaymentStatus.Paid"/>.
-        /// Example value: CmI6001693237705007.TG6DVRZ3HVTFWR82.
+        /// Format: "PoiTransactionId.PspReference"
+        /// Example value: "CmI6001693237705007.TG6DVRZ3HVTFWR82" - The second part after the period refers to the PspReference.
+        /// If you abort the transaction, no PspReference is appended after the period, e.g. "CmI6001693237705007".
         /// </summary>
         public string PoiTransactionId { get; set; } = null;
 
@@ -25,8 +27,9 @@ namespace adyen_dotnet_in_person_payments_example.Models
         public DateTime? PoiTransactionTimeStamp { get; set; } = null;
 
         /// <summary>
-        /// The SaleTransactionId (SaleReferenceId), populated when a <see cref="TableStatus"/> is set to <see cref="PaymentStatus.Paid"/>.
-        /// Example value: 6abcb27d-9082-40d9-969d-1c7f283ebd52.
+        /// The SaleTransactionId  populated when a <see cref="TableStatus"/> is set to <see cref="PaymentStatus.Paid"/>.
+        /// This appears as your "MerchantReference" in the customer area.
+        /// Example value: "6abcb27d-9082-40d9-969d-1c7f283ebd52"
         /// </summary>
         public string SaleTransactionId { get; set; } = null;
 

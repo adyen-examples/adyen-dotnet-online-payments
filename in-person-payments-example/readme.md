@@ -1,26 +1,34 @@
 ﻿# Adyen [In-person Payment Demo](https://docs.adyen.com/point-of-sale/) Integration Demo
 
-This repository features an in-person payments [cloud terminal API integration](https://docs.adyen.com/point-of-sale/design-your-integration/choose-your-architecture/cloud/) example for making
+This demo shows developers how to use the Adyen [Cloud Terminal API](https://docs.adyen.com/point-of-sale/design-your-integration/choose-your-architecture/cloud/) `/terminal-api/sync` to make requests to your connected terminal.
+
+The following implementations are included:
 - [Payment requests](https://docs.adyen.com/point-of-sale/basic-tapi-integration/make-a-payment/)
-- [Unreferenced refund requests](https://docs.adyen.com/point-of-sale/basic-tapi-integration/refund-payment/referenced/)
+- [Referenced refund requests](https://docs.adyen.com/point-of-sale/basic-tapi-integration/refund-payment/referenced/)
 - [Cancel/abort requests](https://docs.adyen.com/point-of-sale/basic-tapi-integration/cancel-a-transaction/)
 - [Transaction status requests](https://docs.adyen.com/point-of-sale/basic-tapi-integration/verify-transaction-status/)
 
-To decide what type of integration is best, use the following [page](https://docs.adyen.com/point-of-sale/design-your-integration/choose-your-architecture/#choosing-between-cloud-and-local).
+There are typically two ways to integrate in-person payments: local or cloud communications.
+To find out which solution (or hybrid) suits your needs, visit the following [documentation page](https://docs.adyen.com/point-of-sale/design-your-integration/choose-your-architecture/#choosing-between-cloud-and-local).
 
 Make sure to [enable the payment method](https://docs.adyen.com/point-of-sale/what-we-support/payment-methods/#add-payment-methods-to-your-account) in your Customer Area environment.
 
-https://docs.adyen.com/point-of-sale/design-your-integration/terminal-api/terminal-api-reference/
+
+This demo leverages Adyen's API Library for .NET ([GitHub](https://github.com/Adyen/adyen-dotnet-api-library) | [Docs](https://docs.adyen.com/development-resources/libraries?tab=c__5#csharp)).
+You can find the [Terminal API documentation](https://docs.adyen.com/point-of-sale/design-your-integration/terminal-api/terminal-api-reference/) here.
+
+![In-person Payments Demo](wwwroot/images/cardinpersonpayments.gif)
 
 ## Prerequisites
 - A [terminal device](https://docs.adyen.com/point-of-sale/user-manuals/) and a [test card](https://docs.adyen.com/point-of-sale/testing-pos-payments/) from Adyen
 - An Adyen account, learn how an Adyen account is structured in [our documentation](https://docs.adyen.com/point-of-sale/design-your-integration/determine-account-structure/)
 
 
-![In-person Payments Demo](wwwroot/images/cardinpersonpayments.gif)
 
-This demo leverages Adyen's API Library for .NET ([GitHub](https://github.com/Adyen/adyen-dotnet-api-library) | [Docs](https://docs.adyen.com/development-resources/libraries?tab=c__5#csharp)).
-You can find the [Terminal API documentation](https://docs.adyen.com/point-of-sale/design-your-integration/terminal-api/terminal-api-reference/) here.
+## Flowchart
+
+![In-person Payments Flowchart](wwwroot/images/flowchart-terminal-api-sync.png)
+
 
 ## Run integration on [Gitpod](https://gitpod.io/)
 1. Open your [Adyen Test Account](https://ca-test.adyen.com/ca/ca/overview/default.shtml) and create a set of [API keys](https://docs.adyen.com/user-management/how-to-get-the-api-key).
@@ -116,7 +124,7 @@ If you use a tunneling service like ngrok, the webhook URL will be the generated
 export ADYEN_API_KEY=yourAdyenApiKey
 export ADYEN_MERCHANT_ACCOUNT=yourAdyenMerchantAccount
 export ADYEN_HMAC_KEY=yourAdyenHmacKey
-export ADYEN_POS_POI_ID=v400m-123456789
+export ADYEN_POS_POI_ID=V400m-123456789
 ```
 
 On Windows CMD you can use this command instead.
@@ -125,7 +133,7 @@ On Windows CMD you can use this command instead.
 set ADYEN_API_KEY=yourAdyenApiKey
 set ADYEN_MERCHANT_ACCOUNT=yourAdyenMerchantAccount
 set ADYEN_HMAC_KEY=yourAdyenHmacKey
-set ADYEN_POS_POI_ID=v400m-123456789
+set ADYEN_POS_POI_ID=V400m-123456789
 ```
 
 8. Start the application and visit localhost.

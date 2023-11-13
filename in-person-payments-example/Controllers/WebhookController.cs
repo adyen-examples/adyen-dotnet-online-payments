@@ -134,7 +134,7 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                 return Task.CompletedTask;
             }
 
-            if (!notification.Success)
+            if (notification.Success)
             {
                 table.PaymentStatus = PaymentStatus.Refunded;
             }

@@ -163,6 +163,6 @@ Before testing, please make sure to [add the payment methods to your Adyen Accou
 ## Usage
 To try out this application with test card numbers, visit [Test card numbers](https://docs.adyen.com/development-resources/test-cards/test-card-numbers). We recommend saving some test cards in your browser so you can test your integration faster in the future.
 
-1. Visit the main page, pick a payment method, follow the instructions to make authorize a payment.
+1. Visit the main page, pick a payment method, follow the instructions to make a payment request.
 
 2. Visit the Customer Area `Developers` → `API logs` to view your logs. 
