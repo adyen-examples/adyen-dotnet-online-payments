@@ -2,7 +2,7 @@
 {
     public class ApiResponse
     {
-        public string Result { get; set; }
-        public string RefusalReason { get; set; }
+        public string Result { get; init; }
+        public string RefusalReason { get; init; }
     }
 }

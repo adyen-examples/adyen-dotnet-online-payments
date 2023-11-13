@@ -130,7 +130,7 @@ function bindButtons() {
             {
                 // Hides loading animation component and allow user to select tables again
                 hideLoadingComponent();
-                window.location.href = "/cashregister";
+                window.location.href = "/cash-register";
             }
             else
             {

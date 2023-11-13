@@ -361,7 +361,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                                 serviceId: IdUtility.GetRandomAlphanumericId(10),
                                 poiId: _poiId,
                                 saleId: _saleId,
-                                textTitle: "Welcome back!",
+                                textTitle: "Hi again!",
                                 textDescription: "We've discounted your pizza!",
                                 cancellationToken: cancellationToken);
                         }
@@ -371,8 +371,8 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
                                 serviceId: IdUtility.GetRandomAlphanumericId(10),
                                 poiId: _poiId,
                                 saleId: _saleId,
-                                textTitle: "Welcome back!",
-                                textDescription: $"You need {200 - existingCustomer.LoyaltyPoints} loyalty points to get your next discount!",
+                                textTitle: "Hi again!",
+                                textDescription: $"{200 - existingCustomer.LoyaltyPoints} points until next discount!",
                                 cancellationToken: cancellationToken);
                         }
                     }

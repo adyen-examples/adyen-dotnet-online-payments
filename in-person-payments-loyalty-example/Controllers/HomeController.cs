@@ -85,8 +85,8 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
             return View();
         }
 
-        [Route("shoppers")]
-        public IActionResult Shoppers()
+        [Route("adminpanel")]
+        public IActionResult AdminPanel()
         {
             ViewBag.Shoppers = _shopperRepository.Shoppers.Select(kvp => kvp.Value).ToList();
             return View();

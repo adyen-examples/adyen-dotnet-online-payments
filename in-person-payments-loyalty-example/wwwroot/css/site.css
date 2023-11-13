@@ -723,6 +723,10 @@ a:hover {
   border: 2px solid #00bf53;
 }
 
+li {
+  padding: 8px;
+}
+
 /* Transaction Status button end */
 
 .highlight {
