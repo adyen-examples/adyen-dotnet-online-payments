@@ -8,6 +8,8 @@ This enables you to check card and cardholder details before applying discounts 
 The basic flow is as follows:
 1. Make a card acquisition request
 2. Present your card on the terminal 
+3. Terminal asks the shopper whether they want to sign-up for a loyalty program (collect +100 points on every purchase, and get a discount after 200 points)
+4. Terminal asks the shopper to:
   - Finish the the request with a payment: shopper pays and is signed up for the loyalty program if they consent.
   - Finish the request with a cancellation request: shopper only signs up for the loyalty program (without making a payment).
 
