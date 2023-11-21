@@ -64,6 +64,8 @@ The [in-person payments example](in-person-payments-example) features an in-pers
 
 [First time with Gitpod?](https://github.com/adyen-examples/.github/blob/main/pages/gitpod-get-started.md)
 
+![Card In-person Payments Demo](in-person-payments-loyalty-example/wwwroot/images/cardcardacquisitioncard.gif)
+
 The [in-person payments loyalty example](in-person-payments-loyalty-example) features an in-person payment [cloud terminal API](https://docs.adyen.com/point-of-sale/design-your-integration/choose-your-architecture/cloud/) integration. Within this demo app, you can make in-person payments using a terminal, create card acquisition requests, collect card details and apply discounts.
 
 ![Card In-person Payments Loyalty emo](in-person-payments-example/wwwroot/images/cardinpersonpaymentsloyalty.gif)

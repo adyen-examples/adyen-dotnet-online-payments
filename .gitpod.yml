@@ -62,11 +62,19 @@ tasks:
         ;;
         
         "in-person-payments-example")
-          if [ -z ${ADYEN_HMAC_KEY+x} ] || [[ -z ${ADYEN_API_KEY+x} ]] || [[ -z ${ADYEN_MERCHANT_ACCOUNT+x} ]] || [[ -z ${ADYEN_POS_POI_ID+x} ]]; then
-            echo "Expected environment variables not found. Please set the ADYEN_HMAC_KEY, ADYEN_API_KEY, ADYEN_MERCHANT_ACCOUNT, ADYEN_POS_POI_ID environment variables in https://gitpod.io/variables and restart."
+          if [ -z ${ADYEN_HMAC_KEY+x} ] || [[ -z ${ADYEN_API_KEY+x} ]] || [[ -z ${ADYEN_POS_POI_ID+x} ]]; then
+            echo "Expected environment variables not found. Please set the ADYEN_HMAC_KEY, ADYEN_API_KEY, ADYEN_POS_POI_ID environment variables in https://gitpod.io/variables and restart."
             exit 1
           fi
           dotnet run --project in-person-payments-example
+        ;;
+        
+        "in-person-payments-loyalty-example")
+          if [ -z ${ADYEN_HMAC_KEY+x} ] || [[ -z ${ADYEN_API_KEY+x} ]] || [[ -z ${ADYEN_POS_POI_ID+x} ]]; then
+            echo "Expected environment variables not found. Please set the ADYEN_HMAC_KEY, ADYEN_API_KEY, ADYEN_POS_POI_ID environment variables in https://gitpod.io/variables and restart."
+            exit 1
+          fi
+          dotnet run --project in-person-payments-loyalty-example
         ;;
         
         "paybylink-example")
