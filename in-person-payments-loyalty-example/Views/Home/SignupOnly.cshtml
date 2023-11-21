@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "Adyen Signup Only View";
+    string poiId = ViewBag.PoiId;
+    string saleId = ViewBag.SaleId;
+}
+
+<div id="loading-grid" class="loading-grid disabled">
+  <!-- Loading animation start -->
+  <div class="loading-animation"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+  <!-- Loading animation end -->
+  <div class="loading-description">Waiting for terminal response ...</div>
+  <input type="button" id="cancel-operation-button" class="cancel-operation-button" value="Cancel"/>
+</div>
+
+<div class="container">
+  <main role="main" class="pb-3">
+    <div class="main-container">
+      <div class="info">
+        <div class="info-grid">
+          <ul class="info-grid-list">
+            <li class="info-grid-item">
+              <p class="info-grid-item-title">
+                SALE ID:
+                <b class="info-grid-item-description">
+                  @saleId
+                </b>
+              </p>
+            </li>
+            <li class="info-grid-item">
+              <p class="info-grid-item-title">
+                POI ID:
+                <b class="info-grid-item-description">
+                  @poiId
+                </b>
+              </p>
+            </li>
+          </ul>
+          <p>
+            <b>Click the button below to sign-up for the loyalty program.</b>
+          </p>
+          <input type="button" id="signup-only-button" class="signup-only-button" value="Sign-up"/>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Binds all buttons-->
+<script src="~/js/signuponly-bindings.js" asp-append-version="true"></script>

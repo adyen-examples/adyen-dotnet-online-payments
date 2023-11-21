@@ -12,7 +12,8 @@ Get started by navigating to one of the supported demos below.
 | [`Checkout Example`](checkout-example) | E-commerce checkout flow with different payment methods. | [See below](#checkout-example) | 
 | [`Checkout Advanced Example`](checkout-advanced-example) | E-commerce checkout flow with different payment methods, using the 3 steps flow. | [See below](#checkout-advanced-example) |
 | [`Authorisation Adjustment Example`](authorisation-adjustment-example) | Pre-authorise a payment, adjust the authorised amount, capture or reverse the payment. | [See below](#authorisation-adjustment-example) | 
-| [`In-person Payments Example`](in-person-payments-example) | In-person payments using a POS terminal and the terminal-api/sync endpoint. | [See below](#in-person-payments-example) |
+| [`In-person Payments Example`](in-person-payments-example) | In-person payments using a POS terminal and the terminal-api/sync endpoint to create payment requests. | [See below](#in-person-payments-example) |
+| [`In-person Payments Loyalty Example`](in-person-payments-loyalty-example) | In-person payments using a POS terminal and the terminal-api/sync endpoint to create card acquisition requests. | [See below](#in-person-payments-loyalty-example) |
 | [`Gift Card Example`](giftcard-example) | Gift Cards checkout flow using partial orders. | [See below](#gift-card-example) | 
 | [`Giving Example`](giving-example) | Donation flow using Adyen Giving. | [See below](#giving-example) | 
 | [`Pay by Link Example`](paybylink-example) | Pay by Link flow. | [See below](#pay-by-link-example) | 
@@ -57,6 +58,17 @@ The [`authorisation adjustment example`](authorisation-adjustment-example) repos
 The [in-person payments example](in-person-payments-example) features an in-person payment [cloud terminal API](https://docs.adyen.com/point-of-sale/design-your-integration/choose-your-architecture/cloud/) integration. Within this demo app, you can make in-person payments using a terminal, initiate reversals (refunds) and check transaction statuses.
 
 ![Card In-person Payments Demo](in-person-payments-example/wwwroot/images/cardinpersonpayments.gif)
+
+## [In-person Payments Loyalty Example](in-person-payments-loyalty-example)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/in-person-payments-loyalty-example)
+
+[First time with Gitpod?](https://github.com/adyen-examples/.github/blob/main/pages/gitpod-get-started.md)
+
+![Card In-person Payments Demo](in-person-payments-loyalty-example/wwwroot/images/cardacquisitioncard.gif)
+
+The [in-person payments loyalty example](in-person-payments-loyalty-example) features an in-person payment [cloud terminal API](https://docs.adyen.com/point-of-sale/design-your-integration/choose-your-architecture/cloud/) integration. Within this demo app, you can make in-person payments using a terminal, create card acquisition requests, collect card details and apply discounts.
+
+![Card In-person Payments Loyalty Demo](in-person-payments-example/wwwroot/images/cardinpersonpaymentsloyalty.gif)
 
 ## [Gift Card Example](giftcard-example)
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/giftcard-example)

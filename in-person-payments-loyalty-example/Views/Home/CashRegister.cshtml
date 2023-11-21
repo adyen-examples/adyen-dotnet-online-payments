@@ -1,0 +1,77 @@
+﻿@using adyen_dotnet_in_person_payments_loyalty_example.Models;
+@{
+    ViewData["Title"] = "Adyen Cash Register View";
+    string poiId = ViewBag.PoiId;
+    string saleId = ViewBag.SaleId;
+    List<PizzaModel> list = ViewBag.Pizzas;
+}
+
+         
+<div id="loading-grid" class="loading-grid disabled">
+  <!-- Loading animation start -->
+  <div class="loading-animation"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+  <!-- Loading animation end -->
+  <div class="loading-description">Waiting for terminal response ...</div>
+  <input type="button" id="cancel-operation-button" class="cancel-operation-button" value="Cancel"/>
+</div>
+
+<div class="container">
+  <main role="main" class="pb-3">
+    <div class="main-container">
+      <div class="info">
+        <div id="pizzas-section" class="pizzas-section">
+          <div class="pizzas-grid">
+            <ul class="pizzas-grid-list">
+              @foreach (PizzaModel pizza in list)
+              {
+                <li class="pizzas-grid-item">
+                  <p class="pizzas-grid-item-title">@pizza.PizzaName</p>
+                  @if(pizza.IsDiscounted)
+                  {
+                    <div class="pizzas-grid-item-original-currency-amount">
+                      <p class="pizzas-grid-item-currency">€</p>
+                      <p class="pizzas-grid-item-original-amount">@pizza.OriginalAmount</p>
+                    </div>
+                  }
+                  <div class="pizzas-grid-item-currency-amount">
+                    <p class="pizzas-grid-item-currency">€</p>
+                    <p class="pizzas-grid-item-amount">@pizza.Amount</p>
+                  </div>
+                </li>
+              }
+            </ul>
+          </div>
+          <div class="info-grid">
+            <ul class="info-grid-list">
+              <li class="info-grid-item">
+                <p class="info-grid-item-title">
+                  SALE ID:
+                  <b class="info-grid-item-description">
+                    @saleId
+                  </b>
+                </p>
+              </li>
+              <li class="info-grid-item">
+                <p class="info-grid-item-title">
+                  POI ID:
+                  <b class="info-grid-item-description">
+                    @poiId
+                  </b>
+                </p>
+              </li>
+            </ul>
+
+            <form id="card-acquisition-request-form" method="post">
+              <input type="text" id="pizzaName" name="pizzaName" hidden>
+              <button type="submit" id="card-acquisition-request-button" class="card-acquisition-request-button">Pay</button>
+            </form>
+        
+            <input type="button" id="loyalty-button" class="loyalty-button" value="Apply discount"/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<!-- Binds all buttons for table selection -->
+<script src="~/js/cashregister-bindings.js" asp-append-version="true"></script>
