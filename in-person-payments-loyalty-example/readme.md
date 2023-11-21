@@ -32,12 +32,9 @@ This demo leverages Adyen's API Library for .NET ([GitHub](https://github.com/Ad
 git clone https://github.com/adyen-examples/adyen-dotnet-online-payments.git
 ```
 
-
-## 2. Set the environment variables 
-
-You will need .NET Core SDK 6.x. to run this application locally.
-* [API key](https://docs.adyen.com/user-management/how-to-get-the-api-key)
-* [HMAC Key](https://docs.adyen.com/development-resources/webhooks/verify-hmac-signatures)
+## 2. Set the environment variables
+* [Adyen API Key](https://docs.adyen.com/user-management/how-to-get-the-api-key)
+* [Adyen HMAC Key](https://docs.adyen.com/development-resources/webhooks/verify-hmac-signatures)
 * `ADYEN_POS_POI_ID`: the unique ID of your payment terminal for the NEXO Sale to POI protocol.
    - **Format:** `[device model]-[serial number]` **Example:** `V400m-123456789`
 
