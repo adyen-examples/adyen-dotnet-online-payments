@@ -2,14 +2,15 @@
 
 ## Run demo in one-click
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-java-spring-online-payments/tree/main/in-person-payments-loyalty-example)
-&nbsp;[First time with Gitpod?](https://github.com/adyen-examples/.github/blob/main/pages/gitpod-get-started.md)
+
+[First time with Gitpod?](https://github.com/adyen-examples/.github/blob/main/pages/gitpod-get-started.md)
 
 ## Description
 This demo shows developers how to implement a loyalty flow using the [Adyen Cloud Terminal API](https://docs.adyen.com/point-of-sale/design-your-integration/choose-your-architecture/cloud/). 
 This is done using [Card Acquisition](https://docs.adyen.com/point-of-sale/card-acquisition/), and enables you to sign-up a shopper to a loyalty program or check cardholder details before applying discounts.
 We describe two flows:
-1. One where the shopper wants to buy a pizza and wants to sign-up to your loyalty program-  [Card Acquisition requests followed by a payment](https://docs.adyen.com/point-of-sale/card-acquisition/#continue-with-payment).
-2. One where the shopper only wants to sign-up to your loyalty program - [Card Acquisition requests followed by a cancellation](https://docs.adyen.com/point-of-sale/card-acquisition/#cancel-completed).
+1. One where the shopper wants to buy a pizza and wants to sign-up to your loyalty program - This is known as a [card acquisition request followed by a payment](https://docs.adyen.com/point-of-sale/card-acquisition/#continue-with-payment).
+2. One where the shopper only wants to sign-up to your loyalty program - This is known as a [card acquisition request followed by a cancellation](https://docs.adyen.com/point-of-sale/card-acquisition/#cancel-completed).
 
 There are typically two ways to integrate in-person payments: local or cloud communications.
 To find out which solution (or hybrid) suits your needs, visit the following [documentation page](https://docs.adyen.com/point-of-sale/design-your-integration/choose-your-architecture/#choosing-between-cloud-and-local).
