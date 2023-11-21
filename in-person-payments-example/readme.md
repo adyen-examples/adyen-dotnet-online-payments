@@ -115,11 +115,10 @@ If you use a tunneling service like ngrok, the webhook URL will be the generated
     - Make sure the webhook is **enabled** to send notifications
 
     
-7. Set the following environment variables in your terminal environment: `ADYEN_API_KEY`, `ADYEN_CLIENT_KEY`, `ADYEN_MERCHANT_ACCOUNT` and `ADYEN_HMAC_KEY`. Note that some IDEs will have to be restarted for environment variables to be injected properly.
+7. Set the following environment variables in your terminal environment: `ADYEN_API_KEY` and `ADYEN_HMAC_KEY`. Note that some IDEs will have to be restarted for environment variables to be injected properly.
 
 ```shell
 export ADYEN_API_KEY=yourAdyenApiKey
-export ADYEN_MERCHANT_ACCOUNT=yourAdyenMerchantAccount
 export ADYEN_HMAC_KEY=yourAdyenHmacKey
 export ADYEN_POS_POI_ID=V400m-123456789
 ```
@@ -128,7 +127,6 @@ On Windows CMD you can use this command instead.
 
 ```shell
 set ADYEN_API_KEY=yourAdyenApiKey
-set ADYEN_MERCHANT_ACCOUNT=yourAdyenMerchantAccount
 set ADYEN_HMAC_KEY=yourAdyenHmacKey
 set ADYEN_POS_POI_ID=V400m-123456789
 ```
