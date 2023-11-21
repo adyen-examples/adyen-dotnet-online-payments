@@ -33,12 +33,10 @@ You can find the [Terminal API documentation](https://docs.adyen.com/point-of-sa
 ## Run integration on [Gitpod](https://gitpod.io/)
 1. Open your [Adyen Test Account](https://ca-test.adyen.com/ca/ca/overview/default.shtml) and create a set of [API keys](https://docs.adyen.com/user-management/how-to-get-the-api-key).
     - [`ADYEN_API_KEY`](https://docs.adyen.com/user-management/how-to-get-the-api-key)
-    - [`ADYEN_MERCHANT_ACCOUNT`](https://docs.adyen.com/account/account-structure)
 
 
 2. Go to [Gitpod environment variables](https://gitpod.io/variables) and set the following variables with a scope of `*/*`:
    - [`ADYEN_API_KEY`](https://docs.adyen.com/user-management/how-to-get-the-api-key) - Your Adyen API Key.
-   - [`ADYEN_MERCHANT_ACCOUNT`](https://docs.adyen.com/account/account-structure) - Merchant account that the terminal is assigned to.
    - `ADYEN_POS_POI_ID` - This is the **case-sensitive** unique ID (e.g. `V400m-123456789`) of your payment terminal for the NEXO Sale to POI protocol. 
 
 > **Note**: If you'd like to check the connection of your terminal, you can do so in the Customer Area → `In-person payments` → `Terminals`.
@@ -78,7 +76,6 @@ git clone https://github.com/adyen-examples/adyen-dotnet-online-payments.git
 
 2. Open your [Adyen Test Account](https://ca-test.adyen.com/ca/ca/overview/default.shtml) and create a set of [API keys](https://docs.adyen.com/user-management/how-to-get-the-api-key).
     - [`ADYEN_API_KEY`](https://docs.adyen.com/user-management/how-to-get-the-api-key)
-    - [`ADYEN_MERCHANT_ACCOUNT`](https://docs.adyen.com/account/account-structure)
 
 
 3. Set the [`ADYEN_POS_POI_ID`] as variable, which is the unique ID of your payment terminal for the NEXO Sale to POI protocol. **Format:** `[device model]-[serial number]`.
