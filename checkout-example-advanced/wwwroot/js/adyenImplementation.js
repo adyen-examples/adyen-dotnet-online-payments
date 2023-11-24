@@ -18,6 +18,7 @@ async function initCheckout() {
                 card: {
                     hasHolderName: true,
                     holderNameRequired: true,
+                    billingAddressRequired: true,
                     name: "Credit or debit card",
                     amount: {
                         value: 10000,
@@ -42,7 +43,9 @@ async function initCheckout() {
                 }
             },
             onAdditionalDetails: (state, component) => {
-                handleSubmission(state, component, "/api/submitAdditionalDetails");
+                if (state.isValid) {
+                    handleSubmission(state, component, "/api/submitAdditionalDetails");
+                }
             },
         };
         const checkout = await new AdyenCheckout(configuration);
@@ -81,6 +84,7 @@ async function sendPostRequest(url, data) {
 // Handles responses sent from your server to the client
 function handleServerResponse(res, component) {
     if (res.action) {
+        console.info(res);
         component.handleAction(res.action);
     } else {
         switch (res.resultCode) {
