@@ -13,7 +13,7 @@ tasks:
       echo "Installing dotnet ..."
       wget "https://dot.net/v1/dotnet-install.sh"
       chmod +x dotnet-install.sh
-      ./dotnet-install.sh --install-dir /workspace/dotnet
+      ./dotnet-install.sh --channel 6.0 --install-dir /workspace/dotnet
       rm dotnet-install.sh
       sudo ln -s /workspace/dotnet/dotnet /usr/bin/dotnet
       echo "Installing dotnet done."
