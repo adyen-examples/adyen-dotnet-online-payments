@@ -10,7 +10,7 @@ Get started by navigating to one of the supported demos below.
 | Demos | Description | Details |
 | --: | :-- | :-- |
 | [`Checkout Example`](checkout-example) | E-commerce checkout flow with different payment methods. | [See below](#checkout-example) | 
-| [`Checkout Advanced Example`](checkout-advanced-example) | E-commerce checkout flow with different payment methods, using the 3 steps flow. | [See below](#checkout-advanced-example) |
+| [`Checkout Advanced Example`](checkout-example-advanced) | E-commerce checkout flow with different payment methods, using the 3 steps flow. | [See below](#checkout-advanced-example) |
 | [`Authorisation Adjustment Example`](authorisation-adjustment-example) | Pre-authorise a payment, adjust the authorised amount, capture or reverse the payment. | [See below](#authorisation-adjustment-example) | 
 | [`In-person Payments Example`](in-person-payments-example) | In-person payments using a POS terminal and the terminal-api/sync endpoint to create payment requests. | [See below](#in-person-payments-example) |
 | [`In-person Payments Loyalty Example`](in-person-payments-loyalty-example) | In-person payments using a POS terminal and the terminal-api/sync endpoint to create card acquisition requests. | [See below](#in-person-payments-loyalty-example) |
