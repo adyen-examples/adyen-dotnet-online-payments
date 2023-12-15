@@ -67,12 +67,16 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
 
                 // Used for klarna, klarna is not supported everywhere, hence why we've defaulted to countryCode "NL" as it supports the following payment methods below:
                 // "Pay now", "Pay later" and "Pay over time", see docs for more info: https://docs.adyen.com/payment-methods/klarna#supported-countries.
-                CountryCode = "NL",
+                CountryCode = "NL", 
                 LineItems = new List<LineItem>()
                 {
                     new LineItem(quantity: 1, amountIncludingTax: 5000, description: "Sunglasses"),
                     new LineItem(quantity: 1, amountIncludingTax: 5000, description: "Headphones")
                 },
+                
+                // We strongly recommend that you the billingAddress in your request. 
+                // Card schemes require this for channel web, iOS, and Android implementations.
+                //BillingAddress = new BillingAddress() { ... },
                 AuthenticationData = new AuthenticationData()
                 {
                     AttemptAuthentication = AuthenticationData.AttemptAuthenticationEnum.Always,
