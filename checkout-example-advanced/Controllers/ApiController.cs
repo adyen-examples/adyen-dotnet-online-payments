@@ -67,15 +67,27 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
 
                 // Used for klarna, klarna is not supported everywhere, hence why we've defaulted to countryCode "NL" as it supports the following payment methods below:
                 // "Pay now", "Pay later" and "Pay over time", see docs for more info: https://docs.adyen.com/payment-methods/klarna#supported-countries.
-                CountryCode = "NL",
+                CountryCode = "NL", 
                 LineItems = new List<LineItem>()
                 {
                     new LineItem(quantity: 1, amountIncludingTax: 5000, description: "Sunglasses"),
                     new LineItem(quantity: 1, amountIncludingTax: 5000, description: "Headphones")
                 },
-                AdditionalData = new Dictionary<string, string>() { {  "allow3DS2", "true" } },
+                
+                // We strongly recommend that you the billingAddress in your request. 
+                // Card schemes require this for channel web, iOS, and Android implementations.
+                //BillingAddress = new BillingAddress() { ... },
+                AuthenticationData = new AuthenticationData()
+                {
+                    AttemptAuthentication = AuthenticationData.AttemptAuthenticationEnum.Always,
+                    // Add the following line for Native 3DS2:
+                    //ThreeDSRequestData = new ThreeDSRequestData()
+                    //{
+                    //    NativeThreeDS = ThreeDSRequestData.NativeThreeDSEnum.Preferred
+                    //}
+                },
                 Origin = _urlService.GetHostUrl(),
-                BrowserInfo = new BrowserInfo() { UserAgent = HttpContext.Request.Headers["user-agent"] }, // Add more browser info here. 
+                BrowserInfo = request.BrowserInfo,
                 ShopperIP = HttpContext.Connection.RemoteIpAddress?.ToString(),
                 PaymentMethod = request.PaymentMethod
             };
@@ -115,6 +127,9 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
             var detailsRequest = new PaymentDetailsRequest();
             if (!string.IsNullOrWhiteSpace(redirectResult))
             {
+                // For redirect, you are redirected to an Adyen domain to complete the 3DS2 challenge.
+                // After completing the 3DS2 challenge, you get the redirect result from Adyen in the returnUrl.
+                // We then pass on the redirectResult.
                 detailsRequest.Details = new PaymentCompletionDetails() { RedirectResult = redirectResult };
             }
 
