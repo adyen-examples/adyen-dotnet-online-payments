@@ -35,6 +35,7 @@ namespace adyen_dotnet_in_person_payments_example
                     options.ADYEN_API_KEY = Configuration[nameof(AdyenOptions.ADYEN_API_KEY)];
                     options.ADYEN_HMAC_KEY = Configuration[nameof(AdyenOptions.ADYEN_HMAC_KEY)];
                     options.ADYEN_POS_POI_ID = Configuration[nameof(AdyenOptions.ADYEN_POS_POI_ID)];
+                    options.ADYEN_TERMINAL_API_CLOUD_ENDPOINT = Configuration[nameof(AdyenOptions.ADYEN_TERMINAL_API_CLOUD_ENDPOINT)];
                     options.ADYEN_POS_SALE_ID = "SALE_ID_POS_42";
                 }
             );
@@ -57,7 +58,8 @@ namespace adyen_dotnet_in_person_payments_example
                         XApiKey = options.Value.ADYEN_API_KEY,
                         // Test environment.
                         Environment = Adyen.Model.Environment.Test,
-                        Timeout = 180
+                        Timeout = 180,
+                        CloudApiEndPoint = options.Value.ADYEN_TERMINAL_API_CLOUD_ENDPOINT
                     },
                     provider.GetRequiredService<IHttpClientFactory>(),
                     httpClientName
