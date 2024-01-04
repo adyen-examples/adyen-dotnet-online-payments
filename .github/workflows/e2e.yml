@@ -113,12 +113,6 @@ jobs:
         run: docker build -t in-person-payments-example-image:latest in-person-payments-example
       - name: Start in-person-payments-example container and use `http://localhost:3000` as the Terminal API Cloud endpoint
         run: docker run --rm -d --name in-person-payments-example-image -p 8080:80 -e ADYEN_TERMINAL_API_CLOUD_ENDPOINT="http://localhost:3000" -e ADYEN_API_KEY="${{ secrets.ADYEN_API_KEY }}" -e ADYEN_MERCHANT_ACCOUNT=${{ secrets.ADYEN_MERCHANT_ACCOUNT }} -e ADYEN_CLIENT_KEY=${{ secrets.ADYEN_CLIENT_KEY }} -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} in-person-payments-example-image:latest
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Start Adyen Mock Terminal API application on `http://localhost:3000`
         run: docker run --rm -d --name adyen-mock-terminal-api -p 3000:3000 -e PORT=3000 --network host ghcr.io/adyen-examples/adyen-mock-terminal-api:main
       - name: Run testing suite against in-person-payments-example-image
