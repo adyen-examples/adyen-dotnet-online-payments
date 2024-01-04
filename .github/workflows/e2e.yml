@@ -119,6 +119,8 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Pull Docker image
+        run: docker pull ghcr.io/adyen-examples/adyen-mock-terminal-api:main
       - name: Start Adyen Mock Terminal API application on `http://localhost:3000`
         run: docker run --rm -d --name adyen-mock-terminal-api -p 3000:3000 -e PORT=3000 --network host ghcr.io/adyen-examples/adyen-mock-terminal-api:main
       - name: Run testing suite against in-person-payments-example-image
