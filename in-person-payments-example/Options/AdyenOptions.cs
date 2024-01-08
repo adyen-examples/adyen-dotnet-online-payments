@@ -29,6 +29,7 @@ namespace adyen_dotnet_in_person_payments_example.Options
         /// <summary>
         /// Default: null, unless you want to override this to point to a different endpoint based on your region.
         /// See https://docs.adyen.com/point-of-sale/design-your-integration/terminal-api/#cloud.
+        /// Optionally, if you do not own an Adyen Terminal/POS (yet), you can test this application using Adyen's Mock Terminal-API Application on GitHub: https://github.com/adyen-examples/adyen-mock-terminal-api (see README).
         /// </summary>
         public string ADYEN_TERMINAL_API_CLOUD_ENDPOINT { get; set; }
     }
