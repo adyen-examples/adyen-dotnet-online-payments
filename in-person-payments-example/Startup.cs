@@ -36,7 +36,7 @@ namespace adyen_dotnet_in_person_payments_example
                     options.ADYEN_HMAC_KEY = Configuration[nameof(AdyenOptions.ADYEN_HMAC_KEY)];
                     options.ADYEN_POS_POI_ID = Configuration[nameof(AdyenOptions.ADYEN_POS_POI_ID)];
                     options.ADYEN_TERMINAL_API_CLOUD_ENDPOINT = Configuration[nameof(AdyenOptions.ADYEN_TERMINAL_API_CLOUD_ENDPOINT)];
-                    options.ADYEN_POS_SALE_ID = "SALE_ID_POS_42";
+                    options.ADYEN_POS_SALE_ID = "SALE_ID_POS";
                 }
             );
 
