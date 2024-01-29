@@ -111,9 +111,9 @@ jobs:
         uses: actions/checkout@v4
       - name: Build in-person-payments-example image
         run: docker build -t in-person-payments-example-image:latest in-person-payments-example
-      - name: Start in-person-payments-example container and use `http://localhost:3000` as the Terminal API Cloud endpoint
-        run: docker run --rm -d --name in-person-payments-example-image -p 8080:80 -e ADYEN_TERMINAL_API_CLOUD_ENDPOINT=http://localhost:3000 -e ADYEN_POS_POI_ID=V400m-123456789 -e ADYEN_API_KEY="${{ secrets.ADYEN_API_KEY }}" -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} in-person-payments-example-image:latest
-      - name: Start Adyen Mock Terminal API application on `http://localhost:3000`
-        run: docker run --rm -d --name adyen-mock-terminal-api -p 3000:3000 -e PORT=3000 --network host ghcr.io/adyen-examples/adyen-mock-terminal-api:main
+      - name: Start in-person-payments-example container and override the ADYEN_TERMINAL_API_CLOUD_ENDPOINT to point to the default docker bridge and port 3000 (`http://172.17.0.1:3000`)
+        run: docker run --rm -d --name in-person-payments-example-image -p 8080:80 -e ADYEN_API_KEY="${{ secrets.ADYEN_API_KEY }}" -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} -e ADYEN_TERMINAL_API_CLOUD_ENDPOINT=http://172.17.0.1:3000 -e ADYEN_POS_POI_ID=V400m-123456789 in-person-payments-example-image:latest
+      - name: Start the Adyen Mock Terminal API Application on port 3000
+        run: docker run --rm -d --name adyen-mock-terminal-api -p 3000:3000 -e PORT=3000 ghcr.io/adyen-examples/adyen-mock-terminal-api:main
       - name: Run testing suite against in-person-payments-example-image
         run: docker run --rm --name adyen-testing-suite -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} -e PLAYWRIGHT_FOLDERNAME=in-person-payments --network host ghcr.io/adyen-examples/adyen-testing-suite:main
