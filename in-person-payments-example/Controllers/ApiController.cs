@@ -85,10 +85,10 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                 {
                     case ResultType.Success:
                         table.PaymentStatus = PaymentStatus.Paid;
-                        table.PaymentStatusDetails.PoiTransactionId = paymentResponse.POIData.POITransactionID.TransactionID;
-                        table.PaymentStatusDetails.PoiTransactionTimeStamp = paymentResponse.POIData.POITransactionID.TimeStamp;
-                        table.PaymentStatusDetails.SaleTransactionId = paymentResponse.SaleData.SaleTransactionID.TransactionID;
-                        table.PaymentStatusDetails.SaleTransactionTimeStamp = paymentResponse.SaleData.SaleTransactionID.TimeStamp;
+                        table.PaymentStatusDetails.PoiTransactionId = paymentResponse.POIData?.POITransactionID?.TransactionID;
+                        table.PaymentStatusDetails.PoiTransactionTimeStamp = paymentResponse.POIData?.POITransactionID?.TimeStamp;
+                        table.PaymentStatusDetails.SaleTransactionId = paymentResponse.SaleData?.SaleTransactionID?.TransactionID;
+                        table.PaymentStatusDetails.SaleTransactionTimeStamp = paymentResponse.SaleData?.SaleTransactionID?.TimeStamp;
 
                         return Ok(new CreatePaymentResponse()
                         {
@@ -97,10 +97,10 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                     case ResultType.Failure:
                         table.PaymentStatus = PaymentStatus.NotPaid;
                         table.PaymentStatusDetails.RefusalReason = "Payment terminal responded with: " + paymentResponse.Response.ErrorCondition;
-                        table.PaymentStatusDetails.PoiTransactionId = paymentResponse.POIData.POITransactionID.TransactionID;
-                        table.PaymentStatusDetails.PoiTransactionTimeStamp = paymentResponse.POIData.POITransactionID.TimeStamp;
-                        table.PaymentStatusDetails.SaleTransactionId = paymentResponse.SaleData.SaleTransactionID.TransactionID;
-                        table.PaymentStatusDetails.SaleTransactionTimeStamp = paymentResponse.SaleData.SaleTransactionID.TimeStamp;
+                        table.PaymentStatusDetails.PoiTransactionId = paymentResponse.POIData?.POITransactionID?.TransactionID;
+                        table.PaymentStatusDetails.PoiTransactionTimeStamp = paymentResponse.POIData?.POITransactionID?.TimeStamp;
+                        table.PaymentStatusDetails.SaleTransactionId = paymentResponse.SaleData?.SaleTransactionID?.TransactionID;
+                        table.PaymentStatusDetails.SaleTransactionTimeStamp = paymentResponse.SaleData?.SaleTransactionID?.TimeStamp;
 
                         return Ok(new CreatePaymentResponse()
                         {
