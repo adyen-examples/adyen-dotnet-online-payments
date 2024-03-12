@@ -70,7 +70,8 @@ namespace adyen_dotnet_in_person_payments_example.Controllers
                 // Documentation: https://docs.adyen.com/online-payments/refund#refunded-reversed
                 await ProcessRefundedReversedNotificationAsync(container.NotificationItem);
 
-                return Ok("[accepted]");
+                // Return a 202 status with an empty response body
+                return Accepted();
             }
             catch (Exception e)
             {

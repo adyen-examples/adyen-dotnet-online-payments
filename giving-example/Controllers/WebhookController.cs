@@ -52,7 +52,8 @@ namespace adyen_dotnet_giving_example.Controllers
                 // Process notification asynchronously.
                 await ProcessNotificationAsync(container.NotificationItem);
 
-                return Ok("[accepted]");
+                // Return a 202 status with an empty response body
+                return Accepted();
             }
             catch (Exception e)
             {

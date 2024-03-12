@@ -56,7 +56,8 @@ namespace adyen_dotnet_subscription_example.Controllers
 
                 await ProcessRecurringContractNotificationAsync(container.NotificationItem);
 
-                return Ok("[accepted]");
+                // Return a 202 status with an empty response body
+                return Accepted();
             }
             catch (Exception e)
             {

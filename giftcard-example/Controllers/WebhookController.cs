@@ -55,7 +55,8 @@ namespace adyen_dotnet_giftcard_example.Controllers
 
                 await ProcessOrderClosedNotificationAsync(container.NotificationItem);
 
-                return Ok("[accepted]");
+                // Return a 202 status with an empty response body
+                return Accepted();
             }
             catch (Exception e)
             {
