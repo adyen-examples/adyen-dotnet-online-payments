@@ -53,7 +53,7 @@ namespace adyen_dotnet_checkout_example.Controllers
                 await ProcessNotificationAsync(container.NotificationItem);
 
                 // Return a 202 status with an empty response body
-                return StatusCode(202);
+                return Accepted();
             }
             catch (Exception e)
             {
