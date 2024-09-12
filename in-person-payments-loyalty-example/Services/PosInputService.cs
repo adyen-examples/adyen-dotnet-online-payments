@@ -1,9 +1,10 @@
-using Adyen.Model.Nexo;
-using Adyen.Model.Nexo.Message;
-using Adyen.Service;
+
 using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
+using Adyen.Model.TerminalApi;
+using Adyen.Model.TerminalApi.Message;
+using Adyen.Service;
 
 namespace adyen_dotnet_in_person_payments_loyalty_example.Services
 {
@@ -15,12 +16,12 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services
     
     public class PosInputService : IPosInputService
     {
-        private readonly IPosPaymentCloudApi _posPaymentCloudApi;
+        private readonly ITerminalCloudApi _terminalCloudApi;
         private readonly ILogger<PosInputService> _logger;
 
-        public PosInputService(IPosPaymentCloudApi posPaymentCloudApi, ILogger<PosInputService> logger)
+        public PosInputService(ITerminalCloudApi terminalCloudApi, ILogger<PosInputService> logger)
         {
-            _posPaymentCloudApi = posPaymentCloudApi;
+            _terminalCloudApi = terminalCloudApi;
             _logger = logger;
         }
 
@@ -80,7 +81,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services
                     }
                 }
             };
-            SaleToPOIResponse response = await _posPaymentCloudApi.TerminalApiCloudSynchronousAsync(request);
+            SaleToPOIResponse response = await _terminalCloudApi.TerminalRequestSynchronousAsync(request);
             InputResponse inputResponse = response?.MessagePayload as InputResponse;
             return inputResponse?.InputResult;
         }
@@ -130,7 +131,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services
                     }
                 }
             };
-            var response = await _posPaymentCloudApi.TerminalApiCloudSynchronousAsync(request);
+            var response = await _terminalCloudApi.TerminalRequestSynchronousAsync(request);
             InputResponse inputResponse = response?.MessagePayload as InputResponse;
             return inputResponse?.InputResult;
         }

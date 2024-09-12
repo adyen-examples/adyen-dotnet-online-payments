@@ -1,11 +1,11 @@
-﻿using Adyen.Model.Nexo;
-using Adyen.Model.Nexo.Message;
-using Adyen.Model.Terminal;
+﻿using Adyen.Model.Terminal;
 using Adyen.Service;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Adyen.Model.Management;
+using Adyen.Model.TerminalApi;
+using Adyen.Model.TerminalApi.Message;
 
 namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisition
 {
@@ -18,7 +18,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisiti
         /// <param name="serviceId">Your unique ID for this request, consisting of 1-10 alphanumeric characters. Must be unique within the last 48 hours for the terminal (POIID) being used. Generated using <see cref="Utilities.IdUtility.GetRandomAlphanumericId(int0)"/>.</param>
         /// <param name="poiId">Your unique ID of the terminal to send this request to. Format: [device model]-[serial number]. Seealso <seealso cref="Options.AdyenOptions.ADYEN_POS_POI_ID"/></param>
         /// <param name="saleId">Your unique ID for the POS system (cash register) to send this request from. Seealso <see cref="Options.AdyenOptions.ADYEN_POS_SALE_ID"/>.</param>
-        /// <param name="currency">Your <see cref="AmountsReq.Currency"/> (example: "EUR", "USD").</param>
+        /// <param name="currency">Your <see cref="Currency"/> (example: "EUR", "USD").</param>
         /// <param name="amount">Your <see cref="AmountsReq.RequestedAmount"/> in DECIMAL units (example: 42.99), the terminal API does not use minor units.</param>
         /// <param name="cardAcquisitionTimeStamp">The timestamp from the card acquisition, se ealso <see cref="PosCardAcquisition.SendCardAcquisitionRequest(string, string, string, decimal?, CancellationToken)"/>.</param>
         /// <param name="cardAcquisitionTransactionId">The transaction ID from the card acquisition response, see also <seealso cref="PosCardAcquisition.SendCardAcquisitionRequest(string, string, string, decimal?, CancellationToken)"/>.</param>
@@ -48,11 +48,11 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisiti
 
     public class PosCardAcquisitionPaymentService : IPosCardAcquisitionPaymentService
     {
-        private readonly IPosPaymentCloudApi _posPaymentCloudApi;
+        private readonly ITerminalCloudApi _terminalCloudApi;
 
-        public PosCardAcquisitionPaymentService(IPosPaymentCloudApi posPaymentCloudApi)
+        public PosCardAcquisitionPaymentService(ITerminalCloudApi terminalCloudApi)
         {                       
-            _posPaymentCloudApi = posPaymentCloudApi;
+            _terminalCloudApi = terminalCloudApi;
         }
 
         public Task<SaleToPOIResponse> SendPaymentRequestNewCustomerAsync(string serviceId, string poiId, string saleId, string currency, decimal? amount, string shopperEmail, string shopperReference, DateTime cardAcquisitionTimeStamp, string cardAcquisitionTransactionId, string transactionId, CancellationToken cancellationToken)
@@ -106,7 +106,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisiti
                 }
             };
 
-            return _posPaymentCloudApi.TerminalApiCloudSynchronousAsync(request);
+            return _terminalCloudApi.TerminalRequestSynchronousAsync(request);
         }
 
         public Task<SaleToPOIResponse> SendPaymentRequestExistingCustomerAsync(string serviceId, string poiId, string saleId, string currency, decimal? amount, DateTime cardAcquisitionTimeStamp, string cardAcquisitionTransactionId, string transactionId, CancellationToken cancellationToken)
@@ -153,7 +153,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisiti
                     }
                 }
             };
-            return _posPaymentCloudApi.TerminalApiCloudSynchronousAsync(request);
+            return _terminalCloudApi.TerminalRequestSynchronousAsync(request);
         }
     }
 }

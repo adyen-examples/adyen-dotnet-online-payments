@@ -1,5 +1,4 @@
 using Adyen.HttpClient;
-using Adyen.Model.Nexo;
 using adyen_dotnet_in_person_payments_loyalty_example.Models;
 using adyen_dotnet_in_person_payments_loyalty_example.Models.Responses;
 using adyen_dotnet_in_person_payments_loyalty_example.Options;
@@ -16,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Adyen.Model.TerminalApi;
 
 namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
 {

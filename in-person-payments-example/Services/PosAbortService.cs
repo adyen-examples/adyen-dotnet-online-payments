@@ -1,9 +1,9 @@
-﻿using Adyen.Model.Nexo;
-using Adyen.Model.Nexo.Message;
-using Adyen.Service;
-using adyen_dotnet_in_person_payments_example.Utilities;
+﻿using adyen_dotnet_in_person_payments_example.Utilities;
 using System.Threading;
 using System.Threading.Tasks;
+using Adyen.Model.TerminalApi;
+using Adyen.Model.TerminalApi.Message;
+using Adyen.Service;
 
 namespace adyen_dotnet_in_person_payments_example.Services
 {
@@ -23,17 +23,17 @@ namespace adyen_dotnet_in_person_payments_example.Services
 
     public class PosAbortService : IPosAbortService
     {
-        private readonly IPosPaymentCloudApi _posPaymentCloudApi;
+        private readonly ITerminalCloudApi _terminalCloudApi;
 
-        public PosAbortService(IPosPaymentCloudApi posPaymentCloudApi)
+        public PosAbortService(ITerminalCloudApi terminalCloudApi)
         {
-            _posPaymentCloudApi = posPaymentCloudApi;
+            _terminalCloudApi = terminalCloudApi;
         }
 
         public Task<SaleToPOIResponse> SendAbortRequestAsync(string serviceId, string poiId, string saleId, CancellationToken cancellationToken)
         {
             SaleToPOIRequest request = GetAbortRequest(serviceId, poiId, saleId);
-            return _posPaymentCloudApi.TerminalApiCloudSynchronousAsync(request);
+            return _terminalCloudApi.TerminalRequestSynchronousAsync(request);
         }
 
         private SaleToPOIRequest GetAbortRequest(string serviceId, string poiId, string saleId)

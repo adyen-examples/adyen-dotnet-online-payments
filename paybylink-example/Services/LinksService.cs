@@ -54,7 +54,7 @@ namespace adyen_dotnet_paybylink_example.Services
                 _paymentLinkRepository.Upsert(
                     id: response.Id, 
                     reference: response.Reference, response.Url, 
-                    expiresAt: DateTime.Parse(response.ExpiresAt), 
+                    expiresAt: response.ExpiresAt, 
                     status: response.Status.ToString(),
                     isReusable: response.Reusable.HasValue ? response.Reusable.Value : false
                 );
@@ -81,7 +81,7 @@ namespace adyen_dotnet_paybylink_example.Services
                     _paymentLinkRepository.Upsert(
                         id: response.Id,
                         reference: response.Reference, response.Url,
-                        expiresAt: DateTime.Parse(response.ExpiresAt),
+                        expiresAt: response.ExpiresAt,
                         status: response.Status.ToString(),
                         isReusable: response.Reusable.HasValue ? response.Reusable.Value : false
                     );
