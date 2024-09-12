@@ -80,6 +80,7 @@ namespace adyen_dotnet_giving_example
                 };
             }).SetHandlerLifetime(Timeout.InfiniteTimeSpan);
 
+            services.AddSingleton<IDonationsService, DonationsService>();
             services.AddSingleton<IPaymentsService, PaymentsService>(); // Used to be called "Checkout.cs" in Adyen .NET 9.x.x and below, see https://github.com/Adyen/adyen-dotnet-api-library/blob/9.2.1/Adyen/Service/Checkout.cs.
             services.AddSingleton<HmacValidator>();
         }

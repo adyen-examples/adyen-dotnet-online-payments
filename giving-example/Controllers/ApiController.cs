@@ -24,13 +24,15 @@ namespace adyen_dotnet_giving_example.Controllers
         private readonly ILogger<ApiController> _logger;
         private readonly IUrlService _urlService;
         private readonly IPaymentsService _paymentsService;
+        private readonly IDonationsService _donationsService;
         private readonly string _merchantAccount;
         
-        public ApiController(IPaymentsService paymentsService, ILogger<ApiController> logger, IUrlService urlService, IOptions<AdyenOptions> options)
+        public ApiController(IPaymentsService paymentsService, IDonationsService donationsService, IUrlService urlService, IOptions<AdyenOptions> options,  ILogger<ApiController> logger)
         {
             _logger = logger;
             _urlService = urlService;
             _paymentsService = paymentsService;
+            _donationsService = donationsService;
             _merchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT;
         }
 
@@ -54,11 +56,11 @@ namespace adyen_dotnet_giving_example.Controllers
                     return NotFound();
                 }
                 
-                var response = await _paymentsService.DonationsAsync(new DonationPaymentRequest()
+                var response = await _donationsService.DonationsAsync(new DonationPaymentRequest()
                 {
                     Amount = new Amount(amountRequest.Currency, amountRequest.Value),
                     Reference = Guid.NewGuid().ToString(),
-                    PaymentMethod = new CheckoutPaymentMethod(new CardDetails()),
+                    PaymentMethod = new DonationPaymentMethod(new CardDonations()), // Pass the payment method of the shopper here
                     DonationToken = donationToken,
                     DonationOriginalPspReference = pspReference,
                     DonationAccount = "MyCharity_Giving_TEST", // Set your donation account here.
@@ -117,7 +119,7 @@ namespace adyen_dotnet_giving_example.Controllers
                 
                 AdditionalData = new Dictionary<string, string>() { {  "allow3DS2", "true" } },
                 Origin = _urlService.GetHostUrl(),
-                BrowserInfo = new BrowserInfo() { UserAgent = HttpContext.Request.Headers["user-agent"] }, // Add more browser info here. 
+                BrowserInfo = request.BrowserInfo, 
                 ShopperIP = HttpContext.Connection.RemoteIpAddress?.ToString(),
                 PaymentMethod = request.PaymentMethod
             };
