@@ -1,5 +1,5 @@
 using Adyen.HttpClient;
-using Adyen.Model.Nexo;
+using Adyen.Model.TerminalApi;
 using adyen_dotnet_in_person_payments_example.Models;
 using adyen_dotnet_in_person_payments_example.Models.Requests;
 using adyen_dotnet_in_person_payments_example.Models.Responses;

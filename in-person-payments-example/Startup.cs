@@ -73,7 +73,7 @@ namespace adyen_dotnet_in_person_payments_example
             });
 
             // Register Adyen services and utilities.
-            services.AddScoped<IPosPaymentCloudApi, PosPaymentCloudApi>();
+            services.AddScoped<ITerminalCloudApi, TerminalCloudApi>();
             services.AddSingleton<HmacValidator>();
 
             services.AddSingleton<ITableRepository, TableRepository>();

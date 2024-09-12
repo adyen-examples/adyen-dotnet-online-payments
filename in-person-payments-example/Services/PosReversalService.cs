@@ -1,10 +1,10 @@
-﻿using Adyen.Model.Nexo;
-using Adyen.Model.Nexo.Message;
-using Adyen.Service;
-using adyen_dotnet_in_person_payments_example.Utilities;
+﻿using adyen_dotnet_in_person_payments_example.Utilities;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Adyen.Model.TerminalApi;
+using Adyen.Model.TerminalApi.Message;
+using Adyen.Service;
 
 namespace adyen_dotnet_in_person_payments_example.Services
 {
@@ -27,17 +27,17 @@ namespace adyen_dotnet_in_person_payments_example.Services
 
     public class PosReversalService : IPosReversalService
     {
-        private readonly IPosPaymentCloudApi _posPaymentCloudApi;
+        private readonly ITerminalCloudApi _terminalCloudApi;
 
-        public PosReversalService(IPosPaymentCloudApi posPaymentCloudApi)
+        public PosReversalService(ITerminalCloudApi terminalCloudApi)
         {
-            _posPaymentCloudApi = posPaymentCloudApi;
+            _terminalCloudApi = terminalCloudApi;
         }
 
         public Task<SaleToPOIResponse> SendReversalRequestAsync(ReversalReasonType reversalReasonType, string saleTransactionId, string poiTransactionId, string poiId, string saleId, CancellationToken cancellationToken)
         {
             SaleToPOIRequest request = GetReversalRequest(reversalReasonType, saleTransactionId, poiTransactionId, poiId, saleId);
-            return _posPaymentCloudApi.TerminalApiCloudSynchronousAsync(request);
+            return _terminalCloudApi.TerminalRequestAsynchronousAsync(request);
         }
 
         private SaleToPOIRequest GetReversalRequest(ReversalReasonType reversalReasonType, string saleTransactionId, string poiTransactionId, string poiId, string saleId)

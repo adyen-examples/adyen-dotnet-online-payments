@@ -1,5 +1,4 @@
-﻿using Adyen.Model.Nexo;
-using adyen_dotnet_in_person_payments_example.Models;
+﻿using adyen_dotnet_in_person_payments_example.Models;
 using adyen_dotnet_in_person_payments_example.Options;
 using adyen_dotnet_in_person_payments_example.Repositories;
 using adyen_dotnet_in_person_payments_example.Services;
@@ -10,6 +9,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Adyen.Model.TerminalApi;
 
 namespace adyen_dotnet_in_person_payments_example.Controllers
 {

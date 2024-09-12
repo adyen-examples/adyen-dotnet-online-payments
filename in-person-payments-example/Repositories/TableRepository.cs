@@ -31,6 +31,50 @@ namespace adyen_dotnet_in_person_payments_example.Repositories
                     PaymentStatus = PaymentStatus.NotPaid
                 });
             }
+            
+            // Add tables for refusals
+            Tables.Add(new TableModel()
+            {
+                TableName = "Table 1.24 - NOT_ENOUGH_BALANCE",
+                Amount = 1.24M,
+                Currency = "EUR",
+                PaymentStatus = PaymentStatus.NotPaid
+            });
+            Tables.Add(new TableModel()
+            {
+                TableName = "Table 1.25 - BLOCK_CARD",
+                Amount = 1.25M,
+                Currency = "EUR",
+                PaymentStatus = PaymentStatus.NotPaid
+            });
+            Tables.Add(new TableModel()
+            {
+                TableName = "Table 1.26 - CARD_EXPIRED",
+                Amount = 1.26M,
+                Currency = "EUR",
+                PaymentStatus = PaymentStatus.NotPaid
+            });
+            Tables.Add(new TableModel()
+            {
+                TableName = "Table 1.27 - INVALID_AMOUNT",
+                Amount = 1.27M,
+                Currency = "EUR",
+                PaymentStatus = PaymentStatus.NotPaid
+            });
+            Tables.Add(new TableModel()
+            {
+                TableName = "Table 1.28 - INVALID_CARD",
+                Amount = 1.28M,
+                Currency = "EUR",
+                PaymentStatus = PaymentStatus.NotPaid
+            });
+            Tables.Add(new TableModel()
+            {
+                TableName = "Table 1.34 - WrongPin",
+                Amount = 1.34M,
+                Currency = "EUR",
+                PaymentStatus = PaymentStatus.NotPaid
+            });
         }
     }
 }

@@ -1,9 +1,8 @@
-﻿using adyen_dotnet_in_person_payments_loyalty_example.Utilities;
-using Adyen.Model.Nexo;
-using Adyen.Model.Nexo.Message;
-using Adyen.Service;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
+using Adyen.Model.TerminalApi;
+using Adyen.Model.TerminalApi.Message;
+using Adyen.Service;
 
 namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisition
 {
@@ -14,11 +13,11 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisiti
 
     public class PosCardAcquisitionAbortService : IPosCardAcquisitionAbortService
     {
-        private readonly IPosPaymentCloudApi _posPaymentCloudApi;
+        private readonly ITerminalCloudApi _terminalCloudApi;
 
-        public PosCardAcquisitionAbortService(IPosPaymentCloudApi posPaymentCloudApi)
+        public PosCardAcquisitionAbortService(ITerminalCloudApi terminalCloudApi)
         {
-            _posPaymentCloudApi = posPaymentCloudApi;
+            _terminalCloudApi = terminalCloudApi;
         }
 
         public Task<SaleToPOIResponse> SendAbortRequestAfterSignUpAsync(string serviceId, string poiId, string saleId, string textTitle, string textDescription, CancellationToken cancellationToken = default)
@@ -66,7 +65,7 @@ namespace adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisiti
                 }
             };
 
-            return _posPaymentCloudApi.TerminalApiCloudSynchronousAsync(request);
+            return _terminalCloudApi.TerminalRequestSynchronousAsync(request);
         }
     }
 }

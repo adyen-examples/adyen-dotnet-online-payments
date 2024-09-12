@@ -1,7 +1,6 @@
 ﻿using adyen_dotnet_in_person_payments_loyalty_example.Options;
 using adyen_dotnet_in_person_payments_loyalty_example.Repositories;
 using adyen_dotnet_in_person_payments_loyalty_example.Services;
-using Adyen.Model.Nexo;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System;
@@ -9,6 +8,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using adyen_dotnet_in_person_payments_loyalty_example.Services.CardAcquisition;
+using Adyen.Model.TerminalApi;
 
 namespace adyen_dotnet_in_person_payments_loyalty_example.Controllers
 {
