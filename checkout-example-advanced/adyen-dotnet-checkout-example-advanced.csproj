@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Adyen" Version="13.0.0" />
+    <PackageReference Include="Adyen" Version="14.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.25" />
   </ItemGroup>
 </Project>
