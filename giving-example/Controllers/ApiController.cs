@@ -39,46 +39,47 @@ namespace adyen_dotnet_giving_example.Controllers
         [HttpPost("api/donations")]
         public async Task<ActionResult<PaymentMethodsResponse>> Donations([FromBody] DonationAmountRequest amountRequest, CancellationToken cancellationToken = default)
         {
-            try
-            {
-                string pspReference = HttpContext.Session.GetString(PaymentOriginalPspReference);
-                string donationToken = HttpContext.Session.GetString(DonationToken);
+             try
+    {
+        string pspReference = HttpContext.Session.GetString(PaymentOriginalPspReference);
+        string donationToken = HttpContext.Session.GetString(DonationToken);
 
-                if (string.IsNullOrWhiteSpace(pspReference))
-                {
-                    _logger.LogInformation("Could not find the PspReference in the stored session.");
-                    return NotFound();
-                }
-                
-                if (string.IsNullOrWhiteSpace(donationToken))
-                {
-                    _logger.LogInformation("Could not find the DonationToken in the stored session.");
-                    return NotFound();
-                }
-                
-                var response = await _donationsService.DonationsAsync(new DonationPaymentRequest()
-                {
-                    Amount = new Amount(amountRequest.Currency, amountRequest.Value),
-                    Reference = Guid.NewGuid().ToString(),
-                    PaymentMethod = new DonationPaymentMethod(new CardDonations()), // Pass the payment method of the shopper here
-                    DonationToken = donationToken,
-                    DonationOriginalPspReference = pspReference,
-                    DonationAccount = "MyCharity_Giving_TEST", // Set your donation account here.
-                    ReturnUrl = $"{_urlService.GetHostUrl()}",
-                    MerchantAccount = _merchantAccount,
-                    ShopperInteraction = DonationPaymentRequest.ShopperInteractionEnum.ContAuth
-                }, cancellationToken: cancellationToken);
+        if (string.IsNullOrWhiteSpace(pspReference))
+        {
+            _logger.LogInformation("Could not find the PspReference in the stored session.");
+            return NotFound();
+        }
 
-                HttpContext.Session.Remove(PaymentOriginalPspReference);
-                HttpContext.Session.Remove(DonationToken);
-                
-                return Ok(response);
-            }
-            catch(Adyen.HttpClient.HttpClientException e)
-            {
-                _logger.LogError($"Request for PaymentMethods failed:\n{e.ResponseBody}\n");
-                throw;
-            }
+        if (string.IsNullOrWhiteSpace(donationToken))
+        {
+            _logger.LogInformation("Could not find the DonationToken in the stored session.");
+            return NotFound();
+        }
+
+        // Dynamically pass the payment method from the frontend
+        var response = await _donationsService.DonationsAsync(new DonationPaymentRequest()
+        {
+            Amount = new Amount(amountRequest.Currency, amountRequest.Value),
+            Reference = Guid.NewGuid().ToString(),
+            PaymentMethod = amountRequest.PaymentMethod,  // PaymentMethod is passed dynamically
+            DonationToken = donationToken,
+            DonationOriginalPspReference = pspReference,
+            DonationAccount = "MyCharity_Giving_TEST",  // Set your donation account here
+            ReturnUrl = $"{_urlService.GetHostUrl()}",
+            MerchantAccount = _merchantAccount,
+            ShopperInteraction = DonationPaymentRequest.ShopperInteractionEnum.ContAuth
+        }, cancellationToken: cancellationToken);
+
+        HttpContext.Session.Remove(PaymentOriginalPspReference);
+        HttpContext.Session.Remove(DonationToken);
+
+        return Ok(response);
+    }
+    catch (Adyen.HttpClient.HttpClientException e)
+    {
+        _logger.LogError($"Request for PaymentMethods failed:\n{e.ResponseBody}\n");
+        throw;
+    }
         }
 
         [HttpPost("api/getPaymentMethods")]
