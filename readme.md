@@ -23,6 +23,16 @@ Get started by navigating to one of the supported demos below.
 ## [Checkout Example](checkout-example)
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/checkout-example)
 
+#### 🌏  Open in other Cloud IDES
+
+Click any of the buttons below to start a new development environment to demo or contribute to the codebase without having to install anything on your machine:
+
+[![Open in Glitch](https://img.shields.io/badge/Open%20in-Glitch-blue?logo=glitch)](https://glitch.com/edit/#!/import/github/adyen-examples/adyen-dotnet-online-payments/tree/main/checkout-example)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/adyen-examples/adyen-dotnet-online-payments/tree/main/checkout-example)
+[![Edit in Codesandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/adyen-examples/adyen-dotnet-online-payments/tree/main/checkout-example)
+[![Open in Repl.it](https://replit.com/badge/github/withastro/astro)](https://replit.com/github/adyen-examples/adyen-dotnet-online-payments/tree/main/checkout-example)
+[![Open in Codeanywhere](https://codeanywhere.com/img/open-in-codeanywhere-btn.svg)](https://app.codeanywhere.com/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/checkout-example)
+
 [First time with Gitpod?](https://github.com/adyen-examples/.github/blob/main/pages/gitpod-get-started.md)
 
 The [`checkout example`](checkout-example) repository includes examples of PCI-compliant UI integrations for online payments with Adyen.
@@ -33,6 +43,8 @@ Check out the underlying code to see how you can integrate Adyen to give your sh
 
 ## [Checkout Advanced Example](checkout-example-advanced)
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/checkout-example-advanced)
+<a href="https://app.codeanywhere.com/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/checkout-example-advanced">
+  <img src="https://codeanywhere.com/img/open-in-codeanywhere-btn.svg" alt="Open in Codeanywhere" width="200"></a>
 
 [First time with Gitpod?](https://github.com/adyen-examples/.github/blob/main/pages/gitpod-get-started.md)
 
@@ -43,6 +55,8 @@ See the [advanced integration flow](https://docs.adyen.com/online-payments/web-d
 
 ## [Authorisation Adjustment Example](authorisation-adjustment-example)
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/authorisation-adjustment-example)
+<a href="https://app.codeanywhere.com/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/authorisation-adjustment-example">
+  <img src="https://codeanywhere.com/img/open-in-codeanywhere-btn.svg" alt="Open in Codeanywhere" width="200"></a>
 
 [First time with Gitpod?](https://github.com/adyen-examples/.github/blob/main/pages/gitpod-get-started.md)
 
@@ -51,7 +65,9 @@ The [`authorisation adjustment example`](authorisation-adjustment-example) repos
 ![Authorisation Adjustment Card Demo](authorisation-adjustment-example/wwwroot/images/cardauthorisationadjustment.gif)
 
 ## [In-person Payments Example](in-person-payments-example)
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/in-person-payments-example)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/in-person-payments-example) 
+<a href="https://app.codeanywhere.com/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/in-person-payments-example">
+  <img src="https://codeanywhere.com/img/open-in-codeanywhere-btn.svg" alt="Open in Codeanywhere" width="200"></a>
 
 [First time with Gitpod?](https://github.com/adyen-examples/.github/blob/main/pages/gitpod-get-started.md)
 
@@ -60,7 +76,8 @@ The [in-person payments example](in-person-payments-example) features an in-pers
 ![Card In-person Payments Demo](in-person-payments-example/wwwroot/images/cardinpersonpayments.gif)
 
 ## [In-person Payments Loyalty Example](in-person-payments-loyalty-example)
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/in-person-payments-loyalty-example)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/in-person-payments-loyalty-example) <a href="https://app.codeanywhere.com/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/in-person-payments-loyalty-example">
+  <img src="https://codeanywhere.com/img/open-in-codeanywhere-btn.svg" alt="Open in Codeanywhere" width="200"></a>
 
 [First time with Gitpod?](https://github.com/adyen-examples/.github/blob/main/pages/gitpod-get-started.md)
 
@@ -71,7 +88,8 @@ The [in-person payments loyalty example](in-person-payments-loyalty-example) fea
 ![Card In-person Payments Loyalty Demo](in-person-payments-example/wwwroot/images/cardinpersonpaymentsloyalty.gif)
 
 ## [Gift Card Example](giftcard-example)
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/giftcard-example)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/giftcard-example) <a href="https://app.codeanywhere.com/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/giftcard-example">
+  <img src="https://codeanywhere.com/img/open-in-codeanywhere-btn.svg" alt="Open in Codeanywhere" width="200"></a>
 
 [First time with Gitpod?](https://github.com/adyen-examples/.github/blob/main/pages/gitpod-get-started.md)
 
@@ -81,7 +99,9 @@ The [`gift card example`](giftcard-example) repository includes a gift card flow
 
 ## [Giving Example](giving-example)
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/giving-example)  
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/giving-example)  <a href="https://app.codeanywhere.com/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/giving-example">
+  <img src="https://codeanywhere.com/img/open-in-codeanywhere-btn.svg" alt="Open in Codeanywhere" width="200"></a>
+
 [First time with Gitpod?](https://github.com/adyen-examples/.github/blob/main/pages/gitpod-get-started.md)
 
 The [giving example](giving-example) repository includes a sample designed to demonstrate the Adyen Giving donations flow.
@@ -90,7 +110,8 @@ After making a test payment using one of our test card numbers, the donation scr
 ![Giving Demo](giving-example/wwwroot/images/carddonations.gif)
 
 ## [Pay by Link Example](paybylink-example)
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/paybylink-example)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/paybylink-example)<a href="https://app.codeanywhere.com/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/paybylink-example">
+  <img src="https://codeanywhere.com/img/open-in-codeanywhere-btn.svg" alt="Open in Codeanywhere" width="200"></a
 
 [First time with Gitpod?](https://github.com/adyen-examples/.github/blob/main/pages/gitpod-get-started.md)
 
@@ -100,6 +121,8 @@ The [`pay by link example`](paybylink-example) repository includes a Pay by Link
 
 ## [Subscription Example](subscription-example)
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/subscription-example)
+<a href="https://app.codeanywhere.com/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/subscription-example">
+  <img src="https://codeanywhere.com/img/open-in-codeanywhere-btn.svg" alt="Open in Codeanywhere" width="200"></a>
 
 [First time with Gitpod?](https://github.com/adyen-examples/.github/blob/main/pages/gitpod-get-started.md)
 
