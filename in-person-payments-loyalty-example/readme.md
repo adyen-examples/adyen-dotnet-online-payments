@@ -1,9 +1,5 @@
 ﻿# Adyen [In-person Payment Loyalty](https://docs.adyen.com/point-of-sale/) Integration Demo
 
-## Run demo in one-click
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/adyen-examples/adyen-dotnet-online-payments/tree/main/in-person-payments-loyalty-example)
-
-[First time with Gitpod?](https://github.com/adyen-examples/.github/blob/main/pages/gitpod-get-started.md)
 
 ## Description
 This demo shows developers how to implement a loyalty flow using the [Adyen Cloud Terminal API](https://docs.adyen.com/point-of-sale/design-your-integration/choose-your-architecture/cloud/). 
