@@ -12,7 +12,7 @@
         8080,
         5001
     ],
-    "postCreateCommand": "dotnet --version && dotnet restore adyen-dotnet-online-payments.sln",
+    "postCreateCommand": "dotnet run --project checkout-example",
     "remoteEnv": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "DOTNET_MULTILEVEL_LOOKUP": "0"
