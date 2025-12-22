@@ -1,0 +1,35 @@
+{
+    "name": "Adyen Subscription Example (.NET 6)",
+    "image": "mcr.microsoft.com/dotnet/sdk:6.0-focal",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-dotnettools.csharp"
+            ]
+        }
+    },
+    "forwardPorts": [
+        8080,
+        5001
+    ],
+    "postCreateCommand": "../.devcontainer/subscription-example/setup.sh",
+    "remoteEnv": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DOTNET_MULTILEVEL_LOOKUP": "0"
+    },
+    "hostRequirements": {
+        "cpus": 2
+    },
+    "portsAttributes": {
+        "8080": {
+            "label": "HTTP",
+            "onAutoForward": "notify"
+        },
+        "5001": {
+            "label": "HTTPS",
+            "onAutoForward": "notify"
+        }
+    },
+    "workspaceFolder": "/workspaces/adyen-dotnet-online-payments/subscription-example"
+}
+
