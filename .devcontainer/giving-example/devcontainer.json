@@ -1,9 +1,6 @@
 {
     "name": "Adyen Giving Example (.NET 6)",
-    "build": {
-        "dockerfile": "../Dockerfile",
-        "context": "../.."
-    },
+    "image": "mcr.microsoft.com/dotnet/sdk:6.0-focal",
     "customizations": {
         "vscode": {
             "extensions": [
