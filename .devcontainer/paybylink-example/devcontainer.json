@@ -18,7 +18,7 @@
         "DOTNET_MULTILEVEL_LOOKUP": "0"
     },
     "hostRequirements": {
-        "cpus": 2
+        "cpus": 4
     },
     "portsAttributes": {
         "8080": {
