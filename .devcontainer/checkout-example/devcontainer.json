@@ -12,7 +12,7 @@
         8080,
         5001
     ],
-    "postCreateCommand": "dotnet --version && dotnet restore checkout-example/adyen-dotnet-checkout-example.csproj",
+    "postCreateCommand": "../.devcontainer/checkout-example/setup.sh",
     "remoteEnv": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "DOTNET_MULTILEVEL_LOOKUP": "0"

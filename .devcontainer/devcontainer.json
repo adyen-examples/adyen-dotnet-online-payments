@@ -12,7 +12,7 @@
         8080,
         5001
     ],
-    "postCreateCommand": "dotnet run --project checkout-example",
+    "postCreateCommand": ".devcontainer/setup.sh",
     "remoteEnv": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "DOTNET_MULTILEVEL_LOOKUP": "0"

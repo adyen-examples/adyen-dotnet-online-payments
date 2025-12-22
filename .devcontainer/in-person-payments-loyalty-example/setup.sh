@@ -8,8 +8,10 @@ echo "[setup] configuring HTTPS developer certificate"
 dotnet dev-certs https --clean || true
 dotnet dev-certs https || true
 
-echo "[setup] restoring solution"
-dotnet restore adyen-dotnet-online-payments.sln
+echo "[setup] restoring project"
+dotnet restore
 
-echo "[setup] done. You can start a project with, e.g.:"
-echo "  cd checkout-example && dotnet run"
+echo "[setup] done. You can start the app with:"
+echo "  dotnet run"
+
+
