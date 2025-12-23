@@ -24,10 +24,6 @@
         "8080": {
             "label": "HTTP",
             "onAutoForward": "notify"
-        },
-        "5001": {
-            "label": "HTTPS",
-            "onAutoForward": "notify"
         }
     },
     "workspaceFolder": "/workspaces/adyen-dotnet-online-payments/subscription-example"
