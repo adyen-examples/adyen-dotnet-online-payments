@@ -12,7 +12,7 @@
         8080,
         5001
     ],
-    "postCreateCommand": "bash ../.devcontainer/giftcard-example/setup.sh",
+    "postCreateCommand": "bash ../.devcontainer/setup.sh",
     "remoteEnv": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "DOTNET_MULTILEVEL_LOOKUP": "0"
