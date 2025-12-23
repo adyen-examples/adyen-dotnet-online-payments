@@ -23,4 +23,5 @@ Before starting the app, set these environment variables (export in terminal):
 Then navigate to your desired example directory and start the application:
     cd <example-directory> (e.g. checkout-example)
     dotnet run
+    visit http://localhost:8080 (or https://localhost:5001)
 EOF

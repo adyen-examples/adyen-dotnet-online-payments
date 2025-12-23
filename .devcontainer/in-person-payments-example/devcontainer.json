@@ -1,13 +1,6 @@
 {
     "name": "Adyen In-Person Payments Example (.NET 6)",
     "image": "mcr.microsoft.com/dotnet/sdk:6.0-focal",
-    "customizations": {
-        "vscode": {
-            "extensions": [
-                "ms-dotnettools.csharp"
-            ]
-        }
-    },
     "forwardPorts": [
         8080,
         5001
