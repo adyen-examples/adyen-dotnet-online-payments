@@ -1,0 +1,28 @@
+{
+    "name": "Adyen Subscription Example (.NET 6)",
+    "image": "mcr.microsoft.com/dotnet/sdk:6.0-focal",
+    "forwardPorts": [
+        8080,
+        5001
+    ],
+    "postAttachCommand": "bash ../.devcontainer/setup.sh",
+    "remoteEnv": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DOTNET_MULTILEVEL_LOOKUP": "0"
+    },
+    "hostRequirements": {
+        "cpus": 4
+    },
+    "portsAttributes": {
+        "8080": {
+            "label": "app",
+            "onAutoForward": "notify"
+        },
+        "5001": {
+            "label": "app-https",
+            "onAutoForward": "ignore"
+        }
+    },
+    "workspaceFolder": "/workspaces/adyen-dotnet-online-payments/subscription-example"
+}
+
