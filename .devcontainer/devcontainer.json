@@ -1,18 +1,11 @@
 {
     "name": "Adyen .NET 6 Online Payments Example",
     "image": "mcr.microsoft.com/dotnet/sdk:6.0-focal",
-    "customizations": {
-        "vscode": {
-            "extensions": [
-                "ms-dotnettools.csharp"
-            ]
-        }
-    },
     "forwardPorts": [
         8080,
         5001
     ],
-    "postCreateCommand": "bash .devcontainer/setup.sh",
+    "postAttachCommand": "bash .devcontainer/setup.sh",
     "remoteEnv": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "DOTNET_MULTILEVEL_LOOKUP": "0"
@@ -22,8 +15,12 @@
     },
     "portsAttributes": {
         "8080": {
-            "label": "HTTP",
+            "label": "app",
             "onAutoForward": "notify"
+        },
+        "5001": {
+            "label": "app-https",
+            "onAutoForward": "ignore"
         }
     }
 }
