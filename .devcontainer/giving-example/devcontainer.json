@@ -15,11 +15,11 @@
     },
     "portsAttributes": {
         "8080": {
-            "label": "HTTP",
+            "label": "app",
             "onAutoForward": "notify"
         },
         "5001": {
-            "label": "HTTPS",
+            "label": "app-https",
             "onAutoForward": "notify"
         }
     },
