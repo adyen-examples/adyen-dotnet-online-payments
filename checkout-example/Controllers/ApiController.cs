@@ -3,7 +3,6 @@ using Adyen.Checkout.Services;
 using adyen_dotnet_checkout_example.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Threading;

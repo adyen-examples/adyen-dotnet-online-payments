@@ -2,7 +2,6 @@ using Adyen.Webhooks.Models;
 using Adyen.Util;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
