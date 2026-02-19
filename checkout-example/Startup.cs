@@ -28,20 +28,23 @@ namespace adyen_dotnet_checkout_example
 
             services.AddHttpContextAccessor()
                 .AddTransient<IUrlService, UrlService>();
-
+            
             
             // > Option [1]: Registers *all* services:
             // IDonationsService, IModificationsService, IOrdersService, IPaymentLinksService, IPaymentsService, IRecurringService, IUtilityService, 
             //services.AddAllCheckoutServices();
             
+            
             // > Option [2]: Registers *individual* service: IPaymentsService.
             //services.AddPaymentsService(); // Defaults to- `serviceLifetime: ServiceLifetime.Singleton`
             
+            
             // > Option [3]: Register *individual* service manually: IPaymentsService.
             services.AddScoped<IPaymentsService, PaymentsService>()
-                .AddHttpClient<IPaymentsService, PaymentsService>()
-                .AddDefaultLogger();
-            
+                .AddHttpClient<IPaymentsService, PaymentsService>();
+                //.AddDefaultLogger();
+                
+
             // Register HmacValidator to validate HMAC signature when receiving webhooks in the WebhookController.cs
             services.AddSingleton<HmacValidator>();
         }

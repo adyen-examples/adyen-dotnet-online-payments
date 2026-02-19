@@ -57,9 +57,9 @@ namespace adyen_dotnet_checkout_example.Controllers
                 _logger.LogInformation($"Response for Payments API:\n{response}\n");
 
            
-                if (response.TryDeserializeCreatedResponse(out var result))
+                if (response.TryDeserializeCreatedResponse(out CreateCheckoutSessionResponse result))
                 {
-                    return result;
+                    return Ok(result);
                 }
                 return null;
             }
