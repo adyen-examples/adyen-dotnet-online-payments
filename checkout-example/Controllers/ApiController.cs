@@ -1,5 +1,5 @@
-using Adyen.Model.Checkout;
-using Adyen.Service.Checkout;
+using Adyen.Checkout.Models;
+using Adyen.Checkout.Services;
 using adyen_dotnet_checkout_example.Options;
 using adyen_dotnet_checkout_example.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -54,9 +54,15 @@ namespace adyen_dotnet_checkout_example.Controllers
 
             try
             {
-                var res = await _paymentsService.SessionsAsync(sessionsRequest, cancellationToken: cancellationToken);
-                _logger.LogInformation($"Response for Payments API:\n{res}\n");
-                return res;
+                var response = await _paymentsService.SessionsAsync(sessionsRequest, cancellationToken: cancellationToken);
+                _logger.LogInformation($"Response for Payments API:\n{response}\n");
+
+           
+                if (response.TryDeserializeCreatedResponse(out var result))
+                {
+                    return result;
+                }
+                return null;
             }
             catch (Adyen.HttpClient.HttpClientException e)
             {
