@@ -1,17 +1,12 @@
 using Adyen;
 using Adyen.Checkout.Services;
 using Adyen.Util;
-using adyen_dotnet_checkout_example.Options;
 using adyen_dotnet_checkout_example.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
-using System;
-using System.Net.Http;
-using System.Threading;
 
 namespace adyen_dotnet_checkout_example
 {
@@ -27,18 +22,6 @@ namespace adyen_dotnet_checkout_example
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Configure your keys using the Options pattern.
-            // This will auto-retrieve/configure your keys from your environmental variables (ADYEN_API_KEY, ADYEN_CLIENT_KEY, ADYEN_MERCHANT_ACCOUNT, ADYEN_HMAC_KEY).
-            services.Configure<AdyenOptions>(
-                options =>
-                {
-                    options.ADYEN_API_KEY = Configuration[nameof(AdyenOptions.ADYEN_API_KEY)];
-                    options.ADYEN_CLIENT_KEY = Configuration[nameof(AdyenOptions.ADYEN_CLIENT_KEY)];
-                    options.ADYEN_MERCHANT_ACCOUNT = Configuration[nameof(AdyenOptions.ADYEN_MERCHANT_ACCOUNT)];
-                    options.ADYEN_HMAC_KEY = Configuration[nameof(AdyenOptions.ADYEN_HMAC_KEY)];
-                }
-            );
-
             // Register controllers.
             services.AddControllersWithViews();
             services.AddControllers().AddNewtonsoftJson();
@@ -46,34 +29,20 @@ namespace adyen_dotnet_checkout_example
             services.AddHttpContextAccessor()
                 .AddTransient<IUrlService, UrlService>();
 
-            // Register Adyen Client.
-            string httpClientName = "HttpClientName";
-
-            services.AddSingleton((IServiceProvider provider) =>
-            {
-                AdyenOptions options = provider.GetRequiredService<IOptions<AdyenOptions>>().Value;
-                Config config = new Config()
-                {
-                    // Get your `API Key` from AdyenOptions using the Options pattern.
-                    XApiKey = options.ADYEN_API_KEY,
-                    // Test environment.
-                    Environment = Adyen.Model.Environment.Test,
-                };
-                return new Client(config, provider.GetRequiredService<IHttpClientFactory>(), httpClientName);
-            });
-
-            // Register named HttpClient.
-            services.AddHttpClient(httpClientName)
-            .ConfigurePrimaryHttpMessageHandler((IServiceProvider provider) =>
-            {
-                return new SocketsHttpHandler()
-                {
-                    PooledConnectionLifetime = TimeSpan.FromMinutes(1)
-                };
-            }).SetHandlerLifetime(Timeout.InfiniteTimeSpan);
-
-            // Register Adyen services and utilities.
-            services.AddSingleton<IPaymentsService, PaymentsService>(); // Used to be called "Checkout.cs" in Adyen .NET 9.x.x and below, see https://github.com/Adyen/adyen-dotnet-api-library/blob/9.2.1/Adyen/Service/Checkout.cs.
+            
+            // > Option [1]: Registers *all* services:
+            // IDonationsService, IModificationsService, IOrdersService, IPaymentLinksService, IPaymentsService, IRecurringService, IUtilityService, 
+            //services.AddAllCheckoutServices();
+            
+            // > Option [2]: Registers *individual* service: IPaymentsService.
+            //services.AddPaymentsService(); // Defaults to- `serviceLifetime: ServiceLifetime.Singleton`
+            
+            // > Option [3]: Register *individual* service manually: IPaymentsService.
+            services.AddScoped<IPaymentsService, PaymentsService>()
+                .AddHttpClient<IPaymentsService, PaymentsService>()
+                .AddDefaultLogger();
+            
+            // Register HmacValidator to validate HMAC signature when receiving webhooks in the WebhookController.cs
             services.AddSingleton<HmacValidator>();
         }
 
