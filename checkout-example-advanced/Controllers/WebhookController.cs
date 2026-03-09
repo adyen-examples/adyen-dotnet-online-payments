@@ -1,4 +1,4 @@
-using Adyen.Model.Notification;
+using Adyen.Webhooks.Models;
 using Adyen.Util;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
