@@ -1,3 +1,5 @@
+using Adyen.Checkout.Extensions;
+using Adyen.Core.Options;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
@@ -12,7 +14,6 @@ namespace adyen_dotnet_checkout_example_advanced
 
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
-            
             return Host.CreateDefaultBuilder(args)
                 .ConfigureCheckout(((context, services, config) =>
                 {

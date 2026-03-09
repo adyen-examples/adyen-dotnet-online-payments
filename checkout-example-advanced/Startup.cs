@@ -1,5 +1,5 @@
 using Adyen;
-using Adyen.Service.Checkout;
+using Adyen.Checkout.Services;
 using Adyen.Util;
 using adyen_dotnet_checkout_example_advanced.Options;
 using adyen_dotnet_checkout_example_advanced.Services;
