@@ -1,5 +1,5 @@
-using Adyen.Model.Checkout;
-using Adyen.Service.Checkout;
+using Adyen.Checkout.Models;
+using Adyen.Checkout.Services;
 using adyen_dotnet_checkout_example_advanced.Options;
 using adyen_dotnet_checkout_example_advanced.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using PaymentRequest = Adyen.Model.Checkout.PaymentRequest;
+using PaymentRequest = Adyen.Checkout.Models.PaymentRequest;
 
 namespace adyen_dotnet_checkout_example_advanced.Controllers
 {
@@ -42,7 +42,11 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
             {
                 var res = await _paymentsService.PaymentMethodsAsync(paymentMethodsRequest, cancellationToken: cancellationToken);
                 _logger.LogInformation($"Response for PaymentMethods:\n{res}\n");
-                return res;
+                if (res.TryDeserializeOkResponse(out var paymentMethodsResponse))
+                {
+                    return paymentMethodsResponse;
+                }
+                return null;
             }
             catch (Adyen.HttpClient.HttpClientException e)
             {
@@ -96,7 +100,11 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
             {
                 var res = await _paymentsService.PaymentsAsync(paymentRequest, cancellationToken: cancellationToken);
                 _logger.LogInformation($"Response for Payment:\n{res}\n");
-                return res;
+                if (res.TryDeserializeOkResponse(out PaymentResponse response))
+                {
+                    return response;
+                }
+                return null;
             }
             catch (Adyen.HttpClient.HttpClientException e)
             {
@@ -112,7 +120,11 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
             {
                 var res = await _paymentsService.PaymentsDetailsAsync(request, cancellationToken: cancellationToken);
                 _logger.LogInformation($"Response for PaymentDetails:\n{res}\n");
-                return res;
+                if (res.TryDeserializeOkResponse(out PaymentDetailsResponse response))
+                {
+                    return response;
+                }
+                return null;
             }
             catch (Adyen.HttpClient.HttpClientException e)
             {
@@ -141,26 +153,23 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
             try
             {
                 var res = await _paymentsService.PaymentsDetailsAsync(detailsRequest, cancellationToken: cancellationToken);
+
+                if (res.TryDeserializeOkResponse(out PaymentDetailsResponse response))
+                {
+                    
+                }
                 _logger.LogInformation($"Response for PaymentDetails:\n{res}\n");
                 string redirectUrl = "/result/";
-                switch (res.ResultCode)
-                {
-                    case PaymentDetailsResponse.ResultCodeEnum.Authorised:
-                        redirectUrl += "success";
-                        break;
-                    case PaymentDetailsResponse.ResultCodeEnum.Pending:
-                    case PaymentDetailsResponse.ResultCodeEnum.Received:
-                        redirectUrl += "pending";
-                        break;
-                    case PaymentDetailsResponse.ResultCodeEnum.Refused:
-                        redirectUrl += "failed";
-                        break;
-                    default:
-                        redirectUrl += "error";
-                        break;
-                }
+                if (response.ResultCode == PaymentDetailsResponse.ResultCodeEnum.Authorised)
+                    redirectUrl += "success";
+                else if (response.ResultCode == PaymentDetailsResponse.ResultCodeEnum.Pending || response.ResultCode == PaymentDetailsResponse.ResultCodeEnum.Received)
+                    redirectUrl += "pending";
+                else if (response.ResultCode == PaymentDetailsResponse.ResultCodeEnum.Refused)
+                    redirectUrl += "failed";
+                else
+                    redirectUrl += "error";
 
-                return Redirect(redirectUrl + "?reason=" + res.ResultCode);
+                return Redirect(redirectUrl + "?reason=" + response.ResultCode);
             }
             catch (Adyen.HttpClient.HttpClientException e)
             {
