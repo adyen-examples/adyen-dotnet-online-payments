@@ -12,7 +12,16 @@ namespace adyen_dotnet_checkout_example_advanced
 
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
+            
             return Host.CreateDefaultBuilder(args)
+                .ConfigureCheckout(((context, services, config) =>
+                {
+                    config.ConfigureAdyenOptions(x =>
+                    {
+                        x.AdyenApiKey = context.Configuration["ADYEN_API_KEY"];
+                        x.Environment = AdyenEnvironment.Test;
+                    });
+                }))
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
