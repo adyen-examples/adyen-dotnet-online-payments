@@ -26,8 +26,10 @@ namespace adyen_dotnet_checkout_example_advanced
         {
             // Register controllers.
             services.AddControllersWithViews();
-            services.AddControllers().AddNewtonsoftJson(); // Currently, webhooks models in WebhookController.cs use Newtonsoft.Json.
-            services.AddSingleton<IConfigureOptions<JsonOptions>, CheckoutJsonOptions>(); // Use System.Text.Json for Checkout models.
+            services.AddControllers();
+            
+            // Register the JsonConverters to allow deserialization in ApiController (/api/payments) -> PaymentsDto
+            services.AddSingleton<IConfigureOptions<JsonOptions>, CheckoutJsonOptions>();
             
             services.AddHttpContextAccessor()
                 .AddTransient<IUrlService, UrlService>();
