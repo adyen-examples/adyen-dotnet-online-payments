@@ -2,11 +2,10 @@ using Adyen.Webhooks.Models;
 using Adyen.Util;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using adyen_dotnet_checkout_example_advanced.Options;
+using Microsoft.Extensions.Configuration;
 
 namespace adyen_dotnet_checkout_example_advanced.Controllers
 {
@@ -17,10 +16,10 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
         private readonly HmacValidator _hmacValidator;
         private readonly string _hmacKey;
         
-        public WebhookController(ILogger<WebhookController> logger, IOptions<AdyenOptions> options, HmacValidator hmacValidator)
+        public WebhookController(ILogger<WebhookController> logger, IConfiguration configuration, HmacValidator hmacValidator)
         {
             _logger = logger;
-            _hmacKey = options.Value.ADYEN_HMAC_KEY;
+            _hmacKey = configuration["ADYEN_HMAC_KEY"];
             _hmacValidator = hmacValidator;
         }
 
