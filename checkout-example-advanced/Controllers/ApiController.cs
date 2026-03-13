@@ -1,15 +1,14 @@
 using Adyen.Checkout.Models;
 using Adyen.Checkout.Services;
-using adyen_dotnet_checkout_example_advanced.Options;
 using adyen_dotnet_checkout_example_advanced.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using PaymentRequest = Adyen.Checkout.Models.PaymentRequest;
+using adyen_dotnet_checkout_example_advanced.Dtos;
+using Microsoft.Extensions.Configuration;
 
 namespace adyen_dotnet_checkout_example_advanced.Controllers
 {
@@ -21,16 +20,16 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
         private readonly IPaymentsService _paymentsService;
         private readonly string _merchantAccount;
         
-        public ApiController(IPaymentsService paymentsService, ILogger<ApiController> logger, IUrlService urlService, IOptions<AdyenOptions> options)
+        public ApiController(IPaymentsService paymentsService, ILogger<ApiController> logger, IUrlService urlService, IConfiguration configuration)
         {
             _logger = logger;
             _urlService = urlService;
             _paymentsService = paymentsService;
-            _merchantAccount = options.Value.ADYEN_MERCHANT_ACCOUNT;
+            _merchantAccount = configuration["ADYEN_MERCHANT_ACCOUNT"];
         }
 
-        [HttpPost("api/getPaymentMethods")]
-        public async Task<ActionResult<PaymentMethodsResponse>> GetPaymentMethods(CancellationToken cancellationToken = default)
+        [HttpPost("api/paymentMethods")]
+        public async Task<ActionResult<PaymentMethodsResponse>> PaymentMethods(CancellationToken cancellationToken = default)
         {
             var paymentMethodsRequest = new PaymentMethodsRequest()
             {
@@ -55,9 +54,18 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
             }
         }
 
-        [HttpPost("api/initiatePayment")]
-        public async Task<ActionResult<PaymentResponse>> InitiatePayment(PaymentRequest request, CancellationToken cancellationToken = default)
+        [HttpPost("api/payments")]
+        public async Task<ActionResult<PaymentResponse>> Payments([FromBody] PaymentsDto paymentsDto, CancellationToken cancellationToken = default)
         {
+            // Map your DTOs here
+            RiskData riskData = RiskDataDto.MapToRiskData(paymentsDto.RiskData);
+            BrowserInfo browserInfo = BrowserInfoDto.MapToBrowserInfo(paymentsDto.BrowserInfo);
+            CheckoutPaymentMethod paymentMethod = paymentsDto.PaymentMethod;
+            
+            string origin = paymentsDto.Origin; // Unused
+            bool clientStateDataIndicator = paymentsDto.ClientStateDataIndicator; // Unused
+            
+            // Create the Payment Request to Adyen.
             var orderRef = Guid.NewGuid();
             var paymentRequest = new PaymentRequest()
             {
@@ -91,9 +99,12 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
                     //}
                 },
                 Origin = _urlService.GetHostUrl(),
-                BrowserInfo = request.BrowserInfo,
                 ShopperIP = HttpContext.Connection.RemoteIpAddress?.ToString(),
-                PaymentMethod = request.PaymentMethod
+                
+                // Pass your mapped DTOs
+                BrowserInfo = browserInfo, // pass mapped dto
+                PaymentMethod = paymentMethod, // pass mapped dto
+                RiskData = riskData, // pass mapped dto
             };
 
             try
@@ -113,8 +124,8 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
             }
         }
 
-        [HttpPost("api/submitAdditionalDetails")]
-        public async Task<ActionResult<PaymentDetailsResponse>> SubmitAdditionalDetails(PaymentDetailsRequest request, CancellationToken cancellationToken = default)
+        [HttpPost("api/payments/details")]
+        public async Task<ActionResult<PaymentDetailsResponse>> PaymentDetails(PaymentDetailsRequest request, CancellationToken cancellationToken = default)
         {
             try
             {
