@@ -2,6 +2,8 @@ using adyen_dotnet_checkout_example_advanced.Options;
 using adyen_dotnet_checkout_example_advanced.Services;
 using Adyen.Checkout.Services;
 using Adyen.Util;
+using Adyen.Webhooks.Extensions;
+using Adyen.Webhooks.Handlers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -48,8 +50,9 @@ namespace adyen_dotnet_checkout_example_advanced
                 .AddHttpClient<IPaymentsService, PaymentsService>();
 
 
-            // Register HmacValidator to validate HMAC signature when receiving webhooks in the WebhookController.cs
-            services.AddSingleton<HmacValidator>();
+            // Register WebhookHandlers to validate HMAC signature when receiving webhooks in the WebhookController.cs
+            // The ADYEN_HMAC_KEY is passed in Startup.cs when the ConfigureWebhooks(..)-function is called.
+            services.AddWebhooksHandler();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
