@@ -1,11 +1,8 @@
-using Adyen.Model.Notification;
-using Adyen.Util;
-using adyen_dotnet_checkout_example.Options;
+using Adyen.Webhooks.Handlers;
+using Adyen.Webhooks.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,14 +12,12 @@ namespace adyen_dotnet_checkout_example.Controllers
     public class WebhookController : ControllerBase
     {
         private readonly ILogger<WebhookController> _logger;
-        private readonly HmacValidator _hmacValidator;
-        private readonly string _hmacKey;
-        
-        public WebhookController(ILogger<WebhookController> logger, IOptions<AdyenOptions> options, HmacValidator hmacValidator)
+        private readonly IWebhooksHandler _webhookHandler;
+
+        public WebhookController(ILogger<WebhookController> logger, IWebhooksHandler webhookHandler)
         {
             _logger = logger;
-            _hmacKey = options.Value.ADYEN_HMAC_KEY;
-            _hmacValidator = hmacValidator;
+            _webhookHandler = webhookHandler;
         }
 
         [HttpPost("api/webhooks/notifications")]
@@ -43,7 +38,7 @@ namespace adyen_dotnet_checkout_example.Controllers
 
                 // We always recommend to activate HMAC validation in the webhooks for security reasons.
                 // Read more here: https://docs.adyen.com/development-resources/webhooks/verify-hmac-signatures & https://docs.adyen.com/development-resources/webhooks#accept-notifications.
-                if (!_hmacValidator.IsValidHmac(container.NotificationItem, _hmacKey))
+                if (!_webhookHandler.IsValidHmacSignature(container.NotificationItem))
                 {
                     _logger.LogError($"Error while validating HMAC Key");
                     return BadRequest("[not accepted invalid hmac key]");

@@ -1,4 +1,5 @@
 const clientKey = document.getElementById("clientKey").innerHTML;
+const { AdyenCheckout, Dropin } = window.AdyenWeb;
 
 // Used to finalize a checkout call in case of redirect
 const urlParams = new URLSearchParams(window.location.search);
@@ -12,8 +13,54 @@ async function startCheckout() {
 
     try {
         const checkoutSessionResponse = await sendPostRequest("/api/sessions");
-        const checkout = await createAdyenCheckout(checkoutSessionResponse);
-        checkout.create(type).mount(document.getElementById("payment"));
+        
+        //console.log(JSON.stringify(checkoutSessionResponse, null, 2));
+        
+        const configuration = {
+            id: sessionId,
+            session: checkoutSessionResponse,
+            clientKey: clientKey,
+            locale: "en_US",
+            environment: "test",
+            countryCode: 'NL',
+            showPayButton: true,
+            onPaymentCompleted: (result, component) => {
+                console.info("onPaymentCompleted");
+                console.info(result, component);
+                handleServerResponse(result, component);
+            },
+            onError: (error, component) => {
+                console.error("onError");
+                console.error(error.name, error.message, error.stack, component);
+                handleServerResponse(error, component);
+            },
+        };
+        
+        const adyenCheckoutInstance = await AdyenCheckout(configuration);
+        
+        const paymentMethodsConfiguration = {
+            card: {
+                showBrandIcon: true,
+                hasHolderName: true,
+                holderNameRequired: true,
+                amount: {
+                    value: 10000,
+                    currency: 'EUR',
+                },
+                placeholders: {
+                    cardNumber: "1234 5678 9012 3456",
+                    expiryDate: "MM/YY",
+                    securityCodeThreeDigits: "123",
+                    securityCodeFourDigits: "1234",
+                    holderName: "J. Smith",
+                },
+            },
+        };
+        
+        dropinInstance = new Dropin(adyenCheckoutInstance, { 
+            paymentMethodsConfiguration: paymentMethodsConfiguration,
+        }).mount(document.getElementById("payment"));
+
     } catch (error) {
         console.error(error);
         alert("Error occurred. Look at console for details");
@@ -23,10 +70,27 @@ async function startCheckout() {
 // Some payment methods use redirects. This is where we finalize the operation
 async function finalizeCheckout() {
     try {
-        const checkout = await createAdyenCheckout({
-            id: sessionId
-        });
-        checkout.submitDetails({
+        const configuration = {
+            id: sessionId,
+            locale: "en_US",
+            environment: "test",
+            countryCode: 'NL',
+            showPayButton: true,
+            onPaymentCompleted: (result, component) => {
+                console.info("onPaymentCompleted");
+                console.info(result, component);
+                handleServerResponse(result, component);
+            },
+            onError: (error, component) => {
+                console.error("onError");
+                console.error(error.name, error.message, error.stack, component);
+                handleServerResponse(error, component);
+            }
+        };
+
+        const adyenCheckoutInstance = await AdyenCheckout(configuration);
+
+        adyenCheckoutInstance.submitDetails({
             details: {
                 redirectResult
             }
@@ -37,44 +101,6 @@ async function finalizeCheckout() {
     }
 }
 
-// Create Adyen Checkout configuration
-async function createAdyenCheckout(session) {
-    return new AdyenCheckout({
-        clientKey,
-        locale: "en_US",
-        environment: "test",
-        session: session,
-        showPayButton: true,
-        paymentMethodsConfiguration: {
-            ideal: {
-                showImage: true,
-            },
-            card: {
-                hasHolderName: true,
-                holderNameRequired: true,
-                name: "Credit or debit card",
-            },
-            paypal: {
-                amount: {
-                    value: 10000,
-                    currency: "USD",
-                },
-                environment: "test", // Change this to "live" when you're ready to accept live PayPal payments
-                countryCode: "US", // Only needed for test. This will be automatically retrieved when you are in production.
-            }
-        },
-        onPaymentCompleted: (result, component) => {
-            console.info("onPaymentCompleted");
-            console.info(result, component);
-            handleServerResponse(result, component);
-        },
-        onError: (error, component) => {
-            console.error("onError");
-            console.error(error.name, error.message, error.stack, component);
-            handleServerResponse(error, component);
-        },
-    });
-}
 
 // Sends POST request
 async function sendPostRequest(url, data) {
