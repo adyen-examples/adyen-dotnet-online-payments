@@ -1,24 +1,23 @@
-using Adyen;
-using Adyen.Service.Checkout;
-using Adyen.Util;
 using adyen_dotnet_checkout_example_advanced.Options;
 using adyen_dotnet_checkout_example_advanced.Services;
+using Adyen.Checkout.Services;
+using Adyen.Util;
+using Adyen.Webhooks.Extensions;
+using Adyen.Webhooks.Handlers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using System;
-using System.Net.Http;
-using System.Threading;
 
 namespace adyen_dotnet_checkout_example_advanced
 {
     public class Startup
     {
         public IConfiguration Configuration { get; }
-        
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -27,54 +26,33 @@ namespace adyen_dotnet_checkout_example_advanced
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Configure your keys using the Options pattern.
-            // This will auto-retrieve/configure your keys from your environmental variables (ADYEN_API_KEY, ADYEN_CLIENT_KEY, ADYEN_MERCHANT_ACCOUNT, ADYEN_HMAC_KEY).
-            services.Configure<AdyenOptions>(
-                options =>
-                {
-                    options.ADYEN_API_KEY = Configuration[nameof(AdyenOptions.ADYEN_API_KEY)];
-                    options.ADYEN_CLIENT_KEY = Configuration[nameof(AdyenOptions.ADYEN_CLIENT_KEY)];
-                    options.ADYEN_MERCHANT_ACCOUNT = Configuration[nameof(AdyenOptions.ADYEN_MERCHANT_ACCOUNT)];
-                    options.ADYEN_HMAC_KEY = Configuration[nameof(AdyenOptions.ADYEN_HMAC_KEY)]; 
-                }
-            );
-
             // Register controllers.
             services.AddControllersWithViews();
-            services.AddControllers().AddNewtonsoftJson();
-
+            services.AddControllers();
+            
+            // Register the JsonConverters to allow deserialization in ApiController (/api/payments) -> PaymentsDto
+            services.AddSingleton<IConfigureOptions<JsonOptions>, CheckoutJsonOptions>();
+            
             services.AddHttpContextAccessor()
                 .AddTransient<IUrlService, UrlService>();
+            
+            // Three ways of registering the service: 
+            
+            // > Option [1]: Registers *all* services:
+            // IDonationsService, IModificationsService, IOrdersService, IPaymentLinksService, IPaymentsService, IRecurringService, IUtilityService, 
+            //services.AddAllCheckoutServices();
 
-            // Register Adyen Client.
-            string httpClientName = "HttpClientName";
+            // > Option [2]: Registers *individual* service: IPaymentsService.
+            //services.AddPaymentsService(); // Defaults to- `serviceLifetime: ServiceLifetime.Singleton`
+            
+            // > Option [3]: Register *individual* service manually: IPaymentsService.
+            services.AddScoped<IPaymentsService, PaymentsService>()
+                .AddHttpClient<IPaymentsService, PaymentsService>();
 
-            services.AddSingleton((IServiceProvider provider) =>
-            {
-                AdyenOptions options = provider.GetRequiredService<IOptions<AdyenOptions>>().Value;
-                Config config = new Config()
-                {
-                    // Get your `API Key` from AdyenOptions using the Options pattern.
-                    XApiKey = options.ADYEN_API_KEY,
-                    // Test environment.
-                    Environment = Adyen.Model.Environment.Test,
-                };
-                return new Client(config, provider.GetRequiredService<IHttpClientFactory>(), httpClientName);
-            });
 
-            // Register named HttpClient.
-            services.AddHttpClient(httpClientName)
-            .ConfigurePrimaryHttpMessageHandler((IServiceProvider provider) =>
-            {
-                return new SocketsHttpHandler()
-                {
-                    PooledConnectionLifetime = TimeSpan.FromMinutes(1)
-                };
-            }).SetHandlerLifetime(Timeout.InfiniteTimeSpan);
-
-            // Register Adyen services and utilities.
-            services.AddSingleton<IPaymentsService, PaymentsService>(); // Used to be called "Checkout.cs" in Adyen .NET 9.x.x and below, see https://github.com/Adyen/adyen-dotnet-api-library/blob/9.2.1/Adyen/Service/Checkout.cs.
-            services.AddSingleton<HmacValidator>();
+            // Register WebhookHandlers to validate HMAC signature when receiving webhooks in the WebhookController.cs
+            // The ADYEN_HMAC_KEY is passed in Startup.cs when the ConfigureWebhooks(..)-function is called.
+            services.AddWebhooksHandler();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

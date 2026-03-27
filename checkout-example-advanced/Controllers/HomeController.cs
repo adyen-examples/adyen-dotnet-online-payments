@@ -1,15 +1,14 @@
-﻿using adyen_dotnet_checkout_example_advanced.Options;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace adyen_dotnet_checkout_example_advanced.Controllers
 {
     public class HomeController : Controller
     {
         private readonly string _clientKey;
-        public HomeController(IOptions<AdyenOptions> options)
+        public HomeController(IConfiguration configuration)
         {
-            _clientKey = options.Value.ADYEN_CLIENT_KEY;
+            _clientKey = configuration["ADYEN_CLIENT_KEY"];
         }
 
         [Route("/")]
