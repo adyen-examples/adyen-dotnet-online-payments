@@ -1,4 +1,5 @@
 using Adyen.Checkout.Extensions;
+using Adyen.Core.Client.Extensions;
 using Adyen.Core.Options;
 using Adyen.Webhooks.Extensions;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +11,7 @@ namespace adyen_dotnet_checkout_example
     {
         public static void Main(string[] args)
         {
+            HttpRequestMessageExtensions.ApplicationName = "adyen-dotnet-online-payments";
             CreateHostBuilder(args).Build().Run();
         }
 
