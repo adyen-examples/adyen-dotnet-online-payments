@@ -58,6 +58,7 @@ namespace adyen_dotnet_in_person_payments_example
                         XApiKey = options.Value.ADYEN_API_KEY,
                         // Test environment.
                         Environment = Adyen.Model.Environment.Test,
+                        ApplicationName = "[adyen-dotnet-online-payments in-person-payments-example]",
                         Timeout = 180,
                         CloudApiEndPoint = options.Value.ADYEN_TERMINAL_API_CLOUD_ENDPOINT
                     },

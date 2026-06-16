@@ -58,6 +58,7 @@ namespace adyen_dotnet_subscription_example
                     XApiKey = options.ADYEN_API_KEY,
                     // Test environment.
                     Environment = Adyen.Model.Environment.Test,
+                    ApplicationName = "[adyen-dotnet-online-payments subscription-example adyen-web/5.40.0]",
                 };
                 return new Client(config, provider.GetRequiredService<IHttpClientFactory>(), httpClientName);
             });

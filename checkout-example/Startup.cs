@@ -1,4 +1,5 @@
 using Adyen;
+using Adyen.Core.Client.Extensions;
 using Adyen.Checkout.Services;
 using Adyen.Util;
 using adyen_dotnet_checkout_example.Services;
@@ -23,6 +24,8 @@ namespace adyen_dotnet_checkout_example
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            HttpRequestMessageExtensions.ApplicationName = "[adyen-dotnet-online-payments checkout-example adyen-web/6.30.0]";
+
             // Register controllers.
             services.AddControllersWithViews();
             services.AddControllers();

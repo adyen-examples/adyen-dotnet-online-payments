@@ -57,6 +57,7 @@ namespace adyen_dotnet_giftcard_example
                     XApiKey = options.ADYEN_API_KEY,
                     // Test environment.
                     Environment = Adyen.Model.Environment.Test,
+                    ApplicationName = "[adyen-dotnet-online-payments giftcard-example adyen-web/5.33.0]",
                 };
                 return new Client(config, provider.GetRequiredService<IHttpClientFactory>(), httpClientName);
             });
