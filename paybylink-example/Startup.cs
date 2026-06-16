@@ -57,7 +57,7 @@ namespace adyen_dotnet_paybylink_example
                     XApiKey = options.ADYEN_API_KEY,
                     // Test environment.
                     Environment = Adyen.Model.Environment.Test,
-                    ApplicationName = "[adyen-dotnet-online-payments paybylink-example adyen-web/5.40.0]",
+                    ApplicationName = "[adyen-dotnet-online-payments paybylink-example]",
                 };
                 return new Client(config, provider.GetRequiredService<IHttpClientFactory>(), httpClientName);
             });
