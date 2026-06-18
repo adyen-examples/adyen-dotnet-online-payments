@@ -57,13 +57,10 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
         [HttpPost("api/payments")]
         public async Task<ActionResult<PaymentResponse>> Payments([FromBody] PaymentsDto paymentsDto, CancellationToken cancellationToken = default)
         {
-            // Map your DTOs here
+            // Map your DTOs.
             RiskData riskData = RiskDataDto.MapToRiskData(paymentsDto.RiskData);
             BrowserInfo browserInfo = BrowserInfoDto.MapToBrowserInfo(paymentsDto.BrowserInfo);
             CheckoutPaymentMethod paymentMethod = paymentsDto.PaymentMethod;
-            
-            string origin = paymentsDto.Origin; // Unused
-            bool clientStateDataIndicator = paymentsDto.ClientStateDataIndicator; // Unused
             
             // Create the Payment Request to Adyen.
             var orderRef = Guid.NewGuid();
@@ -72,7 +69,7 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
                 MerchantAccount = _merchantAccount, // Required.
                 Reference = orderRef.ToString(), // Required.
                 Channel = PaymentRequest.ChannelEnum.Web,
-                Amount = new Amount("EUR", 10000), // Value is 100€ in minor units.
+                Amount = new Amount() { Currency = "EUR", Value = 10000 }, // Value is 100€ in minor units.
                 
                 // Required for 3DS2 redirect flow.
                 ReturnUrl = $"{_urlService.GetHostUrl()}/api/handleShopperRedirect?orderRef={orderRef}",
@@ -82,8 +79,8 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
                 CountryCode = "NL", 
                 LineItems = new List<LineItem>()
                 {
-                    new LineItem(quantity: 1, amountIncludingTax: 5000, description: "Sunglasses"),
-                    new LineItem(quantity: 1, amountIncludingTax: 5000, description: "Headphones")
+                    new LineItem() { Quantity = 1, AmountIncludingTax = 5000, Description = "Sunglasses"},
+                    new LineItem() { Quantity = 1, AmountIncludingTax = 5000, Description = "Headphones"}
                 },
                 
                 // We strongly recommend that you the billingAddress in your request. 

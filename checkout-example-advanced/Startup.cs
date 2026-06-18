@@ -1,4 +1,3 @@
-using adyen_dotnet_checkout_example_advanced.Options;
 using adyen_dotnet_checkout_example_advanced.Services;
 using Adyen.Checkout.Services;
 using Adyen.Util;
@@ -29,9 +28,6 @@ namespace adyen_dotnet_checkout_example_advanced
             // Register controllers.
             services.AddControllersWithViews();
             services.AddControllers();
-            
-            // Register the JsonConverters to allow deserialization in ApiController (/api/payments) -> PaymentsDto
-            services.AddSingleton<IConfigureOptions<JsonOptions>, CheckoutJsonOptions>();
             
             services.AddHttpContextAccessor()
                 .AddTransient<IUrlService, UrlService>();
