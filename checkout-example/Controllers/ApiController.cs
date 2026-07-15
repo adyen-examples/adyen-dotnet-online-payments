@@ -36,7 +36,7 @@ namespace adyen_dotnet_checkout_example.Controllers
                 MerchantAccount = _merchantAccount, // Required.
                 Reference = orderRef.ToString(), // Required.
                 Channel = CreateCheckoutSessionRequest.ChannelEnum.Web,
-                Amount = new Amount("EUR", 10000), // Value is 100€ in minor units.
+                Amount = new Amount() { Currency = "EUR", Value = 10000 }, // Value is 100€ in minor units.
                 
                 // Required for 3DS2 redirect flow.
                 ReturnUrl = $"{_urlService.GetHostUrl()}/redirect?orderRef={orderRef}",
@@ -46,8 +46,8 @@ namespace adyen_dotnet_checkout_example.Controllers
                 CountryCode = "NL",
                 LineItems = new List<LineItem>()
                 {
-                    new LineItem(quantity: 1, amountIncludingTax: 5000, description: "Sunglasses"),
-                    new LineItem(quantity: 1, amountIncludingTax: 5000, description: "Headphones")
+                    new LineItem() { Quantity = 1, AmountIncludingTax = 5000, Description = "Sunglasses" },
+                    new LineItem() { Quantity = 1, AmountIncludingTax = 5000, Description = "Headphones" }
                 }
             };
 

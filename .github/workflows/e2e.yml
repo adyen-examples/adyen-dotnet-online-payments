@@ -28,7 +28,9 @@ jobs:
       - name: Build checkout-example-v6 image
         run: docker build -t checkout-example-v6-image:latest checkout-example
       - name: Start checkout-example-v6 container
-        run: docker run --rm -d --name checkout-example-v6-image -p 8080:80 -e ADYEN_API_KEY="${{ secrets.ADYEN_API_KEY }}" -e ADYEN_MERCHANT_ACCOUNT=${{ secrets.ADYEN_MERCHANT_ACCOUNT }} -e ADYEN_CLIENT_KEY=${{ secrets.ADYEN_CLIENT_KEY }} -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} checkout-example-v6-image:latest
+        run: docker run --rm -d --name checkout-example-v6-image -p 8080:8080 -e ADYEN_API_KEY="${{ secrets.ADYEN_API_KEY }}" -e ADYEN_MERCHANT_ACCOUNT=${{ secrets.ADYEN_MERCHANT_ACCOUNT }} -e ADYEN_CLIENT_KEY=${{ secrets.ADYEN_CLIENT_KEY }} -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} checkout-example-v6-image:latest
+      - name: Wait for application, show docker logs if it fails
+        run: curl --retry 30 --retry-delay 2 --retry-all-errors --fail http://localhost:8080 || docker logs checkout-example-v6-image
       - name: Run testing suite against checkout-example-v6-image
         run: docker run --rm --name adyen-testing-suite -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} -e PLAYWRIGHT_FOLDERNAME=checkout/v6 --network host ghcr.io/adyen-examples/adyen-testing-suite:main
 
@@ -40,7 +42,7 @@ jobs:
       - name: Build checkout-example-advanced-v6 image
         run: docker build -t checkout-example-advanced-v6-image:latest checkout-example-advanced
       - name: Start checkout-example-advanced-v6 container
-        run: docker run --rm -d --name checkout-example-advanced-v6-image -p 8080:80 -e ADYEN_API_KEY="${{ secrets.ADYEN_API_KEY }}" -e ADYEN_MERCHANT_ACCOUNT=${{ secrets.ADYEN_MERCHANT_ACCOUNT }} -e ADYEN_CLIENT_KEY=${{ secrets.ADYEN_CLIENT_KEY }} -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} checkout-example-advanced-v6-image:latest
+        run: docker run --rm -d --name checkout-example-advanced-v6-image -p 8080:8080 -e ADYEN_API_KEY="${{ secrets.ADYEN_API_KEY }}" -e ADYEN_MERCHANT_ACCOUNT=${{ secrets.ADYEN_MERCHANT_ACCOUNT }} -e ADYEN_CLIENT_KEY=${{ secrets.ADYEN_CLIENT_KEY }} -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} checkout-example-advanced-v6-image:latest
       - name: Run testing suite against checkout-example-advanced-v6-image
         run: docker run --rm --name adyen-testing-suite -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} -e PLAYWRIGHT_FOLDERNAME=advanced-checkout/v6 --network host ghcr.io/adyen-examples/adyen-testing-suite:main
 
@@ -52,7 +54,7 @@ jobs:
       - name: Build subscription-example image
         run: docker build -t subscription-example-image:latest subscription-example
       - name: Start subscription-example container
-        run: docker run --rm -d --name subscription-example-image -p 8080:80 -e ADYEN_API_KEY="${{ secrets.ADYEN_API_KEY }}" -e ADYEN_MERCHANT_ACCOUNT=${{ secrets.ADYEN_MERCHANT_ACCOUNT }} -e ADYEN_CLIENT_KEY=${{ secrets.ADYEN_CLIENT_KEY }} -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} subscription-example-image:latest
+        run: docker run --rm -d --name subscription-example-image -p 8080:8080 -e ADYEN_API_KEY="${{ secrets.ADYEN_API_KEY }}" -e ADYEN_MERCHANT_ACCOUNT=${{ secrets.ADYEN_MERCHANT_ACCOUNT }} -e ADYEN_CLIENT_KEY=${{ secrets.ADYEN_CLIENT_KEY }} -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} subscription-example-image:latest
       - name: Run testing suite against subscription-example-image
         run: docker run --rm --name adyen-testing-suite -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} -e PLAYWRIGHT_FOLDERNAME=subscription --network host ghcr.io/adyen-examples/adyen-testing-suite:main
   
@@ -64,7 +66,7 @@ jobs:
       - name: Build giftcard-example image
         run: docker build -t giftcard-example-image:latest giftcard-example
       - name: Start giftcard-example container
-        run: docker run --rm -d --name giftcard-example-image -p 8080:80 -e ADYEN_API_KEY="${{ secrets.ADYEN_API_KEY }}" -e ADYEN_MERCHANT_ACCOUNT=${{ secrets.ADYEN_MERCHANT_ACCOUNT }} -e ADYEN_CLIENT_KEY=${{ secrets.ADYEN_CLIENT_KEY }} -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} giftcard-example-image:latest
+        run: docker run --rm -d --name giftcard-example-image -p 8080:8080 -e ADYEN_API_KEY="${{ secrets.ADYEN_API_KEY }}" -e ADYEN_MERCHANT_ACCOUNT=${{ secrets.ADYEN_MERCHANT_ACCOUNT }} -e ADYEN_CLIENT_KEY=${{ secrets.ADYEN_CLIENT_KEY }} -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} giftcard-example-image:latest
       - name: Run testing suite against giftcard-example-image
         run: docker run --rm --name adyen-testing-suite -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} -e PLAYWRIGHT_FOLDERNAME=giftcard --network host ghcr.io/adyen-examples/adyen-testing-suite:main
 
@@ -76,7 +78,7 @@ jobs:
       - name: Build paybylink-example image
         run: docker build -t paybylink-example-image:latest paybylink-example
       - name: Start paybylink-example container
-        run: docker run --rm -d --name paybylink-example-image -p 8080:80 -e ADYEN_API_KEY="${{ secrets.ADYEN_API_KEY }}" -e ADYEN_MERCHANT_ACCOUNT=${{ secrets.ADYEN_MERCHANT_ACCOUNT }} -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} paybylink-example-image:latest
+        run: docker run --rm -d --name paybylink-example-image -p 8080:8080 -e ADYEN_API_KEY="${{ secrets.ADYEN_API_KEY }}" -e ADYEN_MERCHANT_ACCOUNT=${{ secrets.ADYEN_MERCHANT_ACCOUNT }} -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} paybylink-example-image:latest
       - name: Run testing suite against paybylink-example-image
         run: docker run --rm --name adyen-testing-suite -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} -e PLAYWRIGHT_FOLDERNAME=paybylink --network host ghcr.io/adyen-examples/adyen-testing-suite:main
 
@@ -88,7 +90,7 @@ jobs:
       - name: Build authorisation-adjustment-example image
         run: docker build -t authorisation-adjustment-example-image:latest authorisation-adjustment-example
       - name: Start authorisation-adjustment-example container
-        run: docker run --rm -d --name authorisation-adjustment-example-image -p 8080:80 -e ADYEN_API_KEY="${{ secrets.ADYEN_API_KEY }}" -e ADYEN_MERCHANT_ACCOUNT=${{ secrets.ADYEN_MERCHANT_ACCOUNT }} -e ADYEN_CLIENT_KEY=${{ secrets.ADYEN_CLIENT_KEY }} -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} authorisation-adjustment-example-image:latest
+        run: docker run --rm -d --name authorisation-adjustment-example-image -p 8080:8080 -e ADYEN_API_KEY="${{ secrets.ADYEN_API_KEY }}" -e ADYEN_MERCHANT_ACCOUNT=${{ secrets.ADYEN_MERCHANT_ACCOUNT }} -e ADYEN_CLIENT_KEY=${{ secrets.ADYEN_CLIENT_KEY }} -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} authorisation-adjustment-example-image:latest
       - name: Run testing suite against authorisation-adjustment-example-image
         run: docker run --rm --name adyen-testing-suite -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} -e PLAYWRIGHT_FOLDERNAME=authorisation-adjustment --network host ghcr.io/adyen-examples/adyen-testing-suite:main
 
@@ -100,7 +102,7 @@ jobs:
       - name: Build giving-example image
         run: docker build -t giving-example-image:latest giving-example
       - name: Start giving-example container
-        run: docker run --rm -d --name giving-example-image -p 8080:80 -e ADYEN_API_KEY="${{ secrets.ADYEN_API_KEY }}" -e ADYEN_MERCHANT_ACCOUNT=${{ secrets.ADYEN_MERCHANT_ACCOUNT }} -e ADYEN_CLIENT_KEY=${{ secrets.ADYEN_CLIENT_KEY }} -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} giving-example-image:latest
+        run: docker run --rm -d --name giving-example-image -p 8080:8080 -e ADYEN_API_KEY="${{ secrets.ADYEN_API_KEY }}" -e ADYEN_MERCHANT_ACCOUNT=${{ secrets.ADYEN_MERCHANT_ACCOUNT }} -e ADYEN_CLIENT_KEY=${{ secrets.ADYEN_CLIENT_KEY }} -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} giving-example-image:latest
       - name: Run testing suite against giving-example-image
         run: docker run --rm --name adyen-testing-suite -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} -e PLAYWRIGHT_FOLDERNAME=giving --network host ghcr.io/adyen-examples/adyen-testing-suite:main
 
@@ -112,7 +114,7 @@ jobs:
       - name: Build in-person-payments-example image
         run: docker build -t in-person-payments-example-image:latest in-person-payments-example
       - name: Start in-person-payments-example container, set ADYEN_TERMINAL_API_CLOUD_ENDPOINT to default docker bridge and port 3000
-        run: docker run --rm -d --name in-person-payments-example-image -p 8080:80 -e ADYEN_API_KEY="${{ secrets.ADYEN_API_KEY }}" -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} -e ADYEN_TERMINAL_API_CLOUD_ENDPOINT=http://172.17.0.1:3000 -e ADYEN_POS_POI_ID=V400m-123456789 in-person-payments-example-image:latest
+        run: docker run --rm -d --name in-person-payments-example-image -p 8080:8080 -e ADYEN_API_KEY="${{ secrets.ADYEN_API_KEY }}" -e ADYEN_HMAC_KEY=${{ secrets.ADYEN_HMAC_KEY }} -e ADYEN_TERMINAL_API_CLOUD_ENDPOINT=http://172.17.0.1:3000 -e ADYEN_POS_POI_ID=V400m-123456789 in-person-payments-example-image:latest
       - name: Start the Adyen Mock Terminal API Application on port 3000
         run: docker run --rm -d --name adyen-mock-terminal-api -p 3000:3000 -e PORT=3000 ghcr.io/adyen-examples/adyen-mock-terminal-api:main
       - name: Run testing suite against in-person-payments-example-image
