@@ -508,11 +508,13 @@ a.button:hover,
 
 .cart {
   text-align: left;
-  margin-top: 20px;
+  margin: 20px auto 0;
   background: var(--adyen-white);
   border-radius: 12px;
   padding: 32px;
   box-shadow: 0 4px 16px rgba(var(--adyen-dark-rgb), 0.08);
+  width: 100%;
+  max-width: 50%;
 }
 
 .cart h2 {
@@ -520,6 +522,12 @@ a.button:hover,
   font-size: 28px;
   margin: 0 0 24px 0;
   font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .cart {
+    max-width: 100%;
+  }
 }
 
 .payment-method-display {
@@ -658,10 +666,15 @@ a.button:hover,
 
 .checkout-actions {
   margin-top: 24px;
+  display: flex;
+  justify-content: center;
 }
 
 .checkout-back-button {
   margin-top: 0;
+  width: auto;
+  max-width: 220px;
+  padding: 12px 24px;
 }
 
 /* Adyen Components Styling */
