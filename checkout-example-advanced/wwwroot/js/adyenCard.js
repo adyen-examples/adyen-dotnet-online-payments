@@ -1,5 +1,5 @@
-const { Card } = window.AdyenWeb;const clientKey = document.getElementById("clientKey").innerHTML;
-const { AdyenCheckout } = window.AdyenWeb;
+const clientKey = document.getElementById("clientKey").innerHTML;
+const { AdyenCheckout, Card } = window.AdyenWeb;
 
 async function createCheckout(mountComponent) {
     try {
