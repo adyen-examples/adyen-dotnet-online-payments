@@ -28,6 +28,7 @@ async function createCheckout(mountComponent) {
                         if (!resultCode) {
                             console.warn("reject");
                             actions.reject();
+                            return;
                         }
 
                         actions.resolve({
@@ -67,6 +68,7 @@ async function createCheckout(mountComponent) {
                     if (!resultCode) {
                         console.warn("reject");
                         actions.reject();
+                        return;
                     }
 
                     actions.resolve({ resultCode });
