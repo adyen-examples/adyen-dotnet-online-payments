@@ -1,6 +1,6 @@
-# Adyen [online payment](https://docs.adyen.com/checkout?utm_source=checkout_advanced_demo) integration demo - Advanced Flow
+# Adyen [online payment](https://docs.adyen.com/checkout) integration demo - Advanced Flow
 
-**This sample shows the [advanced integration flow](https://docs.adyen.com/online-payments/web-drop-in/additional-use-cases?tab=sessions_flow_advanced_flow_1&utm_source=checkout_advanced_demo), for a simpler flow using session, have a look at the [checkout-example](../checkout-example) folder.**
+**This sample shows the [advanced integration flow](https://docs.adyen.com/online-payments/web-drop-in/additional-use-cases?tab=sessions_flow_advanced_flow_1), for a simpler flow using session, have a look at the [checkout-example](../checkout-example) folder.**
 
 This repository includes examples of PCI-compliant UI integrations for online payments with Adyen. 
 Within this demo app, you'll find a simplified version of an e-commerce website, complete with commented code to highlight key features and concepts of Adyen's API. 
@@ -8,7 +8,7 @@ Check out the underlying code to see how you can integrate Adyen to give your sh
 
 ![Card checkout demo](wwwroot/images/cardcheckout.gif)
 
-This demo leverages Adyen's API Library for .NET ([GitHub](https://github.com/Adyen/adyen-dotnet-api-library) | [Docs](https://docs.adyen.com/development-resources/libraries?tab=c__5&utm_source=checkout_advanced_demo#csharp)).
+This demo leverages Adyen's API Library for .NET ([GitHub](https://github.com/Adyen/adyen-dotnet-api-library) | [Docs](https://docs.adyen.com/development-resources/libraries?tab=c__5#csharp)).
 
 
 ## Run integration on localhost using a proxy
@@ -21,10 +21,10 @@ git clone https://github.com/adyen-examples/adyen-dotnet-online-payments.git
 ```
 
 
-2. Open your [Adyen Test Account](https://ca-test.adyen.com/ca/ca/overview/default.shtml) and create a set of [API keys](https://docs.adyen.com/user-management/how-to-get-the-api-key?utm_source=checkout_advanced_demo). 
-  - [`ADYEN_API_KEY`](https://docs.adyen.com/user-management/how-to-get-the-api-key?utm_source=checkout_advanced_demo)
-  - [`ADYEN_CLIENT_KEY`](https://docs.adyen.com/user-management/client-side-authentication?utm_source=checkout_advanced_demo)
-  - [`ADYEN_MERCHANT_ACCOUNT`](https://docs.adyen.com/account/account-structure?utm_source=checkout_advanced_demo)
+2. Open your [Adyen Test Account](https://ca-test.adyen.com/ca/ca/overview/default.shtml) and create a set of [API keys](https://docs.adyen.com/user-management/how-to-get-the-api-key). 
+    - [`ADYEN_API_KEY`](https://docs.adyen.com/user-management/how-to-get-the-api-key)
+    - [`ADYEN_CLIENT_KEY`](https://docs.adyen.com/user-management/client-side-authentication)
+    - [`ADYEN_MERCHANT_ACCOUNT`](https://docs.adyen.com/account/account-structure)
     
 
 3. To allow the Adyen Drop-In and Components to load, add `https://localhost:5001` as allowed origin by going to your `ADYEN_MERCHANT_ACCOUNT` in the Customer Area: `Developers` → `API credentials` → Find your `ws_user` → `Client settings` → `Add Allowed origins`.
@@ -60,8 +60,8 @@ If you use a tunneling service like ngrok, the webhook URL will be the generated
 
 6. To receive notifications asynchronously, add a webhook:
     - In the Customer Area go to `Developers` → `Webhooks` and add a new `Standard notification webhook`
-    - Define username and password (Basic Authentication) to [protect your endpoint](https://docs.adyen.com/development-resources/webhooks/best-practices?utm_source=checkout_advanced_demo#security) - Basic authentication only guarantees that the notification was sent by Adyen, not that it wasn't modified during transmission
-    - Generate the [HMAC Key](https://docs.adyen.com/development-resources/webhooks/verify-hmac-signatures?utm_source=checkout_advanced_demo) - This key is used to [verify](https://docs.adyen.com/development-resources/webhooks/best-practices?utm_source=checkout_advanced_demo#security) whether the HMAC signature that is included in the notification, was sent by Adyen and not modified during transmission
+    - Define username and password (Basic Authentication) to [protect your endpoint](https://docs.adyen.com/development-resources/webhooks/best-practices#security) - Basic authentication only guarantees that the notification was sent by Adyen, not that it wasn't modified during transmission
+    - Generate the [HMAC Key](https://docs.adyen.com/development-resources/webhooks/verify-hmac-signatures) - This key is used to [verify](https://docs.adyen.com/development-resources/webhooks/best-practices#security) whether the HMAC signature that is included in the notification, was sent by Adyen and not modified during transmission
     - See script below that allows you to easily set your environmental variables
     - For the URL, enter `https://ngrok.io` for now - We will need to update this webhook URL in step 10
     - Make sure the webhook is **Enabled** to send notifications
@@ -107,21 +107,23 @@ dotnet run --project checkout-example-advanced
 
 ## Supported Integrations
 
-[Online payments](https://docs.adyen.com/online-payments?utm_source=checkout_advanced_demo) **ASP.NET** demos of the following client-side integrations are currently available in this repository:
+[Online payments](https://docs.adyen.com/online-payments) **ASP.NET** demos of the following client-side integrations are currently available in this repository:
 
 - Drop-in
 - Components
     - ACH
     - Card (3DS2)
+    - Dotpay
+    - giropay
     - iDEAL
     - Klarna (Pay now, Pay later, Slice it)
     - SOFORT
 
-Before testing, please make sure to [add the payment methods to your Adyen Account](https://docs.adyen.com/payment-methods?utm_source=checkout_advanced_demo#add-payment-methods-to-your-account).
+Before testing, please make sure to [add the payment methods to your Adyen Account](https://docs.adyen.com/payment-methods#add-payment-methods-to-your-account).
 
 
 ## Usage
-To try out this application with test card numbers, visit [Test card numbers](https://docs.adyen.com/development-resources/test-cards/test-card-numbers?utm_source=checkout_advanced_demo). We recommend saving some test cards in your browser so you can test your integration faster in the future.
+To try out this application with test card numbers, visit [Test card numbers](https://docs.adyen.com/development-resources/test-cards/test-card-numbers). We recommend saving some test cards in your browser so you can test your integration faster in the future.
 
 1. Visit the main page, pick a payment method, follow the instructions to make a payment request.
 
