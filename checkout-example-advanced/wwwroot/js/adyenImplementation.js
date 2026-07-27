@@ -1,7 +1,7 @@
 const clientKey = document.getElementById("clientKey").innerHTML;
-const { AdyenCheckout } = window.AdyenWeb;
+const { AdyenCheckout, Dropin } = window.AdyenWeb;
 
-async function createCheckout(mountComponent) {
+async function startCheckout() {
     try {
         const paymentMethodsResponse = await fetch("/api/paymentMethods", {
             method: "POST",
@@ -87,33 +87,35 @@ async function createCheckout(mountComponent) {
             }
         };
 
-        // The selected payment method script provides the mount behavior.
+        const paymentMethodsConfiguration = {
+            card: {
+                showBrandIcon: true,
+                hasHolderName: true,
+                holderNameRequired: true,
+                name: "Credit or debit card",
+                amount: {
+                    value: 10000,
+                    currency: "EUR",
+                },
+                placeholders: {
+                    cardNumber: '1234 5678 9012 3456',
+                    expiryDate: 'MM/YY',
+                    securityCodeThreeDigits: '123',
+                    securityCodeFourDigits: '1234',
+                    holderName: 'J. Smith'
+                }
+            }
+        };
+
+        // Start the AdyenCheckout and mount the element onto the 'payment' div.
         const adyenCheckout = await AdyenCheckout(configuration);
-        await mountComponent(adyenCheckout);
+        const dropin = new Dropin(adyenCheckout, {
+            paymentMethodsConfiguration: paymentMethodsConfiguration
+        }).mount('#dropin-container');
     } catch (error) {
         console.error(error);
         alert("Error occurred. Look at console for details.");
     }
-}
-
-function getCardConfiguration() {
-    return {
-        showBrandIcon: true,
-        hasHolderName: true,
-        holderNameRequired: true,
-        name: "Credit or debit card",
-        amount: {
-            value: 10000,
-            currency: "EUR",
-        },
-        placeholders: {
-            cardNumber: '1234 5678 9012 3456',
-            expiryDate: 'MM/YY',
-            securityCodeThreeDigits: '123',
-            securityCodeFourDigits: '1234',
-            holderName: 'J. Smith'
-        }
-    };
 }
 
 // Function to handle payment completion redirects
@@ -144,3 +146,5 @@ function handleOnPaymentFailed(response) {
             break;
     }
 }
+
+startCheckout();
