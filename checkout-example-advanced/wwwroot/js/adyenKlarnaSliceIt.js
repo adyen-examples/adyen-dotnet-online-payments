@@ -1,17 +1,9 @@
 const clientKey = document.getElementById("clientKey").innerHTML;
-const { AdyenCheckout } = window.AdyenWeb;
+const { AdyenCheckout, Klarna } = window.AdyenWeb;
 
 async function createCheckout(mountComponent) {
     try {
-        const paymentMethodsResponse = await fetch("/api/paymentMethods", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            }
-        }).then(response => response.json());
-
         const configuration = {
-            paymentMethodsResponse: paymentMethodsResponse,
             clientKey,
             locale: "en_US",
             countryCode: 'NL',
@@ -62,7 +54,6 @@ async function createCheckout(mountComponent) {
                 console.error("onError", error.name, error.message, error.stack, component);
                 window.location.href = "/result/error";
             },
-            // Used for the Native 3DS2 Authentication flow, see: https://docs.adyen.com/online-payments/3d-secure/native-3ds2/
             onAdditionalDetails: async (state, component, actions) => {
                 console.info("onAdditionalDetails", state, component);
                 try {
@@ -87,7 +78,6 @@ async function createCheckout(mountComponent) {
             }
         };
 
-        // The selected payment method script provides the mount behavior.
         const adyenCheckout = await AdyenCheckout(configuration);
         await mountComponent(adyenCheckout);
     } catch (error) {
@@ -96,27 +86,6 @@ async function createCheckout(mountComponent) {
     }
 }
 
-function getCardConfiguration() {
-    return {
-        showBrandIcon: true,
-        hasHolderName: true,
-        holderNameRequired: true,
-        name: "Credit or debit card",
-        amount: {
-            value: 10000,
-            currency: "EUR",
-        },
-        placeholders: {
-            cardNumber: '1234 5678 9012 3456',
-            expiryDate: 'MM/YY',
-            securityCodeThreeDigits: '123',
-            securityCodeFourDigits: '1234',
-            holderName: 'J. Smith'
-        }
-    };
-}
-
-// Function to handle payment completion redirects
 function handleOnPaymentCompleted(response) {
     switch (response.resultCode) {
         case "Authorised":
@@ -132,7 +101,6 @@ function handleOnPaymentCompleted(response) {
     }
 }
 
-// Function to handle payment failure redirects
 function handleOnPaymentFailed(response) {
     switch (response.resultCode) {
         case "Cancelled":
@@ -144,3 +112,11 @@ function handleOnPaymentFailed(response) {
             break;
     }
 }
+
+createCheckout(async (adyenCheckout) => {
+    const klarnaConfiguration = {
+        useKlarnaWidget: false,
+        type: 'klarna_account'
+    };
+    new Klarna(adyenCheckout, klarnaConfiguration).mount('#payment-container');
+});

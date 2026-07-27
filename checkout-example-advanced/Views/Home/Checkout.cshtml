@@ -1,19 +1,48 @@
 ﻿@{
     ViewData["Title"] = "Adyen Checkout Cart";
+    var paymentMethod = (ViewBag.PaymentMethod as string) ?? string.Empty;
+    var paymentMethodName = paymentMethod switch
+    {
+        "dropin" => "Drop-in",
+        "card" => "Card",
+        "ideal" => "iDEAL",
+        "directEbanking" => "SOFORT",
+        "ach" => "ACH",
+        "klarna_paynow" => "Klarna - Pay now",
+        "klarna" => "Klarna - Pay later",
+        "klarna_account" => "Klarna - Slice it",
+        _ => "Payment Method"
+    };
+    var paymentScript = paymentMethod switch
+    {
+        "dropin" => "~/js/adyenDropin.js",
+        "card" => "~/js/adyenCard.js",
+        "ideal" => "~/js/adyenIdeal.js",
+        "directEbanking" => "~/js/adyenSofort.js",
+        "ach" => "~/js/adyenAch.js",
+        "klarna_paynow" => "~/js/adyenKlarnaPayNow.js",
+        "klarna" => "~/js/adyenKlarnaPayLater.js",
+        "klarna_account" => "~/js/adyenKlarnaSliceIt.js",
+        _ => "~/js/adyenDropin.js"
+    };
 }
 @* Hidden divs with data passed from the server *@
 <div id="clientKey" class="hidden">@ViewBag.ClientKey</div>
-<div id="type" class="hidden">@ViewBag.PaymentMethod</div>
 
-<div id="payment-page">
-    <div class="container">
+<div id="payment-page" class="payment-page">
+    <div class="payment-header">
+        <h1>@paymentMethodName Checkout</h1>
+    </div>
+
+    <div class="payment-page-container">
         @* The Checkout integration type will be conditionally rendered below. *@
         @* Drop-in includes styling out-of-the-box, so no additional CSS classes are needed. *@
-        <div class="payment-container">
-            <div id="dropin-container" class="dropin-container"></div>
+        <div id="payment-container" class="payment-container"></div>
+        <div class="checkout-actions">
+            <a href="/" class="button checkout-back-button">Back to Home</a>
         </div>
     </div>
 </div>
 
-@* Adyen Component client code *@
-<script src="~/js/adyenImplementation.js" asp-append-version="true"></script>
+@* Payment Method specific client code *@
+<script src="@paymentScript" asp-append-version="true"></script>
