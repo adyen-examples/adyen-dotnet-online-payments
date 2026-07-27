@@ -14,14 +14,14 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
         [Route("/")]
         public IActionResult Index()
         {
-            return View();
+            return View("1_Index");
         }
 
         [Route("preview/{id}")]
         public IActionResult Preview(string id)
         {
             ViewBag.PaymentMethod = id;
-            return View();
+            return View("2_Preview");
         }
 
         [Route("checkout/{id}")]
@@ -29,7 +29,7 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
         {
             ViewBag.PaymentMethod = id;
             ViewBag.ClientKey = _clientKey;
-            return View();
+            return View("3_Checkout");
         }
 
         [HttpGet("result/{status}")]
@@ -60,7 +60,7 @@ namespace adyen_dotnet_checkout_example_advanced.Controllers
             ViewBag.Msg = msg;
             ViewBag.Img = img;
 
-            return View();
+            return View("4_Result");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
