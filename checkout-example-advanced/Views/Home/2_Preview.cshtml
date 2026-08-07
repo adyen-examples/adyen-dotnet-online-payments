@@ -1,5 +1,6 @@
 @{
     ViewData["Title"] = "Adyen Checkout Cart";
+  var paymentMethod = (ViewBag.PaymentMethod as string) ?? string.Empty;
     var paymentMethodName = (ViewBag.PaymentMethod as string) switch
     {
         "dropin" => "Drop-in",
@@ -12,13 +13,31 @@
         "klarna_account" => "Klarna - Slice it",
         _ => "Payment Method"
     };
+      var paymentLogoCode = paymentMethod switch
+      {
+        "dropin" => "card",
+        "card" => "card",
+        "ideal" => "ideal",
+        "directEbanking" => "sofort",
+        "ach" => "ach",
+        "klarna_paynow" => "klarna",
+        "klarna" => "klarna",
+        "klarna_account" => "klarna",
+        _ => "card"
+      };
+      var paymentLogoUrl = $"https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/images/logos/{paymentLogoCode}.svg";
 }
 <main class="preview-page">
   <section class="cart">
     <h2>Cart</h2>
     <div class="payment-method-display">
       <p class="payment-method-label">Payment Method:</p>
-      <p class="payment-method-name">@paymentMethodName</p>
+      <div class="payment-method-display-header">
+        <div class="payment-method-logo-chip">
+          <img src="@paymentLogoUrl" alt="@paymentMethodName logo" class="payment-method-logo" />
+        </div>
+        <p class="payment-method-name">@paymentMethodName</p>
+      </div>
     </div>
     <div class="order-summary">
       <ul class="order-summary-list">

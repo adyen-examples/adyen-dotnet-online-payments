@@ -13,6 +13,19 @@
         "klarna_account" => "Klarna - Slice it",
         _ => "Payment Method"
     };
+    var paymentLogoCode = paymentMethod switch
+    {
+        "dropin" => "card",
+        "card" => "card",
+        "ideal" => "ideal",
+        "directEbanking" => "sofort",
+        "ach" => "ach",
+        "klarna_paynow" => "klarna",
+        "klarna" => "klarna",
+        "klarna_account" => "klarna",
+        _ => "card"
+    };
+    var paymentLogoUrl = $"https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/images/logos/{paymentLogoCode}.svg";
     var paymentScript = paymentMethod switch
     {
         "dropin" => "~/js/adyenDropin.js",
@@ -31,6 +44,9 @@
 
 <div id="payment-page" class="payment-page">
     <div class="payment-header">
+        <div class="payment-method-logo-chip checkout-payment-method-logo">
+            <img src="@paymentLogoUrl" alt="@paymentMethodName logo" class="payment-method-logo" />
+        </div>
         <h1>@paymentMethodName Checkout</h1>
     </div>
 
