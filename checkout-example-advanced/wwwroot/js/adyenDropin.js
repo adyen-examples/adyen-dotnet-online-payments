@@ -1,5 +1,5 @@
 const clientKey = document.getElementById("clientKey").innerHTML;
-const { AdyenCheckout } = window.AdyenWeb;
+const { AdyenCheckout, Dropin } = window.AdyenWeb;
 
 async function createCheckout(mountComponent) {
     try {
@@ -63,7 +63,6 @@ async function createCheckout(mountComponent) {
                 console.error("onError", error.name, error.message, error.stack, component);
                 window.location.href = "/result/error";
             },
-            // Used for the Native 3DS2 Authentication flow, see: https://docs.adyen.com/online-payments/3d-secure/native-3ds2/
             onAdditionalDetails: async (state, component, actions) => {
                 console.info("onAdditionalDetails", state, component);
                 try {
@@ -89,7 +88,6 @@ async function createCheckout(mountComponent) {
             }
         };
 
-        // The selected payment method script provides the mount behavior.
         const adyenCheckout = await AdyenCheckout(configuration);
         await mountComponent(adyenCheckout);
     } catch (error) {
@@ -118,7 +116,6 @@ function getCardConfiguration() {
     };
 }
 
-// Function to handle payment completion redirects
 function handleOnPaymentCompleted(response) {
     switch (response.resultCode) {
         case "Authorised":
@@ -134,7 +131,6 @@ function handleOnPaymentCompleted(response) {
     }
 }
 
-// Function to handle payment failure redirects
 function handleOnPaymentFailed(response) {
     switch (response.resultCode) {
         case "Cancelled":
@@ -146,3 +142,10 @@ function handleOnPaymentFailed(response) {
             break;
     }
 }
+createCheckout(async (adyenCheckout) => {
+    new Dropin(adyenCheckout, {
+        paymentMethodsConfiguration: {
+            card: getCardConfiguration()
+        }
+    }).mount('#payment-container');
+});

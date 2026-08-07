@@ -5,15 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
  
     <link rel="stylesheet"
-          href="https://checkoutshopper-live.cdn.adyen.com/checkoutshopper/sdk/6.30.0/adyen.css"
+          href="https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/sdk/6.30.0/adyen.css"
           integrity="sha384-EajIgrs12jE8/4xUJjow1goFTYYeYCTDTot8jZqhspGJWuGtHMsj5b+Vl10oBOf0"
           crossorigin="anonymous"/>
 
-    <script src="https://checkoutshopper-live.cdn.adyen.com/checkoutshopper/sdk/6.30.0/adyen.js"
+    <script src="https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/sdk/6.30.0/adyen.js"
             integrity="sha384-sioAmEpgV1x5KaMioXOtk8itF68PJZKMWXpzD7wEebjhzn1VZSJ6iMXcG34MlYx0"
             crossorigin="anonymous"></script>
     
@@ -21,8 +20,9 @@
 </head>
 <body>
     <header id="header">
-      <a href="/">
-        <img src="~/images/mystore-logo.svg" alt="logo" />
+      <a href="/" class="header-brand">
+        <span class="brand-text">Adyen</span>
+        <span class="brand-subtext">Integration Example</span>
       </a>
     </header>
     <div class="container">

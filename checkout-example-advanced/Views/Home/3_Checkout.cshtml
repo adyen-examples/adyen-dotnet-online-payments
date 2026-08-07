@@ -1,0 +1,64 @@
+@{
+    ViewData["Title"] = "Adyen Checkout Cart";
+    var paymentMethod = (ViewBag.PaymentMethod as string) ?? string.Empty;
+    var paymentMethodName = paymentMethod switch
+    {
+        "dropin" => "Drop-in",
+        "card" => "Card",
+        "ideal" => "iDEAL",
+        "directEbanking" => "SOFORT",
+        "ach" => "ACH",
+        "klarna_paynow" => "Klarna - Pay now",
+        "klarna" => "Klarna - Pay later",
+        "klarna_account" => "Klarna - Slice it",
+        _ => "Payment Method"
+    };
+    var paymentLogoCode = paymentMethod switch
+    {
+        "dropin" => "card",
+        "card" => "card",
+        "ideal" => "ideal",
+        "directEbanking" => "sofort",
+        "ach" => "ach",
+        "klarna_paynow" => "klarna",
+        "klarna" => "klarna",
+        "klarna_account" => "klarna",
+        _ => "card"
+    };
+    var paymentLogoUrl = $"https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/images/logos/{paymentLogoCode}.svg";
+    var paymentScript = paymentMethod switch
+    {
+        "dropin" => "~/js/adyenDropin.js",
+        "card" => "~/js/adyenCard.js",
+        "ideal" => "~/js/adyenIdeal.js",
+        "directEbanking" => "~/js/adyenSofort.js",
+        "ach" => "~/js/adyenAch.js",
+        "klarna_paynow" => "~/js/adyenKlarnaPayNow.js",
+        "klarna" => "~/js/adyenKlarnaPayLater.js",
+        "klarna_account" => "~/js/adyenKlarnaSliceIt.js",
+        _ => "~/js/adyenDropin.js"
+    };
+}
+@* Hidden divs with data passed from the server *@
+<div id="clientKey" class="hidden">@ViewBag.ClientKey</div>
+
+<div id="payment-page" class="payment-page">
+    <div class="payment-header">
+        <div class="payment-method-logo-chip checkout-payment-method-logo">
+            <img src="@paymentLogoUrl" alt="@paymentMethodName logo" class="payment-method-logo" />
+        </div>
+        <h1>@paymentMethodName Checkout</h1>
+    </div>
+
+    <div class="payment-page-container">
+        @* The Checkout integration type will be conditionally rendered below. *@
+        @* Drop-in includes styling out-of-the-box, so no additional CSS classes are needed. *@
+        <div id="payment-container" class="payment-container"></div>
+        <div class="checkout-actions">
+            <a href="/" class="button checkout-back-button">Back to Home</a>
+        </div>
+    </div>
+</div>
+
+@* Payment Method specific client code *@
+<script src="@paymentScript" asp-append-version="true"></script>

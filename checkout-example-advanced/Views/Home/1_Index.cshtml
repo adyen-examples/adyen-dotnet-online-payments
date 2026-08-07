@@ -1,0 +1,97 @@
+@{
+    ViewData["Title"] = "Adyen Checkout Home";
+}
+<div class="main-container">
+
+  <div class="info">
+    <h2 class="integration-subsection">Select a demo</h2>
+    <p>Click to view an interactive example of a PCI-compliant UI integration for online payments.</p>
+    <p>
+      Make sure the payment method you want to use are enabled for your <a href="https://docs.adyen.com/account/account-structure?utm_source=checkout-example-advanced&utm_medium=dotnet">Adyen Merchant Account</a>.
+      Refer to <a href="https://docs.adyen.com/payment-methods?utm_source=checkout-example-advanced&utm_medium=dotnet">the documentation</a> to add missing
+      payment methods. To learn more about client-side integration solutions, check out <a href="https://docs.adyen.com/checkout?utm_source=checkout-example-advanced&utm_medium=dotnet">Online payments.</a>
+    </p>
+  </div>
+
+  <section class="integration-subsection">
+    <h2 class="integration-subsection-title">
+      <a href="https://docs.adyen.com/online-payments/build-your-integration/advanced-flow?utm_source=checkout-example-advanced&utm_medium=dotnet">Adyen Web Drop-in</a>
+    </h2>
+    <p class="integration-subsection-description">Drop-in gives you an all-in-one payment form that is fast to integrate and automatically includes multiple payment methods.</p>
+    <ul class="integration-list">
+      <li class="integration-list-item">
+        <a asp-area="" asp-controller="Home" asp-action="Preview" asp-route-id="dropin" class="integration-list-item-link">
+          <div class="title-container">
+            <div class="card-logo"><img src="https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/images/logos/card.svg" alt="Drop-in logo" class="payment-method-logo" /></div>
+            <p class="integration-list-item-title">Drop-in</p>
+          </div>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <section class="integration-subsection">
+    <h2 class="integration-subsection-title">
+      <a href="https://docs.adyen.com/online-payments/build-your-integration/advanced-flow?utm_source=checkout-example-advanced&utm_medium=dotnet">Adyen Web Components</a>
+    </h2>
+    <p class="integration-subsection-description">Web Components let you render each payment method separately so you can fully control the checkout layout and experience.</p>
+    <ul class="integration-list">
+      <li class="integration-list-item">
+        <a asp-area="" asp-controller="Home" asp-action="Preview" asp-route-id="card" class="integration-list-item-link">
+          <div class="title-container">
+            <div class="card-logo"><img src="https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/images/logos/card.svg" alt="Card logo" class="payment-method-logo" /></div>
+            <p class="integration-list-item-title">Card</p>
+          </div>
+        </a>
+      </li>
+      <li class="integration-list-item">
+        <a asp-area="" asp-controller="Home" asp-action="Preview" asp-route-id="ideal" class="integration-list-item-link">
+          <div class="title-container">
+            <div class="card-logo"><img src="https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/images/logos/ideal.svg" alt="iDEAL logo" class="payment-method-logo" /></div>
+            <p class="integration-list-item-title">iDEAL</p>
+          </div>
+        </a>
+      </li>
+      <li class="integration-list-item">
+        <a asp-area="" asp-controller="Home" asp-action="Preview" asp-route-id="directEbanking" class="integration-list-item-link">
+          <div class="title-container">
+            <div class="card-logo"><img src="https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/images/logos/sofort.svg" alt="SOFORT logo" class="payment-method-logo" /></div>
+            <p class="integration-list-item-title">SOFORT</p>
+          </div>
+        </a>
+      </li>
+      <li class="integration-list-item">
+        <a asp-area="" asp-controller="Home" asp-action="Preview" asp-route-id="ach" class="integration-list-item-link">
+          <div class="title-container">
+            <div class="card-logo"><img src="https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/images/logos/ach.svg" alt="ACH logo" class="payment-method-logo" /></div>
+            <p class="integration-list-item-title">ACH</p>
+          </div>
+        </a>
+      </li>
+      <li class="integration-list-item">
+        <a asp-area="" asp-controller="Home" asp-action="Preview" asp-route-id="klarna_paynow" class="integration-list-item-link">
+          <div class="title-container">
+            <div class="card-logo"><img src="https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/images/logos/klarna.svg" alt="Klarna logo" class="payment-method-logo" /></div>
+            <p class="integration-list-item-title">Klarna - Pay now</p>
+          </div>
+        </a>
+      </li>
+      <li class="integration-list-item">
+        <a asp-area="" asp-controller="Home" asp-action="Preview" asp-route-id="klarna" class="integration-list-item-link">
+          <div class="title-container">
+            <div class="card-logo"><img src="https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/images/logos/klarna.svg" alt="Klarna logo" class="payment-method-logo" /></div>
+            <p class="integration-list-item-title">Klarna - Pay later</p>
+          </div>
+        </a>
+      </li>
+      <li class="integration-list-item">
+        <a asp-area="" asp-controller="Home" asp-action="Preview" asp-route-id="klarna_account" class="integration-list-item-link">
+          <div class="title-container">
+            <div class="card-logo"><img src="https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/images/logos/klarna.svg" alt="Klarna logo" class="payment-method-logo" /></div>
+            <p class="integration-list-item-title">Klarna - Slice it</p>
+          </div>
+        </a>
+      </li>
+    </ul>
+  </section>
+</div>
